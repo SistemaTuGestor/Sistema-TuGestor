@@ -1,0 +1,17 @@
+
+.contenido {
+    /* Posición */
+    margin-top : 10px ;
+    position : static ;
+    /* Elementos */
+    justify-content: space-between ;
+    display : flex ;
+    padding : 10rex 20rex ;
+    /* Contenedor */
+    top : 10px ;
+    height: 100% ;
+    background-color : lightgray ;
+    border : 4px solid grey ;
+    border-radius : 10px ;
+}
+

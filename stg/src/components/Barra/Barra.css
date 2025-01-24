@@ -1,0 +1,32 @@
+
+.barra {
+    /* Posición */
+    position : static ;
+    /* Contenedor */
+    height : 10% ;
+    background-color : lightgray ;
+    border : 4px solid grey ;
+    border-radius: 10px ;
+    /* Elementos */
+    justify-content: space-between ;
+    display : flex ;
+    padding : 1.5% 6% ;
+    /* Letra */
+    font-size : 150% ;
+    text-align : center ;
+}
+
+.botoon button {
+    /* Contenedor */
+    background-color : silver ;
+    border : 2px solid gray ;
+    border-radius: 10px ;
+    /* Letra */
+    color : black ;
+    font-family : Arial, Helvetica, sans-serif ;
+    /* Interacción */
+    cursor : pointer ;
+} .botoon button:hover {
+    background-color: darkgray ;
+}
+
