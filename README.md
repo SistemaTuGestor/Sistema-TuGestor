@@ -25,6 +25,18 @@ npm run tauri dev
 ```
 
 ## Construcción
+### Windows
 ```
+rustup target add x86_64-pc-windows-gnu
+sudo apt install mingw-w64
+cd src-tauri/
+cargo build --release --target x86_64-pc-windows-gnu
+npm run tauri build
+```
+### Linux
+```
+rustup target add x86_64-unknown-linux-gnu
+cd src-tauri/
+cargo build --release --target x86_64-unknown-linux-gnu
 npm run tauri build
 ```
