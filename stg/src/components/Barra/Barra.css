@@ -27,6 +27,7 @@
     /* Interacción */
     cursor : pointer ;
 } .botoon button:hover {
-    background-color: darkgray ;
+    background-color : darkgray ;
+    font-weight : bold ;
 }
 

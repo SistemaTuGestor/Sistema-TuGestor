@@ -1,13 +1,18 @@
 
 import "./Contenido.css";
 
+import { ReactNode } from "react";
 
-function Contenido ()  {
+
+
+function Contenido ( { children } : { children: ReactNode } )  {
   
 
   return (
 
-    <div className="contenido"> </div>
+    <div className="contenido">
+      {children} {/* This renders the current module (e.g., Monitoreo, Notificaciones, etc.) */}
+    </div>
   
   );
 

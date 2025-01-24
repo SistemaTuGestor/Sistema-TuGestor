@@ -1,31 +1,43 @@
 
 import "./Barra.css";
 
+import { NavLink } from "react-router-dom";
 
-function Barra ()  {
+
+
+function Barra ( )  {
   
 
   return (
 
     <div className="barra">
       <div className="botoon">
-        <button>Monitoreo</button>
+        <NavLink to="/monitoreo" className={({ isActive }) => (isActive ? "active" : "")}>
+          <button>Monitoreo</button>
+        </NavLink>
       </div>
       <div className="botoon">
-        <button>Notificaciones</button>
+        <NavLink to="/notificaciones" className={({ isActive }) => (isActive ? "active" : "")}>
+          <button>Notificaciones</button>
+        </NavLink>
       </div>
       <div className="botoon">
-        <button>Reportes</button>
+        <NavLink to="/reportes" className={({ isActive }) => (isActive ? "active" : "")}>
+          <button>Reportes</button>
+        </NavLink>
       </div>
       <div className="botoon">
-        <button>Emparejamiento</button>
+        <NavLink to="/emparejamiento" className={({ isActive }) => (isActive ? "active" : "")}>
+          <button>Emparejamiento</button>
+        </NavLink>
       </div>
     </div>
   
-  );
+  ) ;
 
 
 }
 
 
 export default Barra ;
+
