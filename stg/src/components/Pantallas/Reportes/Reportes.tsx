@@ -1,16 +1,89 @@
 
-import "./Reportes.css";
+import "./Reportes.css" ;
 
 
 
-function Reportes ( )  {
+function Reportes ( ) {
   
 
   return (
 
-    <div>
-      <h1>Reportes</h1>
-      <p>Cinco páneles a lo largo.</p>
+    <div className="reportes">
+      <div className="seccioon">
+        <div className="tiitulo">
+          LEE
+        </div>
+        <ul className="lista">
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+        </ul>
+        <div className="opciones">
+          Enviar
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          PUJ
+        </div>
+        <ul className="lista">
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+        </ul>
+        <div className="opciones">
+        Enviar
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Colegios
+        </div>
+        <ul className="lista">
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+        </ul>
+        <div className="opciones">
+          Enviar
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Participantes
+        </div>
+        <ul className="lista">
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+        </ul>
+        <div className="opciones">
+          Enviar
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Sponsor
+        </div>
+        <ul className="lista">
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+          <li>Archivo</li>
+        </ul>
+        <div className="opciones">
+          Enviar
+        </div>
+      </div>
     </div>
   
   ) ;

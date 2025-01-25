@@ -1,16 +1,15 @@
 
-import "./Emparejamiento.css";
+import "./Emparejamiento.css" ;
 
 
 
-function Emparejamiento ( )  {
+function Emparejamiento ( ) {
   
 
   return (
 
-    <div>
-      <h1>Emparejamiento</h1>
-      <p>Panel superior y central.</p>
+    <div className="emparejamiento">
+      
     </div>
   
   ) ;

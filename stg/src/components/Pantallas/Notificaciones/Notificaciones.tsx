@@ -1,16 +1,56 @@
 
-import "./Notificaciones.css";
+import "./Notificaciones.css" ;
 
 
 
-function Notificaciones ( )  {
+function Notificaciones ( ) {
   
 
   return (
 
-    <div>
-      <h1>Notificaciones</h1>
-      <p>Panel izquierdo y derecho.</p>
+    <div className="notificaciones">
+      <div className="contenedor_PanelIzquierdo">
+        <div className="desplazadora">
+          <p>
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+          </p>
+        </div>
+      </div>
+      <div className="contenedor_PanelDerecho">
+        <div className="desplazadora">
+          <p>
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+            This is some text that will overflow and create a scrollbar.
+          </p>
+        </div>
+      </div>
     </div>
   
   ) ;

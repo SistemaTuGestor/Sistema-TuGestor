@@ -1,0 +1,40 @@
+
+.notificaciones {
+
+    display : flex ;
+    justify-content : center ;
+    align-items : center ;
+    height : 100% ;
+    width : 100% ;
+
+    .contenedor_PanelIzquierdo {
+        /* Contenedor */
+        height: inherit;
+        flex : 1 ;
+        background-color : lightgray ;
+        border : 2px solid gray ;
+        border-radius : 8px ;
+    }
+
+    .contenedor_PanelDerecho {
+        /* Posición */
+        margin-left : 10px ;
+        /* Contenedor */
+        height: inherit;
+        flex : 2.2 ;
+        background-color : lightgray ;
+        border : 2px solid gray ;
+        border-radius : 8px ;
+    }
+
+    .desplazadora {
+        /* Posición */
+        overflow : scroll ;
+        /* Contenedor */
+        height : 100% ;
+        /* Elementos */
+        /* Letra */
+    }
+
+}
+
