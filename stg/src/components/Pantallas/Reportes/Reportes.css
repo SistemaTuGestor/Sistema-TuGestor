@@ -60,11 +60,13 @@
         text-indent : 1em ;
         /* ítems */
         padding : 0 ;
-        line-height : 190% ;
+        line-height : 295% ;
         list-style-type : none ;
     }
 
     .opciones button {
+        /* Posición */
+        margin-bottom : 12% ;
         /* Contenedor */
         height : 60px ;
         width : 100% ;
