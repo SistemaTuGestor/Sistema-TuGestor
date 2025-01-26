@@ -4,37 +4,13 @@ import "./Reportes.css" ;
 
 
 function Reportes ( ) {
-
-  /* ... */
-
-  //// Constantes de estilo para cada Título de sección.
-  const const_styleLEE = {
-    color : "#8A2BE2" , border : "2px solid #F18200" ,
-    backgroundColor : "white" ,
-  } ;
-  const const_stylePUJ = {
-    color : "#77BFC7" , border : "2px solid #FFC901" ,
-    backgroundColor : "white" ,
-  } ;
-  const const_styleColegios = {
-    color : "white" , border : "2px solid white" ,
-    backgroundColor : "#F18200" ,
-  } ;
-  const const_styleParticipantes = {
-    color : "#F18200" , border : "2px solid #8A2BE2" ,
-    backgroundColor : "white" ,
-  } ;
-  const const_styleSponsor = {
-    color : "black" , border : "2px solid black" ,
-    backgroundColor : "#77BFC7" ,
-  } ;
   
 
   return (
 
     <div className="reportes">
       <div className="seccioon">
-        <div className="tiitulo" style={const_styleLEE}>
+        <div className="tiitulo">
           LEE
         </div>
         <ul className="lista">
@@ -50,7 +26,7 @@ function Reportes ( ) {
         </div>
       </div>
       <div className="seccioon">
-        <div className="tiitulo" style={const_stylePUJ}>
+        <div className="tiitulo">
           PUJ
         </div>
         <ul className="lista">
@@ -66,7 +42,7 @@ function Reportes ( ) {
         </div>
       </div>
       <div className="seccioon">
-        <div className="tiitulo" style={const_styleColegios}>
+        <div className="tiitulo">
           Colegios
         </div>
         <ul className="lista">
@@ -82,7 +58,7 @@ function Reportes ( ) {
         </div>
       </div>
       <div className="seccioon">
-        <div className="tiitulo" style={const_styleParticipantes}>
+        <div className="tiitulo">
           Participantes
         </div>
         <ul className="lista">
@@ -98,7 +74,7 @@ function Reportes ( ) {
         </div>
       </div>
       <div className="seccioon">
-        <div className="tiitulo" style={const_styleSponsor}>
+        <div className="tiitulo">
           Sponsor
         </div>
         <ul className="lista">
