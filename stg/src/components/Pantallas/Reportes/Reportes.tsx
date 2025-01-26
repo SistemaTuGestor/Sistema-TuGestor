@@ -37,21 +37,8 @@ function Reportes ( ) {
   //// Apertura de explorador de archivos.
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
-  const [, setFilePath] = useState<string> ("/home/user/Downloads") ;
   // Handle file selection
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0] ;
-    if ( selectedFile ) {
-      if ( selectedFile.type === "application/pdf" ) {
-        setFilePath ( selectedFile.name ) ;
-        alert ( `Archivo seleccionado: ${selectedFile.name}` ) ;
-        console.log ( "Ruta de archivo seleccionado:", selectedFile.name ) ;
-      } else {
-        alert ( "Por favor, seleccionar un archivo PDF válido." ) ;
-        setFilePath ( "/home/user/Downloads" ) ;
-      }
-    }
-  } ;  
+  const handleFileChange = () => { } ;
   // Trigger file selection dialog.
   const handleFileClick = ( ) => {
     fileInputRef.current?.click() ;
