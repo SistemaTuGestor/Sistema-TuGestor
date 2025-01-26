@@ -3,8 +3,7 @@ import "./Reportes.css" ;
 
 import Emergente from "../Emergente/Emergente" ;
 
-import { useRef,useState } from "react";
-import { message } from "@tauri-apps/api/dialog";
+import { useRef,useState } from "react" ;
 
 
 function Reportes ( ) {
@@ -25,7 +24,7 @@ function Reportes ( ) {
   }
 
   const evento_clickVerificar = ( ) => {
-    message ( `Abrir explorador de archivos para visualizar reportes` ) ;
+    alert ( `Abrir explorador de archivos para visualizar reportes` ) ;
     handleFileClick() ;
     setEmergenteVisible ( true ) ;
   } ;
@@ -37,20 +36,20 @@ function Reportes ( ) {
 
   //// Apertura de explorador de archivos.
 
-  const fileInputRef = useRef <HTMLInputElement|null> (null) ;  // Ref for file input
-  const [filePath,setFilePath] = useState <string|null> (null) ;  // State to store the selected file path
+  const fileInputRef = useRef <HTMLInputElement|null> (null) ;
+  const [, setFilePath] = useState<string> ("/home/user/Downloads") ;
 
   // Handle file selection
   const handleFileChange = ( event:React.ChangeEvent<HTMLInputElement> ) => {
     if ( event.target.files && event.target.files[0] ) {
       const file = event.target.files[0] ;
-      if ( file.name.endsWith(".xlsx") ) {
-        setFilePath ( file.name ) ;  // Set the file path if the file is valid (.xlsx)
-        console.log ( "Selected file path:",file.name ) ;
-        alert ( `Selected file: ${file.name}` ) ;
+      if ( file.name.endsWith(".pdf") ) {
+        setFilePath ( file.name ) ;
+        alert ( `Archivo seleccionado: ${file.name}` ) ;
+        console.log ( "Ruta de archivo seleccionado:",file.name ) ;
       } else {
-        alert ( "Please select a valid .xlsx file." ) ;  // Alert if the file is not .xlsx
-        setFilePath ( null ) ;  // Clear file path if an invalid file is selected
+        alert ( "Por favor, seleccionar un archivo PDF válido." ) ;
+        setFilePath ( "/home/user/Downloads" ) ;
       }
     }
   } ;
@@ -101,7 +100,7 @@ function Reportes ( ) {
         type="file"
         ref={fileInputRef}
         style={{ display: "none" }}
-        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // Restrict to .xlsx files
+        accept="application/pdf"
         onChange={handleFileChange}
       />
   
