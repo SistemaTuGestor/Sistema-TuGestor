@@ -13,7 +13,7 @@
     
     .seccioon {
         /* Contenedor */
-        height : 80% ;
+        height : 60% ;
         background-color : silver ;
         border : 2px solid gray ;
         border-radius : 8px ;
@@ -22,10 +22,13 @@
         flex-direction : column ;
         align-items : center ;
         justify-content : space-between ;
-        padding : 10px ;
+        padding : 0 10px 10px 10px ;
     }
     
     .tiitulo {
+        /* Posición */
+        transform : translateY(-33px) ;
+        margin-bottom : -22% ;
         /* Contenedor */
         height : 60px ;
         width: 150px ;
@@ -41,8 +44,10 @@
     }
 
     .lista {
+        /* Posición */
+        top : -10% ;
         /* Contenedor */
-        height : 50% ;
+        height : 60% ;
         width: 100% ;
         background-color : lightgray ;
         border : 2px solid gray ;
@@ -59,19 +64,19 @@
         list-style-type : none ;
     }
 
-    .opciones {
+    .opciones button {
         /* Contenedor */
         height : 60px ;
-        width: 100px ;
-        background-color : lightgray ;
-        border : 2px solid gray ;
+        width : 100% ;
+        background-color : lightgrey ;
+        border : 2px solid black ;
         border-radius : 8px ;
         /* Letra */
         color : black ;
         font-family : Arial, Helvetica, sans-serif ;
         font-size : 120% ;
-        text-align : center ;
-        line-height : 300% ;
+    }.opciones button:hover {
+        font-weight : bold ;
     }
 
 }
