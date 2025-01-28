@@ -17,11 +17,11 @@
     /* Contenedor */
     background-color : silver ;
     border : 2px solid gray ;
-    border-radius: 10px ;
+    border-radius : 10px ;
     /* Letra */
     color : black ;
     font-family : Arial, Helvetica, sans-serif ;
-    font-size : 150% ;
+    font-size : 130% ;
     text-align : center ;
     /* Interacción */
     cursor : pointer ;

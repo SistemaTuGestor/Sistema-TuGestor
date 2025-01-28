@@ -58,7 +58,7 @@ function Reportes ( ) {
           />
       ) }
       
-      { ["LEE","PUJ","Colegios","Participantes","Sponsor"].map (
+      { ["LEE","PUJ","Colegios","Constancias","Sponsor"].map (
         (reporte) => (
           <div className="seccioon" key={reporte}>
             <div className="tiitulo">
