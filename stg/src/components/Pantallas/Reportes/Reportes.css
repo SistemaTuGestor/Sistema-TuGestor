@@ -14,7 +14,7 @@
     .seccioon {
         /* Contenedor */
         height : 60% ;
-        width: 16% ;
+        width : 16% ;
         background-color : silver ;
         border : 2px solid gray ;
         border-radius : 8px ;
@@ -41,7 +41,7 @@
         font-family : Arial, Helvetica, sans-serif ;
         font-size : 120% ;
         text-align : center ;
-        line-height : 280% ;
+        line-height : 220% ;
     }
 
     .lista {
@@ -59,9 +59,9 @@
         font-size : 80% ;
         text-align : left ;
         text-indent : 1em ;
-        /* ítems */
+        /* Ítems */
         padding : 0 ;
-        line-height : 300% ;
+        line-height : 280% ;
         list-style-type : none ;
     }
 

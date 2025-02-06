@@ -1,3 +1,4 @@
+
 .barra {
     position: static;
     height: 10%;
@@ -16,7 +17,7 @@
     border-radius: 8px;
     display: none; /* Oculto por defecto */
     position: absolute;
-    top: 60px; /* Ajusta según la posición deseada */
+    top: 60px;
     left: 20px;
     z-index: 10;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -35,15 +36,14 @@
 
 .botoon button:hover {
     background-color: darkgray;
-    font-weight: bold;
 }
 
-/* Nueva clase para marcar el botón activo */
 .active-button button {
-    font-weight: bold; /* Negrita */
-    background-color: darkgray; /* Color diferente si se quiere resaltar más */
+    font-weight : bold ;
+    background-color : darkgray ;
 }
 
 .mostrar {
     display: block;
 }
+
