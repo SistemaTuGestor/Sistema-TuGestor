@@ -9,7 +9,7 @@
 
     .contenedor_PanelIzquierdo {
         /* Contenedor */
-        height: inherit;
+        height : inherit ;
         flex : 1 ;
         background-color : lightgray ;
         border : 2px solid gray ;
@@ -50,12 +50,41 @@
         border-radius : 8px ;
     }
 
+    .opciones {
+        /* Posición */
+        position : static ;
+        /* Contenedor */
+        border-bottom : 2px solid gray ;
+        /* Elementos */
+        padding : 10px 10% 9px ;
+        gap: 10% ;
+        display : flex ;
+        select.botones-opciones {
+            /* Reseteo de estilo */
+            appearance : none ;
+            -moz-appearance : none ;
+            -webkit-appearance : none ;
+            /* Contenedor */
+            width : 80% ;
+            background-color : inherit ;
+            border : 2px solid white ;
+            border-radius : 8px ;
+            /* Elementos */
+            padding : 0 0 0 4% ;
+            /* Letra */
+            font-size : 100% ;
+            color : white ;
+        } .select.botones-opciones:hover {
+            font-weight : bold ;
+        }
+    }
+
     .registro {
         /* Posición */
         margin : 2% ;
         /* Contenedor */
         background-color : lightgray ;
-        border : 2px solid gray ;
+        border : 1px solid gray ;
         border-radius : 8px ;
         /* Elementos */
         display : flex ;
