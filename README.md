@@ -12,9 +12,9 @@ cargo update
 
 ## Tecnologías
 ```
-node: v20.18.0
+node: v23.7.0
 npm: 11.0.0
-rustc: 1.81.0
+rustc: 1.84.1
 rustup: 1.27.1
 ```
 
