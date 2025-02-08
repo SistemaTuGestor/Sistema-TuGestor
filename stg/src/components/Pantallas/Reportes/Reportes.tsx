@@ -58,28 +58,81 @@ function Reportes ( ) {
           />
       ) }
       
-      { ["LEE","PUJ","Colegios","Constancias","Sponsor"].map (
-        (reporte) => (
-          <div className="seccioon" key={reporte}>
-            <div className="tiitulo">
-              {reporte}
-            </div>
-            <ul className="lista">
-              <li>Archivo</li>
-              <li>Archivo</li>
-              <li>Archivo</li>
-              <li>Archivo</li>
-              <li>Archivo</li>
-              <li>Info adicional</li>
-            </ul>
-            <div className="opciones">
-              <button onClick={()=>evento_clickGenerar(reporte)}>
-                Generar
-              </button>
-            </div>
-          </div>
-        )
-      ) }
+      <div className="seccioon">
+        <div className="tiitulo">
+          LEE
+        </div>
+        <ul className="lista">
+          <li>Fecha</li>
+          <li>Ubicación de formularios</li>
+          <li>Nombre de reportes</li>
+          <li>Info adicional</li>
+        </ul>
+        <div className="opciones">
+          <button onClick={()=>evento_clickGenerar("LEE")}>
+            Generar
+          </button>
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          PUJ
+        </div>
+        <ul className="lista">
+          <li>Fecha</li>
+          <li>Nombre de reportes</li>
+          <li>Info adicional</li>
+        </ul>
+        <div className="opciones">
+          <button onClick={()=>evento_clickGenerar("PUJ")}>
+            Generar
+          </button>
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Colegios
+        </div>
+        <ul className="lista">
+          <li>Fecha</li>
+          <li>Nombre de reportes</li>
+          <li>Info adicional</li>
+        </ul>
+        <div className="opciones">
+          <button onClick={()=>evento_clickGenerar("Colegios")}>
+            Generar
+          </button>
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Constancias
+        </div>
+        <ul className="lista">
+          <li>Nombre de reportes</li>
+          <li>Info adicional</li>
+        </ul>
+        <div className="opciones">
+          <button onClick={()=>evento_clickGenerar("Participantes")}>
+            Generar
+          </button>
+        </div>
+      </div>
+      <div className="seccioon">
+        <div className="tiitulo">
+          Sponsor
+        </div>
+        <ul className="lista">
+          <li>Ubicación inscripciones</li>
+          <li>Nombre de reporte</li>
+          <li>Info adicional</li>
+        </ul>
+        <div className="opciones">
+          <button onClick={()=>evento_clickGenerar("Sponsor")}>
+            Generar
+          </button>
+        </div>
+      </div>
 
       {/* Hidden file input for file selection */}
       <input

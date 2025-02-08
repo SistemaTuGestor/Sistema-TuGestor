@@ -13,7 +13,8 @@
     "@tauri-apps/api": "^1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.1.3"
+    "react-router-dom": "^7.1.3",
+    "stg": "file:"
   },
   "devDependencies": {
     "@tauri-apps/cli": "1.6.0",
