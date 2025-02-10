@@ -66,7 +66,7 @@ function Reportes ( ) {
           <li>Fecha</li>
           <li>Ubicación de formularios</li>
           <li>Nombre de reportes</li>
-          <li>Info adicional</li>
+          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("LEE")}>
@@ -81,7 +81,7 @@ function Reportes ( ) {
         <ul className="lista">
           <li>Fecha</li>
           <li>Nombre de reportes</li>
-          <li>Info adicional</li>
+          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("PUJ")}>
@@ -96,7 +96,7 @@ function Reportes ( ) {
         <ul className="lista">
           <li>Fecha</li>
           <li>Nombre de reportes</li>
-          <li>Info adicional</li>
+          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Colegios")}>
@@ -110,7 +110,7 @@ function Reportes ( ) {
         </div>
         <ul className="lista">
           <li>Nombre de reportes</li>
-          <li>Info adicional</li>
+          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Participantes")}>
@@ -123,9 +123,9 @@ function Reportes ( ) {
           Sponsor
         </div>
         <ul className="lista">
-          <li>Ubicación inscripciones</li>
+          <li>Ubicación de inscripciones</li>
           <li>Nombre de reporte</li>
-          <li>Info adicional</li>
+          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Sponsor")}>
