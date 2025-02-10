@@ -75,7 +75,22 @@
         line-height : -10px ;
     } .lista li:first-child {
         border-top : none ;
-        margin-top : -8px ;
+        margin-top : -12px ;
+        margin-bottom: -7px;
+    } .lista input {
+        /* Posición */
+        margin-top : -10% ;
+        margin-left : -18px ;
+        /* Contenedor */
+        width : 80% ;
+        height: 120%;
+        background-color : lightgray ;
+        border : none ;
+        border-bottom : none ;
+        border-radius : 0 ;
+        box-shadow : none ;
+        /* Letra */
+        color : black ;
     }
 
     .opciones button {

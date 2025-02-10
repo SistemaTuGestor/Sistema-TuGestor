@@ -3,10 +3,21 @@ import "./Reportes.css" ;
 
 import Emergente from "../Emergente/Emergente" ;
 
-import { useRef,useState } from "react" ;
+import { useRef,useState,useEffect } from "react" ;
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 function Reportes ( ) {
+
+  //// Fecha
+
+  const [fecha,setFecha] = useState("") ;
+
+  useEffect ( ( ) => {
+    invoke < {fecha:string} > ( "obtener_fecha" )
+      .then ( (response) => setFecha(response.fecha) )
+      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
+  } , [] ) ;
 
   //// Control de ventana emergente.
 
@@ -63,7 +74,19 @@ function Reportes ( ) {
           LEE
         </div>
         <ul className="lista">
-          <li>Fecha</li>
+          <li>
+            {" "}
+            <input
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              onBlur={() => {
+                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                  .then(() => console.log("Fecha actualizada"))
+                  .catch((err) => console.error("Failed to update date:", err));
+              }}
+            />
+          </li>
           <li>Ubicación de formularios</li>
           <li>Nombre de reportes</li>
           <li>Información adicional</li>
@@ -79,7 +102,19 @@ function Reportes ( ) {
           PUJ
         </div>
         <ul className="lista">
-          <li>Fecha</li>
+          <li>
+            {" "}
+            <input
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              onBlur={() => {
+                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                  .then(() => console.log("Fecha actualizada"))
+                  .catch((err) => console.error("Failed to update date:", err));
+              }}
+            />
+          </li>
           <li>Nombre de reportes</li>
           <li>Información adicional</li>
         </ul>
@@ -94,7 +129,19 @@ function Reportes ( ) {
           Colegios
         </div>
         <ul className="lista">
-          <li>Fecha</li>
+          <li>
+            {" "}
+            <input
+              type="date"
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              onBlur={() => {
+                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                  .then(() => console.log("Fecha actualizada"))
+                  .catch((err) => console.error("Failed to update date:", err));
+              }}
+            />
+          </li>
           <li>Nombre de reportes</li>
           <li>Información adicional</li>
         </ul>
