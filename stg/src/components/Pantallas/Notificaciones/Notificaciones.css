@@ -31,7 +31,7 @@
         }
         .contactos {
             /* Posición */
-            margin : 2% 0 ;
+            margin : -4px 0 2px 0 ;
             /* Letra */
             font-size: 80% ;
             color : gray ;

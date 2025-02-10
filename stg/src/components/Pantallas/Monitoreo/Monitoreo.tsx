@@ -21,7 +21,7 @@ function Monitoreo ( ) {
 
   useEffect ( () => {
     // Fetch data from the backend
-    invoke<DatosMonitoreoIzq[]>("monitoreo_izquierdo")
+    invoke<DatosMonitoreoIzq[]>("monitoreo_izquierda")
       .then ( (response) => setDatosIzq(response) )
       .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
   }, [] ) ;
@@ -30,7 +30,7 @@ function Monitoreo ( ) {
 
   useEffect ( () => {
     // Fetch data from the backend
-    invoke<DatosMonitoreoDer[]>("monitoreo_derecho")
+    invoke<DatosMonitoreoDer[]>("monitoreo_derecha")
       .then ( (response) => setDatosDer(response) )
       .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
   }, [] ) ;
