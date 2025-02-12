@@ -2,9 +2,20 @@
 import "./Barra.css" ;
 
 import { NavLink } from "react-router-dom" ;
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 function Barra ( ) {
+
+  // Función para invocar leer_excel_path_fijo cuando se haga clic en "Reportes"
+  const handleReportesClick = async () => {
+    try {
+      const datos = await invoke("leer_excel_path_fijo_lee"); // Llamar a la función en Rust
+      console.log("Datos del Excel:", datos);
+    } catch (error) {
+      console.error("Error al leer el archivo Excel:", error);
+    }
+  };
 
   return (
 
@@ -32,6 +43,7 @@ function Barra ( ) {
         <NavLink 
           to="/reportes" 
           className={({ isActive }) => (isActive ? "botoon-activo" : "")}
+          onClick={handleReportesClick} // Llamar a la función al hacer clic
         >
           <button>Reportes</button>
         </NavLink>

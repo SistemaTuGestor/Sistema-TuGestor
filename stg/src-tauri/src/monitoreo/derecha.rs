@@ -13,11 +13,11 @@ pub struct DatosMonitoreoDer {
 #[tauri::command]
 pub fn monitoreo_derecha()  ->  Result <Vec<DatosMonitoreoDer>,String> {
 
-    let path = "/home/user/Downloads/new 2.xlsx" ;
+    let path = "C:\\Users\\USUARIO\\Downloads\\prueba.xlsx" ;
     let mut workbook: Xlsx<_> = open_workbook(path).map_err ( |e:XlsxError| e.to_string() )? ;
 
     let range = workbook
-        .worksheet_range ( "Sheet1" )
+        .worksheet_range ( "Hoja1" )
         .map_err ( |e:XlsxError| e.to_string() )? ;
 
     let mut data = Vec::new() ;
