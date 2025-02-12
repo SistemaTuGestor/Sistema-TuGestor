@@ -1,13 +1,12 @@
-use calamine::{open_workbook, DataType, Reader, Xlsx};
+use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
 use std::path::Path;
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
-    direccion_ip: String,
-    progreso: String,  // Cambiado de i32 a String
-    segundos: String,  // Cambiado de i32 a String
+    nombre_completo: String,
     correo: String,
+    minutos: String,
 }
 
 #[tauri::command] // Para poder llamarla desde TypeScript en Tauri
@@ -58,33 +57,36 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         }
 
         if i >= 6 {
-            println!("✔ Se han leído los primeros 5 registros.");
-            break;
+            break; // Solo leer los primeros 5 registros
         }
 
-        if row.len() < 12 {
-            println!("✖ ERROR: La fila tiene menos de 12 columnas.");
+        if row.len() < 13 { // Asegurarse de que haya suficientes columnas
             continue;
         }
 
-        let direccion_ip = row.get(3).map_or("".to_string(), |cell| cell.to_string());
-        let progreso = row.get(4).map_or("".to_string(), |cell| cell.to_string());
-        let segundos = row.get(5).map_or("".to_string(), |cell| cell.to_string());
+        let nombre = row.get(10).map_or("".to_string(), |cell| cell.to_string());
+        let apellido = row.get(9).map_or("".to_string(), |cell| cell.to_string());
         let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
+        let minutos = row.get(22).map_or("".to_string(), |cell| cell.to_string());
 
-        println!(
-            "  ➝ Datos extraídos: Dirección IP: {}, Progreso: {}, Segundos: {}, Correo: {}",
-            direccion_ip, progreso, segundos, correo
-        );
+        // Concatenar nombre y apellido
+        let nombre_completo = format!("{} {}", nombre, apellido);
 
         data.push(DatosMonitoreo {
-            direccion_ip,
-            progreso,
-            segundos,
+            nombre_completo,
             correo,
+            minutos,
         });
     }
 
-    println!("✔ Finalizada la lectura del archivo.");
+    // Imprimir todos los datos almacenados
+    for dato in &data {
+        println!(
+            "Nombre Completo: {}, Correo: {}, Minutos: {}",
+            dato.nombre_completo, dato.correo, dato.minutos
+        );
+    }
+
+    println!("✔ Finalizada la lectura del archivo y datos impresos correctamente.");
     Ok(data)
 }
