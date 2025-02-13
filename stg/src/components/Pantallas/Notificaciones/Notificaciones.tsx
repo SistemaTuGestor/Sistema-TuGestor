@@ -50,8 +50,9 @@ function Notificaciones ( ) {
       </div>
       <div className="contenedor_PanelDerecho">
         <div className="opciones">
-          <select name="destinatarios" data-placeholder="Destinos" className="botones-opciones" data-multiselect>
-            <option value="destinatarios">Destinatario</option>
+          <select className="botones-opciones" data-multiselect>
+            <option value="destinatarios">Destinatarios</option>
+            <option value="opt-1">Destinatario 1</option>
             <option value="opt-2">Destinatario 2</option>
             <option value="opt-3">Destinatario 3</option>
           </select>
