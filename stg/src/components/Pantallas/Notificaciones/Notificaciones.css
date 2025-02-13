@@ -56,7 +56,7 @@
         /* Contenedor */
         border-bottom : 2px solid gray ;
         /* Elementos */
-        padding : 10px 10% 9px ;
+        padding : 15px 10% 14px ;
         gap: 10% ;
         display : flex ;
         select.botones-opciones {
