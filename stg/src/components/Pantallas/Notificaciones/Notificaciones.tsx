@@ -18,21 +18,21 @@ function Notificaciones ( ) {
 
   const [datosIzq,setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   
-    useEffect ( () => {
-      // Fetch data from the backend.
-      invoke<DatosNotificacionesIzq[]> ( "notificaciones_izquierda" )
-        .then ( (response) => setDatosIzq(response) )
-        .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-    }, []);
+  // Fetch data from the backend.
+  useEffect ( () => {
+    invoke<DatosNotificacionesIzq[]> ( "notificaciones_izquierda" )
+      .then ( (response) => setDatosIzq(response) )
+      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
+  }, []);
   
-    const [datosDer,setDatosDer] = useState<DatosNotificacionesDer[]>([]) ;
+  const [datosDer,setDatosDer] = useState<DatosNotificacionesDer[]>([]) ;
   
-    useEffect ( () => {
-      // Fetch data from the backend.
-      invoke<DatosNotificacionesDer[]> ( "notificaciones_derecha" )
-        .then ( (response) => setDatosDer(response) )
-        .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-    }, [] ) ;
+  // Fetch data from the backend.
+  useEffect ( () => {
+    invoke<DatosNotificacionesDer[]> ( "notificaciones_derecha" )
+      .then ( (response) => setDatosDer(response) )
+      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
+  }, [] ) ;
 
 
   return (
@@ -40,17 +40,17 @@ function Notificaciones ( ) {
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
         <div className="desplazadora">
-          {datosIzq.map((row,index) => (
+          { datosIzq.map ( (row,index) => (
             <div key={index} className="casilla">
               <p className="asunto">{row.asunto}</p>
               <p className="contactos">{row.contactos}</p>
             </div>
-          ))}
+          ) ) }
         </div>
       </div>
       <div className="contenedor_PanelDerecho">
         <div className="opciones">
-          <select multiple className="botones-opciones">
+          <select name="destinatarios" data-placeholder="Destinos" className="botones-opciones" data-multiselect>
             <option value="destinatarios">Destinatario</option>
             <option value="opt-2">Destinatario 2</option>
             <option value="opt-3">Destinatario 3</option>
@@ -64,11 +64,11 @@ function Notificaciones ( ) {
           </select>
         </div>
         <div className="desplazadora">
-          {datosDer.map((row, index) => (
-            <div className="registro">
-              <p key={index}>{row.registro}</p>
+          { datosDer.map ( (row,index) => (
+            <div key={index} className="registro">
+              <p>{row.registro}</p>
             </div>
-          ))}
+          ) ) }
         </div>
       </div>
     </div>
