@@ -1,3 +1,4 @@
+
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
 use std::path::Path;
@@ -9,11 +10,17 @@ pub struct DatosMonitoreo {
     minutos: String,
 }
 
-#[tauri::command] // Para poder llamarla desde TypeScript en Tauri
+
+#[tauri::command]
+pub fn recibir_path_carpeta(path: String) {
+    println!("📂 Ruta de la carpeta recibida: {}", path);
+}
+
+#[tauri::command]
 pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
     println!("➤ Entrando a la función `leer_excel_path_fijo_lee`");
 
-    let path_str = "C:\\Users\\USUARIO\\Downloads\\Updated_Qualtrics_Seguimiento_Tutores.xlsx";
+    let path_str = "C:\\Users\\Javier\\Desktop\\Qualtrics\\Updated_Qualtrics_Seguimiento_Tutores.xlsx";
     let path = Path::new(path_str);
     println!("➤ Intentando abrir el archivo en la ruta: {}", path_str);
 
@@ -69,7 +76,6 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
         let minutos = row.get(22).map_or("".to_string(), |cell| cell.to_string());
 
-        // Concatenar nombre y apellido
         let nombre_completo = format!("{} {}", nombre, apellido);
 
         data.push(DatosMonitoreo {
@@ -79,7 +85,6 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         });
     }
 
-    // Imprimir todos los datos almacenados
     for dato in &data {
         println!(
             "Nombre Completo: {}, Correo: {}, Minutos: {}",
@@ -90,3 +95,4 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
     println!("✔ Finalizada la lectura del archivo y datos impresos correctamente.");
     Ok(data)
 }
+

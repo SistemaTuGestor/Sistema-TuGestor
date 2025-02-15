@@ -5,6 +5,8 @@ import Emergente from "../Emergente/Emergente" ;
 
 import { useRef,useState,useEffect } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri";
+import { open } from "@tauri-apps/api/dialog";
+
 
 
 function Reportes ( ) {
@@ -45,7 +47,31 @@ function Reportes ( ) {
     setEmergenteVisible ( false ) ;
   } ;
 
+  
   //// Apertura de explorador de archivos.
+  const [folderPath, setFolderPath] = useState<string | null>(null);
+  const handleSelectFolder = async () => {
+    try {
+      const selectedPath = await open({
+        directory: true, // Permite seleccionar una carpeta
+        multiple: false, // Solo permite seleccionar una
+      });
+  
+      if (typeof selectedPath === "string") {
+        setFolderPath(selectedPath);
+        console.log("Carpeta seleccionada:", selectedPath);
+  
+        // Enviar la ruta al backend de Rust
+        invoke("recibir_path_carpeta", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+      }
+    } catch (error) {
+      console.error("Error al seleccionar la carpeta:", error);
+    }
+  };
+
+
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
   // Handle file selection
@@ -87,9 +113,12 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li>Ubicación de formularios</li>
+          <button onClick={()=> handleSelectFolder()}>
+            Ubicación Formularios
+          </button>
           <li>Nombre de reportes</li>
           <li>Información adicional</li>
+          <li>{folderPath && <p>Carpeta seleccionada: {folderPath}</p>}</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("LEE")}>

@@ -13,6 +13,7 @@ use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
 use reportes::fecha::{obtener_fecha,actualizar_fecha} ;
 use reportes::lee::leer_excel_path_fijo_lee ;
+use reportes::lee::recibir_path_carpeta ;
 
 
 fn main ( ) {
@@ -28,7 +29,9 @@ fn main ( ) {
             notificaciones_derecha,
             obtener_fecha,
             actualizar_fecha,
-            leer_excel_path_fijo_lee
+            leer_excel_path_fijo_lee,
+            recibir_path_carpeta
+            
         
         ] )
         .run ( tauri::generate_context!() )
