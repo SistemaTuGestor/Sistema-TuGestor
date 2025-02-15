@@ -63,7 +63,7 @@
         text-align : left ;
         /* Ítems */
         padding : 0 ;
-        line-height : 160% ;
+        line-height : 140% ;
         list-style-type : none ;
         overflow : scroll ;
     } .lista li {
@@ -71,11 +71,11 @@
         background-color : lightgray ;
         border-top : 1px solid silver ;
         /* Elementos */
-        padding : 10% 0 6% 12px ;
+        padding : 10% 0 4% 12px ;
         line-height : -10px ;
     } .lista li:first-child {
         border-top : none ;
-        margin-top : -12px ;
+        margin-top : -8px ;
         margin-bottom: -7px;
     } .lista input {
         /* Posición */
@@ -91,6 +91,8 @@
         box-shadow : none ;
         /* Letra */
         color : black ;
+    } .lista li:hover {
+        text-decoration : underline ;
     }
 
     .opciones button {

@@ -32,46 +32,55 @@ function Reportes ( ) {
   } ;
 
   const evento_clickCancelar = ( ) => {
-    alert ( `Generación cancelada.` ) ;
     setEmergenteVisible ( false ) ;
   }
 
   const evento_clickVerificar = ( ) => {
-    alert ( `Abrir explorador de archivos para visualizar reportes` ) ;
     handleFileClick() ;
     setEmergenteVisible ( true ) ;
   } ;
   
   const evento_clickEnviar = ( ) => {
-    alert ( `Confirmar envío` ) ;
+    alert ( `¡Envío exitoso!` ) ;
     setEmergenteVisible ( false ) ;
   } ;
 
   
   //// Apertura de explorador de archivos.
-  const [folderPath, setFolderPath] = useState<string | null>(null);
+  const [folderPath, setFolderPath] = useState<string | null>("Ubicación de formularios") ;
+
   const handleSelectFolder = async () => {
+
     try {
-      const selectedPath = await open({
-        directory: true, // Permite seleccionar una carpeta
-        multiple: false, // Solo permite seleccionar una
-      });
-  
-      if (typeof selectedPath === "string") {
-        setFolderPath(selectedPath);
-        console.log("Carpeta seleccionada:", selectedPath);
-  
-        // Enviar la ruta al backend de Rust
+
+      const selectedPath = await open ( {
+        directory : true,  // Permite seleccionar una carpeta.
+        multiple : false ,  // Solo permite seleccionar una.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
+        setFolderPath ( folderName ) ;
+
+        // Enviar la ruta al backend.
         invoke("recibir_path_carpeta", { path: selectedPath })
           .then(() => console.log("Ruta enviada correctamente"))
           .catch((err) => console.error("Error al enviar la ruta:", err));
+      
       }
+
     } catch (error) {
-      console.error("Error al seleccionar la carpeta:", error);
+
+      console.error ( "Error al seleccionar la carpeta:",error ) ;
+
     }
-  };
 
-
+  } ;
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
   // Handle file selection
@@ -113,12 +122,10 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <button onClick={()=> handleSelectFolder()}>
-            Ubicación Formularios
-          </button>
+          <li onClick={()=>handleSelectFolder()}>
+            {folderPath}
+          </li>
           <li>Nombre de reportes</li>
-          <li>Información adicional</li>
-          <li>{folderPath && <p>Carpeta seleccionada: {folderPath}</p>}</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("LEE")}>
@@ -145,7 +152,6 @@ function Reportes ( ) {
             />
           </li>
           <li>Nombre de reportes</li>
-          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("PUJ")}>
@@ -172,7 +178,6 @@ function Reportes ( ) {
             />
           </li>
           <li>Nombre de reportes</li>
-          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Colegios")}>
@@ -186,7 +191,6 @@ function Reportes ( ) {
         </div>
         <ul className="lista">
           <li>Nombre de reportes</li>
-          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Participantes")}>
@@ -201,7 +205,6 @@ function Reportes ( ) {
         <ul className="lista">
           <li>Ubicación de inscripciones</li>
           <li>Nombre de reporte</li>
-          <li>Información adicional</li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Sponsor")}>
