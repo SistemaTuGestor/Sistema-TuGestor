@@ -1,7 +1,7 @@
-
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
 use std::path::Path;
+use xlsxwriter::*;
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -10,7 +10,6 @@ pub struct DatosMonitoreo {
     minutos: String,
 }
 
-
 #[tauri::command]
 pub fn recibir_path_carpeta(path: String) {
     println!("📂 Ruta de la carpeta recibida: {}", path);
@@ -18,9 +17,9 @@ pub fn recibir_path_carpeta(path: String) {
 
 #[tauri::command]
 pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
-    println!("➤ Entrando a la función `leer_excel_path_fijo_lee`");
+    println!("➤ Entrando a la función leer_excel_path_fijo_lee");
 
-    let path_str = "C:\\Users\\Javier\\Desktop\\Qualtrics\\Updated_Qualtrics_Seguimiento_Tutores.xlsx";
+    let path_str = "C:\\Users\\WD\\Downloads\\Updated_Qualtrics_Seguimiento_Tutores (1).xlsx";
     let path = Path::new(path_str);
     println!("➤ Intentando abrir el archivo en la ruta: {}", path_str);
 
@@ -85,14 +84,27 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         });
     }
 
-    for dato in &data {
-        println!(
-            "Nombre Completo: {}, Correo: {}, Minutos: {}",
-            dato.nombre_completo, dato.correo, dato.minutos
-        );
-    }
-
-    println!("✔ Finalizada la lectura del archivo y datos impresos correctamente.");
+    generar_excel(&data)?;
     Ok(data)
 }
 
+pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
+    let output_path = "C:/Users/WD/Downloads/LEE.xlsx";
+    let mut workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
+    let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
+
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Correo_Tutor", None).unwrap();
+    sheet.write_string(0, 1, "Tiempo (minutos)", None).unwrap();
+
+    // Escribir datos
+    for (i, dato) in data.iter().enumerate() {
+        sheet.write_string(i as u32 + 1, 0, &dato.correo, None).unwrap();
+        sheet.write_string(i as u32 + 1, 1, &dato.minutos, None).unwrap();
+    }
+
+    workbook.close().map_err(|e| e.to_string())?;
+    println!("✔ Archivo generado en: {}", output_path);
+    
+    Ok(())
+}
