@@ -13,13 +13,66 @@ function Reportes ( ) {
 
   //// Fecha
 
-  const [fecha,setFecha] = useState("") ;
+  const [fechaLee,setFechaLee] = useState("") ;
 
   useEffect ( ( ) => {
     invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFecha(response.fecha) )
+      .then ( (response) => setFechaLee(response.fecha) )
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
+
+  const [fechaPUJ,setFechaPUJ] = useState("") ;
+
+  useEffect ( ( ) => {
+    invoke < {fecha:string} > ( "obtener_fecha" )
+      .then ( (response) => setFechaPUJ(response.fecha) )
+      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
+  } , [] ) ;
+
+  const [fechaColegios,setFechaColegios] = useState("") ;
+
+  useEffect ( ( ) => {
+    invoke < {fecha:string} > ( "obtener_fecha" )
+      .then ( (response) => setFechaColegios(response.fecha) )
+      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
+  } , [] ) ;
+
+  //// Apertura de explorador de archivos.
+
+  const [folderPath, setFolderPath] = useState<string | null>("Ubicación de formularios") ;
+
+  const handleSelectFolder = async () => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : true,  // Permite seleccionar una carpeta.
+        multiple : false ,  // Solo permite seleccionar una.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
+        setFolderPath ( folderName ) ;
+
+        // Enviar la ruta al backend.
+        invoke("reportes_lee_recibir_pathcarpeta", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+      
+      }
+
+    } catch (error) {
+
+      console.error ( "Error al seleccionar la carpeta:",error ) ;
+
+    }
+
+  } ;
 
   //// Control de ventana emergente.
 
@@ -43,43 +96,6 @@ function Reportes ( ) {
   const evento_clickEnviar = ( ) => {
     alert ( `¡Envío exitoso!` ) ;
     setEmergenteVisible ( false ) ;
-  } ;
-
-  
-  //// Apertura de explorador de archivos.
-  const [folderPath, setFolderPath] = useState<string | null>("Ubicación de formularios") ;
-
-  const handleSelectFolder = async () => {
-
-    try {
-
-      const selectedPath = await open ( {
-        directory : true,  // Permite seleccionar una carpeta.
-        multiple : false ,  // Solo permite seleccionar una.
-      } ) ;
-
-      if ( typeof selectedPath === "string" ) {
-
-        // Imprimir por consola.
-        console.log ( "Carpeta seleccionada:",selectedPath ) ;
-
-        // Imprimir por GUI.
-        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath ( folderName ) ;
-
-        // Enviar la ruta al backend.
-        invoke("recibir_path_carpeta", { path: selectedPath })
-          .then(() => console.log("Ruta enviada correctamente"))
-          .catch((err) => console.error("Error al enviar la ruta:", err));
-      
-      }
-
-    } catch (error) {
-
-      console.error ( "Error al seleccionar la carpeta:",error ) ;
-
-    }
-
   } ;
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
@@ -113,10 +129,10 @@ function Reportes ( ) {
             {" "}
             <input
               type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
+              value={fechaLee}
+              onChange={(e) => setFechaLee(e.target.value)}
               onBlur={() => {
-                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                invoke("reportes_lee_actualizar_fecha", { nuevaFecha: fechaLee })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
@@ -142,10 +158,10 @@ function Reportes ( ) {
             {" "}
             <input
               type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
+              value={fechaPUJ}
+              onChange={(e) => setFechaPUJ(e.target.value)}
               onBlur={() => {
-                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                invoke("reportes_puj_actualizar_fecha", { nuevaFecha: fechaPUJ })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
@@ -168,10 +184,10 @@ function Reportes ( ) {
             {" "}
             <input
               type="date"
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
+              value={fechaColegios}
+              onChange={(e) => setFechaColegios(e.target.value)}
               onBlur={() => {
-                invoke("actualizar_fecha", { nuevaFecha: fecha })
+                invoke("reportes_colegios_actualizar_fecha", { nuevaFecha: fechaColegios })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}

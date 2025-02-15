@@ -1,7 +1,36 @@
 
+// VARIOS
+use serde::Serialize ;
+// FECHA
+use chrono::NaiveDate ;
+// ARCHIVOS
 use calamine::{open_workbook, Reader, Xlsx};
-use serde::Serialize;
 use std::path::Path;
+
+
+
+#[derive(Serialize)]
+pub struct Fecha {
+    fecha: String,
+}
+
+
+#[tauri::command]
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    // Parse the input date (assuming the input format is "yyyy-mm-dd")
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("Failed to parse date: {}", e))?;
+
+    // Format the date as "dd-mm-yyyy"
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    println!("Nueva fecha: {}", formatted_date);
+
+Ok(())
+}
+
+
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -12,7 +41,7 @@ pub struct DatosMonitoreo {
 
 
 #[tauri::command]
-pub fn recibir_path_carpeta(path: String) {
+pub fn reportes_lee_recibir_pathcarpeta(path: String) {
     println!("📂 Ruta de la carpeta recibida: {}", path);
 }
 
