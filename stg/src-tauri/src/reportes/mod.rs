@@ -1,7 +1,6 @@
 
 // GENERALES
 pub mod fecha ;
-pub mod info ;
 
 // ESPECÍFICOS
 pub mod lee ;
