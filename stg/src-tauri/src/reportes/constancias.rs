@@ -1,4 +1,4 @@
-use calamine::{open_workbook, Reader, Xlsx, DataType};
+use calamine::{open_workbook, Reader, Xlsx};
 use std::fs::File;
 use docx_rs::*;
 

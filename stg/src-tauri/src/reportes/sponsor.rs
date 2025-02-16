@@ -1,6 +1,6 @@
+
 use calamine::{open_workbook, Reader, Xlsx};
 use xlsxwriter::*;
-use std::path::Path;
 
 const ARCHIVO_ENTRADA: &str = "C:\\Users\\USUARIO\\Downloads\\metrics_sponsor.xlsx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Sponsor.xlsx";
@@ -43,7 +43,8 @@ pub fn calcular_métricas(datos: &[Vec<String>]) -> Vec<Vec<String>> {
 
 // 📤 Generar nuevo reporte en Excel
 pub fn generar_reporte(datos: &[Vec<String>]) {
-    let mut workbook = Workbook::new(ARCHIVO_SALIDA).unwrap();
+
+    let  workbook = Workbook::new(ARCHIVO_SALIDA).unwrap();
     let mut sheet = workbook.add_worksheet(Some("Métricas_Actualizadas")).unwrap();
 
     for (i, fila) in datos.iter().enumerate() {
@@ -66,3 +67,4 @@ fn main() {
         Err(e) => println!("✖ ERROR al procesar métricas: {}", e),
     }
 }
+

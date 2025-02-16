@@ -1,7 +1,36 @@
-use calamine::{open_workbook, Reader, Xlsx};
-use serde::Serialize;
-use std::path::Path;
-use xlsxwriter::*;
+
+// VARIOS
+use serde::Serialize ;
+// FECHA
+use chrono::NaiveDate ;
+// ARCHIVOS
+use calamine::{open_workbook, Reader, Xlsx} ;
+use std::path::Path ;
+use xlsxwriter::* ;
+
+
+
+#[derive(Serialize)]
+pub struct Fecha {
+    fecha: String,
+}
+
+
+#[tauri::command]
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    // Parse the input date (assuming the input format is "yyyy-mm-dd")
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("Failed to parse date: {}", e))?;
+
+    // Format the date as "dd-mm-yyyy"
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    println!("Nueva fecha: {}", formatted_date);
+
+Ok(())
+}
+
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -90,7 +119,7 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     let output_path = "C:/Users/WD/Downloads/LEE.xlsx";
-    let mut workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
+    let workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
     let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
 
     // Escribir encabezados
@@ -108,3 +137,4 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     
     Ok(())
 }
+
