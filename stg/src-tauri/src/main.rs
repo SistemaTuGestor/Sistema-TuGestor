@@ -15,7 +15,7 @@ use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
-use reportes::lee::{recibir_path_carpeta,leer_excel_path_fijo_lee,guardar_nombre_reporte} ;
+use reportes::lee::{recibir_path_carpeta, leer_archivos_en_carpeta};
 use reportes::puj::{reportes_puj_actualizar_fecha} ;
 use reportes::colegios::{reportes_colegios_actualizar_fecha} ;
 
@@ -41,8 +41,9 @@ fn main ( ) {
             // LEE
             //reportes_lee_actualizar_fecha ,
             recibir_path_carpeta,
-            leer_excel_path_fijo_lee ,
-            guardar_nombre_reporte,
+            leer_archivos_en_carpeta,
+            //guardar_nombre_reporte,
+
             // PUJ
             reportes_puj_actualizar_fecha ,
             // Colegios

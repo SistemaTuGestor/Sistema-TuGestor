@@ -10,13 +10,13 @@ function Barra ( ) {
   // Función para invocar leer_excel_path_fijo cuando se haga clic en "Reportes"
   const handleReportesClick = async () => {
     try {
-      const datos = await invoke("leer_excel_path_fijo_lee"); // Llamar a la función en Rust
-      console.log("Datos del Excel:", datos);
+      const datos = await invoke("leer_archivos_en_carpeta"); // Llamar a la nueva función en Rust
+      console.log("Datos procesados:", datos);
     } catch (error) {
-      console.error("Error al leer el archivo Excel:", error);
+      console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
     }
   };
-
+  
   return (
 
     <div className="barra">

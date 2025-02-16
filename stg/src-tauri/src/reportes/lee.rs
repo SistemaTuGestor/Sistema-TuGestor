@@ -1,153 +1,129 @@
-
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
-use std::path::Path;
+use std::fs;
+use std::collections::HashMap;
+#[allow(unused_imports)]
+use std::path::Path; // Se mantiene para evitar warnings si se requiere en el futuro
 use xlsxwriter::*;
-use std::sync::Mutex;
-use lazy_static::lazy_static;
-use chrono::NaiveDate;
-
-#[derive(Serialize)]
-pub struct Fecha {
-    fecha: String,
-}
-
-
-#[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
-
-    // Parse the input date (assuming the input format is "yyyy-mm-dd")
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-
-    // Format the date as "dd-mm-yyyy"
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
-
-    println!("Nueva fecha: {}", formatted_date);
-
-Ok(())
-}
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
     nombre_completo: String,
     correo: String,
-    minutos: String,
-}
-
-lazy_static! {
-    static ref NOMBRE_REPORTE: Mutex<String> = Mutex::new(String::new());
-    static ref RUTA_CARPETA: Mutex<String> = Mutex::new(String::new());
+    minutos_por_semana: Vec<u32>,
+    minutos_totales: u32,
+    horas_totales: f32,
 }
 
 #[tauri::command]
 pub fn recibir_path_carpeta(path: String) {
     println!("📂 Ruta de la carpeta recibida: {}", path);
-    let mut ruta = RUTA_CARPETA.lock().unwrap();
-    *ruta = path;
 }
-
-#[tauri::command]
+/*
 pub fn guardar_nombre_reporte(nombrereporte: String) {
     println!("📂 Nombre del reporte recibido {}", nombrereporte);
     let mut nombre = NOMBRE_REPORTE.lock().unwrap();
     *nombre = nombrereporte;
 }
-
+    */
 #[tauri::command]
-pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
-    println!("➤ Entrando a la función leer_excel_path_fijo_lee");
-
-    let path_str = "C:\\Users\\Javier\\Desktop\\Qualtrics\\Updated_Qualtrics_Seguimiento_Tutores (1).xlsx";
-    let path = Path::new(path_str);
-    println!("➤ Intentando abrir el archivo en la ruta: {}", path_str);
-
-    if !path.exists() {
-        println!("✖ ERROR: El archivo no existe en la ruta especificada.");
-        return Err(format!("Archivo no encontrado: {}", path_str));
-    }
-
-    let mut workbook: Xlsx<_> = match open_workbook(path) {
-        Ok(wb) => {
-            println!("✔ Archivo abierto correctamente.");
-            wb
-        },
-        Err(e) => {
-            println!("✖ ERROR al abrir el archivo: {}", e);
-            return Err(format!("Error al abrir el archivo: {}", e));
-        }
-    };
-
-    let sheet_names = workbook.sheet_names();
-    println!("➤ Hojas disponibles en el archivo: {:?}", sheet_names);
-
-    let range = match workbook.worksheet_range("Sheet1") {
-        Ok(r) => {
-            println!("✔ Hoja 'Sheet1' encontrada y cargada.");
-            r
-        },
-        Err(e) => {
-            println!("✖ ERROR: No se pudo cargar la hoja 'Sheet1'. {}", e);
-            return Err(format!("Error al cargar 'Sheet1': {}", e));
-        }
-    };
-
-    let mut data = Vec::new();
-
-    println!("➤ Comenzando la lectura de las filas...");
-
-    for (i, row) in range.rows().enumerate() {
-        if i == 0 {
-            continue; // Ignorar la primera fila (encabezados)
-        }
-
-        if i >= 6 {
-            break; // Solo leer los primeros 5 registros
-        }
-
-        if row.len() < 13 { // Asegurarse de que haya suficientes columnas
+pub fn leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
+    let carpeta_path = "C:\\Users\\USUARIO\\Downloads\\qualtrics";
+    let mut registros: HashMap<String, (String, Vec<u32>, u32)> = HashMap::new();
+    
+    let archivos = fs::read_dir(carpeta_path).map_err(|e| format!("Error al leer la carpeta: {}", e))?;
+    
+    for entrada in archivos {
+        let entrada = entrada.map_err(|e| format!("Error al leer un archivo en la carpeta: {}", e))?;
+        let path = entrada.path();
+        if path.extension().and_then(|s| s.to_str()) != Some("xlsx") {
             continue;
         }
-
-        let nombre = row.get(10).map_or("".to_string(), |cell| cell.to_string());
-        let apellido = row.get(9).map_or("".to_string(), |cell| cell.to_string());
-        let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
-        let minutos = row.get(22).map_or("".to_string(), |cell| cell.to_string());
-
-        let nombre_completo = format!("{} {}", nombre, apellido);
-        println!("Nombre completo: {}", nombre_completo);
-
-        data.push(DatosMonitoreo {
+        
+        let mut workbook: Xlsx<_> = match open_workbook(&path) {
+            Ok(wb) => wb,
+            Err(e) => {
+                println!("✖ ERROR al abrir el archivo: {}", e);
+                continue;
+            }
+        };
+        
+        let range = match workbook.worksheet_range("Sheet1") {
+            Ok(r) => r,
+            Err(e) => {
+                println!("✖ ERROR: No se pudo cargar la hoja 'Sheet1'. {}", e);
+                continue;
+            }
+        };
+        
+        for row in range.rows().skip(1) { // Omitir encabezados
+            if row.len() < 13 {
+                continue;
+            }
+            
+            let nombre = row.get(10).map_or("".to_string(), |cell| cell.to_string());
+            let apellido = row.get(9).map_or("".to_string(), |cell| cell.to_string());
+            let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
+            let minutos = row.get(22).map_or("0".to_string(), |cell| cell.to_string()).parse::<u32>().unwrap_or(0);
+            
+            let nombre_completo = format!("{} {}", nombre, apellido);
+            
+            registros.entry(correo.clone()).and_modify(|(_, semanas, total_minutos)| {
+                semanas.push(minutos);
+                *total_minutos += minutos;
+            }).or_insert((nombre_completo, vec![minutos], minutos));
+        }
+    }
+    
+    let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, minutos_por_semana, minutos_totales))| {
+        println!("Correo: {} | Nombre: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
+        DatosMonitoreo {
             nombre_completo,
             correo,
-            minutos,
-        });
-    }
-
+            minutos_por_semana,
+            minutos_totales,
+            horas_totales: minutos_totales as f32 / 60.0,
+        }
+    }).collect();
+    
     generar_excel(&data)?;
     Ok(data)
 }
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
-    let nombre_reporte = "Alberto";//NOMBRE_REPORTE.lock().unwrap();; 
-    //nombre_reporte.clone()
-    let output_path = format!("C:\\Users\\Javier\\Downloads\\{}.xlsx", nombre_reporte);
-    let mut workbook = Workbook::new(output_path.as_str()).map_err(|e| e.to_string())?;
+    let output_path = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.xlsx";
+    let workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
     let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
-
-    // Escribir encabezados
-    sheet.write_string(0, 0, "Correo_Tutor", None).unwrap();
-    sheet.write_string(0, 1, "Tiempo (minutos)", None).unwrap();
-
-    // Escribir datos
-    for (i, dato) in data.iter().enumerate() {
-        sheet.write_string(i as u32 + 1, 0, &dato.correo, None).unwrap();
-        sheet.write_string(i as u32 + 1, 1, &dato.minutos, None).unwrap();
+    
+    // Encabezados con formato de semanas dinámicas
+    sheet.write_string(0, 0, "Correo", None).unwrap();
+    sheet.write_string(0, 1, "Nombre_tutorado", None).unwrap();
+    
+    // Agregar encabezados para cada semana
+    let max_semanas = data.iter().map(|d| d.minutos_por_semana.len()).max().unwrap_or(0);
+    for i in 0..max_semanas {
+        sheet.write_string(0, (i + 2) as u16, &format!("Semana {}", i + 1), None).unwrap();
     }
-
+    
+    // Agregar columnas de total y horas
+    sheet.write_string(0, (max_semanas + 2) as u16, "Minutos totales", None).unwrap();
+    sheet.write_string(0, (max_semanas + 3) as u16, "Horas totales", None).unwrap();
+    
+    for (i, dato) in data.iter().enumerate() {
+        sheet.write_string((i + 1) as u32, 0, &dato.correo, None).unwrap();
+        sheet.write_string((i + 1) as u32, 1, &dato.nombre_completo, None).unwrap();
+        
+        // Escribir minutos por semana
+        for (j, min_semana) in dato.minutos_por_semana.iter().enumerate() {
+            sheet.write_number((i + 1) as u32, (j + 2) as u16, *min_semana as f64, None).unwrap();
+        }
+        
+        // Escribir totales
+        sheet.write_number((i + 1) as u32, (max_semanas + 2) as u16, dato.minutos_totales as f64, None).unwrap();
+        sheet.write_number((i + 1) as u32, (max_semanas + 3) as u16, dato.horas_totales as f64, None).unwrap();
+    }
+    
     workbook.close().map_err(|e| e.to_string())?;
     println!("✔ Archivo generado en: {}", output_path);
-    
     Ok(())
 }
-
