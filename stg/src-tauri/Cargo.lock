@@ -2889,6 +2889,8 @@ version = "0.1.0"
 dependencies = [
  "calamine",
  "chrono",
+ "docx-rs",
+ "lazy_static",
  "serde",
  "serde_json",
  "tauri",
