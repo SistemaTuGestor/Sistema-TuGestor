@@ -1,36 +1,7 @@
-
-// VARIOS
-use serde::Serialize ;
-// FECHA
-use chrono::NaiveDate ;
-// ARCHIVOS
 use calamine::{open_workbook, Reader, Xlsx};
+use serde::Serialize;
 use std::path::Path;
-
-
-
-#[derive(Serialize)]
-pub struct Fecha {
-    fecha: String,
-}
-
-
-#[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
-
-    // Parse the input date (assuming the input format is "yyyy-mm-dd")
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-
-    // Format the date as "dd-mm-yyyy"
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
-
-    println!("Nueva fecha: {}", formatted_date);
-
-Ok(())
-}
-
-
+use xlsxwriter::*;
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -39,7 +10,6 @@ pub struct DatosMonitoreo {
     minutos: String,
 }
 
-
 #[tauri::command]
 pub fn reportes_lee_recibir_pathcarpeta(path: String) {
     println!("📂 Ruta de la carpeta recibissda: {}", path);
@@ -47,9 +17,9 @@ pub fn reportes_lee_recibir_pathcarpeta(path: String) {
 
 #[tauri::command]
 pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
-    println!("➤ Entrando a la función `leer_excel_path_fijo_lee`");
+    println!("➤ Entrando a la función leer_excel_path_fijo_lee");
 
-    let path_str = "C:\\Users\\Javier\\Desktop\\Qualtrics\\Updated_Qualtrics_Seguimiento_Tutores.xlsx";
+    let path_str = "C:\\Users\\WD\\Downloads\\Updated_Qualtrics_Seguimiento_Tutores (1).xlsx";
     let path = Path::new(path_str);
     println!("➤ Intentando abrir el archivo en la ruta: {}", path_str);
 
@@ -114,14 +84,27 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         });
     }
 
-    for dato in &data {
-        println!(
-            "Nombre Completo: {}, Correo: {}, Minutos: {}",
-            dato.nombre_completo, dato.correo, dato.minutos
-        );
-    }
-
-    println!("✔ Finalizada la lectura del archivo y datos impresos correctamente.");
+    generar_excel(&data)?;
     Ok(data)
 }
 
+pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
+    let output_path = "C:/Users/WD/Downloads/LEE.xlsx";
+    let mut workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
+    let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
+
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Correo_Tutor", None).unwrap();
+    sheet.write_string(0, 1, "Tiempo (minutos)", None).unwrap();
+
+    // Escribir datos
+    for (i, dato) in data.iter().enumerate() {
+        sheet.write_string(i as u32 + 1, 0, &dato.correo, None).unwrap();
+        sheet.write_string(i as u32 + 1, 1, &dato.minutos, None).unwrap();
+    }
+
+    workbook.close().map_err(|e| e.to_string())?;
+    println!("✔ Archivo generado en: {}", output_path);
+    
+    Ok(())
+}
