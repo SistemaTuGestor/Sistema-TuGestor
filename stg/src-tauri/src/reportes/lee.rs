@@ -2,6 +2,8 @@ use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
 use std::path::Path;
 use xlsxwriter::*;
+use std::sync::Mutex;
+use lazy_static::lazy_static;
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -10,16 +12,30 @@ pub struct DatosMonitoreo {
     minutos: String,
 }
 
+lazy_static! {
+    static ref NOMBRE_REPORTE: Mutex<String> = Mutex::new(String::new());
+    static ref RUTA_CARPETA: Mutex<String> = Mutex::new(String::new());
+}
+
 #[tauri::command]
 pub fn recibir_path_carpeta(path: String) {
     println!("📂 Ruta de la carpeta recibida: {}", path);
+    let mut ruta = RUTA_CARPETA.lock().unwrap();
+    *ruta = path;
+}
+
+#[tauri::command]
+pub fn guardar_nombre_reporte(nombrereporte: String) {
+    println!("📂 Nombre del reporte recibido {}", nombrereporte);
+    let mut nombre = NOMBRE_REPORTE.lock().unwrap();
+    *nombre = nombrereporte;
 }
 
 #[tauri::command]
 pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
     println!("➤ Entrando a la función leer_excel_path_fijo_lee");
 
-    let path_str = "C:\\Users\\WD\\Downloads\\Updated_Qualtrics_Seguimiento_Tutores (1).xlsx";
+    let path_str = "C:\\Users\\Javier\\Desktop\\Qualtrics\\Updated_Qualtrics_Seguimiento_Tutores (1).xlsx";
     let path = Path::new(path_str);
     println!("➤ Intentando abrir el archivo en la ruta: {}", path_str);
 
@@ -76,6 +92,7 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
         let minutos = row.get(22).map_or("".to_string(), |cell| cell.to_string());
 
         let nombre_completo = format!("{} {}", nombre, apellido);
+        println!("Nombre completo: {}", nombre_completo);
 
         data.push(DatosMonitoreo {
             nombre_completo,
@@ -89,8 +106,10 @@ pub fn leer_excel_path_fijo_lee() -> Result<Vec<DatosMonitoreo>, String> {
 }
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
-    let output_path = "C:/Users/WD/Downloads/LEE.xlsx";
-    let mut workbook = Workbook::new(output_path).map_err(|e| e.to_string())?;
+    let nombre_reporte = "Alberto";//NOMBRE_REPORTE.lock().unwrap();; 
+    //nombre_reporte.clone()
+    let output_path = format!("C:\\Users\\Javier\\Downloads\\{}.xlsx", nombre_reporte);
+    let mut workbook = Workbook::new(output_path.as_str()).map_err(|e| e.to_string())?;
     let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
 
     // Escribir encabezados

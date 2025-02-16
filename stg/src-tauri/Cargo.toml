@@ -17,6 +17,7 @@ serde_json = "1"
 calamine = "0.26.1"
 chrono = "0.4.39"
 xlsxwriter = "0.6.1"
+lazy_static = "1.4"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!

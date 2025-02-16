@@ -14,6 +14,8 @@ function Reportes ( ) {
   //// Fecha
 
   const [fechaLee,setFechaLee] = useState("") ;
+  const [nombreReporteLee, setNombreReporteLee] = useState("");
+
 
   useEffect ( ( ) => {
     invoke < {fecha:string} > ( "obtener_fecha" )
@@ -60,7 +62,7 @@ function Reportes ( ) {
         setFolderPath ( folderName ) ;
 
         // Enviar la ruta al backend.
-        invoke("reportes_lee_recibir_pathcarpeta", { path: selectedPath })
+        invoke("recibir_path_carpeta", { path: selectedPath })
           .then(() => console.log("Ruta enviada correctamente"))
           .catch((err) => console.error("Error al enviar la ruta:", err));
       
@@ -88,15 +90,28 @@ function Reportes ( ) {
     setEmergenteVisible ( false ) ;
   }
 
-  const evento_clickVerificar = ( ) => {
-    handleFileClick() ;
-    setEmergenteVisible ( true ) ;
-  } ;
+  const evento_clickVerificar = async () => {
+  try {
+    const resultado = await invoke<DatosMonitoreo[]>("leer_excel_path_fijo_lee");
+    console.log("Datos obtenidos del Excel:", resultado);
+  } catch (err) {
+    console.error("Error al leer el archivo Excel:", err);
+  }
+
+  setEmergenteVisible(true);
+};
   
   const evento_clickEnviar = ( ) => {
     alert ( `¡Envío exitoso!` ) ;
     setEmergenteVisible ( false ) ;
   } ;
+  
+  // Logica para confirmar el nombre del archivo
+  const confirmarNombreReporteLee = () => {
+    invoke("guardar_nombre_reporte", { nombrereporte: nombreReporteLee })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  };
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
   // Handle file selection
@@ -141,7 +156,15 @@ function Reportes ( ) {
           <li onClick={()=>handleSelectFolder()}>
             {folderPath}
           </li>
-          <li>Nombre de reportes</li>
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre del reporte"
+              value={nombreReporteLee}
+              onChange={(e) => setNombreReporteLee(e.target.value)}
+            />
+            <button onClick={confirmarNombreReporteLee}>Confirmar</button>
+          </li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("LEE")}>
@@ -239,6 +262,8 @@ function Reportes ( ) {
       />
   
     </div>
+
+    
 
 
   ) ;
