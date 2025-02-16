@@ -42,7 +42,7 @@ pub struct DatosMonitoreo {
 
 #[tauri::command]
 pub fn reportes_lee_recibir_pathcarpeta(path: String) {
-    println!("📂 Ruta de la carpeta recibida: {}", path);
+    println!("📂 Ruta de la carpeta recibissda: {}", path);
 }
 
 #[tauri::command]
