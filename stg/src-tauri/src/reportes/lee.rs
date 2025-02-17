@@ -13,6 +13,8 @@ use xlsxwriter::* ;
 
 
 
+////    FECHA   ////
+
 #[derive(Serialize)]
 pub struct Fecha {
     fecha: String,
@@ -20,7 +22,7 @@ pub struct Fecha {
 
 
 #[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(),String> {
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<String,String> {
 
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("Failed to parse date: {}", e))?;
@@ -29,9 +31,11 @@ pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(),String> {
 
     println!("Nueva fecha: {}", formatted_date);
 
-Ok(())
+Ok(formatted_date)
 }
 
+
+////    PATH    ////
 
 #[derive(Serialize)]
 pub struct NombreCarpeta {
@@ -51,14 +55,19 @@ pub struct NombreReporte {
     nombre: String,
 }
 
+
+////    NOMBRE REPORTE     ////
+
 #[tauri::command]
-pub fn reportes_lee_recibir_nombrereporte(path: String) -> Result<(),String> {
+pub fn reportes_lee_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
 
-    println!("📂 Nombre del reporte: {}",path) ;
+    println!("📂 Nombre del reporte: {}",nombrereporte) ;
 
-Ok(())
+Ok(nombrereporte)
 }
 
+
+////    LÓGICA DE GENERAR REPORTE     ////
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -172,9 +181,17 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
 }
 
 
+////    NUEVO NOMBRE DEL REPORTE    ////
+
+/*
 pub fn reportes_lee_guardar_nombrereporte ( ) {
     
-    // Acá va el nombre del reporte.
+    let nuevafecha = reportes_lee_actualizar_fecha().to_string ;
+    let nuevonombre = reportes_lee_recibir_nombrereporte().to_string ;
 
+    let combined_result = format!("{}+{}", nueva_fecha, nuevo_nombre);
+
+Ok ( combined_result )
 }
+*/
 

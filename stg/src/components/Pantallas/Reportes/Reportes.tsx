@@ -83,19 +83,23 @@ function Reportes ( ) {
       .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
       .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
   } ;
-
-  //// Leer archivos en carpeta.
-
-  const handleReportesClick = async () => {
+  
+  //// Control de ventana emergente.
+  
+  const evento_clickGenerar_LEE = async ( ) => {
+    
     try {
       const datos = await invoke("leer_archivos_en_carpeta");
       console.log("Datos procesados:", datos);
     } catch (error) {
       console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
+      alert("Hubo un error al generar el reporte.");
     }
-  };
 
-  //// Control de ventana emergente.
+    setSeccioonActual ( "LEE" ) ;
+    setEmergenteVisible ( true ) ;
+  
+  } ;
 
   const [getEmergenteVisible,setEmergenteVisible] = useState ( false ) ;
   const [seccioonActual,setSeccioonActual] = useState ( "" ) ;
@@ -124,11 +128,8 @@ function Reportes ( ) {
       alert("Hubo un error al generar el reporte.");
     }
   
-    
     setSeccioonActual ( seccioon ) ;
     setEmergenteVisible ( true ) ;
-    
-  
     
   } ;
 
@@ -197,13 +198,15 @@ function Reportes ( ) {
               type="text"
               placeholder="Nombre del reporte"
               value={nombreReporteLee}
-              onChange={(e) => setNombreReporteLee(e.target.value)}
-              onClick={confirmarNombreReporteLee}
+              onChange={(e) => {
+                setNombreReporteLee(e.target.value); // Update the state
+                confirmarNombreReporteLee(); // Send the updated value to the backend
+              }}
             />
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickGenerar("LEE")}>
+          <button onClick={()=>evento_clickGenerar_LEE()}>
             Generar
           </button>
         </div>
