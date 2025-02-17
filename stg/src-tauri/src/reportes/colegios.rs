@@ -11,8 +11,8 @@ pub struct Estudiante {
 }
 
 // 🔹 Ruta de los archivos
-const ARCHIVO_EXCEL: &str = "C:\\Users\\darve\\Downloads\\Reporte_Tutores_LEE.xlsx";
-const ARCHIVO_SALIDA: &str = "C:\\Users\\darve\\Downloads\\Reporte_Colegios.docx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.xlsx";
+const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx";
 
 #[tauri::command]
 pub fn reportes_colegios_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {

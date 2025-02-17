@@ -100,7 +100,7 @@ function Reportes ( ) {
   const [getEmergenteVisible,setEmergenteVisible] = useState ( false ) ;
   const [seccioonActual,setSeccioonActual] = useState ( "" ) ;
 
-  const evento_clickGenerar = ( seccioon:string ) => {
+  const evento_clickGenerar = async ( seccioon:string ) => {
 
     try {
       if (seccioonActual === "Colegios") {
