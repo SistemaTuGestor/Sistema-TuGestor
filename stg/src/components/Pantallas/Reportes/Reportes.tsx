@@ -101,10 +101,31 @@ function Reportes ( ) {
   setEmergenteVisible(true);
 };
   
-  const evento_clickEnviar = ( ) => {
-    alert ( `¡Envío exitoso!` ) ;
-    setEmergenteVisible ( false ) ;
-  } ;
+const evento_clickEnviar = async () => {
+  try {
+    if (seccioonActual === "Colegios") {
+      // Leer estudiantes aprobados
+      const estudiantesAprobados = await invoke<string[]>("leer_estudiantes_aprobados");
+
+      if (estudiantesAprobados.length === 0) {
+        alert("No hay tutores aprobados para generar el reporte.");
+        return;
+      }
+
+      // Generar el reporte con la lista de estudiantes aprobados
+      await invoke("generar_reporte_colegios", { estudiantes: estudiantesAprobados });
+
+      alert("¡Envío exitoso! El reporte de Colegios se ha generado.");
+    } else {
+      console.log("📌 Otra sección seleccionada, no se generará reporte de colegios.");
+    }
+  } catch (err) {
+    console.error("Error al generar el reporte de colegios:", err);
+    alert("Hubo un error al generar el reporte.");
+  }
+
+  setEmergenteVisible(false);
+};
   
   // Logica para confirmar el nombre del archivo
   const confirmarNombreReporteLee = () => {
@@ -132,6 +153,7 @@ function Reportes ( ) {
             cancelar = {evento_clickCancelar}
             verificar = {evento_clickVerificar}
             enviar = {evento_clickEnviar}
+            modulo={seccioonActual}
           />
       ) }
       

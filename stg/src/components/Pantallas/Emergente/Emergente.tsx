@@ -8,6 +8,7 @@ interface PropiedadesEmergente {
   cancelar : () => void ;
   verificar : () => void ;
   enviar : () => void ;
+  modulo?: string;
 }
 
 function Emergente ( {mensaje,cancelar,verificar,enviar} : PropiedadesEmergente ) {
@@ -17,6 +18,7 @@ function Emergente ( {mensaje,cancelar,verificar,enviar} : PropiedadesEmergente 
 
     <div className="emergente">
       <div className="ventana">
+      
         <p className="mensaje">
             {mensaje}
         </p>
