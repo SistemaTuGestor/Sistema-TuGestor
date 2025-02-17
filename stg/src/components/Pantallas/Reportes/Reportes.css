@@ -71,13 +71,12 @@
         background-color : lightgray ;
         border-top : 1px solid silver ;
         /* Elementos */
-        padding : 16% 0 10% 12px ;
+        padding : 8% 0 5% 12px ;
         line-height : -10px ;
     } .lista li:first-child {
         border-top : none ;
-        margin-top : -24px ;
+        margin-top : -7% ;
     } .lista li:last-child {
-        margin-bottom : 10px ;
     } .lista input {
         /* Posición */
         margin-left : -18px ;

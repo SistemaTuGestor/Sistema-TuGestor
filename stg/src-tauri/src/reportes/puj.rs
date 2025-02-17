@@ -1,8 +1,39 @@
+
 use chrono::NaiveDate;
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
 use std::fs::File;
 use docx_rs::*;
+
+
+
+////    FECHA   ////
+
+#[tauri::command]
+pub fn reportes_puj_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("❌ Error al parsear la fecha: {}", e))?;
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    println!("Nueva fecha (PUJ): {}", formatted_date);
+
+Ok(())
+}
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_puj_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (PUJ): {}",nombrereporte) ;
+
+Ok ( nombrereporte )
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
 
 #[derive(Serialize, Debug)]
 pub struct Estudiante {
@@ -13,15 +44,6 @@ pub struct Estudiante {
 // 🔹 Rutas de los archivos
 const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.xlsx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx";
-
-#[tauri::command]
-pub fn reportes_puj_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("❌ Error al parsear la fecha: {}", e))?;
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
-    println!("📆 Nueva fecha: {}", formatted_date);
-    Ok(())
-}
 
 #[tauri::command]
 pub fn leer_universitarios_aprobados() -> Result<Vec<String>, String> {
@@ -110,3 +132,4 @@ pub fn generar_reporte_puj(estudiantes: Vec<String>) {
         Err(e) => eprintln!("❌ ERROR al escribir el documento DOCX: {}", e),
     }
 }
+

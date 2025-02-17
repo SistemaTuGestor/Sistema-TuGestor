@@ -39,9 +39,9 @@ function Reportes ( ) {
 
   //// Apertura de explorador de archivos para formularios.
 
-  const [folderPath, setFolderPath] = useState<string | null>("Ubicación de formularios") ;
+  const [folderPath_LEE, setFolderPath_LEE] = useState<string | null>("Ubicación de formularios") ;
 
-  const handleSelectFolder = async () => {
+  const handleSelectFolder_LEE = async () => {
 
     try {
 
@@ -57,7 +57,7 @@ function Reportes ( ) {
 
         // Imprimir por GUI.
         const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath ( folderName ) ;
+        setFolderPath_LEE ( folderName ) ;
 
         // Enviar la ruta al backend.
         invoke("reportes_lee_recibir_pathcarpeta", { path: selectedPath })
@@ -74,13 +74,82 @@ function Reportes ( ) {
 
   } ;
 
-  //// Nombre del reporte.
+  //// Apertura de explorador de archivos para inscripciones.
+
+  const [folderPath_Sponsor, setFolderPath_Sponsor] = useState<string | null>("Ubicación de inscripciones") ;
+
+  const handleSelectFolder_Sponsor = async () => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : true,  // Permite seleccionar una carpeta.
+        multiple : false ,  // Solo permite seleccionar una.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
+        setFolderPath_Sponsor ( folderName ) ;
+
+        // Enviar la ruta al backend.
+        invoke("reportes_sponsor_recibir_pathcarpeta", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+      
+      }
+
+    } catch (error) {
+
+      console.error ( "Error al seleccionar la carpeta:",error ) ;
+
+    }
+
+  } ;
+
+  //// Nombre de los reportes.
 
   const [nombreReporteLee, setNombreReporteLee] = useState("");
   
   const confirmarNombreReporteLee = ( ) => {
     invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: nombreReporteLee })
       .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReportePUJ, setNombreReportePUJ] = useState("");
+  
+  const confirmarNombreReportePUJ = ( ) => {
+    invoke("reportes_puj_recibir_nombrereporte", { nombrereporte: nombreReportePUJ })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReportePUJ))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReporteColegios, setNombreReporteColegios] = useState("");
+  
+  const confirmarNombreReporteColegios = ( ) => {
+    invoke("reportes_colegios_recibir_nombrereporte", { nombrereporte: nombreReporteColegios })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteColegios))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReporteConstancias, setNombreReporteConstancias] = useState("");
+  
+  const confirmarNombreReporteConstancias = ( ) => {
+    invoke("reportes_constancias_recibir_nombrereporte", { nombrereporte: nombreReporteConstancias })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteConstancias))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReporteSponsor, setNombreReporteSponsor] = useState("");
+  
+  const confirmarNombreReporteSponsor = ( ) => {
+    invoke("reportes_sponsor_recibir_nombrereporte", { nombrereporte: nombreReporteSponsor })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteSponsor))
       .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
   } ;
   
@@ -205,8 +274,8 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li onClick={()=>handleSelectFolder()}>
-            {folderPath}
+          <li onClick={()=>handleSelectFolder_LEE()}>
+            {folderPath_LEE}
           </li>
           <li>
             <input
@@ -214,8 +283,8 @@ function Reportes ( ) {
               placeholder="Nombre del reporte"
               value={nombreReporteLee}
               onChange={(e) => {
-                setNombreReporteLee(e.target.value); // Update the state
-                confirmarNombreReporteLee(); // Send the updated value to the backend
+                setNombreReporteLee(e.target.value) ;
+                confirmarNombreReporteLee() ;
               }}
             />
           </li>
@@ -245,7 +314,17 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li>Nombre de reportes</li>
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReportePUJ}
+              onChange={(e) => {
+                setNombreReportePUJ(e.target.value) ;
+                confirmarNombreReportePUJ() ;
+              }}
+            />
+          </li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("PUJ")}>
@@ -272,7 +351,17 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li>Nombre de reportes</li>
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReporteColegios}
+              onChange={(e) => {
+                setNombreReporteColegios(e.target.value) ;
+                confirmarNombreReporteColegios() ;
+              }}
+            />
+          </li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Colegios")}>
@@ -287,7 +376,17 @@ function Reportes ( ) {
           Constancias
         </div>
         <ul className="lista">
-          <li>Nombre de reportes</li>
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReporteConstancias}
+              onChange={(e) => {
+                setNombreReporteConstancias(e.target.value) ;
+                confirmarNombreReporteConstancias() ;
+              }}
+            />
+          </li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Participantes")}>
@@ -302,8 +401,20 @@ function Reportes ( ) {
           Sponsor
         </div>
         <ul className="lista">
-          <li>Ubicación de inscripciones</li>
-          <li>Nombre de reporte</li>
+          <li onClick={()=>handleSelectFolder_Sponsor()}>
+            {folderPath_Sponsor}
+          </li>
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre del reporte"
+              value={nombreReporteSponsor}
+              onChange={(e) => {
+                setNombreReporteSponsor(e.target.value) ;
+                confirmarNombreReporteSponsor() ;
+              }}
+            />
+          </li>
         </ul>
         <div className="opciones">
           <button onClick={()=>evento_clickGenerar("Sponsor")}>

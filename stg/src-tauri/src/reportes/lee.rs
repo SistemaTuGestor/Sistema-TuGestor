@@ -29,7 +29,7 @@ pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<String,Strin
 
     let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
 
-    println!("Nueva fecha: {}", formatted_date);
+    println!("Nueva fecha (LEE): {}", formatted_date);
 
 Ok(formatted_date)
 }
@@ -45,7 +45,7 @@ pub struct NombreCarpeta {
 #[tauri::command]
 pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(),String> {
 
-    println!("📂 Ruta de la carpeta recibida: {}",path) ;
+    println!("📂 Ruta de la carpeta recibida (LEE): {}",path) ;
 
 Ok(())
 }
@@ -61,7 +61,7 @@ pub struct NombreReporte {
 #[tauri::command]
 pub fn reportes_lee_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
 
-    println!("📂 Nombre del reporte: {}",nombrereporte) ;
+    println!("📂 Nombre del reporte (LEE): {}",nombrereporte) ;
 
 Ok(nombrereporte)
 }

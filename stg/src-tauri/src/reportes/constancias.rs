@@ -1,6 +1,22 @@
+
 use calamine::{open_workbook, Reader, Xlsx};
 use std::fs::File;
 use docx_rs::*;
+
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_constancias_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (Constancias): {}",nombrereporte) ;
+
+Ok(nombrereporte)
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
 
 const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\tutorias_lee.xlsx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Constancias_Tutores.docx";

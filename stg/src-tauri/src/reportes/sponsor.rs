@@ -1,6 +1,40 @@
 
+// VARIOS
+use serde::Serialize ;
+// ARCHIVOS
 use calamine::{open_workbook, Reader, Xlsx};
 use xlsxwriter::*;
+
+
+
+////    PATH    ////
+
+#[derive(Serialize)]
+pub struct NombreCarpeta {
+    nombre: String,
+}
+
+#[tauri::command]
+pub fn reportes_sponsor_recibir_pathcarpeta(path: String) -> Result<(),String> {
+
+    println!("📂 Ruta de la carpeta recibida (Sponsor): {}",path) ;
+
+Ok(())
+}
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_sponsor_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (Sponsor): {}",nombrereporte) ;
+
+Ok(nombrereporte)
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
 
 const ARCHIVO_ENTRADA: &str = "C:\\Users\\USUARIO\\Downloads\\metrics_sponsor.xlsx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Sponsor.xlsx";
