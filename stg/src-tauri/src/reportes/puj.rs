@@ -1,3 +1,4 @@
+
 use chrono::NaiveDate;
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
@@ -5,6 +6,36 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 use zip::{ZipArchive, write::FileOptions};
+
+
+
+////    FECHA   ////
+
+#[tauri::command]
+pub fn reportes_puj_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("❌ Error al parsear la fecha: {}", e))?;
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    println!("Nueva fecha (PUJ): {}", formatted_date);
+
+Ok(())
+}
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_puj_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (PUJ): {}",nombrereporte) ;
+
+Ok ( nombrereporte )
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
 
 #[derive(Serialize, Debug)]
 pub struct Estudiante {
@@ -97,3 +128,4 @@ pub fn generar_reporte_puj(estudiantes: Vec<String>) {
 
     zip_writer.finish().expect("Error al cerrar el ZIP");
 }
+

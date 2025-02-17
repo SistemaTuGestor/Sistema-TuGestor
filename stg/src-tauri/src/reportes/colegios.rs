@@ -1,3 +1,4 @@
+
 use chrono::NaiveDate;
 use calamine::{open_workbook, Reader, Xlsx};
 use serde::Serialize;
@@ -5,6 +6,36 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
 use zip::{ZipArchive, write::FileOptions};
+
+
+
+////    FECHA   ////
+
+#[tauri::command]
+pub fn reportes_colegios_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("Failed to parse date: {}", e))?;
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+    
+    println!("Nueva fecha (Colegios): {}", formatted_date);
+
+Ok(())
+}
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_colegios_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (Colegios): {}",nombrereporte) ;
+
+Ok(nombrereporte)
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
 
 #[derive(Serialize, Debug)]
 pub struct Estudiante {

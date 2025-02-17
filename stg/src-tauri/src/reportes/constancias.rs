@@ -1,3 +1,4 @@
+
 use calamine::{open_workbook, Reader, Xlsx};
 use std::fs::{self, File};
 use std::io::{Read, Write};
@@ -5,9 +6,24 @@ use std::path::Path;
 use zip::ZipArchive;
 use zip::write::FileOptions;
 
-const ARCHIVO_EXCEL: &str = "C:\\Users\\darve\\Downloads\\Reporte_Tutores_LEE.xlsx";
+
+
+////    NOMBRE REPORTE     ////
+
+#[tauri::command]
+pub fn reportes_constancias_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+
+    println!("📂 Nombre del reporte (Constancias): {}",nombrereporte) ;
+
+Ok(nombrereporte)
+}
+
+
+////    LÓGICA DE ARCHIVOS      ////
+
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\tutorias_lee.xlsx";
 const PLANTILLA_DOCX: &str = "C:\\Users\\darve\\Downloads\\Plantilla para constancias.docx";
-const SALIDA_FOLDER: &str = "C:\\Users\\darve\\Downloads\\Constancias\\"; // Carpeta donde se guardarán
+const SALIDA_FOLDER: &str = "C:\\Users\\USUARIO\\Downloads\\Constancias_Tutores.docx";
 
 #[tauri::command]
 pub fn generar_constancias() -> Result<(), String> {

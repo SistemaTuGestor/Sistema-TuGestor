@@ -71,19 +71,18 @@
         background-color : lightgray ;
         border-top : 1px solid silver ;
         /* Elementos */
-        padding : 10% 0 4% 12px ;
+        padding : 8% 0 5% 12px ;
         line-height : -10px ;
     } .lista li:first-child {
         border-top : none ;
-        margin-top : -12px ;
-        margin-bottom: -7px;
+        margin-top : -7% ;
+    } .lista li:last-child {
     } .lista input {
         /* Posición */
-        margin-top : -10% ;
         margin-left : -18px ;
         /* Contenedor */
-        width : 80% ;
-        height : 120% ;
+        width : 90% ;
+        height : 100% ;
         background-color : lightgray ;
         border : none ;
         border-bottom : none ;
