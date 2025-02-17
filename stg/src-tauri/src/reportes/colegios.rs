@@ -44,18 +44,11 @@ pub struct Estudiante {
 }
 
 // 🔹 Rutas de los archivos
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.xlsx";;
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.xlsx";
 const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx";
 
-#[tauri::command]
-pub fn reportes_colegios_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
-    println!("Nueva fecha: {}", formatted_date);
-    Ok(())
-}
+
 
 #[tauri::command]
 pub fn leer_estudiantes_aprobados() -> Result<Vec<String>, String> {

@@ -48,14 +48,7 @@ const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Tutores_LEE.
 const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_PUJ.docx";
 
-#[tauri::command]
-pub fn reportes_puj_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
-    println!("Nueva fecha: {}", formatted_date);
-    Ok(())
-}
+
 
 #[tauri::command]
 pub fn leer_universitarios_aprobados() -> Result<Vec<String>, String> {
