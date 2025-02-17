@@ -20,7 +20,7 @@ pub struct Fecha {
 
 
 #[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(),String> {
 
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("Failed to parse date: {}", e))?;
@@ -33,18 +33,31 @@ Ok(())
 }
 
 
-#[tauri::command]
-pub fn recibir_path_carpeta(path: String) {
-    println!("📂 Ruta de la carpeta recibida: {}", path);
+#[derive(Serialize)]
+pub struct NombreCarpeta {
+    nombre: String,
 }
 
-/*
-pub fn guardar_nombre_reporte(nombrereporte: String) {
-    println!("📂 Nombre del reporte recibido {}", nombrereporte);
-    let mut nombre = NOMBRE_REPORTE.lock().unwrap();
-    *nombre = nombrereporte;
+#[tauri::command]
+pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(),String> {
+
+    println!("📂 Ruta de la carpeta recibida: {}",path) ;
+
+Ok(())
 }
-*/
+
+#[derive(Serialize)]
+pub struct NombreReporte {
+    nombre: String,
+}
+
+#[tauri::command]
+pub fn reportes_lee_recibir_nombrereporte(path: String) -> Result<(),String> {
+
+    println!("📂 Nombre del reporte: {}",path) ;
+
+Ok(())
+}
 
 
 #[derive(Serialize, Debug)]
@@ -156,5 +169,12 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     workbook.close().map_err(|e| e.to_string())?;
     println!("✔ Archivo generado en: {}", output_path);
     Ok(())
+}
+
+
+pub fn reportes_lee_guardar_nombrereporte ( ) {
+    
+    // Acá va el nombre del reporte.
+
 }
 

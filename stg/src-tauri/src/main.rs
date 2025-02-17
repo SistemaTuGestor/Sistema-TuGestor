@@ -15,9 +15,9 @@ use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
-use reportes::lee::{recibir_path_carpeta, leer_archivos_en_carpeta};
+use reportes::lee::{reportes_lee_actualizar_fecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,leer_archivos_en_carpeta};
 use reportes::puj::{reportes_puj_actualizar_fecha} ;
-use reportes::colegios::{reportes_colegios_actualizar_fecha, generar_reporte_colegios};
+use reportes::colegios::{reportes_colegios_actualizar_fecha,generar_reporte_colegios};
 
 
 
@@ -26,7 +26,8 @@ fn main ( ) {
 
     tauri::Builder::default ( )
 
-        .invoke_handler(tauri::generate_handler![
+        .invoke_handler ( tauri::generate_handler! [
+            
 
             /* MONITOREO */
             monitoreo_izquierda ,
@@ -39,11 +40,10 @@ fn main ( ) {
             /* REPORTES */
             obtener_fecha ,
             // LEE
-            //reportes_lee_actualizar_fecha ,
-            recibir_path_carpeta,
-            leer_archivos_en_carpeta,
-            //guardar_nombre_reporte,
-
+            reportes_lee_actualizar_fecha ,
+            reportes_lee_recibir_pathcarpeta ,
+            reportes_lee_recibir_nombrereporte ,
+            leer_archivos_en_carpeta ,
             // PUJ
             reportes_puj_actualizar_fecha ,
             // Colegios

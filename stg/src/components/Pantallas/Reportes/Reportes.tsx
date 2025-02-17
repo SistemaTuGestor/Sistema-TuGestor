@@ -14,8 +14,6 @@ function Reportes ( ) {
   //// Fecha
 
   const [fechaLee,setFechaLee] = useState("") ;
-  const [nombreReporteLee, setNombreReporteLee] = useState("");
-
 
   useEffect ( ( ) => {
     invoke < {fecha:string} > ( "obtener_fecha" )
@@ -39,7 +37,7 @@ function Reportes ( ) {
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
 
-  //// Apertura de explorador de archivos.
+  //// Apertura de explorador de archivos para formularios.
 
   const [folderPath, setFolderPath] = useState<string | null>("Ubicación de formularios") ;
 
@@ -62,7 +60,7 @@ function Reportes ( ) {
         setFolderPath ( folderName ) ;
 
         // Enviar la ruta al backend.
-        invoke("recibir_path_carpeta", { path: selectedPath })
+        invoke("reportes_lee_recibir_pathcarpeta", { path: selectedPath })
           .then(() => console.log("Ruta enviada correctamente"))
           .catch((err) => console.error("Error al enviar la ruta:", err));
       
@@ -75,6 +73,27 @@ function Reportes ( ) {
     }
 
   } ;
+
+  //// Nombre del reporte.
+
+  const [nombreReporteLee, setNombreReporteLee] = useState("");
+  
+  const confirmarNombreReporteLee = ( ) => {
+    invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: nombreReporteLee })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  //// Leer archivos en carpeta.
+
+  const handleReportesClick = async () => {
+    try {
+      const datos = await invoke("leer_archivos_en_carpeta");
+      console.log("Datos procesados:", datos);
+    } catch (error) {
+      console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
+    }
+  };
 
   //// Control de ventana emergente.
 
@@ -106,14 +125,6 @@ function Reportes ( ) {
   // Trigger file selection dialog.
   const handleFileClick = ( ) => {
     fileInputRef.current?.click() ;
-  } ;
-
-  //// Nombre de archivo.
-  
-  const confirmarNombreReporteLee = ( ) => {
-    invoke("guardar_nombre_reporte", { nombrereporte: nombreReporteLee })
-      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
-      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
   } ;
 
 
