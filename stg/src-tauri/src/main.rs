@@ -17,7 +17,7 @@ use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones
 use reportes::fecha::obtener_fecha ;
 use reportes::lee::{recibir_path_carpeta, leer_archivos_en_carpeta};
 use reportes::puj::{reportes_puj_actualizar_fecha} ;
-use reportes::colegios::{reportes_colegios_actualizar_fecha} ;
+use reportes::colegios::{reportes_colegios_actualizar_fecha, generar_reporte_colegios};
 
 
 
@@ -48,6 +48,7 @@ fn main ( ) {
             reportes_puj_actualizar_fecha ,
             // Colegios
             reportes_colegios_actualizar_fecha ,
+            generar_reporte_colegios ,
             // Constancias
             // Sponsor
             
