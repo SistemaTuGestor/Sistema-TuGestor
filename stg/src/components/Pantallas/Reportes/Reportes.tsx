@@ -135,8 +135,19 @@ function Reportes ( ) {
    
          alert("¡Envío exitoso! El reporte de puj se ha generado.");
       }
+      if (seccioon === "Participantes") {
+        try {
+            await invoke("generar_constancias");
+            alert("¡Envío exitoso! Se han generado las constancias.");
+        } catch (err) {
+            console.error("Error al generar constancias:", err);
+            alert("Hubo un error al generar las constancias.");
+        }
+    }
+    
       else {
         console.log("📌 Otra sección seleccionada, no se generará reporte de colegios.");
+       
       }
     } catch (err) {
       console.error("Error al generar el reporte de colegios:", err);

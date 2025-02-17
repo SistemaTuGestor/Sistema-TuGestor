@@ -1,84 +1,106 @@
 use calamine::{open_workbook, Reader, Xlsx};
-use std::fs::File;
-use docx_rs::*;
+use std::fs::{self, File};
+use std::io::{Read, Write};
+use std::path::Path;
+use zip::ZipArchive;
+use zip::write::FileOptions;
 
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\tutorias_lee.xlsx";
-const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Constancias_Tutores.docx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\darve\\Downloads\\Reporte_Tutores_LEE.xlsx";
+const PLANTILLA_DOCX: &str = "C:\\Users\\darve\\Downloads\\Plantilla para constancias.docx";
+const SALIDA_FOLDER: &str = "C:\\Users\\darve\\Downloads\\Constancias\\"; // Carpeta donde se guardarán
 
-// 📥 Leer tutores aprobados desde el Excel
-pub fn leer_tutores_aprobados() -> Result<Vec<String>, String> {
+#[tauri::command]
+pub fn generar_constancias() -> Result<(), String> {
+    println!("📖 Cargando archivo Excel...");
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
-        .map_err(|e| format!("Error al abrir el archivo: {}", e))?;
+        .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook
-        .worksheet_range("hoja1")
-        .map_err(|e| format!("Error al cargar 'hoja1': {}", e))?;
+        .worksheet_range("Sheet1")
+        .map_err(|e| format!("❌ No se pudo cargar 'Sheet1': {}", e))?;
 
-    let mut tutores_aprobados = Vec::new();
+    // Asegurar que la carpeta de salida exista
+    fs::create_dir_all(SALIDA_FOLDER).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))?;
 
     for (i, row) in range.rows().enumerate() {
-        if i == 0 { continue; } // Ignorar la primera fila (encabezados)
-        if row.len() < 7 { continue; } // Verificar que haya suficientes columnas
+        if i == 0 {
+            println!("⚠ Ignorando encabezado...");
+            continue;
+        }
 
-        let nombre_tutor = row.get(3).map_or("".to_string(), |cell| cell.to_string());
+        if row.len() < 2 {
+            eprintln!("⚠ ERROR: Fila {} tiene menos de 2 columnas, se omite.", i + 1);
+            continue;
+        }
 
-        let horas_cumplidas: f64 = row.get(5)
-            .and_then(|cell| cell.to_string().parse::<f64>().ok())
-            .unwrap_or(0.0);
+        let nombre_tutor = row[0].to_string().trim().to_string();
+        let apellido_tutor = row[1].to_string().trim().to_string();
 
-        let horas_requeridas: f64 = row.get(6)
-            .and_then(|cell| cell.to_string().parse::<f64>().ok())
-            .unwrap_or(0.0);
+        println!("📝 Generando constancia para: {} {}", nombre_tutor, apellido_tutor);
 
-        if horas_cumplidas >= horas_requeridas {
-            tutores_aprobados.push(nombre_tutor);
+        let salida_docx = format!(
+            "{}Constancia_{}_{}.docx",
+            SALIDA_FOLDER, nombre_tutor, apellido_tutor
+        );
+
+        match crear_constancia(&nombre_tutor, &apellido_tutor, &salida_docx) {
+            Ok(_) => println!("✔ Constancia generada: {}", salida_docx),
+            Err(e) => eprintln!("❌ Error al generar constancia para {} {}: {}", nombre_tutor, apellido_tutor, e),
         }
     }
 
-    println!("✔ {} tutores han completado sus horas.", tutores_aprobados.len());
-    Ok(tutores_aprobados)
+    println!("🎉 ¡Todas las constancias han sido generadas!");
+    Ok(())
 }
 
-// 📤 Generar constancias para tutores aprobados
-pub fn generar_constancias(tutores: &[String]) {
-    let mut doc = Docx::new();
+fn crear_constancia(nombre: &str, apellido: &str, salida_path: &str) -> Result<(), String> {
+    let plantilla_bytes = fs::read(PLANTILLA_DOCX)
+        .map_err(|e| format!("❌ No se pudo leer la plantilla DOCX: {}", e))?;
 
-    for tutor in tutores {
-        doc = doc.add_paragraph(Paragraph::new().add_run(Run::new().add_text("Bogotá D. C., junio de 2023")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text("Pontificia Universidad Javeriana")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text("Proyecto TuTutor")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text(" ")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text("**Constancia de Tutoría**").bold()))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text(
-                format!(
-                    "Se certifica que el tutor {} ha completado satisfactoriamente sus horas de servicio en el Proyecto TuTutor.",
-                    tutor
-                )
-            )))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text(
-                "Agradecemos tu compromiso y dedicación en este proceso educativo."
-            )))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text("Cordial saludo.")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text("Equipo TuTutor")))
-            .add_paragraph(Paragraph::new().add_run(Run::new().add_text(" "))); // Espacio entre constancias
+    let cursor = std::io::Cursor::new(plantilla_bytes);
+    let mut zip = ZipArchive::new(cursor)
+        .map_err(|e| format!("❌ No se pudo abrir el archivo DOCX como ZIP: {}", e))?;
+
+    let mut document_xml = String::new();
+    {
+        let mut file = zip.by_name("word/document.xml")
+            .map_err(|e| format!("❌ No se encontró 'word/document.xml' en la plantilla: {}", e))?;
+        file.read_to_string(&mut document_xml)
+            .map_err(|e| format!("❌ Error al leer el contenido XML: {}", e))?;
     }
 
-    let file = File::create(ARCHIVO_SALIDA).expect("No se pudo crear el archivo DOCX");
-    doc.build().pack(file).expect("Error al escribir el documento DOCX");
+    document_xml = document_xml.replace("«nom_tutor»", nombre);
+    document_xml = document_xml.replace("«Apellido_tutor»", apellido);
 
-    println!("✔ Constancias generadas correctamente en {}", ARCHIVO_SALIDA);
-}
-
-// 📌 Ejecutar el proceso
-fn main() {
-    match leer_tutores_aprobados() {
-        Ok(tutores) => {
-            if tutores.is_empty() {
-                println!("✖ No hay tutores aprobados. No se generará la constancia.");
+    let mut buffer = std::io::Cursor::new(Vec::new());
+    {
+        let mut zip_writer = zip::ZipWriter::new(&mut buffer);
+        for i in 0..zip.len() {
+            let mut file = zip.by_index(i)
+                .map_err(|e| format!("❌ Error al leer archivo del ZIP: {}", e))?;
+            let options = FileOptions::default().compression_method(file.compression());
+            
+            let mut content = Vec::new();
+            file.read_to_end(&mut content)
+                .map_err(|e| format!("❌ Error al leer contenido de '{}': {}", file.name(), e))?;
+            
+            if file.name() == "word/document.xml" {
+                zip_writer.start_file(file.name(), options)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
+                zip_writer.write_all(document_xml.as_bytes())
+                    .map_err(|e| format!("❌ Error al escribir el documento XML: {}", e))?;
             } else {
-                generar_constancias(&tutores);
+                zip_writer.start_file(file.name(), options)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
+                zip_writer.write_all(&content)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
             }
         }
-        Err(e) => println!("✖ ERROR al procesar tutorías: {}", e),
     }
+
+    fs::write(salida_path, buffer.into_inner())
+        .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
+
+    println!("✔ Constancia guardada: {}", salida_path);
+    Ok(())
 }

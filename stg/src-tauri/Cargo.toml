@@ -19,6 +19,7 @@ chrono = "0.4.39"
 xlsxwriter = "0.6.1"
 lazy_static = "1.4"
 docx-rs = "0.4" 
+zip = "0.6"
 
 
 [features]

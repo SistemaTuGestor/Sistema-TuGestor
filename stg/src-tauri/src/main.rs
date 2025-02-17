@@ -18,6 +18,7 @@ use reportes::fecha::obtener_fecha ;
 use reportes::lee::{reportes_lee_actualizar_fecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,leer_archivos_en_carpeta};
 use reportes::puj::{reportes_puj_actualizar_fecha,leer_universitarios_aprobados,generar_reporte_puj} ;
 use reportes::colegios::{reportes_colegios_actualizar_fecha, generar_reporte_colegios, leer_estudiantes_aprobados} ;
+use reportes::constancias::{generar_constancias} ;
 
 
 
@@ -53,6 +54,8 @@ fn main ( ) {
             generar_reporte_colegios ,
             leer_estudiantes_aprobados ,
             // Constancias
+            generar_constancias ,
+            
             // Sponsor
             
         
