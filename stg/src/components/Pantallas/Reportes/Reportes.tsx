@@ -116,7 +116,22 @@ function Reportes ( ) {
         await invoke("generar_reporte_colegios", { estudiantes: estudiantesAprobados });
   
         alert("¡Envío exitoso! El reporte de Colegios se ha generado.");
-      } else {
+      }
+      if (seccioon === "PUJ") {
+         // Leer estudiantes aprobados
+         const estudiantesAprobados = await invoke<string[]>("leer_universitarios_aprobados");
+  
+         if (estudiantesAprobados.length === 0) {
+           alert("No hay tutores aprobados para generar el reporte.");
+           return;
+         }
+   
+         // Generar el reporte con la lista de estudiantes aprobados
+         await invoke("generar_reporte_puj", { estudiantes: estudiantesAprobados });
+   
+         alert("¡Envío exitoso! El reporte de puj se ha generado.");
+      }
+      else {
         console.log("📌 Otra sección seleccionada, no se generará reporte de colegios.");
       }
     } catch (err) {
