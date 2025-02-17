@@ -1,10 +1,51 @@
-use calamine::{open_workbook, Reader, Xlsx};
-use serde::Serialize;
+
+#[allow(unused_imports)]
+// VARIOS
+use serde::Serialize ;
+// FECHA
+use chrono::NaiveDate ;
+// ARCHIVOS
 use std::fs;
 use std::collections::HashMap;
-#[allow(unused_imports)]
-use std::path::Path; // Se mantiene para evitar warnings si se requiere en el futuro
-use xlsxwriter::*;
+use calamine::{open_workbook, Reader, Xlsx} ;
+use std::path::Path ;
+use xlsxwriter::* ;
+
+
+
+#[derive(Serialize)]
+pub struct Fecha {
+    fecha: String,
+}
+
+
+#[tauri::command]
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("Failed to parse date: {}", e))?;
+
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    println!("Nueva fecha: {}", formatted_date);
+
+Ok(())
+}
+
+
+#[tauri::command]
+pub fn recibir_path_carpeta(path: String) {
+    println!("📂 Ruta de la carpeta recibida: {}", path);
+}
+
+/*
+pub fn guardar_nombre_reporte(nombrereporte: String) {
+    println!("📂 Nombre del reporte recibido {}", nombrereporte);
+    let mut nombre = NOMBRE_REPORTE.lock().unwrap();
+    *nombre = nombrereporte;
+}
+*/
+
 
 #[derive(Serialize, Debug)]
 pub struct DatosMonitoreo {
@@ -15,17 +56,6 @@ pub struct DatosMonitoreo {
     horas_totales: f32,
 }
 
-#[tauri::command]
-pub fn recibir_path_carpeta(path: String) {
-    println!("📂 Ruta de la carpeta recibida: {}", path);
-}
-/*
-pub fn guardar_nombre_reporte(nombrereporte: String) {
-    println!("📂 Nombre del reporte recibido {}", nombrereporte);
-    let mut nombre = NOMBRE_REPORTE.lock().unwrap();
-    *nombre = nombrereporte;
-}
-    */
 #[tauri::command]
 pub fn leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
     let carpeta_path = "C:\\Users\\USUARIO\\Downloads\\qualtrics";
@@ -127,3 +157,4 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     println!("✔ Archivo generado en: {}", output_path);
     Ok(())
 }
+

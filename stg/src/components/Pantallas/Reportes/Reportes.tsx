@@ -90,41 +90,38 @@ function Reportes ( ) {
     setEmergenteVisible ( false ) ;
   }
 
-  const evento_clickVerificar = async () => {
-  try {
-    const resultado = await invoke<DatosMonitoreo[]>("leer_excel_path_fijo_lee");
-    console.log("Datos obtenidos del Excel:", resultado);
-  } catch (err) {
-    console.error("Error al leer el archivo Excel:", err);
-  }
-
-  setEmergenteVisible(true);
-};
-  
-  const evento_clickEnviar = ( ) => {
-    alert ( `¡Envío exitoso!` ) ;
-    setEmergenteVisible ( false ) ;
+  const evento_clickVerificar = ( ) => {
+    handleFileClick() ;
+    setEmergenteVisible ( true ) ;
   } ;
   
-  // Logica para confirmar el nombre del archivo
-  const confirmarNombreReporteLee = () => {
-    invoke("guardar_nombre_reporte", { nombrereporte: nombreReporteLee })
-      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
-      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
-  };
+  const evento_clickEnviar = ( ) => {
+    // alert ( `¡Envío exitoso!` ) ;
+    setEmergenteVisible ( false ) ;
+  } ;
 
   const fileInputRef = useRef <HTMLInputElement|null> (null) ;
   // Handle file selection
-  const handleFileChange = () => { } ;
+  const handleFileChange = ( ) => { } ;
   // Trigger file selection dialog.
   const handleFileClick = ( ) => {
     fileInputRef.current?.click() ;
   } ;
 
+  //// Nombre de archivo.
+  
+  const confirmarNombreReporteLee = ( ) => {
+    invoke("guardar_nombre_reporte", { nombrereporte: nombreReporteLee })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
 
   return (
+  
 
     <div className="reportes">
+
 
       { getEmergenteVisible && (
           <Emergente
@@ -134,6 +131,7 @@ function Reportes ( ) {
             enviar = {evento_clickEnviar}
           />
       ) }
+
       
       <div className="seccioon">
         <div className="tiitulo">
@@ -141,7 +139,6 @@ function Reportes ( ) {
         </div>
         <ul className="lista">
           <li>
-            {" "}
             <input
               type="date"
               value={fechaLee}
@@ -162,8 +159,8 @@ function Reportes ( ) {
               placeholder="Nombre del reporte"
               value={nombreReporteLee}
               onChange={(e) => setNombreReporteLee(e.target.value)}
+              onClick={confirmarNombreReporteLee}
             />
-            <button onClick={confirmarNombreReporteLee}>Confirmar</button>
           </li>
         </ul>
         <div className="opciones">
@@ -172,13 +169,14 @@ function Reportes ( ) {
           </button>
         </div>
       </div>
+
+
       <div className="seccioon">
         <div className="tiitulo">
           PUJ
         </div>
         <ul className="lista">
           <li>
-            {" "}
             <input
               type="date"
               value={fechaPUJ}
@@ -198,13 +196,14 @@ function Reportes ( ) {
           </button>
         </div>
       </div>
+
+
       <div className="seccioon">
         <div className="tiitulo">
           Colegios
         </div>
         <ul className="lista">
           <li>
-            {" "}
             <input
               type="date"
               value={fechaColegios}
@@ -224,6 +223,8 @@ function Reportes ( ) {
           </button>
         </div>
       </div>
+
+
       <div className="seccioon">
         <div className="tiitulo">
           Constancias
@@ -237,6 +238,8 @@ function Reportes ( ) {
           </button>
         </div>
       </div>
+
+
       <div className="seccioon">
         <div className="tiitulo">
           Sponsor
@@ -252,6 +255,7 @@ function Reportes ( ) {
         </div>
       </div>
 
+
       {/* Hidden file input for file selection */}
       <input
         type="file"
@@ -262,9 +266,7 @@ function Reportes ( ) {
       />
   
     </div>
-
-    
-
+ 
 
   ) ;
 
