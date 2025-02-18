@@ -16,7 +16,7 @@
     z-index : 1000 ;
 
     .ventana {
-        width : 50% ;
+        width : 60% ;
         /* Contenedor */
         background-color : lightgray ;
         border : 4px solid grey ;
@@ -49,6 +49,20 @@
         }.cancelar:hover {
             /* Letra */
             color: #82261f ;
+            font-weight : bold ;
+        }
+        .generar {
+            width : 40% ;
+            /* Contenedor */
+            background-color : white ;
+            border : 2px solid black ;
+            border-radius : 10px ;
+            /* Letra */
+            font-size : larger ;
+            color: black ;
+        }.generar:hover {
+            /* Letra */
+            color: black ;
             font-weight : bold ;
         }
         .verificar {
