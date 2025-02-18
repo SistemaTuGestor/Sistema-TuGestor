@@ -16,9 +16,8 @@ use xlsxwriter::* ;
 
 
 
-static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
-static PATH_CARPETA : OnceCell<Mutex<String>> = OnceCell::new() ;
-static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_CARPETA: OnceCell<Mutex<String>> = OnceCell::new();
+static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 
 
 
@@ -31,16 +30,16 @@ pub struct Fecha {
 
 
 #[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(),String> {
+pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<String,String> {
 
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("Failed to parse date: {}", e))?;
 
     let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
 
-    // println!("Nueva fecha (LEE): {}", formatted_date);
+    println!("Nueva fecha (LEE): {}", formatted_date);
 
-Ok(())
+Ok(formatted_date)
 }
 
 
@@ -54,14 +53,14 @@ pub struct NombreCarpeta {
 #[tauri::command]
 pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(),String> {
 
+    println!("📂 Ruta de la carpeta recibida (LEE): {}",path) ;
+
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = PATH_CARPETA.get_or_init(|| Mutex::new(String::new()));
-    
+
     // Store the report name in the global variable
     let mut nombre_guardado = nombre.lock().unwrap();
     *nombre_guardado = path;
-
-    // println!("📂 Ruta de la carpeta recibida (LEE): {}",path) ;
 
 Ok(())
 }
@@ -76,15 +75,15 @@ pub struct NombreReporte {
 
 #[tauri::command]
 pub fn reportes_lee_recibir_nombrereporte (nombrereporte: String) -> Result<(),String> {
-    
+
+    println!("📂 Nombre del reporte (LEE): {}",nombrereporte) ;
+
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
-    
+
     // Store the report name in the global variable
     let mut nombre_guardado = nombre.lock().unwrap();
     *nombre_guardado = nombrereporte;
-    
-    // println!("📂 Nombre del reporte (LEE): {}",nombrereporte) ;
 
 Ok(())
 }
@@ -107,7 +106,6 @@ pub fn leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
     let mut registros: HashMap<String, (String, Vec<u32>, u32)> = HashMap::new();
     
     let carpeta_path = PATH_CARPETA.get().expect("Global variable not initialized");
-    println!("📂 Ruta de la carpeta recibida (LEE): {}",PATH_CARPETA.get().unwrap().lock().unwrap()) ;
     let carpeta_path_guard = carpeta_path.lock().unwrap(); 
     let archivos = fs::read_dir(carpeta_path_guard.as_str()).map_err(|e| format!("Error al leer la carpeta: {}", e))?;
     
@@ -170,8 +168,8 @@ pub fn leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
 
-    let output_path = NOMBRE_REPORTE.get().unwrap().lock().unwrap() ;
-    println!("📂 Nombre del reporte (LEE): {}",output_path) ;
+    let nombre_reporte_guard = NOMBRE_REPORTE.get().unwrap().lock().unwrap();
+    let output_path = format!("/home/user/Downloads/{}.xlsx", *nombre_reporte_guard);
     
     let workbook = Workbook::new(&output_path).map_err(|e| e.to_string())?;
     let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
@@ -206,8 +204,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     
     workbook.close().map_err(|e| e.to_string())?;
     println!("✔ Archivo generado en: {}", output_path);
-    
-Ok(())
+    Ok(())
 }
 
 
@@ -216,8 +213,8 @@ Ok(())
 /*
 pub fn reportes_lee_guardar_nombrereporte ( ) {
     
-    let nuevafecha = FECHA ;
-    let nuevonombre = NOMBRE_REPORTE ;
+    let nuevafecha = reportes_lee_actualizar_fecha().to_string ;
+    let nuevonombre = reportes_lee_recibir_nombrereporte().to_string ;
 
     let combined_result = format!("{}+{}", nueva_fecha, nuevo_nombre);
 

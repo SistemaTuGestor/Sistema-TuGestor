@@ -5,15 +5,13 @@ import Emergente from "../Emergente/Emergente" ;
 
 import { useRef,useState,useEffect } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri";
-import { open,save } from "@tauri-apps/api/dialog";
+import { open } from "@tauri-apps/api/dialog";
 
 
 
 function Reportes ( ) {
 
-
   //// Fecha
-
 
   const [fechaLee,setFechaLee] = useState("") ;
 
@@ -39,29 +37,11 @@ function Reportes ( ) {
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
 
-  const [fechaConstancias,setFechaConstancias] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaConstancias(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-  const [fechaSponsor,setFechaSponsor] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaSponsor(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-
   //// Apertura de explorador de archivos para formularios.
-
 
   const [folderPath_LEE, setFolderPath_LEE] = useState<string | null>("Ubicación de formularios") ;
 
-  const handleSelectFolder_LEE = async ( ) => {
+  const handleSelectFolder_LEE = async () => {
 
     try {
 
@@ -94,18 +74,16 @@ function Reportes ( ) {
 
   } ;
 
-
   //// Apertura de explorador de archivos para inscripciones.
-
 
   const [folderPath_Sponsor, setFolderPath_Sponsor] = useState<string | null>("Ubicación de inscripciones") ;
 
-  const handleSelectFolder_Sponsor = async ( ) => {
+  const handleSelectFolder_Sponsor = async () => {
 
     try {
 
       const selectedPath = await open ( {
-        directory : true ,  // Permite seleccionar una carpeta.
+        directory : true,  // Permite seleccionar una carpeta.
         multiple : false ,  // Solo permite seleccionar una.
       } ) ;
 
@@ -119,9 +97,9 @@ function Reportes ( ) {
         setFolderPath_Sponsor ( folderName ) ;
 
         // Enviar la ruta al backend.
-        invoke ( "reportes_sponsor_recibir_pathcarpeta",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        invoke("reportes_sponsor_recibir_pathcarpeta", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
       
       }
 
@@ -133,222 +111,72 @@ function Reportes ( ) {
 
   } ;
 
-  
-  //// Ubicación de los reportes.
-
-
-  const [directorioReporteLee, setDirectorioReporteLee] = useState("Directorio del reporte");
-  
-  const [directorioReportePUJ, setDirectorioReportePUJ] = useState("Directorio de reportes");
-  
-  const [directorioReporteColegios, setDirectorioReporteColegios] = useState("Directorio de reportes");
-  
-  const [directorioReporteConstancias, setDirectorioReporteConstancias] = useState("Directorio de reportes");
-
-  const [directorioReporteSponsor, setDirectorioReporteSponsor] = useState("Directorio del reporte");
-  
-
   //// Nombre de los reportes.
 
-
-  const [nombreReporteLee, setNombreReporteLee] = useState("Nombre del reporte");
+  const [nombreReporteLee, setNombreReporteLee] = useState("");
   
-  const [nombreReportePUJ, setNombreReportePUJ] = useState("Nombre de reportes");
+  const confirmarNombreReporteLee = ( ) => {
+    invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: nombreReporteLee })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteLee))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReportePUJ, setNombreReportePUJ] = useState("");
   
-  const [nombreReporteColegios, setNombreReporteColegios] = useState("Nombre de reportes");
+  const confirmarNombreReportePUJ = ( ) => {
+    invoke("reportes_puj_recibir_nombrereporte", { nombrereporte: nombreReportePUJ })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReportePUJ))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+
+  const [nombreReporteColegios, setNombreReporteColegios] = useState("");
   
-  const [nombreReporteConstancias, setNombreReporteConstancias] = useState("Nombre de reportes");
+  const confirmarNombreReporteColegios = ( ) => {
+    invoke("reportes_colegios_recibir_nombrereporte", { nombrereporte: nombreReporteColegios })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteColegios))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
 
-  const [nombreReporteSponsor, setNombreReporteSponsor] = useState("Nombre del reporte");
+  const [nombreReporteConstancias, setNombreReporteConstancias] = useState("");
+  
+  const confirmarNombreReporteConstancias = ( ) => {
+    invoke("reportes_constancias_recibir_nombrereporte", { nombrereporte: nombreReporteConstancias })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteConstancias))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
 
-
+  const [nombreReporteSponsor, setNombreReporteSponsor] = useState("");
+  
+  const confirmarNombreReporteSponsor = ( ) => {
+    invoke("reportes_sponsor_recibir_nombrereporte", { nombrereporte: nombreReporteSponsor })
+      .then(() => console.log("Nombre del reporte guardado:", nombreReporteSponsor))
+      .catch((err) => console.error("Error al guardar el nombre del reporte:", err));
+  } ;
+  
   //// Control de ventana emergente.
+  
+  const evento_clickGenerar_LEE = async ( ) => {
+    
+    try {
+      const datos = await invoke("leer_archivos_en_carpeta");
+      console.log("Datos procesados:", datos);
+    } catch (error) {
+      console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
+      alert("Hubo un error al generar el reporte.");
+    }
 
-
-  const [seccioonActual,setSeccioonActual] = useState ( "" ) ;
-  const [getEmergenteVisible,setEmergenteVisible] = useState ( false ) ;
-
-  const evento_clickOpciones = async ( seccioon:string ) => {
-    setSeccioonActual ( seccioon ) ;
+    setSeccioonActual ( "LEE" ) ;
     setEmergenteVisible ( true ) ;
-  }
+  
+  } ;
 
-  const evento_clickCancelar = ( ) => {
-    setEmergenteVisible ( false ) ;
-  }
+  const [getEmergenteVisible,setEmergenteVisible] = useState ( false ) ;
+  const [seccioonActual,setSeccioonActual] = useState ( "" ) ;
 
   const evento_clickGenerar = async ( seccioon:string ) => {
 
-    if ( seccioon === "LEE" ) {
-
-      if ( folderPath_LEE === "Ubicación de formularios" ) {
-        alert ( `Por favor, selecciona un directorio de formularios antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const filePath = await save({
-          defaultPath : seccioon+".xlsx" ,
-          filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          await invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: filePath }) ;
-          await invoke ( "leer_archivos_en_carpeta" ) ;
-          setDirectorioReporteLee ( filePath ) ;
-          setNombreReporteLee ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-        
-      } catch ( error ) {
-      
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
-      
-      }
-
-    } else if ( seccioon === "PUJ" ) {
-
-      try {
-
-        const filePath = await save({
-          defaultPath : seccioon ,
-          filters : [ { name:"All Files" , extensions:["*"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          // Leer estudiantes aprobados.
-          const estudiantesAprobados = await invoke<string[]>("leer_universitarios_aprobados");
-          if ( estudiantesAprobados.length === 0 ) {
-            alert ( `No hay tutores aprobados para generar el reporte.` ) ;
-            return;
-          }
-          await invoke ( "generar_reporte_puj",{estudiantes:estudiantesAprobados} ) ;
-          setDirectorioReportePUJ ( filePath ) ;
-          setNombreReportePUJ ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
-      
-      }
-      
-    } else if ( seccioon === "Colegios" ) {
-
-      try {
-
-        const filePath = await save({
-          defaultPath : seccioon ,
-          filters : [ { name:"All Files" , extensions:["*"] } ]
-        } ) ;
-        
-        if ( filePath ) {
-          // Leer estudiantes aprobados
-          const estudiantesAprobados = await invoke<string[]>("leer_estudiantes_aprobados");
-          if (estudiantesAprobados.length === 0) {
-            alert("No hay tutores aprobados para generar el reporte.");
-            return;
-          }
-          await invoke ("generar_reporte_colegios",{estudiantes:estudiantesAprobados } ) ;
-          setDirectorioReporteColegios ( filePath ) ;
-          setNombreReporteColegios ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
-      
-      }
-
-    } else if ( seccioon === "Constancias" ) {
-
-      try {
-
-        const filePath = await save({
-          defaultPath : seccioon ,
-          filters : [ { name:"Word Files" , extensions:["docx"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          await invoke ( "generar_constancias" ) ;
-          setDirectorioReporteConstancias ( filePath ) ;
-          setNombreReporteConstancias ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
-      
-      }
-
-    } else if ( seccioon === "Sponsor" ) {
-
-      if ( folderPath_Sponsor === "Ubicación de inscripciones" ) {
-        alert ( `Por favor, selecciona un directorio de inscripciones antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const filePath = await save ( {
-          defaultPath : seccioon+".xlsx" ,
-          filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          setDirectorioReporteSponsor ( filePath ) ;
-          setNombreReporteSponsor ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
-      
-      }
-
-    } else {
-
-      alert ( `¡Error en la selección de sección!` ) ;
-    
-    }
-
-    /*
     try {
-
-      if ( seccioon === "LEE" ) {
-        try {
-          const datos = await invoke("leer_archivos_en_carpeta");
-          console.log("Datos procesados:", datos);
-          setFolderPath_LEE ( fileName ) ;
-        } catch (error) {
-          console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
-          alert("Hubo un error al generar el reporte.");
-        }
-      }
-
-      if (seccioon === "Colegios") {
+      if (seccioonActual === "Colegios") {
         // Leer estudiantes aprobados
         const estudiantesAprobados = await invoke<string[]>("leer_estudiantes_aprobados");
   
@@ -376,7 +204,7 @@ function Reportes ( ) {
    
          alert("¡Envío exitoso! El reporte de puj se ha generado.");
       }
-      if (seccioon === "Constancias") {
+      if (seccioon === "Participantes") {
         try {
             await invoke("generar_constancias");
             alert("¡Envío exitoso! Se han generado las constancias.");
@@ -384,22 +212,25 @@ function Reportes ( ) {
             console.error("Error al generar constancias:", err);
             alert("Hubo un error al generar las constancias.");
         }
-      }
+    }
+    
       else {
         console.log("📌 Otra sección seleccionada, no se generará reporte de colegios.");
+       
       }
-
     } catch (err) {
-      
       console.error("Error al generar el reporte de colegios:", err);
       alert("Hubo un error al generar el reporte.");
-    
     }
-    */
   
+    setSeccioonActual ( seccioon ) ;
     setEmergenteVisible ( true ) ;
-  
+    
   } ;
+
+  const evento_clickCancelar = ( ) => {
+    setEmergenteVisible ( false ) ;
+  }
 
   const evento_clickVerificar = ( ) => {
     handleFileClick() ;
@@ -407,7 +238,7 @@ function Reportes ( ) {
   } ;
   
   const evento_clickEnviar = ( ) => {
-    alert ( `¡Envío exitoso!` ) ;
+    // alert ( `¡Envío exitoso!` ) ;
     setEmergenteVisible ( false ) ;
   } ;
 
@@ -428,12 +259,11 @@ function Reportes ( ) {
 
       { getEmergenteVisible && (
           <Emergente
-            mensaje   = {`¿Ya verificaste los reportes para ${seccioonActual}?`}
-            cancelar  = {evento_clickCancelar}
-            generar   = {()=>evento_clickGenerar(seccioonActual)}
+            mensaje = {`¿Ya verificaste los reportes para ${seccioonActual}?`}
+            cancelar = {evento_clickCancelar}
             verificar = {evento_clickVerificar}
-            enviar    = {evento_clickEnviar}
-            modulo    = {seccioonActual}
+            enviar = {evento_clickEnviar}
+            modulo={seccioonActual}
           />
       ) }
 
@@ -455,19 +285,24 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li onClick={() => handleSelectFolder_LEE()} className="hover-underline">
+          <li onClick={()=>handleSelectFolder_LEE()}>
             {folderPath_LEE}
           </li>
-          <li className="base">
-            {directorioReporteLee}
-          </li>
-          <li className="base">
-            {nombreReporteLee}
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre del reporte"
+              value={nombreReporteLee}
+              onChange={(e) => {
+                setNombreReporteLee(e.target.value) ;
+                confirmarNombreReporteLee() ;
+              }}
+            />
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("LEE")}>
-            Opciones
+          <button onClick={()=>evento_clickGenerar_LEE()}>
+            Generar
           </button>
         </div>
       </div>
@@ -490,16 +325,21 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li className="base">
-            {directorioReportePUJ}
-          </li>
-          <li className="base">
-            {nombreReportePUJ}
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReportePUJ}
+              onChange={(e) => {
+                setNombreReportePUJ(e.target.value) ;
+                confirmarNombreReportePUJ() ;
+              }}
+            />
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("PUJ")}>
-            Opciones
+          <button onClick={()=>evento_clickGenerar("PUJ")}>
+            Generar
           </button>
         </div>
       </div>
@@ -522,16 +362,21 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li className="base">
-            {directorioReporteColegios}
-          </li>
-          <li className="base">
-            {nombreReporteColegios}
+          <li>
+            <input
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReporteColegios}
+              onChange={(e) => {
+                setNombreReporteColegios(e.target.value) ;
+                confirmarNombreReporteColegios() ;
+              }}
+            />
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Colegios")}>
-            Opciones
+          <button onClick={()=>evento_clickGenerar("Colegios")}>
+            Generar
           </button>
         </div>
       </div>
@@ -544,26 +389,19 @@ function Reportes ( ) {
         <ul className="lista">
           <li>
             <input
-              type="date"
-              value={fechaConstancias}
-              onChange={(e) => setFechaConstancias(e.target.value)}
-              onBlur={() => {
-                invoke("reportes_constancias_actualizar_fecha", { nuevaFecha: fechaConstancias })
-                  .then(() => console.log("Fecha actualizada"))
-                  .catch((err) => console.error("Failed to update date:", err));
+              type="text"
+              placeholder="Nombre de reportes"
+              value={nombreReporteConstancias}
+              onChange={(e) => {
+                setNombreReporteConstancias(e.target.value) ;
+                confirmarNombreReporteConstancias() ;
               }}
             />
           </li>
-          <li className="base">
-            {directorioReporteConstancias}
-          </li>
-          <li className="base">
-            {nombreReporteConstancias}
-          </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Constancias")}>
-            Opciones
+          <button onClick={()=>evento_clickGenerar("Participantes")}>
+            Generar
           </button>
         </div>
       </div>
@@ -574,31 +412,24 @@ function Reportes ( ) {
           Sponsor
         </div>
         <ul className="lista">
+          <li onClick={()=>handleSelectFolder_Sponsor()}>
+            {folderPath_Sponsor}
+          </li>
           <li>
             <input
-              type="date"
-              value={fechaSponsor}
-              onChange={(e) => setFechaSponsor(e.target.value)}
-              onBlur={() => {
-                invoke("reportes_sponsor_actualizar_fecha", { nuevaFecha: fechaSponsor })
-                  .then(() => console.log("Fecha actualizada"))
-                  .catch((err) => console.error("Failed to update date:", err));
+              type="text"
+              placeholder="Nombre del reporte"
+              value={nombreReporteSponsor}
+              onChange={(e) => {
+                setNombreReporteSponsor(e.target.value) ;
+                confirmarNombreReporteSponsor() ;
               }}
             />
           </li>
-          <li onClick={() => handleSelectFolder_Sponsor()} className="hover-underline">
-            {folderPath_Sponsor}
-          </li>
-          <li className="base">
-            {directorioReporteSponsor}
-          </li>
-          <li className="base">
-            {nombreReporteSponsor}
-          </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Sponsor")}>
-            Opciones
+          <button onClick={()=>evento_clickGenerar("Sponsor")}>
+            Generar
           </button>
         </div>
       </div>
@@ -613,7 +444,6 @@ function Reportes ( ) {
         onChange={handleFileChange}
       />
   
-
     </div>
  
 

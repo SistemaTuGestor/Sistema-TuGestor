@@ -6,13 +6,12 @@ import "./Emergente.css" ;
 interface PropiedadesEmergente {
   mensaje : string ;
   cancelar : () => void ;
-  generar : () => void ;
   verificar : () => void ;
   enviar : () => void ;
   modulo?: string;
 }
 
-function Emergente ( {mensaje,cancelar,generar,verificar,enviar} : PropiedadesEmergente ) {
+function Emergente ( {mensaje,cancelar,verificar,enviar} : PropiedadesEmergente ) {
 
 
   return (
@@ -26,9 +25,6 @@ function Emergente ( {mensaje,cancelar,generar,verificar,enviar} : PropiedadesEm
         <div className="botones">
           <button onClick={cancelar} className="cancelar">
             Cancelar
-          </button>
-          <button onClick={generar} className="generar">
-            Generar
           </button>
           <button onClick={verificar} className="verificar">
             Verificar

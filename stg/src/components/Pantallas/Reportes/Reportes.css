@@ -41,7 +41,7 @@
         font-family : Arial, Helvetica, sans-serif ;
         font-size : 120% ;
         text-align : center ;
-        line-height : 250% ;
+        line-height : 200% ;
     }
 
     .lista {
@@ -76,6 +76,7 @@
     } .lista li:first-child {
         border-top : none ;
         margin-top : -7% ;
+    } .lista li:last-child {
     } .lista input {
         /* Posición */
         margin-left : -18px ;
@@ -91,14 +92,6 @@
         color : black ;
     } .lista li:hover {
         text-decoration : underline ;
-    } .lista li.hover-underline:hover {
-        text-decoration: underline;
-    } .lista li:not(.hover-underline):hover {
-        text-decoration: none;
-    } .base {
-        color : grey ;
-    } .base li:hover {
-        text-decoration : none ;
     }
 
     .opciones button {
