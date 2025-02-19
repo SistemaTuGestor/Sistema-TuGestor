@@ -21,8 +21,8 @@ Ok(nombrereporte)
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\tutorias_lee.xlsx";
-const PLANTILLA_DOCX: &str = "C:\\Users\\darve\\Downloads\\Plantilla para constancias.docx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx";
+const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla para constancias.docx";
 const SALIDA_FOLDER: &str = "C:\\Users\\USUARIO\\Downloads\\Constancias_Tutores.docx";
 
 #[tauri::command]
