@@ -71,11 +71,11 @@
         background-color : lightgray ;
         border-top : 1px solid silver ;
         /* Elementos */
-        padding : 8% 0 5% 12px ;
+        padding : 6% 0 5% 12px ;
         line-height : -10px ;
     } .lista li:first-child {
         border-top : none ;
-        margin-top : -7% ;
+        margin-top : -5% ;
     } .lista input {
         /* Posición */
         margin-left : -18px ;

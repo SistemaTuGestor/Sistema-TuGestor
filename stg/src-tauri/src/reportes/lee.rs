@@ -1,5 +1,4 @@
 
-#[allow(unused_imports)]
 // VARIOS
 use serde::Serialize ;
 // FECHA

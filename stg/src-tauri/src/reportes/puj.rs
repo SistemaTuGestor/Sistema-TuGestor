@@ -1,11 +1,22 @@
 
-use chrono::NaiveDate;
-use calamine::{open_workbook, Reader, Xlsx};
-use serde::Serialize;
-use std::fs::File;
-use std::io::{Read, Write};
-use std::path::Path;
-use zip::{ZipArchive, write::FileOptions};
+// VARIOS
+use serde::Serialize ;
+// FECHA
+use chrono::NaiveDate ;
+// PATH
+use once_cell::sync::OnceCell ;
+use std::sync::Mutex ;
+// ARCHIVOS
+use std::fs::File ;
+use std::path::Path ;
+use std::io::{Read,Write} ;
+use calamine::{open_workbook, Reader, Xlsx} ;
+use zip::{ZipArchive, write::FileOptions} ;
+
+
+static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_CARPETA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
 
 
@@ -17,6 +28,11 @@ pub fn reportes_puj_actualizarfecha ( nueva_fecha:String) -> Result<(),String> {
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("❌ Error al parsear la fecha: {}", e))?;
     let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    FECHA.get_or_init(|| Mutex::new(String::new()))
+        .lock()
+        .map_err(|e| format!("Failed to lock mutex: {}", e))?
+        .clone_from(&formatted_date) ;
 
     println!("Nueva fecha (PUJ): {}", formatted_date);
 
