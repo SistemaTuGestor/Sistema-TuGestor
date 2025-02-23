@@ -170,8 +170,8 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
             .map_err(|e| format!("❌ Error al leer el contenido XML: {}", e))?;
     }
 
-    document_xml = document_xml.replace("«nom_tutorado»", nombre);
-    document_xml = document_xml.replace("«Apellido_tutorado»", apellido);
+    document_xml = document_xml.replace("«nom_tutor»", nombre);
+    document_xml = document_xml.replace("«Apellido_tutor»", apellido);
 
     let mut buffer = std::io::Cursor::new(Vec::new());
     {

@@ -363,7 +363,7 @@ function Reportes ( ) {
           await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
           await invoke ( "generar_constanciastutorados" ) ;
           setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
-          setNombreReporteConstanciasTutorados ( "Constancia Tutor" ) ;
+          setNombreReporteConstanciasTutorados ( "Constancia Tutorado" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
         } else {
           alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
