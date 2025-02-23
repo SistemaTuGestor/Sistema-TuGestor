@@ -1,23 +1,66 @@
 
 // VARIOS
 use serde::Serialize ;
+// FECHA
+use chrono::NaiveDate ;
+// PATH
+use once_cell::sync::OnceCell ;
+use std::sync::Mutex ;
 // ARCHIVOS
-use calamine::{open_workbook, Reader, Xlsx};
-use xlsxwriter::*;
+use calamine::{open_workbook, Reader, Xlsx} ;
+use std::fs::{self} ;
+use std::io::{Read, Write} ;
+use std::path::PathBuf ;
+use zip::ZipArchive ;
+use zip::write::FileOptions ;
 
+
+
+static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
+
+
+
+////    FECHA   ////
+
+#[tauri::command]
+pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:String ) -> Result<(),String> {
+
+    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
+        .map_err(|e| format!("Failed to parse date: {}", e))? ;
+
+    let formatted_date = parsed_date.format("%d-%m-%Y").to_string() ;
+
+    FECHA.get_or_init(|| Mutex::new(String::new()))
+        .lock()
+        .map_err(|e| format!("Failed to lock mutex: {}", e))?
+        .clone_from(&formatted_date) ;
+    
+    println!("Nueva fecha (Constancias tutorados): {}", formatted_date) ;
+
+Ok(())
+}
 
 
 ////    PATH    ////
 
 #[derive(Serialize)]
-pub struct NombreCarpeta {
+pub struct NombrePlantilla {
     nombre: String,
 }
 
 #[tauri::command]
-pub fn reportes_sponsor_recibir_pathcarpeta(path: String) -> Result<(),String> {
+pub fn reportes_constanciastutorados_recibir_pathplantilla ( path:String ) -> Result<(),String> {
 
-    println!("📂 Ruta de la carpeta recibida (Sponsor): {}",path) ;
+    // Initialize the global variable if it hasn't been initialized yet
+    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
+    
+    // Store the report name in the global variable
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println!("📂 Ruta de la carpeta recibida (Constancias tutorados): {}",*nombre_guardado) ;
 
 Ok(())
 }
@@ -26,79 +69,141 @@ Ok(())
 ////    NOMBRE REPORTE     ////
 
 #[tauri::command]
-pub fn reportes_sponsor_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+pub fn reportes_constanciastutorados_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
 
-    println!("📂 Nombre del reporte (Sponsor): {}",nombrereporte) ;
+    // Initialize the global variable if it hasn't been initialized yet
+    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new())) ;
+    
+    // Store the report name in the global variable
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = nombrereporte ;
+    
+    // println!("📂 Nombre del reporte (Constancias tutorados): {}",*nombre_guardado) ;
 
-Ok(nombrereporte)
+Ok(())
 }
 
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-const ARCHIVO_ENTRADA: &str = "C:\\Users\\USUARIO\\Downloads\\metrics_sponsor.xlsx";
-const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Sponsor.xlsx";
+const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
 
-// 📥 Leer datos del archivo de métricas
-pub fn leer_métricas() -> Result<Vec<Vec<String>>, String> {
-    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_ENTRADA)
-        .map_err(|e| format!("Error al abrir el archivo: {}", e))?;
+#[tauri::command]
+pub fn generar_constanciastutorados ( ) -> Result<(),String> {
+
+    // println!("📖 Cargando archivo Excel...") ;
+
+    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
+        .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook
-        .worksheet_range("Métricas")
-        .map_err(|e| format!("Error al cargar 'Métricas': {}", e))?;
+        .worksheet_range("Sheet1")
+        .map_err(|e| format!("❌ No se pudo cargar 'Sheet1': {}", e))?;
 
-    let mut datos: Vec<Vec<String>> = Vec::new();
+    // Asegurar que la carpeta de salida exista.
+    let directorio = NOMBRE_REPORTE
+        .get()
+        .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))? ;
 
-    for row in range.rows() {
-        let fila: Vec<String> = row.iter().map(|cell| cell.to_string()).collect();
-        datos.push(fila);
+    fs::create_dir_all(&*directorio).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))? ;
+
+    for (i,row) in range.rows().enumerate() {
+        if i == 0 {
+            println!("⚠ Ignorando encabezado...");
+            continue;
+        }
+
+        if row.len() < 2 {
+            eprintln!("⚠ ERROR: Fila {} tiene menos de 2 columnas, se omite.", i + 1);
+            continue;
+        }
+
+        let nombre_tutorado = row[0].to_string().trim().to_string();
+        let apellido_tutorado = row[1].to_string().trim().to_string();
+
+        println!("📝 Generando constancia para: {} {}", nombre_tutorado, apellido_tutorado);
+
+        let salida_docx = PathBuf::from(&*directorio).join ( format! (
+            "Constancia Tutorado {} {}.docx",
+            nombre_tutorado , apellido_tutorado
+        ) ) ;
+
+        // Convert PathBuf to String safely
+        let salida_documento = salida_docx.into_os_string()
+            .into_string()
+            .map_err(|e| format!("❌ El nombre del archivo no es válido UTF-8: {:?}", e))? ;
+        
+        match crear_constancia ( &nombre_tutorado,&apellido_tutorado,&salida_documento ) {
+            Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
+            Err(e) => eprintln!("❌ Error al generar constancia para {} {}: {}" ,
+            nombre_tutorado , apellido_tutorado , e )
+        }
     }
 
-    println!("✔ {} filas de métricas leídas correctamente.", datos.len());
-    Ok(datos)
+    println!("🎉 ¡Todas las constancias han sido generadas!");
+
+Ok(())
 }
 
-// 📊 Calcular métricas actualizadas
-pub fn calcular_métricas(datos: &[Vec<String>]) -> Vec<Vec<String>> {
-    let mut datos_actualizados = datos.to_vec();
+fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),String> {
 
-    for fila in &mut datos_actualizados {
-        if let Some(valor) = fila.get(1) {
-            if let Ok(numero) = valor.parse::<f64>() {
-                let nuevo_valor = numero * 1.1; // Simulación de cálculo (ejemplo: aumento del 10%)
-                fila.push(format!("{:.2}", nuevo_valor));
+    let path_plantilla = PATH_PLANTILLA
+        .get()
+        .ok_or("❌ PATH_PLANTILLA no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    let plantilla_bytes = fs::read(&*path_plantilla)
+        .map_err(|e| format!("❌ No se pudo leer la plantilla DOCX: {}", e))?;
+
+    let cursor = std::io::Cursor::new(plantilla_bytes);
+    let mut zip = ZipArchive::new(cursor)
+        .map_err(|e| format!("❌ No se pudo abrir el archivo DOCX como ZIP: {}", e))?;
+
+    let mut document_xml = String::new();
+    {
+        let mut file = zip.by_name("word/document.xml")
+            .map_err(|e| format!("❌ No se encontró 'word/document.xml' en la plantilla: {}", e))?;
+        file.read_to_string(&mut document_xml)
+            .map_err(|e| format!("❌ Error al leer el contenido XML: {}", e))?;
+    }
+
+    document_xml = document_xml.replace("«nom_tutorado»", nombre);
+    document_xml = document_xml.replace("«Apellido_tutorado»", apellido);
+
+    let mut buffer = std::io::Cursor::new(Vec::new());
+    {
+        let mut zip_writer = zip::ZipWriter::new(&mut buffer);
+        for i in 0..zip.len() {
+            let mut file = zip.by_index(i)
+                .map_err(|e| format!("❌ Error al leer archivo del ZIP: {}", e))?;
+            let options = FileOptions::default().compression_method(file.compression());
+            
+            let mut content = Vec::new();
+            file.read_to_end(&mut content)
+                .map_err(|e| format!("❌ Error al leer contenido de '{}': {}", file.name(), e))?;
+            
+            if file.name() == "word/document.xml" {
+                zip_writer.start_file(file.name(), options)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
+                zip_writer.write_all(document_xml.as_bytes())
+                    .map_err(|e| format!("❌ Error al escribir el documento XML: {}", e))?;
+            } else {
+                zip_writer.start_file(file.name(), options)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
+                zip_writer.write_all(&content)
+                    .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
             }
         }
     }
 
-    datos_actualizados
-}
+    fs::write(salida_path, buffer.into_inner())
+        .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
-// 📤 Generar nuevo reporte en Excel
-pub fn generar_reporte(datos: &[Vec<String>]) {
+    println!("✔ Constancia guardada: {}", salida_path);
 
-    let  workbook = Workbook::new(ARCHIVO_SALIDA).unwrap();
-    let mut sheet = workbook.add_worksheet(Some("Métricas_Actualizadas")).unwrap();
-
-    for (i, fila) in datos.iter().enumerate() {
-        for (j, valor) in fila.iter().enumerate() {
-            sheet.write_string(i as u32, j as u16, valor, None).unwrap();
-        }
-    }
-
-    workbook.close().expect("Error al cerrar el archivo Excel");
-    println!("✔ Reporte Sponsor generado correctamente en {}", ARCHIVO_SALIDA);
-}
-
-// 📌 Ejecutar el proceso
-fn main() {
-    match leer_métricas() {
-        Ok(datos) => {
-            let datos_actualizados = calcular_métricas(&datos);
-            generar_reporte(&datos_actualizados);
-        }
-        Err(e) => println!("✖ ERROR al procesar métricas: {}", e),
-    }
+Ok(())
 }
 

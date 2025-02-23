@@ -95,45 +95,6 @@ function Reportes ( ) {
   } ;
 
 
-  //// Apertura de explorador de archivos para inscripciones.
-
-
-  const [folderPath_ConstanciasTutorados, setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de inscripciones") ;
-
-  const handleSelectFolder_ConstanciasTutorados = async ( ) => {
-
-    try {
-
-      const selectedPath = await open ( {
-        directory : true ,  // Permite seleccionar una carpeta.
-        multiple : false ,  // Solo permite seleccionar una.
-      } ) ;
-
-      if ( typeof selectedPath === "string" ) {
-
-        // Imprimir por consola.
-        console.log ( "Carpeta seleccionada:",selectedPath ) ;
-
-        // Imprimir por GUI.
-        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath_ConstanciasTutorados ( folderName ) ;
-
-        // Enviar la ruta al backend.
-        invoke ( "reportes_sponsor_recibir_pathcarpeta",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
-      }
-
-    } catch (error) {
-
-      console.error ( "Error al seleccionar la carpeta:",error ) ;
-
-    }
-
-  } ;
-
-
   //// Apertura de explorador de archivos para plantilla de Tutores.
 
 
@@ -164,7 +125,46 @@ function Reportes ( ) {
       
       }
 
-    } catch (error) {
+    } catch ( error ) {
+
+      console.error ( "Error al seleccionar la carpeta:",error ) ;
+
+    }
+
+  } ;
+
+
+  //// Apertura de explorador de archivos para plantilla de Tutorados.
+
+
+  const [folderPath_ConstanciasTutorados, setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
+
+  const handleSelectFolder_ConstanciasTutorados = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar una carpeta.
+        multiple : false ,  // Solo permite seleccionar una.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
+        setFolderPath_ConstanciasTutorados ( folderName ) ;
+
+        // Enviar la ruta al backend.
+        invoke ( "reportes_constanciastutorados_recibir_pathplantilla",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch ( error ) {
 
       console.error ( "Error al seleccionar la carpeta:",error ) ;
 
@@ -184,7 +184,7 @@ function Reportes ( ) {
   
   const [directorioReporteConstanciasTutores, setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes") ;
 
-  const [directorioReporteConstanciasTutorados, setDirectorioReporteConstanciasTutorados] = useState("Directorio del reporte") ;
+  const [directorioReporteConstanciasTutorados, setDirectorioReporteConstanciasTutorados] = useState("Directorio de reportes") ;
   
 
   //// Nombre de los reportes.
@@ -198,7 +198,7 @@ function Reportes ( ) {
   
   const [nombreReporteConstanciasTutores, setNombreReporteConstanciasTutores] = useState("Nombre de reportes") ;
 
-  const [nombreReporteConstanciasTutorados, setNombreReporteConstanciasTutorados] = useState("Nombre del reporte") ;
+  const [nombreReporteConstanciasTutorados, setNombreReporteConstanciasTutorados] = useState("Nombre de reportes") ;
 
 
   //// Control de ventana emergente.
@@ -346,23 +346,25 @@ function Reportes ( ) {
 
     } else if ( seccioon === "Tutorados" ) {
 
-      if ( folderPath_ConstanciasTutorados === "Ubicación de inscripciones" ) {
-        alert ( `Por favor, selecciona un directorio de inscripciones antes de generar el reporte de `+seccioon+`.` ) ;
+      if ( folderPath_ConstanciasTutorados === "Ubicación de plantilla" ) {
+        alert ( `Por favor, selecciona una plantilla de constancias para tutorados antes de generar el reporte de `+seccioon+`.` ) ;
         setEmergenteVisible ( false ) ;
         return ;
       }
 
       try {
 
-        const filePath = await save ( {
-          defaultPath : seccioon+".xlsx" ,
-          filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
+        const dirPath = await open ( {
+          directory : true ,  // Permite seleccionar una carpeta.
+          multiple : false ,  // Solo permite seleccionar una.
         } ) ;
 
-        if ( filePath ) {
-          setDirectorioReporteConstanciasTutorados ( filePath ) ;
-          setNombreReporteConstanciasTutorados ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
+        if ( dirPath ) {
+          await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
+          await invoke ( "generar_constanciastutorados" ) ;
+          setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
+          setNombreReporteConstanciasTutorados ( "Constancia Tutor" ) ;
+          alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
         } else {
           alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
           return ;
@@ -380,69 +382,6 @@ function Reportes ( ) {
     
     }
 
-    /*
-    try {
-
-      if ( seccioon === "LEE" ) {
-        try {
-          const datos = await invoke("leer_archivos_en_carpeta");
-          console.log("Datos procesados:", datos);
-          setFolderPath_LEE ( fileName ) ;
-        } catch (error) {
-          console.error("Error al procesar los archivos de la carpeta Qualtrics:", error);
-          alert("Hubo un error al generar el reporte.");
-        }
-      }
-
-      if (seccioon === "Colegios") {
-        // Leer estudiantes aprobados
-        const estudiantesAprobados = await invoke<string[]>("leer_estudiantes_aprobados");
-  
-        if (estudiantesAprobados.length === 0) {
-          alert("No hay tutores aprobados para generar el reporte.");
-          return;
-        }
-  
-        // Generar el reporte con la lista de estudiantes aprobados
-        await invoke("generar_reporte_colegios", { estudiantes: estudiantesAprobados });
-  
-        alert("¡Envío exitoso! El reporte de Colegios se ha generado.");
-      }
-      if (seccioon === "PUJ") {
-         // Leer estudiantes aprobados
-         const estudiantesAprobados = await invoke<string[]>("leer_universitarios_aprobados");
-  
-         if (estudiantesAprobados.length === 0) {
-           alert("No hay tutores aprobados para generar el reporte.");
-           return;
-         }
-   
-         // Generar el reporte con la lista de estudiantes aprobados
-         await invoke("generar_reporte_puj", { estudiantes: estudiantesAprobados });
-   
-         alert("¡Envío exitoso! El reporte de puj se ha generado.");
-      }
-      if (seccioon === "Constancias") {
-        try {
-            await invoke("generar_constancias");
-            alert("¡Envío exitoso! Se han generado las constancias.");
-        } catch (err) {
-            console.error("Error al generar constancias:", err);
-            alert("Hubo un error al generar las constancias.");
-        }
-      }
-      else {
-        console.log("📌 Otra sección seleccionada, no se generará reporte de colegios.");
-      }
-
-    } catch (err) {
-      
-      console.error("Error al generar el reporte de colegios:", err);
-      alert("Hubo un error al generar el reporte.");
-    
-    }
-    */
-  
     setEmergenteVisible ( true ) ;
   
   } ;

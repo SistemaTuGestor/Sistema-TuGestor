@@ -19,7 +19,7 @@ use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpet
 use reportes::puj::{reportes_puj_actualizarfecha,reportes_puj_recibir_nombrereporte,leer_universitarios_aprobados,generar_reporte_puj} ;
 use reportes::colegios::{reportes_colegios_actualizarfecha,reportes_colegios_recibir_nombrereporte,generar_reporte_colegios,leer_estudiantes_aprobados} ;
 use reportes::constancias::{reportes_constanciastutores_actualizarfecha,reportes_constanciastutores_recibir_pathplantilla,reportes_constanciastutores_recibir_nombrereporte,generar_constanciastutores} ;
-use reportes::sponsor::{reportes_sponsor_recibir_pathcarpeta,reportes_sponsor_recibir_nombrereporte} ;
+use reportes::sponsor::{reportes_constanciastutorados_actualizarfecha,reportes_constanciastutorados_recibir_pathplantilla,reportes_constanciastutorados_recibir_nombrereporte,generar_constanciastutorados} ;
 
 
 
@@ -62,8 +62,10 @@ fn main ( ) {
             reportes_constanciastutores_recibir_nombrereporte ,
             generar_constanciastutores ,
             // Sponsor
-            reportes_sponsor_recibir_pathcarpeta ,
-            reportes_sponsor_recibir_nombrereporte
+            reportes_constanciastutorados_actualizarfecha ,
+            reportes_constanciastutorados_recibir_pathplantilla ,
+            reportes_constanciastutorados_recibir_nombrereporte ,
+            generar_constanciastutorados ,
             
         
         ] )

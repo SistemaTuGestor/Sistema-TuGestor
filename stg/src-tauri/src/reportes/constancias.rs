@@ -60,7 +60,7 @@ pub fn reportes_constanciastutores_recibir_pathplantilla ( path:String ) -> Resu
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
-    println!("📂 Ruta de la carpeta recibida (Constancias tutores): {}",*nombre_guardado) ;
+    // println!("📂 Ruta de la carpeta recibida (Constancias tutores): {}",*nombre_guardado) ;
 
 Ok(())
 }
@@ -71,8 +71,6 @@ Ok(())
 #[tauri::command]
 pub fn reportes_constanciastutores_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
 
-    println!("📂 Nombre del reporte (Constancias tutores): {}",nombrereporte) ;
-
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new())) ;
     
@@ -80,7 +78,7 @@ pub fn reportes_constanciastutores_recibir_nombrereporte ( nombrereporte:String 
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = nombrereporte ;
     
-    println!("📂 Nombre del reporte (Constancias tutores): {}",*nombre_guardado) ;
+    // println!("📂 Nombre del reporte (Constancias tutores): {}",*nombre_guardado) ;
 
 Ok(())
 }
@@ -108,8 +106,6 @@ pub fn generar_constanciastutores ( ) -> Result<(),String> {
         .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))? ;
-
-    println!("📂 Nombre del reporte (Constancias tutores): {}",directorio) ;
 
     fs::create_dir_all(&*directorio).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))? ;
 
