@@ -12,7 +12,7 @@ use zip::{ZipArchive, write::FileOptions};
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_puj_actualizar_fecha(nueva_fecha: String) -> Result<(), String> {
+pub fn reportes_puj_actualizarfecha ( nueva_fecha:String) -> Result<(),String> {
 
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("❌ Error al parsear la fecha: {}", e))?;

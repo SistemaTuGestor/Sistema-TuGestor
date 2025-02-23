@@ -39,19 +39,19 @@ function Reportes ( ) {
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
 
-  const [fechaConstancias,setFechaConstancias] = useState("") ;
+  const [fechaConstanciasTutores,setFechaConstanciasTutores] = useState("") ;
 
   useEffect ( ( ) => {
     invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaConstancias(response.fecha) )
+      .then ( (response) => setFechaConstanciasTutores(response.fecha) )
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
 
-  const [fechaSponsor,setFechaSponsor] = useState("") ;
+  const [fechaConstanciasTutorados,setFechaConstanciasTutorados] = useState("") ;
 
   useEffect ( ( ) => {
     invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaSponsor(response.fecha) )
+      .then ( (response) => setFechaConstanciasTutorados(response.fecha) )
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
 
@@ -98,9 +98,9 @@ function Reportes ( ) {
   //// Apertura de explorador de archivos para inscripciones.
 
 
-  const [folderPath_Sponsor, setFolderPath_Sponsor] = useState<string | null>("Ubicación de inscripciones") ;
+  const [folderPath_ConstanciasTutorados, setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de inscripciones") ;
 
-  const handleSelectFolder_Sponsor = async ( ) => {
+  const handleSelectFolder_ConstanciasTutorados = async ( ) => {
 
     try {
 
@@ -116,10 +116,49 @@ function Reportes ( ) {
 
         // Imprimir por GUI.
         const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath_Sponsor ( folderName ) ;
+        setFolderPath_ConstanciasTutorados ( folderName ) ;
 
         // Enviar la ruta al backend.
         invoke ( "reportes_sponsor_recibir_pathcarpeta",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch (error) {
+
+      console.error ( "Error al seleccionar la carpeta:",error ) ;
+
+    }
+
+  } ;
+
+
+  //// Apertura de explorador de archivos para plantilla de Tutores.
+
+
+  const [folderPath_ConstanciasTutores, setFolderPath_ConstanciasTutores] = useState<string | null>("Ubicación de plantilla") ;
+
+  const handleSelectFolder_ConstanciasTutores = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar archivos.
+        multiple : false ,  // Solo permite seleccionar uno.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
+        setFolderPath_ConstanciasTutores ( folderName ) ;
+
+        // Enviar la ruta al backend.
+        invoke ( "reportes_constanciastutores_recibir_pathplantilla",{path:selectedPath} )
           .then ( () => console.log("Ruta enviada correctamente") )
           .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
       
@@ -137,29 +176,29 @@ function Reportes ( ) {
   //// Ubicación de los reportes.
 
 
-  const [directorioReporteLee, setDirectorioReporteLee] = useState("Directorio del reporte");
+  const [directorioReporteLee, setDirectorioReporteLee] = useState("Directorio del reporte") ;
   
-  const [directorioReportePUJ, setDirectorioReportePUJ] = useState("Directorio de reportes");
+  const [directorioReportePUJ, setDirectorioReportePUJ] = useState("Directorio de reportes") ;
   
-  const [directorioReporteColegios, setDirectorioReporteColegios] = useState("Directorio de reportes");
+  const [directorioReporteColegios, setDirectorioReporteColegios] = useState("Directorio de reportes") ;
   
-  const [directorioReporteConstancias, setDirectorioReporteConstancias] = useState("Directorio de reportes");
+  const [directorioReporteConstanciasTutores, setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes") ;
 
-  const [directorioReporteSponsor, setDirectorioReporteSponsor] = useState("Directorio del reporte");
+  const [directorioReporteConstanciasTutorados, setDirectorioReporteConstanciasTutorados] = useState("Directorio del reporte") ;
   
 
   //// Nombre de los reportes.
 
 
-  const [nombreReporteLee, setNombreReporteLee] = useState("Nombre del reporte");
+  const [nombreReporteLee, setNombreReporteLee] = useState("Nombre del reporte") ;
   
-  const [nombreReportePUJ, setNombreReportePUJ] = useState("Nombre de reportes");
+  const [nombreReportePUJ, setNombreReportePUJ] = useState("Nombre de reportes") ;
   
-  const [nombreReporteColegios, setNombreReporteColegios] = useState("Nombre de reportes");
+  const [nombreReporteColegios, setNombreReporteColegios] = useState("Nombre de reportes") ;
   
-  const [nombreReporteConstancias, setNombreReporteConstancias] = useState("Nombre de reportes");
+  const [nombreReporteConstanciasTutores, setNombreReporteConstanciasTutores] = useState("Nombre de reportes") ;
 
-  const [nombreReporteSponsor, setNombreReporteSponsor] = useState("Nombre del reporte");
+  const [nombreReporteConstanciasTutorados, setNombreReporteConstanciasTutorados] = useState("Nombre del reporte") ;
 
 
   //// Control de ventana emergente.
@@ -189,13 +228,13 @@ function Reportes ( ) {
 
       try {
 
-        const filePath = await save({
+        const filePath = await save ( {
           defaultPath : seccioon+".xlsx" ,
           filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
         } ) ;
 
         if ( filePath ) {
-          await invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: filePath }) ;
+          await invoke ( "reportes_lee_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ( "leer_archivos_en_carpeta" ) ;
           setDirectorioReporteLee ( filePath ) ;
           setNombreReporteLee ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
@@ -215,9 +254,9 @@ function Reportes ( ) {
 
       try {
 
-        const filePath = await save({
-          defaultPath : seccioon ,
-          filters : [ { name:"All Files" , extensions:["*"] } ]
+        const filePath = await save ( {
+          defaultPath : seccioon+"docx" ,
+          filters : [ { name:"Word Files" , extensions:["docx"] } ]
         } ) ;
 
         if ( filePath ) {
@@ -248,7 +287,7 @@ function Reportes ( ) {
 
         const filePath = await save({
           defaultPath : seccioon ,
-          filters : [ { name:"All Files" , extensions:["*"] } ]
+          filters : [ { name:"Word Files" , extensions:["docx"] } ]
         } ) ;
         
         if ( filePath ) {
@@ -273,20 +312,27 @@ function Reportes ( ) {
       
       }
 
-    } else if ( seccioon === "Constancias" ) {
+    } else if ( seccioon === "Tutores" ) {
+
+      if ( folderPath_ConstanciasTutores === "Ubicación de plantilla" ) {
+        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
+        setEmergenteVisible ( false ) ;
+        return ;
+      }
 
       try {
 
-        const filePath = await save({
-          defaultPath : seccioon ,
-          filters : [ { name:"Word Files" , extensions:["docx"] } ]
+        const dirPath = await open ( {
+          directory : true ,  // Permite seleccionar una carpeta.
+          multiple : false ,  // Solo permite seleccionar una.
         } ) ;
 
-        if ( filePath ) {
-          await invoke ( "generar_constancias" ) ;
-          setDirectorioReporteConstancias ( filePath ) ;
-          setNombreReporteConstancias ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
+        if ( dirPath ) {
+          await invoke ( "reportes_constanciastutores_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
+          await invoke ( "generar_constanciastutores" ) ;
+          setDirectorioReporteConstanciasTutores ( dirPath.toString() ) ;
+          setNombreReporteConstanciasTutores ( "Constancia Tutor" ) ;
+          alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
         } else {
           alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
           return ;
@@ -298,9 +344,9 @@ function Reportes ( ) {
       
       }
 
-    } else if ( seccioon === "Sponsor" ) {
+    } else if ( seccioon === "Tutorados" ) {
 
-      if ( folderPath_Sponsor === "Ubicación de inscripciones" ) {
+      if ( folderPath_ConstanciasTutorados === "Ubicación de inscripciones" ) {
         alert ( `Por favor, selecciona un directorio de inscripciones antes de generar el reporte de `+seccioon+`.` ) ;
         setEmergenteVisible ( false ) ;
         return ;
@@ -314,8 +360,8 @@ function Reportes ( ) {
         } ) ;
 
         if ( filePath ) {
-          setDirectorioReporteSponsor ( filePath ) ;
-          setNombreReporteSponsor ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
+          setDirectorioReporteConstanciasTutorados ( filePath ) ;
+          setNombreReporteConstanciasTutorados ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
         } else {
           alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
@@ -449,7 +495,7 @@ function Reportes ( ) {
               value={fechaLee}
               onChange={(e) => setFechaLee(e.target.value)}
               onBlur={() => {
-                invoke("reportes_lee_actualizar_fecha", { nuevaFecha: fechaLee })
+                invoke("reportes_lee_actualizarfecha", { nuevaFecha: fechaLee })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
@@ -484,7 +530,7 @@ function Reportes ( ) {
               value={fechaPUJ}
               onChange={(e) => setFechaPUJ(e.target.value)}
               onBlur={() => {
-                invoke("reportes_puj_actualizar_fecha", { nuevaFecha: fechaPUJ })
+                invoke("reportes_puj_actualizarfecha", { nuevaFecha: fechaPUJ })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
@@ -516,7 +562,7 @@ function Reportes ( ) {
               value={fechaColegios}
               onChange={(e) => setFechaColegios(e.target.value)}
               onBlur={() => {
-                invoke("reportes_colegios_actualizar_fecha", { nuevaFecha: fechaColegios })
+                invoke("reportes_colegios_actualizarfecha", { nuevaFecha: fechaColegios })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
@@ -539,30 +585,33 @@ function Reportes ( ) {
 
       <div className="seccioon">
         <div className="tiitulo">
-          Constancias
+          Tutores
         </div>
         <ul className="lista">
           <li>
             <input
               type="date"
-              value={fechaConstancias}
-              onChange={(e) => setFechaConstancias(e.target.value)}
+              value={fechaConstanciasTutores}
+              onChange={(e) => setFechaConstanciasTutores(e.target.value)}
               onBlur={() => {
-                invoke("reportes_constancias_actualizar_fecha", { nuevaFecha: fechaConstancias })
+                invoke("reportes_constanciastutores_actualizarfecha", { nuevaFecha: fechaConstanciasTutores })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
           </li>
-          <li className="base">
-            {directorioReporteConstancias}
+          <li onClick={() => handleSelectFolder_ConstanciasTutores()} className="hover-underline">
+            {folderPath_ConstanciasTutores}
           </li>
           <li className="base">
-            {nombreReporteConstancias}
+            {directorioReporteConstanciasTutores}
+          </li>
+          <li className="base">
+            {nombreReporteConstanciasTutores}
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Constancias")}>
+          <button onClick={()=>evento_clickOpciones("Tutores")}>
             Opciones
           </button>
         </div>
@@ -571,33 +620,33 @@ function Reportes ( ) {
 
       <div className="seccioon">
         <div className="tiitulo">
-          Sponsor
+          Tutorados
         </div>
         <ul className="lista">
           <li>
             <input
               type="date"
-              value={fechaSponsor}
-              onChange={(e) => setFechaSponsor(e.target.value)}
+              value={fechaConstanciasTutorados}
+              onChange={(e) => setFechaConstanciasTutorados(e.target.value)}
               onBlur={() => {
-                invoke("reportes_sponsor_actualizar_fecha", { nuevaFecha: fechaSponsor })
+                invoke("reportes_constanciastutorados_actualizarfecha", { nuevaFecha: fechaConstanciasTutorados })
                   .then(() => console.log("Fecha actualizada"))
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
           </li>
-          <li onClick={() => handleSelectFolder_Sponsor()} className="hover-underline">
-            {folderPath_Sponsor}
+          <li onClick={() => handleSelectFolder_ConstanciasTutorados()} className="hover-underline">
+            {folderPath_ConstanciasTutorados}
           </li>
           <li className="base">
-            {directorioReporteSponsor}
+            {directorioReporteConstanciasTutorados}
           </li>
           <li className="base">
-            {nombreReporteSponsor}
+            {nombreReporteConstanciasTutorados}
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Sponsor")}>
+          <button onClick={()=>evento_clickOpciones("Tutorados")}>
             Opciones
           </button>
         </div>

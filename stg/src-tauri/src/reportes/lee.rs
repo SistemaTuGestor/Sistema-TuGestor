@@ -11,7 +11,6 @@ use std::sync::Mutex;
 use std::fs;
 use std::collections::HashMap;
 use calamine::{open_workbook, Reader, Xlsx} ;
-use std::path::Path ;
 use xlsxwriter::* ;
 
 
@@ -31,12 +30,17 @@ pub struct Fecha {
 
 
 #[tauri::command]
-pub fn reportes_lee_actualizar_fecha(nueva_fecha: String) -> Result<(),String> {
+pub fn reportes_lee_actualizarfecha ( nueva_fecha:String ) -> Result<(),String> {
 
     let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
         .map_err(|e| format!("Failed to parse date: {}", e))?;
 
     let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+
+    FECHA.get_or_init(|| Mutex::new(String::new()))
+        .lock()
+        .map_err(|e| format!("Failed to lock mutex: {}", e))?
+        .clone_from(&formatted_date) ;
 
     // println!("Nueva fecha (LEE): {}", formatted_date);
 
@@ -52,14 +56,14 @@ pub struct NombreCarpeta {
 }
 
 #[tauri::command]
-pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(),String> {
+pub fn reportes_lee_recibir_pathcarpeta ( path:String) -> Result<(),String> {
 
     // Initialize the global variable if it hasn't been initialized yet
-    let nombre = PATH_CARPETA.get_or_init(|| Mutex::new(String::new()));
+    let nombre = PATH_CARPETA.get_or_init(|| Mutex::new(String::new())) ;
     
     // Store the report name in the global variable
-    let mut nombre_guardado = nombre.lock().unwrap();
-    *nombre_guardado = path;
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
 
     // println!("📂 Ruta de la carpeta recibida (LEE): {}",path) ;
 
@@ -75,7 +79,7 @@ pub struct NombreReporte {
 ////    NOMBRE REPORTE     ////
 
 #[tauri::command]
-pub fn reportes_lee_recibir_nombrereporte (nombrereporte: String) -> Result<(),String> {
+pub fn reportes_lee_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
     
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));

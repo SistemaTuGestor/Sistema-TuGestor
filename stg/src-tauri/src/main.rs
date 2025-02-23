@@ -15,10 +15,10 @@ use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
-use reportes::lee::{reportes_lee_actualizar_fecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,leer_archivos_en_carpeta} ;
-use reportes::puj::{reportes_puj_actualizar_fecha,reportes_puj_recibir_nombrereporte,leer_universitarios_aprobados,generar_reporte_puj} ;
-use reportes::colegios::{reportes_colegios_actualizar_fecha,reportes_colegios_recibir_nombrereporte,generar_reporte_colegios,leer_estudiantes_aprobados} ;
-use reportes::constancias::{reportes_constancias_recibir_nombrereporte,generar_constancias} ;
+use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,leer_archivos_en_carpeta} ;
+use reportes::puj::{reportes_puj_actualizarfecha,reportes_puj_recibir_nombrereporte,leer_universitarios_aprobados,generar_reporte_puj} ;
+use reportes::colegios::{reportes_colegios_actualizarfecha,reportes_colegios_recibir_nombrereporte,generar_reporte_colegios,leer_estudiantes_aprobados} ;
+use reportes::constancias::{reportes_constanciastutores_actualizarfecha,reportes_constanciastutores_recibir_pathplantilla,reportes_constanciastutores_recibir_nombrereporte,generar_constanciastutores} ;
 use reportes::sponsor::{reportes_sponsor_recibir_pathcarpeta,reportes_sponsor_recibir_nombrereporte} ;
 
 
@@ -42,24 +42,25 @@ fn main ( ) {
             /* REPORTES */
             obtener_fecha ,
             // LEE
-            reportes_lee_actualizar_fecha ,
+            reportes_lee_actualizarfecha ,
             reportes_lee_recibir_pathcarpeta ,
             reportes_lee_recibir_nombrereporte ,
             leer_archivos_en_carpeta ,
             // PUJ
-            reportes_puj_actualizar_fecha ,
+            reportes_puj_actualizarfecha ,
             reportes_puj_recibir_nombrereporte ,
             leer_universitarios_aprobados ,
             generar_reporte_puj ,
             // Colegios
-            reportes_colegios_actualizar_fecha ,
+            reportes_colegios_actualizarfecha ,
             reportes_colegios_recibir_nombrereporte ,
             generar_reporte_colegios ,
             leer_estudiantes_aprobados ,
             // Constancias
-            generar_constancias ,
-            
-            reportes_constancias_recibir_nombrereporte ,
+            reportes_constanciastutores_actualizarfecha ,
+            reportes_constanciastutores_recibir_pathplantilla ,
+            reportes_constanciastutores_recibir_nombrereporte ,
+            generar_constanciastutores ,
             // Sponsor
             reportes_sponsor_recibir_pathcarpeta ,
             reportes_sponsor_recibir_nombrereporte
