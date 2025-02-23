@@ -15,7 +15,6 @@ use zip::{ZipArchive, write::FileOptions} ;
 
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
-static PATH_CARPETA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
 
@@ -43,11 +42,18 @@ Ok(())
 ////    NOMBRE REPORTE     ////
 
 #[tauri::command]
-pub fn reportes_puj_recibir_nombrereporte(nombrereporte: String) -> Result<String,String> {
+pub fn reportes_puj_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
 
-    println!("📂 Nombre del reporte (PUJ): {}",nombrereporte) ;
+    // Initialize the global variable if it hasn't been initialized yet
+    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new())) ;
+    
+    // Store the report name in the global variable
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = nombrereporte ;
 
-Ok ( nombrereporte )
+    println!("📂 Nombre del reporte (PUJ): {}",*nombre_guardado) ;
+
+Ok(())
 }
 
 
