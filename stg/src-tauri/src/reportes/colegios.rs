@@ -74,7 +74,8 @@ const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.do
 
 
 #[tauri::command]
-pub fn leer_estudiantes_aprobados() -> Result<Vec<String>, String> {
+pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,String> {
+
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
@@ -84,7 +85,7 @@ pub fn leer_estudiantes_aprobados() -> Result<Vec<String>, String> {
 
     let mut estudiantes_aprobados = Vec::new();
 
-    for (i, row) in range.rows().enumerate() {
+    for (i,row) in range.rows().enumerate() {
         if i == 0 || row.len() < 5 {
             continue;
         }
@@ -100,11 +101,12 @@ pub fn leer_estudiantes_aprobados() -> Result<Vec<String>, String> {
         }
     }
 
-    Ok(estudiantes_aprobados)
+Ok(estudiantes_aprobados)
 }
 
 #[tauri::command]
-pub fn generar_reporte_colegios(estudiantes: Vec<String>) {
+pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) {
+    
     let lista_tutores = estudiantes.join("");
     let plantilla_path = Path::new(PLANTILLA_DOCX);
     let output_path = Path::new(ARCHIVO_SALIDA);

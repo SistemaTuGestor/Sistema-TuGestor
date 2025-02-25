@@ -89,7 +89,7 @@ Ok(())
 const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
 
 #[tauri::command]
-pub fn generar_constanciastutorados ( ) -> Result<(),String> {
+pub fn reportes_constanciastutorados_generar ( ) -> Result<(),String> {
 
     // println!("📖 Cargando archivo Excel...") ;
 

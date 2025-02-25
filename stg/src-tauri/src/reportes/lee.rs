@@ -105,7 +105,7 @@ pub struct DatosMonitoreo {
 }
 
 #[tauri::command]
-pub fn leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
+pub fn reportes_lee_leer_archivos_en_carpeta ( ) -> Result<Vec<DatosMonitoreo>,String> {
 
     let mut registros: HashMap<String, (String, Vec<u32>, u32)> = HashMap::new();
     

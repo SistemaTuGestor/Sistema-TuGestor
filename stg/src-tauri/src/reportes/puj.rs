@@ -70,10 +70,8 @@ const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx";
 const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx";
 const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_PUJ.docx";
 
-
-
 #[tauri::command]
-pub fn leer_universitarios_aprobados() -> Result<Vec<String>, String> {
+pub fn reportes_puj_leer_universitarios_aprobados ( ) -> Result<Vec<String>,String> {
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
@@ -103,7 +101,7 @@ pub fn leer_universitarios_aprobados() -> Result<Vec<String>, String> {
 }
 
 #[tauri::command]
-pub fn generar_reporte_puj(estudiantes: Vec<String>) {
+pub fn reporte_puj_generar ( estudiantes:Vec<String> ) {
     let lista_tutores = estudiantes.join("");
     let plantilla_path = Path::new(PLANTILLA_DOCX);
     let output_path = Path::new(ARCHIVO_SALIDA);
@@ -141,6 +139,6 @@ pub fn generar_reporte_puj(estudiantes: Vec<String>) {
         }
     }
 
-    zip_writer.finish().expect("Error al cerrar el ZIP");
+zip_writer.finish().expect ( "Error al cerrar el ZIP" ) ;
 }
 

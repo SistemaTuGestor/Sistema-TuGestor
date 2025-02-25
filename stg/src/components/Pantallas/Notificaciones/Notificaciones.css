@@ -16,20 +16,27 @@
         border-radius : 8px ;
     }
 
+    .desplazadora {
+        /* Posición */
+        overflow : scroll ;
+        /* Contenedor */
+        height : 100% ;
+    }
+
     .casilla {
         /* Contenedor */
         border-bottom : 1px solid gray ;
         /* Elementos */
         padding : 0 12px ;
         justify-content : space-between ;
-        .asunto {
+        .asunto-casilla {
             /* Posición */
             margin : 2% 0 ;
             /* Letra */
             color : black ;
             font-size : 100% ;
         }
-        .contactos {
+        .contactos-casilla {
             /* Posición */
             margin : -4px 0 2px 0 ;
             /* Letra */
@@ -57,48 +64,100 @@
         border-bottom : 2px solid gray ;
         /* Elementos */
         padding : 15px 10% 14px ;
-        gap: 10% ;
+        gap : 10% ;
         display : flex ;
-        select.botones-opciones {
-            /* Reseteo de estilo */
-            appearance : none ;
-            -moz-appearance : none ;
-            -webkit-appearance : none ;
+    } .opciones select  {
+        /* Reseteo de estilo */
+        appearance : none ;
+        -moz-appearance : none ;
+        -webkit-appearance : none ;
+        /* Contenedor */
+        width : 80% ;
+        background-color : inherit ;
+        border : 2px solid white ;
+        border-radius : 8px ;
+        /* Elementos */
+        padding : 0 0 0 4% ;
+        /* Letra */
+        font-size : 100% ;
+        color : white ;
+    } .opciones select:hover {
+        font-weight : bold ;
+    }
+
+    .mensaje {
+        /* Posición */
+        position : static ;
+        margin : 40px ;
+        /* Contenedor */
+        /* border : 1px solid red ; */
+        height : 64% ;
+        width : calc ( 100% - 0 ) ;
+        /* Ítems */
+        display : flex ;
+        flex-direction : column ;
+        .asunto-mensaje input {
+            /* Posición */
+            position : static ;
+            margin-bottom : 10px ;
             /* Contenedor */
-            width : 80% ;
-            background-color : inherit ;
-            border : 2px solid white ;
+            width : 89.9% ;
+            background-color : lightgray ;
+            border : 2px solid gray ;
             border-radius : 8px ;
-            /* Elementos */
-            padding : 0 0 0 4% ;
+            box-shadow : none ;
             /* Letra */
-            font-size : 100% ;
-            color : white ;
-        } .select.botones-opciones:hover {
+            color : black ;
+            font-family : Arial,Helvetica,sans-serif ;
+            font-size : 140% ;
             font-weight : bold ;
+        } .asunto-mensaje input::placeholder {
+            font-style : italic ;
+        }
+        .contenido-mensaje textarea {
+            /* Posición */
+            resize : none ;
+            position : static ;
+            /* Contenedor */
+            height : 440% ;
+            width : 95.8% ;
+            background-color : lightgray ;
+            border : 2px solid gray ;
+            border-radius : 8px ;
+            box-shadow : none ;
+            /* Ítems */
+            padding : 10px ;
+            /* Letra */
+            color : black ;
+            font-family : Arial,Helvetica,sans-serif ;
+            font-size : 100% ;
+        } .contenido-mensaje textarea::placeholder {
+            font-style : italic ;
         }
     }
 
-    .registro {
+    .botones {
         /* Posición */
-        margin : 2% ;
+        position : static ;
         /* Contenedor */
-        background-color : lightgray ;
-        border : 1px solid gray ;
-        border-radius : 8px ;
-        /* Elementos */
+        padding : 0 40px ;
+        /* Ítems */
         display : flex ;
-        justify-content : center ;
-        align-items : center ;
-        /* Letra */
-        font-size : 100% ;
-    }
-
-    .desplazadora {
-        /* Posición */
-        overflow : scroll ;
+        justify-content : space-evenly ;
+        gap : 10px ;
+    } .botones button {
         /* Contenedor */
-        height : 100% ;
+        width : 100% ;
+        background-color : lightgrey ;
+        border : 2px solid black ;
+        border-radius : 8px ;
+        box-shadow : none ;
+        /* Letra */
+        color : black ;
+        font-family : Arial,Helvetica,sans-serif ;
+        font-size : 110% ;
+    } .botones button:hover {
+        font-weight : bold ;
     }
 
 }

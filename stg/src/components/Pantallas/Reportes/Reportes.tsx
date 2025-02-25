@@ -235,7 +235,7 @@ function Reportes ( ) {
 
         if ( filePath ) {
           await invoke ( "reportes_lee_recibir_nombrereporte",{nombrereporte:filePath} ) ;
-          await invoke ( "leer_archivos_en_carpeta" ) ;
+          await invoke ( "reportes_lee_leer_archivos_en_carpeta" ) ;
           setDirectorioReporteLee ( filePath ) ;
           setNombreReporteLee ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
@@ -261,12 +261,12 @@ function Reportes ( ) {
 
         if ( filePath ) {
           // Leer estudiantes aprobados.
-          const estudiantesAprobados = await invoke<string[]>("leer_universitarios_aprobados");
+          const estudiantesAprobados = await invoke<string[]>("reportes_puj_leer_universitarios_aprobados");
           if ( estudiantesAprobados.length === 0 ) {
             alert ( `No hay tutores aprobados para generar el reporte.` ) ;
             return;
           }
-          await invoke ( "generar_reporte_puj",{estudiantes:estudiantesAprobados} ) ;
+          await invoke ( "reporte_puj_generar",{estudiantes:estudiantesAprobados} ) ;
           setDirectorioReportePUJ ( filePath ) ;
           setNombreReportePUJ ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
@@ -292,12 +292,12 @@ function Reportes ( ) {
         
         if ( filePath ) {
           // Leer estudiantes aprobados
-          const estudiantesAprobados = await invoke<string[]>("leer_estudiantes_aprobados");
+          const estudiantesAprobados = await invoke<string[]>("reportes_colegios_leer_estudiantes_aprobados") ;
           if (estudiantesAprobados.length === 0) {
             alert("No hay tutores aprobados para generar el reporte.");
             return;
           }
-          await invoke ("generar_reporte_colegios",{estudiantes:estudiantesAprobados } ) ;
+          await invoke ("reportes_colegios_generar",{estudiantes:estudiantesAprobados } ) ;
           setDirectorioReporteColegios ( filePath ) ;
           setNombreReporteColegios ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
@@ -329,7 +329,7 @@ function Reportes ( ) {
 
         if ( dirPath ) {
           await invoke ( "reportes_constanciastutores_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
-          await invoke ( "generar_constanciastutores" ) ;
+          await invoke ( "reportes_constanciastutores_generar" ) ;
           setDirectorioReporteConstanciasTutores ( dirPath.toString() ) ;
           setNombreReporteConstanciasTutores ( "Constancia Tutor" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
@@ -361,7 +361,7 @@ function Reportes ( ) {
 
         if ( dirPath ) {
           await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
-          await invoke ( "generar_constanciastutorados" ) ;
+          await invoke ( "reportes_constanciastutorados_generar" ) ;
           setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
           setNombreReporteConstanciasTutorados ( "Constancia Tutorado" ) ;
           alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;

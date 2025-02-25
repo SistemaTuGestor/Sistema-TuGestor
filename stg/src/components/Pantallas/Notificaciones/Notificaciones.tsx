@@ -42,21 +42,21 @@ function Notificaciones ( ) {
         <div className="desplazadora">
           { datosIzq.map ( (row,index) => (
             <div key={index} className="casilla">
-              <p className="asunto">{row.asunto}</p>
-              <p className="contactos">{row.contactos}</p>
+              <p className="asunto-casilla">{row.asunto}</p>
+              <p className="contactos-casilla">{row.contactos}</p>
             </div>
           ) ) }
         </div>
       </div>
       <div className="contenedor_PanelDerecho">
         <div className="opciones">
-          <select className="botones-opciones" data-multiselect>
+          <select data-multiselect>
             <option value="destinatarios">Destinatarios</option>
             <option value="opt-1">Destinatario 1</option>
             <option value="opt-2">Destinatario 2</option>
             <option value="opt-3">Destinatario 3</option>
           </select>
-          <select className="botones-opciones">
+          <select>
             <option value="objetos">Objetos</option>
             <option value="opt-2">Opción 2</option>
             <option value="opt-3">Opción 3</option>
@@ -64,12 +64,23 @@ function Notificaciones ( ) {
             <option value="opt-5">Opción 5</option>
           </select>
         </div>
-        <div className="desplazadora">
-          { datosDer.map ( (row,index) => (
-            <div key={index} className="registro">
-              <p>{row.registro}</p>
-            </div>
-          ) ) }
+        <div className="mensaje">
+          <div className="asunto-mensaje">
+            <input placeholder="Asunto">
+            </input>
+          </div>
+          <div className="contenido-mensaje">
+            <textarea placeholder="Mensaje">
+            </textarea>
+          </div>
+        </div>
+        <div className="botones">
+          <button>
+            Guardar
+          </button>
+          <button>
+            Enviar
+          </button>
         </div>
       </div>
     </div>

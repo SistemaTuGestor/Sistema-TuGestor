@@ -45,9 +45,6 @@
     }
 
     .lista {
-        display : flex ;
-        flex-direction : column ;
-        justify-content : space-evenly ;
         /* Posición */
         top : -10% ;
         /* Contenedor */
@@ -62,6 +59,9 @@
         font-size : 80% ;
         text-align : left ;
         /* Ítems */
+        display : flex ;
+        flex-direction : column ;
+        justify-content : space-evenly ;
         padding : 0 ;
         line-height : 140% ;
         list-style-type : none ;
