@@ -86,7 +86,8 @@ Ok(())
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+// const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
 
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {

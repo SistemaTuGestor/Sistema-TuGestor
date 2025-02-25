@@ -86,12 +86,13 @@ Ok(())
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+// const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
 
 #[tauri::command]
 pub fn reportes_constanciastutorados_generar ( ) -> Result<(),String> {
 
-    // println!("📖 Cargando archivo Excel...") ;
+    println!("📖 Cargando archivo Excel...") ;
 
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;

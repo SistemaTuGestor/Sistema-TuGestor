@@ -137,7 +137,7 @@ function Reportes ( ) {
   //// Apertura de explorador de archivos para plantilla de Tutorados.
 
 
-  const [folderPath_ConstanciasTutorados, setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
+  const [folderPath_ConstanciasTutorados,setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
 
   const handleSelectFolder_ConstanciasTutorados = async ( ) => {
 
@@ -255,7 +255,7 @@ function Reportes ( ) {
       try {
 
         const filePath = await save ( {
-          defaultPath : seccioon+"docx" ,
+          defaultPath : seccioon+".docx" ,
           filters : [ { name:"Word Files" , extensions:["docx"] } ]
         } ) ;
 

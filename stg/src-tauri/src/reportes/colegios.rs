@@ -67,11 +67,14 @@ pub struct Estudiante {
 }
 
 // 🔹 Rutas de los archivos
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx";
-const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx";
-const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx";
-
-
+/*
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx" ;
+const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx" ;
+*/
+const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
+const PLANTILLA_DOCX: &str = "/home/user/Downloads/Sistema-TuGestor/recursos/Plantilla - Reporte Final.docx" ;
+const ARCHIVO_SALIDA: &str = "/home/user/Downloads/Reporte_Colegios.docx" ;
 
 #[tauri::command]
 pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,String> {

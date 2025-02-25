@@ -66,12 +66,18 @@ pub struct Estudiante {
 }
 
 // 🔹 Rutas de los archivos
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx";
-const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx";
-const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_PUJ.docx";
+/*
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
+const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx" ;
+const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx" ;
+*/
+const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
+const PLANTILLA_DOCX: &str = "/home/user/Downloads/Sistema-TuGestor/recursos/Plantilla - Reporte Final.docx" ;
+const ARCHIVO_SALIDA: &str = "/home/user/Downloads/Reporte_PUJ.docx" ;
 
 #[tauri::command]
 pub fn reportes_puj_leer_universitarios_aprobados ( ) -> Result<Vec<String>,String> {
+    
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
