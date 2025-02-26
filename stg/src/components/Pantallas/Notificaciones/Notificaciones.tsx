@@ -18,6 +18,12 @@ function Notificaciones ( ) {
 
   const [datosIzq,setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   
+  useEffect(() => {
+    invoke("leer_archivo_emparejados")
+      .then(() => console.log("Archivo de emparejados leído correctamente."))
+      .catch((error) => console.error("Error al leer el archivo:", error));
+  }, []);
+  
   // Fetch data from the backend.
   useEffect ( () => {
     invoke<DatosNotificacionesIzq[]> ( "notificaciones_izquierda" )
