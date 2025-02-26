@@ -63,7 +63,7 @@ pub fn reportes_puj_recibir_pathplantilla ( path:String ) -> Result<(),String> {
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
-    println!("📂 Ruta de la plantilla recibida (PUJ): {}",*nombre_guardado) ;
+    // println! ( "📂 Ruta de la plantilla recibida (PUJ): {}",*nombre_guardado ) ;
 
 Ok(())
 }
@@ -79,7 +79,7 @@ pub fn reportes_puj_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = nombrereporte ;
 
-    println!("📂 Nombre del reporte (PUJ): {}",*nombre_guardado) ;
+    // println! ( "📂 Nombre del reporte (PUJ): {}",*nombre_guardado ) ;
 
 Ok(())
 }

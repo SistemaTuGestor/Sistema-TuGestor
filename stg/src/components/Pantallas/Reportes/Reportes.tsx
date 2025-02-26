@@ -312,7 +312,7 @@ function Reportes ( ) {
         } ) ;
 
         if ( filePath ) {
-          await invoke ( "reportes_lee_actualizarfecha" ) ;
+          // await invoke ( "reportes_lee_actualizarfecha",{nueva_fecha:fechaLee} ) ;
           await invoke ( "reportes_lee_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ( "reportes_lee_leer_archivos_en_carpeta" ) ;
           setDirectorioReporteLee ( filePath ) ;
@@ -351,7 +351,7 @@ function Reportes ( ) {
             alert ( `No hay tutores aprobados para generar el reporte.` ) ;
             return;
           }
-          await invoke ( "reportes_puj_actualizarfecha" ) ;
+          // await invoke ( "reportes_puj_actualizarfecha",{nueva_fecha:fechaPUJ} ) ;
           await invoke ( "reportes_puj_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ( "reporte_puj_generar",{estudiantes:estudiantesAprobados} ) ;
           setDirectorioReportePUJ ( filePath ) ;
@@ -390,7 +390,7 @@ function Reportes ( ) {
             alert("No hay tutores aprobados para generar el reporte.");
             return;
           }
-          await invoke ( "reportes_colegios_actualizarfecha" ) ;
+          // await invoke ( "reportes_colegios_actualizarfecha",{nueva_fecha:fechaColegios} ) ;
           await invoke ( "reportes_colegios_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ("reportes_colegios_generar",{estudiantes:estudiantesAprobados } ) ;
           setDirectorioReporteColegios ( filePath ) ;
@@ -423,7 +423,7 @@ function Reportes ( ) {
         } ) ;
 
         if ( dirPath ) {
-          await invoke ( "reportes_constanciastutores_actualizarfecha" ) ;
+          // await invoke ( "reportes_constanciastutores_actualizarfecha",{nueva_fecha:fechaConstanciasTutores} ) ;
           await invoke ( "reportes_constanciastutores_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
           await invoke ( "reportes_constanciastutores_generar" ) ;
           setDirectorioReporteConstanciasTutores ( dirPath.toString() ) ;
@@ -456,7 +456,7 @@ function Reportes ( ) {
         } ) ;
 
         if ( dirPath ) {
-          await invoke ( "reportes_constanciastutorados_actualizarfecha" ) ;
+          // await invoke ( "reportes_constanciastutorados_actualizarfecha",{nueva_fecha:fechaConstanciasTutorados} ) ;
           await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
           await invoke ( "reportes_constanciastutorados_generar" ) ;
           setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
