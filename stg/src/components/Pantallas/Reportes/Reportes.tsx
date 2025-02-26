@@ -325,7 +325,7 @@ function Reportes ( ) {
         
       } catch ( error ) {
       
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
+        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
       
       }
 
@@ -364,7 +364,7 @@ function Reportes ( ) {
 
       } catch ( error ) {
       
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
+        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
       
       }
       
@@ -403,7 +403,7 @@ function Reportes ( ) {
 
       } catch ( error ) {
       
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
+        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
       
       }
 
@@ -436,7 +436,7 @@ function Reportes ( ) {
 
       } catch ( error ) {
       
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
+        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
       
       }
 
@@ -469,7 +469,7 @@ function Reportes ( ) {
 
       } catch ( error ) {
       
-        alert ( `¡Error al abrir dialogo en sección de `+seccioon+`!` ) ;
+        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
       
       }
 

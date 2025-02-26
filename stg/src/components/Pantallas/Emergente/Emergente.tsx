@@ -23,6 +23,7 @@ function Emergente ( {mensaje,cancelar,generar,verificar,enviar} : PropiedadesEm
         <p className="mensaje">
             {mensaje}
         </p>
+
         <div className="botones">
           <button onClick={cancelar} className="cancelar">
             Salir
@@ -37,6 +38,7 @@ function Emergente ( {mensaje,cancelar,generar,verificar,enviar} : PropiedadesEm
             Enviar
           </button>
         </div>
+        
       </div>
     </div>
   
