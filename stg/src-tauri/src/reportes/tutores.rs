@@ -2,17 +2,18 @@
 // VARIOS
 use serde::Serialize ;
 // FECHA
+use chrono::Local ;
 use chrono::NaiveDate ;
 // PATH
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
-use calamine::{open_workbook, Reader, Xlsx} ;
 use std::fs::{self} ;
 use std::io::{Read, Write} ;
 use std::path::PathBuf ;
-use zip::ZipArchive ;
 use zip::write::FileOptions ;
+use zip::ZipArchive ;
+use calamine::{open_workbook, Reader, Xlsx} ;
 
 
 
@@ -25,19 +26,25 @@ static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_constanciastutores_actualizarfecha ( nueva_fecha:String ) -> Result<(),String> {
+pub fn reportes_constanciastutores_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
 
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))? ;
-
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string() ;
+    let fecha = match nueva_fecha {
+        Some(fecha) => {
+            let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
+                .map_err(|e| format!("Failed to parse date: {}", e))?;
+            parsed_date.format("%d-%m-%Y").to_string()
+        }
+        None => {
+            Local::now().format("%d-%m-%Y").to_string()
+        }
+    };
 
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&formatted_date) ;
+        .clone_from(&fecha) ;
     
-    println!("Nueva fecha (Constancias tutores): {}", formatted_date) ;
+    // println! ( "Nueva fecha (Tutores): {}", fecha ) ;
 
 Ok(())
 }
@@ -124,11 +131,18 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
         let nombre_tutor = row[0].to_string().trim().to_string();
         let apellido_tutor = row[1].to_string().trim().to_string();
 
-        println!("📝 Generando constancia para: {} {}", nombre_tutor, apellido_tutor);
+        // println! ( "📝 Generando constancia para: {} {}",nombre_tutor,apellido_tutor ) ;
+
+        // Se obtiene la fecha de la variable global.
+        let fecha = FECHA
+            .get()
+            .ok_or("❌ FECHA no ha sido inicializado")?
+            .lock()
+            .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
         let salida_docx = PathBuf::from(&*directorio).join ( format! (
-            "Constancia Tutor {} {}.docx",
-            nombre_tutor , apellido_tutor
+            "Constancia Tutor {} {} ({}).docx",
+            nombre_tutor , apellido_tutor , fecha
         ) ) ;
 
         // Convert PathBuf to String safely

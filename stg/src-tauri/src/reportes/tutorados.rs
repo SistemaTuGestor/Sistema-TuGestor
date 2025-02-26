@@ -2,17 +2,17 @@
 // VARIOS
 use serde::Serialize ;
 // FECHA
+use chrono::Local ;
 use chrono::NaiveDate ;
 // PATH
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
-use calamine::{open_workbook, Reader, Xlsx} ;
 use std::fs::{self} ;
-use std::io::{Read, Write} ;
 use std::path::PathBuf ;
-use zip::ZipArchive ;
-use zip::write::FileOptions ;
+use std::io::{Read, Write} ;
+use calamine::{open_workbook, Reader, Xlsx} ;
+use zip::{ZipArchive, write::FileOptions} ;
 
 
 
@@ -25,19 +25,25 @@ static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:String ) -> Result<(),String> {
+pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
 
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))? ;
-
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string() ;
+    let fecha = match nueva_fecha {
+        Some(fecha) => {
+            let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
+                .map_err(|e| format!("Failed to parse date: {}", e))?;
+            parsed_date.format("%d-%m-%Y").to_string()
+        }
+        None => {
+            Local::now().format("%d-%m-%Y").to_string()
+        }
+    };
 
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&formatted_date) ;
+        .clone_from(&fecha) ;
     
-    println!("Nueva fecha (Constancias tutorados): {}", formatted_date) ;
+    // println! ( "Nueva fecha (Tutorados): {}", fecha ) ;
 
 Ok(())
 }
@@ -53,10 +59,8 @@ pub struct NombrePlantilla {
 #[tauri::command]
 pub fn reportes_constanciastutorados_recibir_pathplantilla ( path:String ) -> Result<(),String> {
 
-    // Initialize the global variable if it hasn't been initialized yet
     let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
     
-    // Store the report name in the global variable
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
@@ -86,6 +90,7 @@ Ok(())
 
 ////    LÓGICA DE ARCHIVOS      ////
 
+// Ruta de archivos.
 // const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
 const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
 
@@ -124,11 +129,18 @@ pub fn reportes_constanciastutorados_generar ( ) -> Result<(),String> {
         let nombre_tutorado = row[0].to_string().trim().to_string();
         let apellido_tutorado = row[1].to_string().trim().to_string();
 
-        println!("📝 Generando constancia para: {} {}", nombre_tutorado, apellido_tutorado);
+        // println! ( "📝 Generando constancia para: {} {}" , nombre_tutorado,apellido_tutorado ) ;
+
+        // Se obtiene la fecha de la variable global.
+        let fecha = FECHA
+            .get()
+            .ok_or("❌ FECHA no ha sido inicializado")?
+            .lock()
+            .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
         let salida_docx = PathBuf::from(&*directorio).join ( format! (
-            "Constancia Tutorado {} {}.docx",
-            nombre_tutorado , apellido_tutorado
+            "Constancia Tutorado {} {} ({}).docx",
+            nombre_tutorado , apellido_tutorado , fecha
         ) ) ;
 
         // Convert PathBuf to String safely
@@ -203,7 +215,7 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
     fs::write(salida_path, buffer.into_inner())
         .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
-    println!("✔ Constancia guardada: {}", salida_path);
+    // println! ( "✔ Constancia guardada: {}",salida_path ) ;
 
 Ok(())
 }

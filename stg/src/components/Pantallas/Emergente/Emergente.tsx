@@ -25,7 +25,7 @@ function Emergente ( {mensaje,cancelar,generar,verificar,enviar} : PropiedadesEm
         </p>
         <div className="botones">
           <button onClick={cancelar} className="cancelar">
-            Cancelar
+            Salir
           </button>
           <button onClick={generar} className="generar">
             Generar

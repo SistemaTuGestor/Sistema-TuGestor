@@ -2,10 +2,11 @@
 // VARIOS
 use serde::Serialize ;
 // FECHA
+use chrono::Local ;
 use chrono::NaiveDate ;
 // PATH
-use once_cell::sync::OnceCell;
-use std::sync::Mutex;
+use std::sync::Mutex ;
+use once_cell::sync::OnceCell ;
 // ARCHIVOS
 use std::fs;
 use std::collections::HashMap;
@@ -29,19 +30,25 @@ pub struct Fecha {
 
 
 #[tauri::command]
-pub fn reportes_lee_actualizarfecha ( nueva_fecha:String ) -> Result<(),String> {
+pub fn reportes_lee_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
 
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+    let fecha = match nueva_fecha {
+        Some(fecha) => {
+            let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
+                .map_err(|e| format!("Failed to parse date: {}", e))?;
+            parsed_date.format("%d-%m-%Y").to_string()
+        }
+        None => {
+            Local::now().format("%d-%m-%Y").to_string()
+        }
+    };
 
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&formatted_date) ;
-
-    // println!("Nueva fecha (LEE): {}", formatted_date);
+        .clone_from(&fecha) ;
+    
+    // println! ( "Nueva fecha (LEE): {}", fecha ) ;
 
 Ok(())
 }
@@ -110,11 +117,12 @@ pub fn reportes_lee_leer_archivos_en_carpeta ( ) -> Result<Vec<DatosMonitoreo>,S
     let mut registros: HashMap<String, (String, Vec<u32>, u32)> = HashMap::new();
     
     let carpeta_path = PATH_CARPETA.get().expect("Global variable not initialized");
-    println!("📂 Ruta de la carpeta recibida (LEE): {}",PATH_CARPETA.get().unwrap().lock().unwrap()) ;
+    // println!("📂 Ruta de la carpeta recibida (LEE): {}",PATH_CARPETA.get().unwrap().lock().unwrap()) ;
     let carpeta_path_guard = carpeta_path.lock().unwrap(); 
     let archivos = fs::read_dir(carpeta_path_guard.as_str()).map_err(|e| format!("Error al leer la carpeta: {}", e))?;
     
     for entrada in archivos {
+
         let entrada = entrada.map_err(|e| format!("Error al leer un archivo en la carpeta: {}", e))?;
         let path = entrada.path();
         if path.extension().and_then(|s| s.to_str()) != Some("xlsx") {
@@ -154,6 +162,7 @@ pub fn reportes_lee_leer_archivos_en_carpeta ( ) -> Result<Vec<DatosMonitoreo>,S
                 *total_minutos += minutos;
             }).or_insert((nombre_completo, vec![minutos], minutos));
         }
+    
     }
     
     let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, minutos_por_semana, minutos_totales))| {
@@ -171,12 +180,33 @@ pub fn reportes_lee_leer_archivos_en_carpeta ( ) -> Result<Vec<DatosMonitoreo>,S
     Ok(data)
 }
 
-pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
+pub fn generar_excel ( data:&Vec<DatosMonitoreo> ) -> Result<(),String> {
 
-    let output_path = NOMBRE_REPORTE.get().unwrap().lock().unwrap() ;
-    println!("📂 Nombre del reporte (LEE): {}",output_path) ;
-    
-    let workbook = Workbook::new(&output_path).map_err(|e| e.to_string())?;
+    // Se obtiene el nombre del reporte de la variable global.
+    let nombre_reporte = NOMBRE_REPORTE
+        .get()
+        .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    /*
+    // Se obtiene la fecha de la variable global.
+    let fecha = FECHA
+        .get()
+        .ok_or("❌ FECHA no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    // Construir el nuevo nombre del archivo con la fecha.
+    let output_path = format!("{} ({}).xlsx", nombre_reporte, *fecha);
+    */
+
+    let output_path = format! ( "{}.xlsx",nombre_reporte) ;
+
+    // Crear el archivo de Excel.
+    let workbook = Workbook::new(&output_path)
+        .map_err(|e| e.to_string())?;
+
     let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
     
     // Encabezados con formato de semanas dinámicas
@@ -208,23 +238,8 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     }
     
     workbook.close().map_err(|e| e.to_string())?;
-    println!("✔ Archivo generado en: {}", output_path);
+    // println! ( "✔ Archivo generado en: {}",output_path ) ;
     
 Ok(())
 }
-
-
-////    NUEVO NOMBRE DEL REPORTE    ////
-
-/*
-pub fn reportes_lee_guardar_nombrereporte ( ) {
-    
-    let nuevafecha = FECHA ;
-    let nuevonombre = NOMBRE_REPORTE ;
-
-    let combined_result = format!("{}+{}", nueva_fecha, nuevo_nombre);
-
-Ok ( combined_result )
-}
-*/
 

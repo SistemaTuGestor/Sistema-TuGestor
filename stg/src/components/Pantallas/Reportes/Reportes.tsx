@@ -95,12 +95,12 @@ function Reportes ( ) {
   } ;
 
 
-  //// Apertura de explorador de archivos para plantilla de Tutores.
+  //// Apertura de explorador de archivos para plantilla de PUJ.
 
 
-  const [folderPath_ConstanciasTutores, setFolderPath_ConstanciasTutores] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_PUJ,setPlantillaPath_PUJ] = useState<string | null>("Ubicación de plantilla") ;
 
-  const handleSelectFolder_ConstanciasTutores = async ( ) => {
+  const handleSelectPlantilla_PUJ = async ( ) => {
 
     try {
 
@@ -115,8 +115,86 @@ function Reportes ( ) {
         console.log ( "Plantilla seleccionada:",selectedPath ) ;
 
         // Imprimir por GUI.
-        const folderName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
-        setFolderPath_ConstanciasTutores ( folderName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
+        setPlantillaPath_PUJ ( fileName ) ;
+
+        // Enviar la ruta al backend.
+        invoke ( "reportes_puj_recibir_pathplantilla",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch ( error ) {
+
+      console.error ( "Error al seleccionar la plantilla:",error ) ;
+
+    }
+
+  } ;
+  
+
+  //// Apertura de explorador de archivos para plantilla de Colegios.
+
+
+  const [plantillaPath_Colegios,setPlantillaPath_Colegios] = useState<string | null>("Ubicación de plantilla") ;
+
+  const handleSelectPlantilla_Colegios = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar archivos.
+        multiple : false ,  // Solo permite seleccionar uno.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
+        setPlantillaPath_Colegios ( fileName ) ;
+
+        // Enviar la ruta al backend.
+        invoke ( "reportes_colegios_recibir_pathplantilla",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch ( error ) {
+
+      console.error ( "Error al seleccionar la plantilla:",error ) ;
+
+    }
+
+  } ;
+
+
+  //// Apertura de explorador de archivos para plantilla de Tutores.
+
+
+  const [plantillaPath_ConstanciasTutores,setPlantillaPath_ConstanciasTutores] = useState<string | null>("Ubicación de plantilla") ;
+
+  const handleSelectPlantilla_ConstanciasTutores = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar archivos.
+        multiple : false ,  // Solo permite seleccionar uno.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
+        setPlantillaPath_ConstanciasTutores ( fileName ) ;
 
         // Enviar la ruta al backend.
         invoke ( "reportes_constanciastutores_recibir_pathplantilla",{path:selectedPath} )
@@ -127,7 +205,7 @@ function Reportes ( ) {
 
     } catch ( error ) {
 
-      console.error ( "Error al seleccionar la carpeta:",error ) ;
+      console.error ( "Error al seleccionar la plantilla:",error ) ;
 
     }
 
@@ -137,9 +215,9 @@ function Reportes ( ) {
   //// Apertura de explorador de archivos para plantilla de Tutorados.
 
 
-  const [folderPath_ConstanciasTutorados,setFolderPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_ConstanciasTutorados,setPlantillaPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
 
-  const handleSelectFolder_ConstanciasTutorados = async ( ) => {
+  const handleSelectPlantilla_ConstanciasTutorados = async ( ) => {
 
     try {
 
@@ -151,11 +229,11 @@ function Reportes ( ) {
       if ( typeof selectedPath === "string" ) {
 
         // Imprimir por consola.
-        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
 
         // Imprimir por GUI.
-        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath_ConstanciasTutorados ( folderName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
+        setPlantillaPath_ConstanciasTutorados ( fileName ) ;
 
         // Enviar la ruta al backend.
         invoke ( "reportes_constanciastutorados_recibir_pathplantilla",{path:selectedPath} )
@@ -166,7 +244,7 @@ function Reportes ( ) {
 
     } catch ( error ) {
 
-      console.error ( "Error al seleccionar la carpeta:",error ) ;
+      console.error ( "Error al seleccionar la plantilla:",error ) ;
 
     }
 
@@ -176,29 +254,29 @@ function Reportes ( ) {
   //// Ubicación de los reportes.
 
 
-  const [directorioReporteLee, setDirectorioReporteLee] = useState("Directorio del reporte") ;
+  const [directorioReporteLee,setDirectorioReporteLee] = useState("Directorio del reporte") ;
   
-  const [directorioReportePUJ, setDirectorioReportePUJ] = useState("Directorio de reportes") ;
+  const [directorioReportePUJ,setDirectorioReportePUJ] = useState("Directorio de reportes") ;
   
-  const [directorioReporteColegios, setDirectorioReporteColegios] = useState("Directorio de reportes") ;
+  const [directorioReporteColegios,setDirectorioReporteColegios] = useState("Directorio de reportes") ;
   
-  const [directorioReporteConstanciasTutores, setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes") ;
+  const [directorioReporteConstanciasTutores,setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes") ;
 
-  const [directorioReporteConstanciasTutorados, setDirectorioReporteConstanciasTutorados] = useState("Directorio de reportes") ;
+  const [directorioReporteConstanciasTutorados,setDirectorioReporteConstanciasTutorados] = useState("Directorio de reportes") ;
   
 
   //// Nombre de los reportes.
 
 
-  const [nombreReporteLee, setNombreReporteLee] = useState("Nombre del reporte") ;
+  const [nombreReporteLee,setNombreReporteLee] = useState("Nombre del reporte") ;
   
-  const [nombreReportePUJ, setNombreReportePUJ] = useState("Nombre de reportes") ;
+  const [nombreReportePUJ,setNombreReportePUJ] = useState("Nombre de reportes") ;
   
-  const [nombreReporteColegios, setNombreReporteColegios] = useState("Nombre de reportes") ;
+  const [nombreReporteColegios,setNombreReporteColegios] = useState("Nombre de reportes") ;
   
-  const [nombreReporteConstanciasTutores, setNombreReporteConstanciasTutores] = useState("Nombre de reportes") ;
+  const [nombreReporteConstanciasTutores,setNombreReporteConstanciasTutores] = useState("Nombre de reportes") ;
 
-  const [nombreReporteConstanciasTutorados, setNombreReporteConstanciasTutorados] = useState("Nombre de reportes") ;
+  const [nombreReporteConstanciasTutorados,setNombreReporteConstanciasTutorados] = useState("Nombre de reportes") ;
 
 
   //// Control de ventana emergente.
@@ -229,11 +307,12 @@ function Reportes ( ) {
       try {
 
         const filePath = await save ( {
-          defaultPath : seccioon+".xlsx" ,
+          defaultPath : seccioon ,
           filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
         } ) ;
 
         if ( filePath ) {
+          await invoke ( "reportes_lee_actualizarfecha" ) ;
           await invoke ( "reportes_lee_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ( "reportes_lee_leer_archivos_en_carpeta" ) ;
           setDirectorioReporteLee ( filePath ) ;
@@ -252,10 +331,16 @@ function Reportes ( ) {
 
     } else if ( seccioon === "PUJ" ) {
 
+      if ( plantillaPath_PUJ === "Ubicación de plantilla" ) {
+        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
+        setEmergenteVisible ( false ) ;
+        return ;
+      }
+
       try {
 
         const filePath = await save ( {
-          defaultPath : seccioon+".docx" ,
+          defaultPath : seccioon ,
           filters : [ { name:"Word Files" , extensions:["docx"] } ]
         } ) ;
 
@@ -266,6 +351,8 @@ function Reportes ( ) {
             alert ( `No hay tutores aprobados para generar el reporte.` ) ;
             return;
           }
+          await invoke ( "reportes_puj_actualizarfecha" ) ;
+          await invoke ( "reportes_puj_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ( "reporte_puj_generar",{estudiantes:estudiantesAprobados} ) ;
           setDirectorioReportePUJ ( filePath ) ;
           setNombreReportePUJ ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
@@ -283,9 +370,15 @@ function Reportes ( ) {
       
     } else if ( seccioon === "Colegios" ) {
 
+      if ( plantillaPath_Colegios === "Ubicación de plantilla" ) {
+        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
+        setEmergenteVisible ( false ) ;
+        return ;
+      }
+
       try {
 
-        const filePath = await save({
+        const filePath = await save ( {
           defaultPath : seccioon ,
           filters : [ { name:"Word Files" , extensions:["docx"] } ]
         } ) ;
@@ -297,6 +390,8 @@ function Reportes ( ) {
             alert("No hay tutores aprobados para generar el reporte.");
             return;
           }
+          await invoke ( "reportes_colegios_actualizarfecha" ) ;
+          await invoke ( "reportes_colegios_recibir_nombrereporte",{nombrereporte:filePath} ) ;
           await invoke ("reportes_colegios_generar",{estudiantes:estudiantesAprobados } ) ;
           setDirectorioReporteColegios ( filePath ) ;
           setNombreReporteColegios ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
@@ -314,7 +409,7 @@ function Reportes ( ) {
 
     } else if ( seccioon === "Tutores" ) {
 
-      if ( folderPath_ConstanciasTutores === "Ubicación de plantilla" ) {
+      if ( plantillaPath_ConstanciasTutores === "Ubicación de plantilla" ) {
         alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
         setEmergenteVisible ( false ) ;
         return ;
@@ -328,6 +423,7 @@ function Reportes ( ) {
         } ) ;
 
         if ( dirPath ) {
+          await invoke ( "reportes_constanciastutores_actualizarfecha" ) ;
           await invoke ( "reportes_constanciastutores_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
           await invoke ( "reportes_constanciastutores_generar" ) ;
           setDirectorioReporteConstanciasTutores ( dirPath.toString() ) ;
@@ -346,7 +442,7 @@ function Reportes ( ) {
 
     } else if ( seccioon === "Tutorados" ) {
 
-      if ( folderPath_ConstanciasTutorados === "Ubicación de plantilla" ) {
+      if ( plantillaPath_ConstanciasTutorados === "Ubicación de plantilla" ) {
         alert ( `Por favor, selecciona una plantilla de constancias para tutorados antes de generar el reporte de `+seccioon+`.` ) ;
         setEmergenteVisible ( false ) ;
         return ;
@@ -360,6 +456,7 @@ function Reportes ( ) {
         } ) ;
 
         if ( dirPath ) {
+          await invoke ( "reportes_constanciastutorados_actualizarfecha" ) ;
           await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
           await invoke ( "reportes_constanciastutorados_generar" ) ;
           setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
@@ -413,7 +510,7 @@ function Reportes ( ) {
 
       { getEmergenteVisible && (
           <Emergente
-            mensaje   = {`¿Ya verificaste los reportes para ${seccioonActual}?`}
+            mensaje   = {`Opciones para los reportes de ${seccioonActual}.`}
             cancelar  = {evento_clickCancelar}
             generar   = {()=>evento_clickGenerar(seccioonActual)}
             verificar = {evento_clickVerificar}
@@ -475,6 +572,9 @@ function Reportes ( ) {
               }}
             />
           </li>
+          <li onClick={() => handleSelectPlantilla_PUJ()} className="hover-underline">
+            {plantillaPath_PUJ}
+          </li>
           <li className="base">
             {directorioReportePUJ}
           </li>
@@ -506,6 +606,9 @@ function Reportes ( ) {
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
+          </li>
+          <li onClick={() => handleSelectPlantilla_Colegios()} className="hover-underline">
+            {plantillaPath_Colegios}
           </li>
           <li className="base">
             {directorioReporteColegios}
@@ -539,8 +642,8 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li onClick={() => handleSelectFolder_ConstanciasTutores()} className="hover-underline">
-            {folderPath_ConstanciasTutores}
+          <li onClick={() => handleSelectPlantilla_ConstanciasTutores()} className="hover-underline">
+            {plantillaPath_ConstanciasTutores}
           </li>
           <li className="base">
             {directorioReporteConstanciasTutores}
@@ -574,8 +677,8 @@ function Reportes ( ) {
               }}
             />
           </li>
-          <li onClick={() => handleSelectFolder_ConstanciasTutorados()} className="hover-underline">
-            {folderPath_ConstanciasTutorados}
+          <li onClick={() => handleSelectPlantilla_ConstanciasTutorados()} className="hover-underline">
+            {plantillaPath_ConstanciasTutorados}
           </li>
           <li className="base">
             {directorioReporteConstanciasTutorados}

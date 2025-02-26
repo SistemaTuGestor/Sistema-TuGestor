@@ -2,6 +2,7 @@
 // VARIOS
 use serde::Serialize ;
 // FECHA
+use chrono::Local ;
 use chrono::NaiveDate ;
 // PATH
 use once_cell::sync::OnceCell ;
@@ -16,6 +17,7 @@ use zip::{ZipArchive, write::FileOptions} ;
 
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
 
@@ -23,18 +25,46 @@ static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_colegios_actualizarfecha(nueva_fecha: String) -> Result<(), String> {
+pub fn reportes_colegios_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
 
-    let parsed_date = NaiveDate::parse_from_str(&nueva_fecha, "%Y-%m-%d")
-        .map_err(|e| format!("Failed to parse date: {}", e))?;
-    let formatted_date = parsed_date.format("%d-%m-%Y").to_string();
+    let fecha = match nueva_fecha {
+        Some(fecha) => {
+            let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
+                .map_err(|e| format!("Failed to parse date: {}", e))?;
+            parsed_date.format("%d-%m-%Y").to_string()
+        }
+        None => {
+            Local::now().format("%d-%m-%Y").to_string()
+        }
+    };
 
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&formatted_date) ;
+        .clone_from(&fecha) ;
     
-    println!("Nueva fecha (Colegios): {}", formatted_date);
+    // println! ( "Nueva fecha (Colegios): {}", fecha ) ;
+
+Ok(())
+}
+
+
+////    PATH    ////
+
+#[derive(Serialize)]
+pub struct NombrePlantilla {
+    nombre: String,
+}
+
+#[tauri::command]
+pub fn reportes_colegios_recibir_pathplantilla ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
+    
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    println!("📂 Ruta de la plantilla recibida (Colegios): {}",*nombre_guardado) ;
 
 Ok(())
 }
@@ -52,7 +82,7 @@ pub fn reportes_colegios_recibir_nombrereporte ( nombrereporte:String ) -> Resul
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = nombrereporte ;
 
-    println!("📂 Nombre del reporte (PUJ): {}",*nombre_guardado) ;
+    // println!("📂 Nombre del reporte (Colegios): {}",*nombre_guardado) ;
 
 Ok(())
 }
@@ -66,15 +96,9 @@ pub struct Estudiante {
     horas_totales: f64,
 }
 
-// 🔹 Rutas de los archivos
-/*
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const PLANTILLA_DOCX: &str = "C:\\Users\\USUARIO\\Downloads\\Plantilla Reporte Final(Para Colegio y PUJ).docx" ;
-const ARCHIVO_SALIDA: &str = "C:\\Users\\USUARIO\\Downloads\\Reporte_Colegios.docx" ;
-*/
+//  --> 🔹 Rutas de los archivos.
+// const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
 const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
-const PLANTILLA_DOCX: &str = "/home/user/Downloads/Sistema-TuGestor/recursos/Plantilla - Reporte Final.docx" ;
-const ARCHIVO_SALIDA: &str = "/home/user/Downloads/Reporte_Colegios.docx" ;
 
 #[tauri::command]
 pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,String> {
@@ -104,24 +128,56 @@ pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,St
         }
     }
 
-Ok(estudiantes_aprobados)
+Ok ( estudiantes_aprobados )
 }
 
 #[tauri::command]
-pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) {
-    
-    let lista_tutores = estudiantes.join("");
-    let plantilla_path = Path::new(PLANTILLA_DOCX);
-    let output_path = Path::new(ARCHIVO_SALIDA);
+pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) -> Result<(),String> {
 
-    let file = File::open(plantilla_path).expect("No se pudo abrir la plantilla");
-    let mut zip = ZipArchive::new(file).expect("Error al leer el archivo ZIP");
+    let lista_tutores = estudiantes.join("") ;
 
+    // Se obtiene el nombre del reporte de la variable global.
+    let nombre_reporte = NOMBRE_REPORTE
+        .get()
+        .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    // Se obtiene la fecha de la variable global.
+    let fecha = FECHA
+        .get()
+        .ok_or("❌ FECHA no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    // Construir el nuevo nombre del archivo con la fecha.
+    let nuevo_nombre_archivo = format!("{} ({}).docx", nombre_reporte, *fecha);
+
+    // Construir la ruta de salida en el mismo directorio que el archivo original.
+    let output_path = Path::new ( &nuevo_nombre_archivo ) ;
+
+    // Se obtiene del PATH de la variable global.
+    let path_plantilla = PATH_PLANTILLA
+        .get()
+        .ok_or("❌ PATH_PLANTILLA no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    // Abrir la plantilla DOCX.
+    let file = File::open(&*path_plantilla)
+        .map_err(|e| format!("❌ No se pudo abrir la plantilla: {}", e))?;
+
+    // Se lee el DOCX como un ZIP.
+    let mut zip = ZipArchive::new(file)
+        .map_err(|e| format!("❌ Error al leer el archivo ZIP: {}", e))?;
+
+    // Leer el contenido XML dentro del DOCX.
     let mut contenido_xml = String::new();
-
     {
-        let mut file = zip.by_name("word/document.xml").expect("No se encontró document.xml");
-        file.read_to_string(&mut contenido_xml).expect("Error al leer XML");
+        let mut file = zip.by_name("word/document.xml")
+            .map_err(|e| format!("❌ No se encontró document.xml: {}", e))?;
+        file.read_to_string(&mut contenido_xml)
+            .map_err(|e| format!("❌ Error al leer XML: {}", e))?;
     }
 
     contenido_xml = contenido_xml.replace("&lt;&lt;lista&gt;&gt;", &lista_tutores);
@@ -148,4 +204,7 @@ pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) {
     }
 
     zip_writer.finish().expect("Error al cerrar el ZIP");
+
+Ok(())
 }
+
