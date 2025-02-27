@@ -183,7 +183,7 @@ pub fn reportes_lee_leer_archivos_en_carpeta ( ) -> Result<Vec<DatosMonitoreo>,S
 pub fn generar_excel ( data:&Vec<DatosMonitoreo> ) -> Result<(),String> {
 
     // Se obtiene el nombre del reporte de la variable global.
-    let nombre_reporte = NOMBRE_REPORTE
+    let output_path = NOMBRE_REPORTE
         .get()
         .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
         .lock()
@@ -198,10 +198,8 @@ pub fn generar_excel ( data:&Vec<DatosMonitoreo> ) -> Result<(),String> {
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
     // Construir el nuevo nombre del archivo con la fecha.
-    let output_path = format!("{} ({}).xlsx", nombre_reporte, *fecha);
+    let output_path = format!("{} ({})", nombre_reporte, *fecha);
     */
-
-    let output_path = format! ( "{}.xlsx",nombre_reporte) ;
 
     // Crear el archivo de Excel.
     let workbook = Workbook::new(&output_path)

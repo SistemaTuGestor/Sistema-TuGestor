@@ -140,18 +140,29 @@ pub fn reporte_puj_generar ( estudiantes:Vec<String> ) -> Result<(),String> {
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
+    // Extraer el nombre del archivo (sin la ruta) y su extensión.
+    let path = Path::new(&*nombre_reporte);
+    let file_name = path.file_stem()
+        .and_then(|name| name.to_str())
+        .ok_or("❌ No se pudo extraer el nombre del archivo de NOMBRE_REPORTE")?;
+    let extension = path.extension()
+        .and_then(|ext| ext.to_str())
+        .ok_or("❌ No se pudo extraer la extensión del archivo de NOMBRE_REPORTE")?;
+    
     // Se obtiene la fecha de la variable global.
     let fecha = FECHA
-        .get()
-        .ok_or("❌ FECHA no ha sido inicializado")?
-        .lock()
-        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+    .get()
+    .ok_or("❌ FECHA no ha sido inicializado")?
+    .lock()
+    .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
     // Construir el nuevo nombre del archivo con la fecha.
-    let nuevo_nombre_archivo = format!("{} ({}).docx", nombre_reporte, *fecha);
+    let nuevo_nombre_archivo = format!("{} ({}).{}", file_name, *fecha, extension);
 
     // Construir la ruta de salida en el mismo directorio que el archivo original.
-    let output_path = Path::new ( &nuevo_nombre_archivo ) ;
+    let output_path = path.parent()
+        .ok_or("❌ No se pudo obtener el directorio padre de NOMBRE_REPORTE")?
+        .join(nuevo_nombre_archivo);
 
     // Se obtiene del PATH de la variable global.
     let path_plantilla = PATH_PLANTILLA
