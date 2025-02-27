@@ -38,6 +38,20 @@ pub struct FuncionariosColegio {
 pub struct TutoradosEmparejados {
     nombre: String,
     correo: String,
+    telefono: Vec<String>,
+    id: String,
+    colegio: String,
+    vocabulario: String,
+    gramatica: String,
+    escucha: String,
+    lectura: String,
+    a: String,
+    b: String,
+    c: String,
+    d: String,
+    e: String,
+    f: String,
+    g: String,
 }
 
 #[tauri::command]
@@ -97,6 +111,8 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
         let telefono = row.get(3).map_or("".to_string(), |cell| cell.to_string());
         let institucion = row.get(4).map_or("".to_string(), |cell| cell.to_string());
         let horas = row.get(8).map_or("".to_string(), |cell| cell.to_string());
+        let tutoradonombre = row.get(9).map_or("".to_string(), |cell| cell.to_string());
+        let tutorado2 = row.get(27).map_or("".to_string(), |cell| cell.to_string());
 
         if institucion.is_empty() {
             println!("Institución vacía, se omite la fila.");
@@ -110,7 +126,7 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
 
         if institucion == "Pontificia Universidad Javeriana" {
             println!("Agregando a tutores PUJ");
-            tutores_puj.push(TutoresPUJ { 
+            let mut tutor = TutoresPUJ { 
                 nombre: nombre.clone(), 
                 apellido: apellido.clone(),
                 correo: correo.clone(),
@@ -118,10 +134,17 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
                 telefono: vec![telefono.clone()],
                 horas: horas.clone(),
                 tutorados: vec![],
-            });
+            };
+            if !tutoradonombre.is_empty() {
+                tutor.tutorados.push(tutoradonombre.clone());
+            }
+            if !tutorado2.is_empty() {
+                tutor.tutorados.push(tutorado2.clone());
+            }
+            tutores_puj.push(tutor);
         } else {
             println!("Agregando a tutores Colegio");
-            tutores_colegio.push(TutoresColegio { 
+            let mut tutor = TutoresColegio { 
                 nombre: nombre.clone(), 
                 apellido: apellido.clone(),
                 correo: correo.clone(),
@@ -129,6 +152,61 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
                 telefono: vec![telefono.clone()],
                 horas: horas.clone(),
                 tutorados: vec![],
+            };
+            if !tutoradonombre.is_empty() {
+                tutor.tutorados.push(tutoradonombre.clone());
+            }
+            if !tutorado2.is_empty() {
+                tutor.tutorados.push(tutorado2.clone());
+            }
+            tutores_colegio.push(tutor);
+        }
+
+        if !tutoradonombre.is_empty() {
+            tutorados_emparejados.push(TutoradosEmparejados {
+                nombre: tutoradonombre.clone(),
+                correo: row.get(14).map_or("".to_string(), |cell| cell.to_string()),
+                telefono: vec![
+                    row.get(12).map_or("".to_string(), |cell| cell.to_string()),
+                    row.get(13).map_or("".to_string(), |cell| cell.to_string()),
+                ],
+                id: row.get(10).map_or("".to_string(), |cell| cell.to_string()),
+                colegio: row.get(11).map_or("".to_string(), |cell| cell.to_string()),
+                vocabulario: row.get(16).map_or("".to_string(), |cell| cell.to_string()),
+                gramatica: row.get(17).map_or("".to_string(), |cell| cell.to_string()),
+                escucha: row.get(18).map_or("".to_string(), |cell| cell.to_string()),
+                lectura: row.get(19).map_or("".to_string(), |cell| cell.to_string()),
+                a: row.get(20).map_or("".to_string(), |cell| cell.to_string()),
+                b: row.get(21).map_or("".to_string(), |cell| cell.to_string()),
+                c: row.get(22).map_or("".to_string(), |cell| cell.to_string()),
+                d: row.get(23).map_or("".to_string(), |cell| cell.to_string()),
+                e: row.get(24).map_or("".to_string(), |cell| cell.to_string()),
+                f: row.get(25).map_or("".to_string(), |cell| cell.to_string()),
+                g: row.get(26).map_or("".to_string(), |cell| cell.to_string()),
+            });
+        }
+
+        if !tutorado2.is_empty() {
+            tutorados_emparejados.push(TutoradosEmparejados {
+                nombre: tutorado2.clone(),
+                correo: row.get(32).map_or("".to_string(), |cell| cell.to_string()),
+                telefono: vec![
+                    row.get(30).map_or("".to_string(), |cell| cell.to_string()),
+                    row.get(31).map_or("".to_string(), |cell| cell.to_string()),
+                ],
+                id: row.get(28).map_or("".to_string(), |cell| cell.to_string()),
+                colegio: row.get(29).map_or("".to_string(), |cell| cell.to_string()),
+                vocabulario: row.get(34).map_or("".to_string(), |cell| cell.to_string()),
+                gramatica: row.get(35).map_or("".to_string(), |cell| cell.to_string()),
+                escucha: row.get(36).map_or("".to_string(), |cell| cell.to_string()),
+                lectura: row.get(37).map_or("".to_string(), |cell| cell.to_string()),
+                a: row.get(38).map_or("".to_string(), |cell| cell.to_string()),
+                b: row.get(39).map_or("".to_string(), |cell| cell.to_string()),
+                c: row.get(40).map_or("".to_string(), |cell| cell.to_string()),
+                d: row.get(41).map_or("".to_string(), |cell| cell.to_string()),
+                e: row.get(42).map_or("".to_string(), |cell| cell.to_string()),
+                f: row.get(43).map_or("".to_string(), |cell| cell.to_string()),
+                g: row.get(44).map_or("".to_string(), |cell| cell.to_string()),
             });
         }
     }
@@ -136,9 +214,11 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
     println!("Lectura finalizada.");
     println!("Total Tutores PUJ: {}", tutores_puj.len());
     println!("Total Tutores Colegio: {}", tutores_colegio.len());
+    println!("Total Tutorados Emparejados: {}", tutorados_emparejados.len());
 
     println!("Tutores PUJ: {:?}", tutores_puj);
     println!("Tutores Colegio: {:?}", tutores_colegio);
+    println!("Tutorados Emparejados: {:?}", tutorados_emparejados);
 
     Ok((tutores_puj, tutores_colegio, funcionarios_colegio, tutorados_emparejados))
 }
