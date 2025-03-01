@@ -12,7 +12,7 @@ mod reportes ;
 // Monitoreo.
 use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 // Notificaciones.
-use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
+use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha,historial::guardar_historial,historial::leer_historial} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
 use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,reportes_lee_leer_archivos_en_carpeta} ;
@@ -38,6 +38,8 @@ fn main ( ) {
             /* NOTIFICACIONES */
             notificaciones_izquierda ,
             notificaciones_derecha ,
+            guardar_historial ,
+            leer_historial ,
 
             /* REPORTES */
             obtener_fecha ,

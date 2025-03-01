@@ -94,8 +94,9 @@ pub struct Estudiante {
 }
 
 //  --> 🔹 Rutas de los archivos.
+const ARCHIVO_EXCEL: &str = "C:\\Users\\Javier\\Downloads\\LEE.xlsx" ;
 // const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
+//const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
 
 #[tauri::command]
 pub fn reportes_puj_leer_universitarios_aprobados ( ) -> Result<Vec<String>,String> {
