@@ -32,6 +32,9 @@ pub struct TutoresColegio {
 pub struct FuncionariosColegio {
     nombre: String,
     correo: String,
+    telefono: Vec<String>,
+    institucion: String,
+    
 }
 
 #[derive(Serialize, Debug)]
@@ -54,36 +57,56 @@ pub struct TutoradosEmparejados {
     g: String,
 }
 
+#[derive(Serialize, Debug)]
+pub struct TutoradosControl {
+    nombre: String,
+    correo: String,
+    telefono: Vec<String>,
+    id: String,
+    colegio: String,
+    vocabulario: String,
+    gramatica: String,
+    escucha: String,
+    lectura: String,
+    a: String,
+    b: String,
+    c: String,
+    d: String,
+    e: String,
+    f: String,
+    g: String,
+}
+
 #[tauri::command]
 pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio>, Vec<FuncionariosColegio>, Vec<TutoradosEmparejados>), String> {
-    println!("Iniciando la función leer_archivo_emparejados...");
+    //println!("Iniciando la función leer_archivo_emparejados...");
 
     // let archivo_path = PATH_ARCHIVO.get().expect("Global variable not initialized");
     // let archivo_path_guard = archivo_path.lock().unwrap();
     // let path = archivo_path_guard.as_str();
     let path = "C:\\Users\\USUARIO\\Downloads\\ejemplo.xlsx"; // Hardcoded path for now
-    println!("Ruta del archivo: {}", path);
+    //println!("Ruta del archivo: {}", path);
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
         Ok(wb) => {
-            println!("Archivo abierto correctamente.");
+           // println!("Archivo abierto correctamente.");
             wb
         }
         Err(e) => {
-            println!("Error al abrir el archivo: {}", e);
+           // println!("Error al abrir el archivo: {}", e);
             return Err(format!("Error al abrir el archivo: {}", e));
         }
     };
 
-    // Intentar acceder a la hoja "Sheet1"
+    // Intentar acceder a la hoja "Emparejamiento"
     let range = match workbook.worksheet_range("Emparejamiento") {
         Ok(r) => {
-            println!("Hoja de cálculo 'Emparejamiento' cargada correctamente.");
+            //println!("Hoja de cálculo 'Emparejamiento' cargada correctamente.");
             r
         }
         Err(e) => {
-            println!("No se pudo cargar la hoja 'Emparejamiento': {}", e);
+          //  println!("No se pudo cargar la hoja 'Emparejamiento': {}", e);
             return Err(format!("No se pudo cargar la hoja 'Emparejamiento': {}", e));
         }
     };
@@ -93,15 +116,15 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
     let mut funcionarios_colegio: Vec<FuncionariosColegio> = Vec::new();
     let mut tutorados_emparejados: Vec<TutoradosEmparejados> = Vec::new();
 
-    println!("Comenzando a leer las filas de la hoja de cálculo...");
+   // println!("Comenzando a leer las filas de la hoja de cálculo...");
     let mut fila_actual = 1; // Contador de filas para debug
 
     for row in range.rows().skip(1) { // Omitir encabezados
-        println!("Leyendo fila {}", fila_actual);
+        //println!("Leyendo fila {}", fila_actual);
         fila_actual += 1;
 
         if row.len() < 9 {
-            println!("Fila con menos de 9 columnas, se omite.");
+           // println!("Fila con menos de 9 columnas, se omite.");
             continue;
         }
 
@@ -115,17 +138,17 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
         let tutorado2 = row.get(27).map_or("".to_string(), |cell| cell.to_string());
 
         if institucion.is_empty() {
-            println!("Institución vacía, se omite la fila.");
+            //println!("Institución vacía, se omite la fila.");
             continue;
         }
 
-        println!(
-            "Nombre: {}, Apellido: {}, Correo: {}, Teléfono: {}, Institución: {}, Horas: {}",
-            nombre, apellido, correo, telefono, institucion, horas
-        );
+       // println!(
+          //  "Nombre: {}, Apellido: {}, Correo: {}, Teléfono: {}, Institución: {}, Horas: {}",
+           // nombre, apellido, correo, telefono, institucion, horas
+       // );
 
         if institucion == "Pontificia Universidad Javeriana" {
-            println!("Agregando a tutores PUJ");
+            //println!("Agregando a tutores PUJ");
             let mut tutor = TutoresPUJ { 
                 nombre: nombre.clone(), 
                 apellido: apellido.clone(),
@@ -143,7 +166,7 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
             }
             tutores_puj.push(tutor);
         } else {
-            println!("Agregando a tutores Colegio");
+            //println!("Agregando a tutores Colegio");
             let mut tutor = TutoresColegio { 
                 nombre: nombre.clone(), 
                 apellido: apellido.clone(),
@@ -211,14 +234,118 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
         }
     }
 
-    println!("Lectura finalizada.");
+   // println!("Lectura finalizada.");
     println!("Total Tutores PUJ: {}", tutores_puj.len());
     println!("Total Tutores Colegio: {}", tutores_colegio.len());
-    println!("Total Tutorados Emparejados: {}", tutorados_emparejados.len());
+    //println!("Total Tutorados Emparejados: {}", tutorados_emparejados.len());
 
-    println!("Tutores PUJ: {:?}", tutores_puj);
-    println!("Tutores Colegio: {:?}", tutores_colegio);
-    println!("Tutorados Emparejados: {:?}", tutorados_emparejados);
+    //println!("Tutores PUJ: {:?}", tutores_puj);
+    //println!("Tutores Colegio: {:?}", tutores_colegio);
+    //println!("Tutorados Emparejados: {:?}", tutorados_emparejados);
 
     Ok((tutores_puj, tutores_colegio, funcionarios_colegio, tutorados_emparejados))
 }
+
+#[tauri::command]
+pub fn leer_archivo_control() -> Result<Vec<TutoradosControl>, String> {
+    println!("Iniciando la función leer_archivo_control...");
+
+    // let archivo_path = PATH_ARCHIVO.get().expect("Global variable not initialized");
+    // let archivo_path_guard = archivo_path.lock().unwrap();
+    // let path = archivo_path_guard.as_str();
+    let path = "C:\\Users\\USUARIO\\Downloads\\EjemploControl.xlsx"; // Hardcoded path for now
+   // println!("Ruta del archivo: {}", path);
+
+    // Intentar abrir el archivo
+    let mut workbook: Xlsx<_> = match open_workbook(path) {
+        Ok(wb) => {
+            //println!("Archivo abierto correctamente.");
+            wb
+        }
+        Err(e) => {
+            //println!("Error al abrir el archivo: {}", e);
+            return Err(format!("Error al abrir el archivo: {}", e));
+        }
+    };
+
+    // Intentar acceder a la hoja "Control"
+    let range = match workbook.worksheet_range("Inscritos en lista de espera") {
+        Ok(r) => {
+           // println!("Hoja de cálculo 'Inscritos en lista de espera' cargada correctamente.");
+            r
+        }
+        Err(e) => {
+           // println!("No se pudo cargar la hoja 'Inscritos en lista de espera': {}", e);
+            return Err(format!("No se pudo cargar la hoja 'Inscritos en lista de espera': {}", e));
+        }
+    };
+
+    let mut tutorados_control: Vec<TutoradosControl> = Vec::new();
+
+    //println!("Comenzando a leer las filas de la hoja de cálculo...");
+    let mut fila_actual = 1; // Contador de filas para debug
+
+    for row in range.rows().skip(1) { // Omitir encabezados
+       // println!("Leyendo fila {}", fila_actual);
+        fila_actual += 1;
+
+        if row.len() < 17 {
+            //println!("Fila con menos de 17 columnas, se omite.");
+            continue;
+        }
+
+        let nombre = row.get(0).map_or("".to_string(), |cell| cell.to_string());
+        let id = row.get(1).map_or("".to_string(), |cell| cell.to_string());
+        let institucion = row.get(2).map_or("".to_string(), |cell| cell.to_string());
+        let telefono = vec![
+            row.get(3).map_or("".to_string(), |cell| cell.to_string()),
+            row.get(4).map_or("".to_string(), |cell| cell.to_string()),
+        ];
+        let correo = row.get(5).map_or("".to_string(), |cell| cell.to_string());
+        let vocabulario = row.get(6).map_or("".to_string(), |cell| cell.to_string());
+        let gramatica = row.get(7).map_or("".to_string(), |cell| cell.to_string());
+        let escucha = row.get(8).map_or("".to_string(), |cell| cell.to_string());
+        let lectura = row.get(9).map_or("".to_string(), |cell| cell.to_string());
+        let a = row.get(10).map_or("".to_string(), |cell| cell.to_string());
+        let b = row.get(11).map_or("".to_string(), |cell| cell.to_string());
+        let c = row.get(12).map_or("".to_string(), |cell| cell.to_string());
+        let d = row.get(13).map_or("".to_string(), |cell| cell.to_string());
+        let e = row.get(14).map_or("".to_string(), |cell| cell.to_string());
+        let f = row.get(15).map_or("".to_string(), |cell| cell.to_string());
+        let g = row.get(16).map_or("".to_string(), |cell| cell.to_string());
+
+        if nombre.is_empty() {
+           // println!("Nombre vacío, se omite la fila.");
+            continue;
+        }
+
+        tutorados_control.push(TutoradosControl {
+            nombre,
+            correo,
+            telefono,
+            id,
+            colegio: institucion,
+            vocabulario,
+            gramatica,
+            escucha,
+            lectura,
+            a,
+            b,
+            c,
+            d,
+            e,
+            f,
+            g,
+        });
+    }
+
+    //println!("Lectura finalizada.");
+    println!("Total Tutorados Control: {}", tutorados_control.len());
+    //println!("Tutorados Control: {:?}", tutorados_control);
+
+    Ok(tutorados_control)
+}
+
+
+
+
