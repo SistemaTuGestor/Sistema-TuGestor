@@ -53,10 +53,19 @@ function Notificaciones() {
     cargarHistorial();
   }, []);
 
-  // Maneja el cambio de que destinatario esta en ese momento
+  // Maneja el cambio de que destinatario está en ese momento
   const handleDestinatariosChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setDestinatarios(value ? [value] : []);
+  };
+
+  // Función para manejar el cambio en la lista de objetos
+  const handleObjetoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = event.target.value;
+    // Si se selecciona una opción distinta a la opción por defecto "objetos"
+    if (selected !== "objetos") {
+      setMensaje(prevMensaje => prevMensaje + selected);
+    }
   };
 
   const cargarHistorial = async () => {
@@ -123,12 +132,12 @@ function Notificaciones() {
             <option value="Destinatario 2">Destinatario 2</option>
             <option value="Destinatario 3">Destinatario 3</option>
           </select>
-          <select>
+          <select onChange={handleObjetoChange}>
             <option value="objetos">Objetos</option>
-            <option value="opt-2">Opción 2</option>
-            <option value="opt-3">Opción 3</option>
-            <option value="opt-4">Opción 4</option>
-            <option value="opt-5">Opción 5</option>
+            <option value="opción 1">Opción 1</option>
+            <option value="opción 2">Opción 2</option>
+            <option value="opción 3">Opción 3</option>
+            <option value="opción 4">Opción 4</option>
           </select>
         </div>
         <div className="mensaje">
