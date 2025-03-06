@@ -14,7 +14,7 @@ pub struct DatosNotificacionesIzq {
 #[tauri::command]
 pub fn notificaciones_izquierda()  ->  Result <Vec<DatosNotificacionesIzq>,String> {
 
-    let path = "/home/user/Downloads/new 3.xlsx" ;
+    let path = "C:\\Users\\Javier\\Downloads\\new 3.xlsx";
     let mut workbook: Xlsx<_> = open_workbook(path).map_err ( |e:XlsxError| e.to_string() )? ;
 
     let range = workbook
