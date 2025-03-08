@@ -1,164 +1,143 @@
-
 .notificaciones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
 
-    display : flex ;
-    justify-content : center ;
-    align-items : center ;
-    height : 100% ;
-    width : 100% ;
+.contenedor_PanelIzquierdo {
+    height: inherit;
+    flex: 1;
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
-    .contenedor_PanelIzquierdo {
-        /* Contenedor */
-        height : inherit ;
-        flex : 1 ;
-        background-color : lightgray ;
-        border : 2px solid gray ;
-        border-radius : 8px ;
-    }
+.desplazadora {
+    overflow-y: auto;
+    height: 100%;
+}
 
-    .desplazadora {
-        /* Posición */
-        overflow : scroll ;
-        /* Contenedor */
-        height : 100% ;
-    }
+.casilla {
+    border-bottom: 1px solid gray;
+    padding: 0 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-    .casilla {
-        /* Contenedor */
-        border-bottom : 1px solid gray ;
-        /* Elementos */
-        padding : 0 12px ;
-        justify-content : space-between ;
-        .asunto-casilla {
-            /* Posición */
-            margin : 2% 0 ;
-            /* Letra */
-            color : black ;
-            font-size : 100% ;
-        }
-        .contactos-casilla {
-            /* Posición */
-            margin : -4px 0 2px 0 ;
-            /* Letra */
-            font-size: 80% ;
-            color : gray ;
-            font-style : italic ;
-        }
-    }
+.asunto-casilla {
+    margin: 2% 0;
+    color: black;
+    font-size: 100%;
+}
 
-    .contenedor_PanelDerecho {
-        /* Posición */
-        margin-left : 10px ;
-        /* Contenedor */
-        height : inherit ;
-        flex : 2.2 ;
-        background-color : lightgray ;
-        border : 2px solid gray ;
-        border-radius : 8px ;
-    }
+.contactos-casilla {
+    margin: -4px 0 2px 0;
+    font-size: 80%;
+    color: gray;
+    font-style: italic;
+}
 
-    .opciones {
-        /* Posición */
-        position : static ;
-        /* Contenedor */
-        border-bottom : 2px solid gray ;
-        /* Elementos */
-        padding : 15px 10% 14px ;
-        gap : 10% ;
-        display : flex ;
-    } .opciones select  {
-        /* Reseteo de estilo */
-        appearance : none ;
-        -moz-appearance : none ;
-        -webkit-appearance : none ;
-        /* Contenedor */
-        width : 80% ;
-        background-color : inherit ;
-        border : 2px solid white ;
-        border-radius : 8px ;
-        /* Elementos */
-        padding : 0 0 0 4% ;
-        /* Letra */
-        font-size : 100% ;
-        color : white ;
-    } .opciones select:hover {
-        font-weight : bold ;
-    }
+.contenedor_PanelDerecho {
+    margin-left: 10px;
+    height: inherit;
+    flex: 2.2;
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
 
-    .mensaje {
-        /* Posición */
-        position : static ;
-        margin : 40px ;
-        /* Contenedor */
-        /* border : 1px solid red ; */
-        height : 64% ;
-        width : calc ( 100% - 0 ) ;
-        /* Ítems */
-        display : flex ;
-        flex-direction : column ;
-        .asunto-mensaje input {
-            /* Posición */
-            position : static ;
-            margin-bottom : 10px ;
-            /* Contenedor */
-            width : 89.9% ;
-            background-color : lightgray ;
-            border : 2px solid gray ;
-            border-radius : 8px ;
-            box-shadow : none ;
-            /* Letra */
-            color : black ;
-            font-family : Arial,Helvetica,sans-serif ;
-            font-size : 140% ;
-            font-weight : bold ;
-        } .asunto-mensaje input::placeholder {
-            font-style : italic ;
-        }
-        .contenido-mensaje textarea {
-            /* Posición */
-            resize : none ;
-            position : static ;
-            /* Contenedor */
-            height : 440% ;
-            width : 95.8% ;
-            background-color : lightgray ;
-            border : 2px solid gray ;
-            border-radius : 8px ;
-            box-shadow : none ;
-            /* Ítems */
-            padding : 10px ;
-            /* Letra */
-            color : black ;
-            font-family : Arial,Helvetica,sans-serif ;
-            font-size : 100% ;
-        } .contenido-mensaje textarea::placeholder {
-            font-style : italic ;
-        }
-    }
+.opciones {
+    border-bottom: 2px solid gray;
+    padding: 15px 10%;
+    display: flex;
+    gap: 10%;
+}
 
-    .botones {
-        /* Posición */
-        position : static ;
-        /* Contenedor */
-        padding : 0 40px ;
-        /* Ítems */
-        display : flex ;
-        justify-content : space-evenly ;
-        gap : 10px ;
-    } .botones button {
-        /* Contenedor */
-        width : 100% ;
-        background-color : lightgrey ;
-        border : 2px solid black ;
-        border-radius : 8px ;
-        box-shadow : none ;
-        /* Letra */
-        color : black ;
-        font-family : Arial,Helvetica,sans-serif ;
-        font-size : 110% ;
-    } .botones button:hover {
-        font-weight : bold ;
-    }
+.opciones select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 80%;
+    background-color: inherit;
+    border: 2px solid white;
+    border-radius: 8px;
+    padding: 0 0 0 4%;
+    font-size: 100%;
+    color: black;
+}
 
+.opciones select:hover {
+    font-weight: bold;
+}
+
+.mensaje {
+    margin: 40px;
+    height: 64%;
+    width: calc(100% - 80px);
+    display: flex;
+    flex-direction: column;
+}
+
+.asunto-mensaje input {
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    box-shadow: none;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 140%;
+    font-weight: bold;
+}
+
+.asunto-mensaje input::placeholder {
+    font-style: italic;
+}
+
+.contenido-mensaje textarea {
+    resize: none;
+    height: 100%;
+    width: 100%;
+    background-color: lightgray;
+    border: 2px solid gray;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 10px;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 100%;
+}
+
+.contenido-mensaje textarea::placeholder {
+    font-style: italic;
+}
+
+.botones {
+    padding: 0 40px;
+    display: flex;
+    justify-content: space-evenly;
+    gap: 10px;
+}
+
+.botones button {
+    width: 100%;
+    background-color: lightgrey;
+    border: 2px solid black;
+    border-radius: 8px;
+    box-shadow: none;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 110%;
+}
+
+.botones button:hover {
+    font-weight: bold;
 }
 

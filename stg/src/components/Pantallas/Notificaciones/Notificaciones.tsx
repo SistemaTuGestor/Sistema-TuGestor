@@ -1,5 +1,4 @@
 import "./Notificaciones.css";
-
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 
@@ -12,9 +11,19 @@ interface DatosNotificacionesDer {
   registro: string;
 }
 
+const estructuras: Record<string, string[]> = {
+  TutoresPUJ: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
+  TutoresColegio: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
+  FuncionariosColegio: ["nombre", "correo", "telefono", "institucion"],
+  TutoradosEmparejados: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"],
+  TutoradosControl: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"]
+};
+
 function Notificaciones() {
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [datosDer, setDatosDer] = useState<DatosNotificacionesDer[]>([]);
+  const [estructurasSeleccionadas, setEstructurasSeleccionadas] = useState<string[]>([]);
+  const [atributos, setAtributos] = useState<string[]>([]);
   const [controlData, setControlData] = useState<any[]>([]);
 
   useEffect(() => {
@@ -32,19 +41,31 @@ function Notificaciones() {
       .catch((error) => console.error("Error al leer el archivo de control:", error));
   }, []);
 
-  // Fetch data from the backend.
   useEffect(() => {
     invoke<DatosNotificacionesIzq[]>("notificaciones_izquierda")
       .then((response) => setDatosIzq(response))
       .catch((error) => console.error("Failed to fetch data:", error));
   }, []);
 
-  // Fetch data from the backend.
   useEffect(() => {
     invoke<DatosNotificacionesDer[]>("notificaciones_derecha")
       .then((response) => setDatosDer(response))
       .catch((error) => console.error("Failed to fetch data:", error));
   }, []);
+
+  useEffect(() => {
+    if (estructurasSeleccionadas.length > 0) {
+      const nuevosAtributos = estructurasSeleccionadas.flatMap((estructura) => estructuras[estructura] || []);
+      setAtributos([...new Set(nuevosAtributos)]);
+    } else {
+      setAtributos([]);
+    }
+  }, [estructurasSeleccionadas]);
+
+  const handleSeleccionDestinatario = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const opcionesSeleccionadas = Array.from(e.target.selectedOptions, (option) => option.value);
+    setEstructurasSeleccionadas(opcionesSeleccionadas);
+  };
 
   return (
     <div className="notificaciones">
@@ -60,23 +81,25 @@ function Notificaciones() {
       </div>
       <div className="contenedor_PanelDerecho">
         <div className="opciones">
-          <select data-multiselect>
-            <option value="destinatarios">Destinatarios</option>
-            <option value="opt-1">Destinatario 1</option>
-            <option value="opt-2">Destinatario 2</option>
-            <option value="opt-3">Destinatario 3</option>
+          <select multiple onChange={handleSeleccionDestinatario}>
+            {Object.keys(estructuras).map((estructura) => (
+              <option key={estructura} value={estructura}>{estructura}</option>
+            ))}
           </select>
-          <select>
-            <option value="objetos">Objetos</option>
-            <option value="opt-2">Opción 2</option>
-            <option value="opt-3">Opción 3</option>
-            <option value="opt-4">Opción 4</option>
-            <option value="opt-5">Opción 5</option>
+          <select multiple>
+            <option value="">Seleccionar Objeto</option>
+            {atributos.length > 0 ? (
+              atributos.map((atributo) => (
+                <option key={atributo} value={atributo}>{atributo}</option>
+              ))
+            ) : (
+              <option disabled>No hay atributos disponibles</option>
+            )}
           </select>
         </div>
         <div className="mensaje">
           <div className="asunto-mensaje">
-            <input placeholder="Asunto"></input>
+            <input placeholder="Asunto" />
           </div>
           <div className="contenido-mensaje">
             <textarea placeholder="Mensaje"></textarea>
@@ -92,4 +115,3 @@ function Notificaciones() {
 }
 
 export default Notificaciones;
-

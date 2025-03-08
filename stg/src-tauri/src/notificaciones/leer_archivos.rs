@@ -15,6 +15,7 @@ pub struct TutoresPUJ {
     telefono: Vec<String>,
     horas: String,
     tutorados: Vec<String>,
+    link: String,
 }
 
 #[derive(Serialize, Debug)]
@@ -26,6 +27,7 @@ pub struct TutoresColegio {
     telefono: Vec<String>,
     horas: String,
     tutorados: Vec<String>,
+    link: String,
 }
 
 #[derive(Serialize, Debug)]
@@ -55,6 +57,7 @@ pub struct TutoradosEmparejados {
     e: String,
     f: String,
     g: String,
+
 }
 
 #[derive(Serialize, Debug)]
@@ -157,6 +160,7 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
                 telefono: vec![telefono.clone()],
                 horas: horas.clone(),
                 tutorados: vec![],
+                link: "".to_string(),
             };
             if !tutoradonombre.is_empty() {
                 tutor.tutorados.push(tutoradonombre.clone());
@@ -175,6 +179,7 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
                 telefono: vec![telefono.clone()],
                 horas: horas.clone(),
                 tutorados: vec![],
+                link: "".to_string(),
             };
             if !tutoradonombre.is_empty() {
                 tutor.tutorados.push(tutoradonombre.clone());
@@ -345,6 +350,7 @@ pub fn leer_archivo_control() -> Result<Vec<TutoradosControl>, String> {
 
     Ok(tutorados_control)
 }
+//funcion para tener los links
 
 
 
