@@ -84,6 +84,7 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
     // let archivo_path = PATH_ARCHIVO.get().expect("Global variable not initialized");
     // let archivo_path_guard = archivo_path.lock().unwrap();
     // let path = archivo_path_guard.as_str();
+    // let path = "/home/user/Downloads/ejemplo.xlsx"; // Hardcoded path for now
     let path = "C:\\Users\\USUARIO\\Downloads\\ejemplo.xlsx"; // Hardcoded path for now
     //println!("Ruta del archivo: {}", path);
 

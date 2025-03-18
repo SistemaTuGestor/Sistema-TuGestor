@@ -13,6 +13,7 @@ mod reportes ;
 use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 // Notificaciones.
 use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha,historial::guardar_historial,historial::leer_historial,leer_archivos::leer_archivo_emparejados,leer_archivos::leer_archivo_control} ;
+use notificaciones::{enviar::enviar_mensaje_whatsapp,enviar::leer_qr_code} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
 use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,reportes_lee_leer_archivos_en_carpeta} ;
@@ -42,6 +43,8 @@ fn main ( ) {
             leer_archivo_control ,
             guardar_historial ,
             leer_historial ,
+            enviar_mensaje_whatsapp ,
+            leer_qr_code ,
 
             /* REPORTES */
             obtener_fecha ,

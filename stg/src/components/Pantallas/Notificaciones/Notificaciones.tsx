@@ -18,9 +18,13 @@ interface Borrador {
 }
 
 function Notificaciones() {
+
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [datosDer, setDatosDer] = useState<DatosNotificacionesDer[]>([]);
   const [controlData, setControlData] = useState<any[]>([]);
+
+  // Contenido
+
   const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [destinatarios, setDestinatarios] = useState<string[]>([]);
@@ -129,6 +133,68 @@ function Notificaciones() {
     }
   };
 
+  // Enviar
+  
+  // Add new state for loading and QR code
+  const [loading, setLoading] = useState(false);
+  // const [qrCode, setQrCode] = useState("");
+
+  /*
+  // Add this useEffect for QR code monitoring
+  useEffect(() => {
+    const checkQrCode = async () => {
+      try {
+        const qr = await invoke<string>("leer_qr_code");
+        if (qr) setQrCode(qr);
+      } catch (error) {
+        console.error("Error reading QR code:", error);
+      }
+    };
+    
+    const interval = setInterval(checkQrCode, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  */
+
+  // Update handleEnviar function
+  const handleEnviar = async () => {
+
+    setLoading(true);
+
+    try {
+      await invoke("enviar_mensaje_whatsapp");  // Invoke Rust without arguments
+      alert("Mensajes enviados con éxito");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al enviar mensajes");
+    } finally {
+      setLoading(false);
+    }   
+
+    /*
+    if (destinatarios.length === 0) {
+      alert("Selecciona al menos un destinatario");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await invoke("enviar_mensaje_whatsapp", {
+        destinatarios,
+        asunto,
+        mensaje,
+      });
+      alert("Mensajes enviados con éxito");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Error al enviar mensajes");
+    } finally {
+      setLoading(false);
+    }
+    */
+   
+  };
+
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
@@ -173,12 +239,13 @@ function Notificaciones() {
             />
           </div>
         </div>
+
         <div className="botones">
           <button onClick={() => {handleGuardar();}}>
             Guardar
           </button>
-          <button>
-            Enviar
+          <button onClick={handleEnviar} disabled={loading}>
+            {loading ? "Enviando..." : "Enviar"}
           </button>
         </div>
       </div>
@@ -186,4 +253,5 @@ function Notificaciones() {
   );
 }
 
-export default Notificaciones;
+
+export default Notificaciones ;
