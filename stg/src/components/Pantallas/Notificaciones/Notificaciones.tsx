@@ -115,17 +115,25 @@ function Notificaciones() {
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
-        <div className="desplazadora">
-          {datosIzq.map((row, index) => (
-            <div key={index} className="casilla">
-              <p className="asunto-casilla">{row.asunto}</p>
-              <p className="contactos-casilla">{row.contactos}</p>
-            </div>
-          ))}
+        <div className="opciones-izquierda">
+          <button>
+            Inicio
+          </button>
+          <button>
+            +
+          </button>
         </div>
+        <ul className="desplazadora">
+          {datosIzq.map((row, index) => (
+            <li key={index} className="casilla">
+              <p className="asunto-casilla">{row.asunto}</p>
+              <p className="contactos-casilla">{"contactos"}</p>
+            </li>
+          ))}
+        </ul>
       </div>
       <div className="contenedor_PanelDerecho">
-        <div className="opciones">
+        <div className="opciones-derecha">
           <select data-multiselect onChange={handleDestinatariosChange}>
             <option value="">Destinatario</option>
             <option value="Destinatario 1">Destinatario 1</option>

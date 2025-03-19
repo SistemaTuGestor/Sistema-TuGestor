@@ -9,6 +9,7 @@
 
     .contenedor_PanelIzquierdo {
         /* Contenedor */
+        width : 10px ;
         height : inherit ;
         flex : 1 ;
         background-color : lightgray ;
@@ -16,33 +17,70 @@
         border-radius : 8px ;
     }
 
+    .opciones-izquierda {
+        /* Contenedor */
+        border-bottom : 2px solid gray ;
+        /* Elementos */
+        justify-content: space-between ;
+        display : flex ;
+        padding : 10px 5% ;
+        gap : 5% ;
+    } .opciones-izquierda button {
+        box-shadow : none ;
+        /* Contenedor */
+        width: 80%;
+        height : 36px ;
+        background-color : inherit ;
+        border : 2px solid white ;
+        border-radius : 8px ;
+        /* Elementos */
+        line-height : 90% ;
+        /* Letra */
+        font-size : 100% ;
+        color : white ;
+    } .opciones-izquierda button:hover {
+        font-weight : bolder ;
+    }
+
     .desplazadora {
         /* Posición */
-        overflow : scroll ;
+        margin-top : 8px ;
+        margin-left : 0px ;
         /* Contenedor */
-        height : 100% ;
+        height : 88% ;
+        /* Elementos */
+        overflow : scroll ;
+    } .desplazadora li {
+        border-bottom : 1px solid gray ;
+    } .desplazadora li:last-child {
+        border-bottom : none ;
     }
 
     .casilla {
-        /* Contenedor */
-        border-bottom : 1px solid gray ;
+        /* Posición */
+        margin-left : -40px ;
         /* Elementos */
-        padding : 0 12px ;
         justify-content : space-between ;
+        list-style-type : none ;
         .asunto-casilla {
             /* Posición */
-            margin : 2% 0 ;
+            margin-left : 20px ;
             /* Letra */
             color : black ;
             font-size : 100% ;
+            word-wrap : break-word ;
+            padding-right : 20px ;
         }
         .contactos-casilla {
             /* Posición */
-            margin : -4px 0 2px 0 ;
+            margin-top : -10px ;
+            margin-left : 20px ;
             /* Letra */
             font-size: 80% ;
             color : gray ;
             font-style : italic ;
+            word-wrap : break-word ;
+            padding-right : 20px ;
         }
     }
 
@@ -57,7 +95,7 @@
         border-radius : 8px ;
     }
 
-    .opciones {
+    .opciones-derecha {
         /* Posición */
         position : static ;
         /* Contenedor */
@@ -66,7 +104,7 @@
         padding : 15px 10% 14px ;
         gap : 10% ;
         display : flex ;
-    } .opciones select  {
+    } .opciones-derecha select {
         /* Reseteo de estilo */
         appearance : none ;
         -moz-appearance : none ;
@@ -81,7 +119,7 @@
         /* Letra */
         font-size : 100% ;
         color : white ;
-    } .opciones select:hover {
+    } .opciones-derecha select:hover {
         font-weight : bold ;
     }
 
