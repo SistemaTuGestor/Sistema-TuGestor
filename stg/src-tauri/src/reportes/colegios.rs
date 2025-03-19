@@ -1,53 +1,44 @@
-
 // VARIOS
-use serde::Serialize ;
+use serde::{Serialize, Deserialize}; // Import Deserialize
 // FECHA
-use chrono::Local ;
-use chrono::NaiveDate ;
+use chrono::Local;
+use chrono::NaiveDate;
 // PATH
-use once_cell::sync::OnceCell ;
-use std::sync::Mutex ;
+use once_cell::sync::OnceCell;
+use std::sync::Mutex;
 // ARCHIVOS
-use std::fs::File ;
-use std::path::Path ;
-use std::io::{Read,Write} ;
-use calamine::{open_workbook, Reader, Xlsx} ;
-use zip::{ZipArchive, write::FileOptions} ;
+use std::fs::File;
+use std::path::Path;
+use std::io::{Read, Write};
+use calamine::{open_workbook, Reader, Xlsx};
+use zip::{ZipArchive, write::FileOptions};
 
-
-
-static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
-static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
-static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
-
-
+static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
+static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
+static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_colegios_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
-
+pub fn reportes_colegios_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), String> {
     let fecha = match nueva_fecha {
         Some(fecha) => {
             let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
                 .map_err(|e| format!("Failed to parse date: {}", e))?;
             parsed_date.format("%d-%m-%Y").to_string()
         }
-        None => {
-            Local::now().format("%d-%m-%Y").to_string()
-        }
+        None => Local::now().format("%d-%m-%Y").to_string(),
     };
 
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&fecha) ;
-    
+        .clone_from(&fecha);
+
     // println! ( "Nueva fecha (Colegios): {}", fecha ) ;
 
-Ok(())
+    Ok(())
 }
-
 
 ////    PATH    ////
 
@@ -57,52 +48,48 @@ pub struct NombrePlantilla {
 }
 
 #[tauri::command]
-pub fn reportes_colegios_recibir_pathplantilla ( path:String ) -> Result<(),String> {
+pub fn reportes_colegios_recibir_pathplantilla(path: String) -> Result<(), String> {
+    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new()));
 
-    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
-    
-    let mut nombre_guardado = nombre.lock().unwrap() ;
-    *nombre_guardado = path ;
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = path;
 
-    println!("📂 Ruta de la plantilla recibida (Colegios): {}",*nombre_guardado) ;
+    println!("📂 Ruta de la plantilla recibida (Colegios): {}", *nombre_guardado);
 
-Ok(())
+    Ok(())
 }
-
 
 ////    NOMBRE REPORTE     ////
 
 #[tauri::command]
-pub fn reportes_colegios_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
-
+pub fn reportes_colegios_recibir_nombrereporte(nombrereporte: String) -> Result<(), String> {
     // Initialize the global variable if it hasn't been initialized yet
-    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new())) ;
-    
+    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
+
     // Store the report name in the global variable
-    let mut nombre_guardado = nombre.lock().unwrap() ;
-    *nombre_guardado = nombrereporte ;
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = nombrereporte;
 
-    // println!("📂 Nombre del reporte (Colegios): {}",*nombre_guardado) ;
+    // println!("📂 Nombre del reporte (Colegios): {}", *nombre_guardado);
 
-Ok(())
+    Ok(())
 }
-
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)] // Derive Deserialize
 pub struct Estudiante {
     nombre_tutor: String,
     horas_totales: f64,
+    modalidad: f64,
 }
 
 //  --> 🔹 Rutas de los archivos.
-// const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx" ;
+ const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx";
+//const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx";
 
 #[tauri::command]
-pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,String> {
-
+pub fn reportes_colegios_leer_estudiantes_aprobados() -> Result<Vec<Estudiante>, String> {
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
@@ -112,29 +99,42 @@ pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<String>,St
 
     let mut estudiantes_aprobados = Vec::new();
 
-    for (i,row) in range.rows().enumerate() {
+    for (i, row) in range.rows().enumerate() {
         if i == 0 || row.len() < 5 {
             continue;
         }
 
         let correo = row[0].to_string().trim().to_string();
         let nombre_tutor = row[1].to_string();
+        let modalidad: f64 = row[3].to_string().parse().unwrap_or(0.0);
         let horas_totales: f64 = row.get(row.len() - 1)
             .and_then(|cell| cell.to_string().parse::<f64>().ok())
             .unwrap_or(0.0);
 
-        if !correo.ends_with("@javeriana.edu.co") && horas_totales >= 60.0 {
-            estudiantes_aprobados.push(format!("<w:p><w:r><w:t>- {}</w:t></w:r></w:p>", nombre_tutor));
+        if !correo.ends_with("@javeriana.edu.co")  {
+            estudiantes_aprobados.push(Estudiante {
+                nombre_tutor,
+                horas_totales,
+                modalidad,
+            });
         }
+        
+        ;
     }
+    println!("📂 Estudiantes aprobados (Colegios): {:?}", estudiantes_aprobados);
 
-Ok ( estudiantes_aprobados )
+    Ok(estudiantes_aprobados)
 }
 
 #[tauri::command]
-pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) -> Result<(),String> {
-
-    let lista_tutores = estudiantes.join("") ;
+pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
+    let lista_tutores = estudiantes.iter()
+        .map(|e| {
+            let check_mark = if e.horas_totales >= e.modalidad { "✔" } else { "❌" };
+            format!("<w:p><w:r><w:t>- {} ({}) {}</w:t></w:r></w:p>", e.nombre_tutor, e.modalidad, check_mark)
+        })
+        .collect::<Vec<String>>()
+        .join("");
 
     // Se obtiene el nombre del reporte de la variable global.
     let nombre_reporte = NOMBRE_REPORTE
@@ -154,7 +154,7 @@ pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) -> Result<(),String
     let nuevo_nombre_archivo = format!("{} ({}).docx", nombre_reporte, *fecha);
 
     // Construir la ruta de salida en el mismo directorio que el archivo original.
-    let output_path = Path::new ( &nuevo_nombre_archivo ) ;
+    let output_path = Path::new(&nuevo_nombre_archivo);
 
     // Se obtiene del PATH de la variable global.
     let path_plantilla = PATH_PLANTILLA
@@ -205,6 +205,6 @@ pub fn reportes_colegios_generar ( estudiantes:Vec<String> ) -> Result<(),String
 
     zip_writer.finish().expect("Error al cerrar el ZIP");
 
-Ok(())
+    Ok(())
 }
 
