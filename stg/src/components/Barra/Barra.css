@@ -1,37 +1,39 @@
+
 .barra {
     /* Posición */
-    position: static;
+    position : static ;
     /* Contenedor */
-    height: 10%;
-    background-color: #77BFC7; /* Azul */
-    border: 4px solid #8A2BE2; /* Morado */
-    border-radius: 10px;
+    height : 10% ;
+    background-color : #77BFC7 ;    /* Azul */
+    border : 4px solid #8A2BE2 ;    /* Morado */
+    border-radius : 10px ;
     /* Elementos */
-    justify-content: space-between;
-    display: flex;
-    padding: 1.5% 6%;
+    justify-content: space-between ;
+    display : flex ;
+    padding : 1.5% 6% ;
 }
 
 .botoon button {
     /* Contenedor */
-    background-color: #F18200; /* Naranja */
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 10px;
+    background-color : #F18200 ;    /* Naranja */
+    border : 2px solid #8A2BE2 ;    /* Morado */
+    border-radius : 10px ;
     /* Letra */
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 130%;
-    text-align: center;
+    color : black ;
+    font-family : Arial, Helvetica, sans-serif ;
+    font-size : 130% ;
+    text-align : center ;
     /* Interacción */
-    cursor: pointer;
-} 
-
-.botoon button:hover {
-    background-color: #FFC901; /* Amarillo */
+    cursor : pointer ;
+} .botoon button:hover {
+    background-color : #FFC901 ;    /* Amarillo */
 }
 
 .botoon-activo button {
-    font-weight: bold;
-    background-color: #8A2BE2; /* Morado */
-    color: white; /* contraste */
+    font-weight : bold ;
+    background-color : #8A2BE2 ;    /* Morado */
+    color : white ;                 /* Contraste */
+} .botoon-activo button:hover {
+    background-color : #8A2BE2 ;
 }
+

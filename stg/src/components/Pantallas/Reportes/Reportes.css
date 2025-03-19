@@ -1,116 +1,122 @@
+
 .reportes {
-    margin: 2%;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+    /* Posición */
+    margin : 2% ;
+    /* Contenedor */
+    height : 100% ;
+    width : 100% ;
+    /* Elementos */
+    display : flex ;
+    align-items : center ;
+    justify-content : space-between ;
+    
+    .seccioon {
+        /* Contenedor */
+        height : 60% ;
+        width : 16% ;
+        background-color : #77BFC7 ;    /* Azul */
+        border : 2px solid #8A2BE2 ;    /* Morado */
+        border-radius : 8px ;
+        /* Elementos */
+        display : flex ;
+        flex-direction : column ;
+        align-items : center ;
+        justify-content : space-between ;
+        padding : 0 10px 10px 10px ;
+    }
+    
+    .tiitulo {
+        /* Posición */
+        transform : translateY(-33px) ;
+        margin-bottom : -22% ;
+        /* Contenedor */
+        height : 14% ;
+        width: 100% ;
+        background-color : #F18200 ;    /* Naranja */
+        border : 2px solid #8A2BE2 ;    /* Morado */
+        border-radius : 8px ;
+        /* Letra */
+        color : white ;
+        font-family : Arial, Helvetica, sans-serif ;
+        font-size : 120% ;
+        text-align : center ;
+        line-height : 250% ;
+    }
+
+    .lista {
+        /* Posición */
+        top : -10% ;
+        /* Contenedor */
+        height : 60% ;
+        width: 100% ;
+        background-color : white ;
+        border : 2px solid #8A2BE2 ;    /* Morado */
+        border-radius : 8px ;
+        /* Letra */
+        color : black ;
+        font-family : Arial,Helvetica,sans-serif ;
+        font-size : 80% ;
+        text-align : left ;
+        /* Ítems */
+        display : flex ;
+        flex-direction : column ;
+        justify-content : space-evenly ;
+        padding : 0 ;
+        line-height : 140% ;
+        list-style-type : none ;
+        overflow : scroll ;
+    } .lista li {
+        /* Contenedor */
+        background-color : white ;
+        border-top : 2px solid #8A2BE2 ;    /* Morado */
+        /* Elementos */
+        padding : 6% 0 5% 12px ;
+        line-height : -10px ;
+    } .lista li:first-child {
+        border-top : none ;
+        margin-top : -5% ;
+    } .lista input {
+        /* Posición */
+        margin-left : -18px ;
+        /* Contenedor */
+        width : 90% ;
+        height : 100% ;
+        background-color : white ;
+        border : none ;
+        border-bottom : none ;
+        border-radius : 0 ;
+        box-shadow : none ;
+        /* Letra */
+        color : black ;
+    } .lista li:hover {
+        text-decoration : underline ;
+    } .lista li.hover-underline:hover {
+        text-decoration: underline;
+    } .lista li:not(.hover-underline):hover {
+        text-decoration: none;
+    } .base {
+        color : grey ;
+    } .base li:hover {
+        text-decoration : none ;
+    }
+
+    .opciones button {
+        /* Posición */
+        margin-bottom : 12% ;
+        /* Contenedor */
+        height : 60px ;
+        width : 100% ;
+        background-color : #FFC901 ;    /* Amarillo */
+        border : 2px solid black ;
+        border-radius : 8px ;
+        /* Letra */
+        color : black ;
+        font-family : Arial,Helvetica,sans-serif ;
+        font-size : 110% ;
+    }.opciones button:hover {
+        font-weight : bold ;
+    }
+
 }
 
-.seccioon {
-    height: 60%;
-    width: 16%;
-    background-color: #77BFC7; /* Azul */
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px 10px 10px;
-}
-
-.tiitulo {
-    transform: translateY(-33px);
-    margin-bottom: -22%;
-    height: 14%;
-    width: 100%;
-    background-color: #F18200; /* Naranja */
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-    color: white;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 120%;
-    text-align: center;
-    line-height: 250%;
-}
-
-.lista {
-    top: -10%;
-    height: 60%;
-    width: 100%;
-    background-color: white;
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 80%;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    padding: 0;
-    line-height: 140%;
-    list-style-type: none;
-    overflow: scroll;
-}
-
-.lista li {
-    background-color: white;
-    border-top: 1px solid #8A2BE2; /* Morado */
-    padding: 6% 0 5% 12px;
-    line-height: -10px;
-}
-
-.lista li:first-child {
-    border-top: none;
-    margin-top: -5%;
-}
-
-.lista input {
-    margin-left: -18px;
-    width: 90%;
-    height: 100%;
-    background-color: white;
-    border: none;
-    border-bottom: none;
-    border-radius: 0;
-    box-shadow: none;
-    color: black;
-}
-
-.lista li:hover {
-    text-decoration: underline;
-}
-
-.lista li.hover-underline:hover {
-    text-decoration: underline;
-}
-
-.lista li:not(.hover-underline):hover {
-    text-decoration: none;
-}
-
-.base {
-    color: grey;
-}
-
-.base li:hover {
-    text-decoration: none;
-}
-
-.opciones button {
-    margin-bottom: 12%;
-    height: 60px;
-    width: 100%;
-    background-color: #FFC901; /* Amarillo */
-    border: 2px solid black;
-    border-radius: 8px;
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 110%;
-}
-
-.opciones button:hover {
-    font-weight: bold;
-}

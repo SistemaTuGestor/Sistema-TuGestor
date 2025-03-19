@@ -1,60 +1,5 @@
+
 .notificaciones {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-}
-
-.contenedor_PanelIzquierdo {
-    height: inherit;
-    flex: 1;
-    background-color: #77BFC7; /* Azul */
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-}
-
-.contenedor_PanelDerecho {
-    margin-left: 10px;
-    height: inherit;
-    flex: 2.2;
-    background-color: #77BFC7; /* Azul */
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-}
-
-.desplazadora {
-    overflow: scroll;
-    height: 100%;
-}
-
-.casilla {
-    border-bottom: 1px solid #8A2BE2; /* Morado */
-    padding: 0 12px;
-    justify-content: space-between;
-}
-
-.asunto-casilla {
-    margin: 2% 0;
-    color: black;
-    font-size: 100%;
-}
-
-.contactos-casilla {
-    margin: -4px 0 2px 0;
-    font-size: 80%;
-    color: #FFC901; /* Amarillo */
-    font-style: italic;
-}
-
-.opciones {
-    position: static;
-    border-bottom: 2px solid #8A2BE2; /* Morado */
-    background-color: #F18200; /* Naranja */
-    padding: 15px 10% 14px;
-    gap: 10%;
-    display: flex;
-}
 
     display : flex ;
     justify-content : center ;
@@ -67,14 +12,14 @@
         width : 10px ;
         height : inherit ;
         flex : 1 ;
-        background-color : lightgray ;
-        border : 2px solid gray ;
+        background-color : #77BFC7 ;    /* Azul */
+        border : 2px solid #8A2BE2 ;    /* Morado */
         border-radius : 8px ;
     }
 
     .opciones-izquierda {
         /* Contenedor */
-        border-bottom : 2px solid gray ;
+        border-bottom : 2px solid #8A2BE2 ;    /* Morado */
         /* Elementos */
         justify-content: space-between ;
         display : flex ;
@@ -85,11 +30,9 @@
         /* Contenedor */
         width : 80% ;
         height : 52.5px ;
-        background-color : inherit ;
+        background-color : #F18200 ;            /* Naranja */
         border : 2px solid white ;
         border-radius : 8px ;
-        /* Elementos */
-        line-height : 90% ;
         /* Letra */
         font-size : 120% ;
         color : white ;
@@ -106,7 +49,7 @@
         /* Elementos */
         overflow : scroll ;
     } .desplazadora li {
-        border-bottom : 1px solid gray ;
+        border-bottom : 1px solid #8A2BE2 ;    /* Morado */
     } .desplazadora li:last-child {
         border-bottom : none ;
     }
@@ -132,7 +75,7 @@
             margin-left : 20px ;
             /* Letra */
             font-size: 80% ;
-            color : gray ;
+            color : white ;
             font-style : italic ;
             word-wrap : break-word ;
             padding-right : 20px ;
@@ -145,8 +88,8 @@
         /* Contenedor */
         height : inherit ;
         flex : 2.2 ;
-        background-color : lightgray ;
-        border : 2px solid gray ;
+        background-color : #77BFC7 ;    /* Azul */
+        border : 2px solid #8A2BE2 ;    /* Morado */
         border-radius : 8px ;
     }
 
@@ -154,7 +97,7 @@
         /* Posición */
         position : static ;
         /* Contenedor */
-        border-bottom : 2px solid gray ;
+        border-bottom : 2px solid #8A2BE2 ;     /* Morado */
         /* Elementos */
         padding : 15px 10% 14px ;
         gap : 10% ;
@@ -167,7 +110,7 @@
         /* Contenedor */
         width : 80% ;
         height : 52px ;
-        background-color : inherit ;
+        background-color : #F18200 ;            /* Naranja */
         border : 2px solid white ;
         border-radius : 8px ;
         /* Elementos */
@@ -196,8 +139,8 @@
             margin-bottom : 10px ;
             /* Contenedor */
             width : 89.9% ;
-            background-color : lightgray ;
-            border : 2px solid gray ;
+            background-color : white ;
+            border : 2px solid #8A2BE2 ;        /* Morado */
             border-radius : 8px ;
             box-shadow : none ;
             /* Letra */
@@ -215,8 +158,8 @@
             /* Contenedor */
             height : 440% ;
             width : 95.8% ;
-            background-color : lightgray ;
-            border : 2px solid gray ;
+            background-color : white ;
+            border : 2px solid #8A2BE2 ;        /* Morado */
             border-radius : 8px ;
             box-shadow : none ;
             /* Ítems */
@@ -242,7 +185,7 @@
     } .botones button {
         /* Contenedor */
         width : 100% ;
-        background-color : lightgrey ;
+        background-color : #FFC901 ;    /* Amarillo */
         border : 2px solid black ;
         border-radius : 8px ;
         box-shadow : none ;
@@ -254,17 +197,5 @@
         font-weight : bold ;
     }
 
-.botones button {
-    width: 100%;
-    background-color: #FFC901; /* Amarillo */
-    border: 2px solid black;
-    border-radius: 8px;
-    box-shadow: none;
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 110%;
 }
 
-.botones button:hover {
-    font-weight: bold;
-}
