@@ -1,31 +1,33 @@
 
 import "./Notificaciones.css";
+import Inicio from "./Inicio" ;
 
-import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/tauri";
+import { useEffect,useState } from "react" ;
+import { invoke } from "@tauri-apps/api/tauri" ;
 
 
 
 interface DatosNotificacionesIzq {
-  asunto: string;
-  contactos: string;
+  asunto : string ;
+  contactos : string ;
 }
 
 interface Borrador {
-  destinatarios: string[];
-  asunto: string;
-  mensaje: string;
+  destinatarios : string[] ;
+  asunto : string ;
+  mensaje : string ;
 }
 
-const estructuras: Record<string, string[]> = {
-  TutoresPUJ: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
-  TutoresColegio: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
-  FuncionariosColegio: ["nombre", "correo", "telefono", "institucion"],
-  TutoradosEmparejados: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"],
-  TutoradosControl: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"]
-};
+const estructuras : Record<string,string[]> = {
+  TutoresPUJ : ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"] ,
+  TutoresColegio : ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"] ,
+  FuncionariosColegio : ["nombre", "correo", "telefono", "institucion"] ,
+  TutoradosEmparejados : ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"] ,
+  TutoradosControl : ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"]
+} ;
 
-function Notificaciones() {
+function Notificaciones ( ) {
+
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [estructurasSeleccionadas, setEstructurasSeleccionadas] = useState<string[]>([]);
   const [atributos, setAtributos] = useState<string[]>([]);
@@ -152,11 +154,19 @@ function Notificaciones() {
     }
   };
 
+  // Botón de inicio.
+
+  const [showInicio, setShowInicio] = useState(false);
+
+  const handleInicioClick = () => {
+    setShowInicio(true);
+  };
+
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
         <div className="opciones-izquierda">
-          <button>
+          <button onClick={handleInicioClick}>
             Inicio
           </button>
           <button>
@@ -173,50 +183,57 @@ function Notificaciones() {
         </ul>
       </div>
       <div className="contenedor_PanelDerecho">
-        <div className="opciones-derecha">
-          <select multiple onChange={handleSeleccionDestinatario}>
-            {Object.keys(estructuras).map((estructura) => (
-              <option key={estructura} value={estructura}>{estructura}</option>
-            ))}
-          </select>
-          <select multiple>
-            <option value="">Seleccionar Objeto</option>
-            {atributos.length > 0 ? (
-              atributos.map((atributo) => (
-                <option key={atributo} value={atributo}>{atributo}</option>
-              ))
-            ) : (
-              <option disabled>No hay atributos disponibles</option>
-            )}
-          </select>
-        </div>
-        <div className="mensaje">
-          <div className="asunto-mensaje">
-            <input
-              placeholder="Asunto"
-              value={asunto}
-              onChange={(e) => setAsunto(e.target.value)}
-            />
-          </div>
-          <div className="contenido-mensaje">
-            <textarea
-              placeholder="Mensaje"
-              value={mensaje}
-              onChange={(e) => setMensaje(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="botones">
-          <button onClick={() => {handleGuardar();}}>
-            Guardar
-          </button>
-          <button>
-            Enviar
-          </button>
-        </div>
+        {showInicio ? (
+          <Inicio />
+        ) : (
+          <>
+            <div className="opciones-derecha">
+              <select multiple onChange={handleSeleccionDestinatario}>
+                {Object.keys(estructuras).map((estructura) => (
+                  <option key={estructura} value={estructura}>{estructura}</option>
+                ))}
+              </select>
+              <select multiple>
+                <option value="">Seleccionar Objeto</option>
+                {atributos.length > 0 ? (
+                  atributos.map((atributo) => (
+                    <option key={atributo} value={atributo}>{atributo}</option>
+                  ))
+                ) : (
+                  <option disabled>No hay atributos disponibles</option>
+                )}
+              </select>
+            </div>
+            <div className="mensaje">
+              <div className="asunto-mensaje">
+                <input
+                  placeholder="Asunto"
+                  value={asunto}
+                  onChange={(e) => setAsunto(e.target.value)}
+                />
+              </div>
+              <div className="contenido-mensaje">
+                <textarea
+                  placeholder="Mensaje"
+                  value={mensaje}
+                  onChange={(e) => setMensaje(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="botones">
+              <button onClick={handleGuardar}>
+                Guardar
+              </button>
+              <button>
+                Enviar
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
+  
 }
 
 

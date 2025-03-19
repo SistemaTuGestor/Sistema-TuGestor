@@ -1,10 +1,82 @@
-use serde::Serialize;
-use std::fs;
-use calamine::{open_workbook, Reader, Xlsx};
-use std::sync::Mutex;
-use once_cell::sync::OnceCell;
 
-static PATH_ARCHIVO: OnceCell<Mutex<String>> = OnceCell::new();
+// ARCHIVOS
+use serde::Serialize ;
+use calamine::{open_workbook,Reader,Xlsx} ;
+use std::sync::Mutex ;
+use once_cell::sync::OnceCell ;
+// VARIABLES GLOBALES
+use std::path::Path ;
+
+
+
+//// UBICACIÓN DE ARCHIVOS PARA ELEMENTOS
+
+static PATH_EMPAREJAMIENTO : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_CONTROL : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_SEGUIMIENTO : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_LINKS : OnceCell<Mutex<String>> = OnceCell::new() ;
+
+
+#[derive(Serialize)]
+pub struct NombreArchivo {
+    nombre: String,
+}
+
+#[tauri::command]
+pub fn notificaciones_inicio_emparejamiento ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new())) ;
+    
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println! ( "📂 Ruta archivo recibido (Emparejamiento): {}",*nombre_guardado ) ;
+
+Ok(())
+}
+
+#[tauri::command]
+pub fn notificaciones_inicio_control ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_CONTROL.get_or_init(|| Mutex::new(String::new())) ;
+    
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println! ( "📂 Ruta archivo recibido (Control): {}",*nombre_guardado ) ;
+
+Ok(())
+}
+
+#[tauri::command]
+pub fn notificaciones_inicio_seguimiento ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_SEGUIMIENTO.get_or_init(|| Mutex::new(String::new())) ;
+    
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println! ( "📂 Ruta archivo recibido (Seguimiento): {}",*nombre_guardado ) ;
+
+Ok(())
+}
+
+#[tauri::command]
+pub fn notificaciones_inicio_links ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_LINKS.get_or_init(|| Mutex::new(String::new())) ;
+
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println! ( "📂 Ruta archivo recibido (Links): {}",*nombre_guardado ) ;
+
+Ok(())
+}
+
+
+
+//// LÓGICA DE ELEMENTOS
 
 #[derive(Serialize, Debug)]
 pub struct TutoresPUJ {
@@ -81,14 +153,17 @@ pub struct TutoradosControl {
 }
 
 #[tauri::command]
-pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio>, Vec<FuncionariosColegio>, Vec<TutoradosEmparejados>), String> {
-    //println!("Iniciando la función leer_archivo_emparejados...");
+pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegio>,Vec<FuncionariosColegio>,Vec<TutoradosEmparejados>),String> {
+    
+    // println!("Iniciando la función leer_archivo_control...");
 
-    // let archivo_path = PATH_ARCHIVO.get().expect("Global variable not initialized");
-    // let archivo_path_guard = archivo_path.lock().unwrap();
-    // let path = archivo_path_guard.as_str();
-    let path = "C:\\Users\\USUARIO\\Downloads\\ejemplo.xlsx"; // Hardcoded path for now
-    //println!("Ruta del archivo: {}", path);
+    let ubicacioon = PATH_EMPAREJAMIENTO
+        .get()
+        .ok_or("❌ PATH_EMPAREJAMIENTO no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+    let path = Path::new(&*ubicacioon);
+    // println!("Ruta del archivo: {}", path.display());
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
@@ -252,14 +327,17 @@ pub fn leer_archivo_emparejados() -> Result<(Vec<TutoresPUJ>, Vec<TutoresColegio
 }
 
 #[tauri::command]
-pub fn leer_archivo_control() -> Result<Vec<TutoradosControl>, String> {
-    println!("Iniciando la función leer_archivo_control...");
+pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
+    
+    // println!("Iniciando la función leer_archivo_control...");
 
-    // let archivo_path = PATH_ARCHIVO.get().expect("Global variable not initialized");
-    // let archivo_path_guard = archivo_path.lock().unwrap();
-    // let path = archivo_path_guard.as_str();
-    let path = "C:\\Users\\USUARIO\\Downloads\\EjemploControl.xlsx"; // Hardcoded path for now
-   // println!("Ruta del archivo: {}", path);
+    let ubicacioon = PATH_CONTROL
+        .get()
+        .ok_or("❌ PATH_CONTROL no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+    let path = Path::new(&*ubicacioon);
+    // println!("Ruta del archivo: {}", path.display());
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {

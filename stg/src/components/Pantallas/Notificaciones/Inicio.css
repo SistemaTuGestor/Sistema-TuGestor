@@ -1,0 +1,36 @@
+
+.inicio {
+
+    .imagen {
+        /* Posición */
+        padding : 9% 0 5% 25% ;
+    }
+
+    .lista {
+        /* Posición */
+        margin : 0 10% ;
+        /* Contenedor */
+        background-color : #77BFC7 ;    /* Azul */
+        border : 2px solid #8A2BE2 ;    /* Morado */
+        border-radius : 8px ;
+        /* Elementos */
+        list-style-type : none ;
+    } .lista li {
+        margin-left: -40px ;
+        /* Contenedor */
+        width : 98.5% ;
+        border-bottom : 2px solid #8A2BE2 ;
+        /* Elementos */
+        padding : 5% ;
+        /* Letra */
+        font-size : 100% ;
+        word-wrap : break-word ;
+        padding-right : 20px ;
+    } .lista li:hover {
+        text-decoration : underline ;
+    } .lista li:last-child {
+        border-bottom : none ;
+    }
+
+}
+

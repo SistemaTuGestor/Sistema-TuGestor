@@ -12,7 +12,10 @@ mod reportes ;
 // Monitoreo.
 use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
 // Notificaciones.
-use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha,historial::guardar_historial,historial::leer_historial,leer_archivos::leer_archivo_emparejados,leer_archivos::leer_archivo_control} ;
+use notificaciones::{izquierda::notificaciones_izquierda,derecha::notificaciones_derecha} ;
+use notificaciones::{historial::guardar_historial,historial::leer_historial} ;
+use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento,leer_archivos::notificaciones_inicio_control,leer_archivos::notificaciones_inicio_seguimiento,leer_archivos::notificaciones_inicio_links} ;
+use notificaciones::{leer_archivos::leer_archivo_emparejados,leer_archivos::leer_archivo_control} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
 use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,reportes_lee_leer_archivos_en_carpeta} ;
@@ -38,8 +41,14 @@ fn main ( ) {
             /* NOTIFICACIONES */
             notificaciones_izquierda ,
             notificaciones_derecha ,
+            // ELEMENTOS
+            notificaciones_inicio_emparejamiento ,
+            notificaciones_inicio_control ,
+            notificaciones_inicio_seguimiento ,
+            notificaciones_inicio_links ,
             leer_archivo_emparejados ,
             leer_archivo_control ,
+            // HISTORIAL
             guardar_historial ,
             leer_historial ,
 
