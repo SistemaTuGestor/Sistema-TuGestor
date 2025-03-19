@@ -94,7 +94,7 @@ pub struct DatosMonitoreo {
     nombre_completo: String,
     correo: String,
     institucion: String,
-    modalidad: String,
+    horas: String,
     minutos_por_semana: Vec<u32>,
     minutos_totales: u32,
     horas_totales: f32,
@@ -104,7 +104,7 @@ pub struct DatosMonitoreo {
 pub struct Emparejamiento {
     nombre_completo: String,
     correo: String,
-    modalidad: String,
+    horas: String,
 }
 
 #[tauri::command]
@@ -148,7 +148,7 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
             let apellido = row.get(9).map_or("".to_string(), |cell| cell.to_string());
             let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
             let institucion = row.get(19).map_or("".to_string(), |cell| cell.to_string());
-            let modalidad = row.get(20).map_or("".to_string(), |cell| cell.to_string());
+            let horas = row.get(20).map_or("".to_string(), |cell| cell.to_string());
             let minutos = row.get(22).map_or("0".to_string(), |cell| cell.to_string()).parse::<u32>().unwrap_or(0);
 
             let nombre_completo = format!("{} {}", nombre, apellido);
@@ -156,17 +156,17 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
             registros.entry(correo.clone()).and_modify(|(_, _, _, semanas, total_minutos)| {
                 semanas.push(minutos);
                 *total_minutos += minutos;
-            }).or_insert((nombre_completo, institucion, modalidad, vec![minutos], minutos));
+            }).or_insert((nombre_completo, institucion, horas, vec![minutos], minutos));
         }
     }
 
-    let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, institucion, modalidad, minutos_por_semana, minutos_totales))| {
-        println!("Correo: {} | Nombre: {} | Institucion: {} | Modalidad: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, institucion, modalidad, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
+    let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, institucion, horas, minutos_por_semana, minutos_totales))| {
+        println!("Correo: {} | Nombre: {} | Institucion: {} | Horas: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, institucion, horas, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
         DatosMonitoreo {
             nombre_completo,
             correo,
             institucion,
-            modalidad,
+            horas,
             minutos_por_semana,
             minutos_totales,
             horas_totales: minutos_totales as f32 / 60.0,
@@ -174,7 +174,7 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
     }).collect();
 
     let emparejamientos = reportes_lee_leer_archivo_emparejamiento()?;
-    let data_actualizada = actualizar_modalidad(data, emparejamientos);
+    let data_actualizada = actualizar_horas(data, emparejamientos);
     generar_excel(&data_actualizada)?;
     Ok(data_actualizada)
 }
@@ -210,30 +210,30 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         let nombre = row.get(0).map_or("".to_string(), |cell| cell.to_string());
         let apellido = row.get(1).map_or("".to_string(), |cell| cell.to_string());
         let correo = row.get(2).map_or("".to_string(), |cell| cell.to_string());
-        let modalidad = row.get(7).map_or("".to_string(), |cell| cell.to_string());
+        let horas = row.get(8).map_or("".to_string(), |cell| cell.to_string());
 
         let nombre_completo = format!("{} {}", nombre, apellido);
 
         registros.push(Emparejamiento {
             nombre_completo: nombre_completo.clone(),
             correo: correo.clone(),
-            modalidad: modalidad.clone(),
+            horas: horas.clone(),
         });
 
-        println!("Nombre: {} | Correo: {} | Modalidad: {}", nombre_completo, correo, modalidad);
+        println!("Nombre: {} | Correo: {} | Horas: {}", nombre_completo, correo, horas);
     }
 
     Ok(registros)
 }
 
-pub fn actualizar_modalidad(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamientos: Vec<Emparejamiento>) -> Vec<DatosMonitoreo> {
+pub fn actualizar_horas(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamientos: Vec<Emparejamiento>) -> Vec<DatosMonitoreo> {
     let emparejamientos_map: HashMap<String, String> = emparejamientos.into_iter()
-        .map(|e| (e.correo, e.modalidad))
+        .map(|e| (e.correo, e.horas))
         .collect();
 
     for dato in &mut datos_monitoreo {
-        if let Some(modalidad) = emparejamientos_map.get(&dato.correo) {
-            dato.modalidad = modalidad.clone();
+        if let Some(horas) = emparejamientos_map.get(&dato.correo) {
+            dato.horas = horas.clone();
         }
     }
 
@@ -270,7 +270,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     sheet.write_string(0, 0, "Correo", None).unwrap();
     sheet.write_string(0, 1, "Nombre_tutorado", None).unwrap();
     sheet.write_string(0, 2, "Institucion", None).unwrap();
-    sheet.write_string(0, 3, "Modalidad", None).unwrap();
+    sheet.write_string(0, 3, "Horas", None).unwrap();
 
     // Agregar encabezados para cada semana
     let max_semanas = data.iter().map(|d| d.minutos_por_semana.len()).max().unwrap_or(0);
@@ -286,7 +286,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
         sheet.write_string((i + 1) as u32, 0, &dato.correo, None).unwrap();
         sheet.write_string((i + 1) as u32, 1, &dato.nombre_completo, None).unwrap();
         sheet.write_string((i + 1) as u32, 2, &dato.institucion, None).unwrap();
-        sheet.write_string((i + 1) as u32, 3, &dato.modalidad, None).unwrap();
+        sheet.write_string((i + 1) as u32, 3, &dato.horas, None).unwrap();
 
         // Escribir minutos por semana
         for (j, min_semana) in dato.minutos_por_semana.iter().enumerate() {
