@@ -12,7 +12,8 @@ pub struct Borrador {
 
 #[command]
 pub fn guardar_historial(data: Borrador) -> Result<(), String> {
-    let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\historial.json";
+    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\historial.json";
+    let path = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\historial.json";
 
     
     let mut historial: Vec<Borrador> = if Path::new(path).exists() {
@@ -39,8 +40,9 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
 
 #[command]
 pub fn leer_historial() -> Result<Vec<Borrador>, String> {
-    let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\historial.json";
-    
+    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\historial.json";
+    let path = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\historial.json";
+
     if !Path::new(path).exists() {
         return Ok(Vec::new()); // Si el archivo no existe, devolver lista vacía
     }

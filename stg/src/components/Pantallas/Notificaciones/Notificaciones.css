@@ -23,20 +23,20 @@
         /* Elementos */
         justify-content: space-between ;
         display : flex ;
-        padding : 10px 5% ;
+        padding : 14px 5% ;
         gap : 5% ;
     } .opciones-izquierda button {
         box-shadow : none ;
         /* Contenedor */
-        width: 80%;
-        height : 36px ;
+        width : 80% ;
+        height : 52.5px ;
         background-color : inherit ;
         border : 2px solid white ;
         border-radius : 8px ;
         /* Elementos */
         line-height : 90% ;
         /* Letra */
-        font-size : 100% ;
+        font-size : 120% ;
         color : white ;
     } .opciones-izquierda button:hover {
         font-weight : bolder ;
@@ -111,6 +111,7 @@
         -webkit-appearance : none ;
         /* Contenedor */
         width : 80% ;
+        height : 52px ;
         background-color : inherit ;
         border : 2px solid white ;
         border-radius : 8px ;
@@ -126,7 +127,7 @@
     .mensaje {
         /* Posición */
         position : static ;
-        margin : 40px ;
+        margin : 30px 40px ;
         /* Contenedor */
         /* border : 1px solid red ; */
         height : 64% ;
