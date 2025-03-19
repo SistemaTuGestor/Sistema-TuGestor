@@ -56,76 +56,203 @@
     display: flex;
 }
 
-.opciones select {
-    appearance: none;
-    -moz-appearance: none;
-    -webkit-appearance: none;
-    width: 80%;
-    background-color: inherit;
-    border: 2px solid white;
-    border-radius: 8px;
-    padding: 0 0 0 4%;
-    font-size: 100%;
-    color: white;
-}
+    display : flex ;
+    justify-content : center ;
+    align-items : center ;
+    height : 100% ;
+    width : 100% ;
 
-.opciones select:hover {
-    font-weight: bold;
-}
+    .contenedor_PanelIzquierdo {
+        /* Contenedor */
+        width : 10px ;
+        height : inherit ;
+        flex : 1 ;
+        background-color : lightgray ;
+        border : 2px solid gray ;
+        border-radius : 8px ;
+    }
 
-.mensaje {
-    position: static;
-    margin: 40px;
-    height: 64%;
-    width: calc(100% - 0);
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #8A2BE2; /* Morado */
-    background-color: white;
-}
+    .opciones-izquierda {
+        /* Contenedor */
+        border-bottom : 2px solid gray ;
+        /* Elementos */
+        justify-content: space-between ;
+        display : flex ;
+        padding : 14px 5% ;
+        gap : 5% ;
+    } .opciones-izquierda button {
+        box-shadow : none ;
+        /* Contenedor */
+        width : 80% ;
+        height : 52.5px ;
+        background-color : inherit ;
+        border : 2px solid white ;
+        border-radius : 8px ;
+        /* Elementos */
+        line-height : 90% ;
+        /* Letra */
+        font-size : 120% ;
+        color : white ;
+    } .opciones-izquierda button:hover {
+        font-weight : bolder ;
+    }
 
-.asunto-mensaje input {
-    margin-bottom: 10px;
-    width: 89.9%;
-    background-color: white;
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-    box-shadow: none;
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 140%;
-    font-weight: bold;
-}
+    .desplazadora {
+        /* Posición */
+        margin-top : 8px ;
+        margin-left : 0px ;
+        /* Contenedor */
+        height : 88% ;
+        /* Elementos */
+        overflow : scroll ;
+    } .desplazadora li {
+        border-bottom : 1px solid gray ;
+    } .desplazadora li:last-child {
+        border-bottom : none ;
+    }
 
-.asunto-mensaje input::placeholder {
-    font-style: italic;
-}
+    .casilla {
+        /* Posición */
+        margin-left : -40px ;
+        /* Elementos */
+        justify-content : space-between ;
+        list-style-type : none ;
+        .asunto-casilla {
+            /* Posición */
+            margin-left : 20px ;
+            /* Letra */
+            color : black ;
+            font-size : 100% ;
+            word-wrap : break-word ;
+            padding-right : 20px ;
+        }
+        .contactos-casilla {
+            /* Posición */
+            margin-top : -10px ;
+            margin-left : 20px ;
+            /* Letra */
+            font-size: 80% ;
+            color : gray ;
+            font-style : italic ;
+            word-wrap : break-word ;
+            padding-right : 20px ;
+        }
+    }
 
-.contenido-mensaje textarea {
-    resize: none;
-    height: 440%;
-    width: 95.8%;
-    background-color: white;
-    border: 2px solid #8A2BE2; /* Morado */
-    border-radius: 8px;
-    box-shadow: none;
-    padding: 10px;
-    color: black;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 100%;
-}
+    .contenedor_PanelDerecho {
+        /* Posición */
+        margin-left : 10px ;
+        /* Contenedor */
+        height : inherit ;
+        flex : 2.2 ;
+        background-color : lightgray ;
+        border : 2px solid gray ;
+        border-radius : 8px ;
+    }
 
-.contenido-mensaje textarea::placeholder {
-    font-style: italic;
-}
+    .opciones-derecha {
+        /* Posición */
+        position : static ;
+        /* Contenedor */
+        border-bottom : 2px solid gray ;
+        /* Elementos */
+        padding : 15px 10% 14px ;
+        gap : 10% ;
+        display : flex ;
+    } .opciones-derecha select {
+        /* Reseteo de estilo */
+        appearance : none ;
+        -moz-appearance : none ;
+        -webkit-appearance : none ;
+        /* Contenedor */
+        width : 80% ;
+        height : 52px ;
+        background-color : inherit ;
+        border : 2px solid white ;
+        border-radius : 8px ;
+        /* Elementos */
+        padding : 0 0 0 4% ;
+        /* Letra */
+        font-size : 100% ;
+        color : white ;
+    } .opciones-derecha select:hover {
+        font-weight : bold ;
+    }
 
-.botones {
-    position: static;
-    padding: 0 40px;
-    display: flex;
-    justify-content: space-evenly;
-    gap: 10px;
-}
+    .mensaje {
+        /* Posición */
+        position : static ;
+        margin : 30px 40px ;
+        /* Contenedor */
+        /* border : 1px solid red ; */
+        height : 64% ;
+        width : calc ( 100% - 0 ) ;
+        /* Ítems */
+        display : flex ;
+        flex-direction : column ;
+        .asunto-mensaje input {
+            /* Posición */
+            position : static ;
+            margin-bottom : 10px ;
+            /* Contenedor */
+            width : 89.9% ;
+            background-color : lightgray ;
+            border : 2px solid gray ;
+            border-radius : 8px ;
+            box-shadow : none ;
+            /* Letra */
+            color : black ;
+            font-family : Arial,Helvetica,sans-serif ;
+            font-size : 140% ;
+            font-weight : bold ;
+        } .asunto-mensaje input::placeholder {
+            font-style : italic ;
+        }
+        .contenido-mensaje textarea {
+            /* Posición */
+            resize : none ;
+            position : static ;
+            /* Contenedor */
+            height : 440% ;
+            width : 95.8% ;
+            background-color : lightgray ;
+            border : 2px solid gray ;
+            border-radius : 8px ;
+            box-shadow : none ;
+            /* Ítems */
+            padding : 10px ;
+            /* Letra */
+            color : black ;
+            font-family : Arial,Helvetica,sans-serif ;
+            font-size : 100% ;
+        } .contenido-mensaje textarea::placeholder {
+            font-style : italic ;
+        }
+    }
+
+    .botones {
+        /* Posición */
+        position : static ;
+        /* Contenedor */
+        padding : 0 40px ;
+        /* Ítems */
+        display : flex ;
+        justify-content : space-evenly ;
+        gap : 10px ;
+    } .botones button {
+        /* Contenedor */
+        width : 100% ;
+        background-color : lightgrey ;
+        border : 2px solid black ;
+        border-radius : 8px ;
+        box-shadow : none ;
+        /* Letra */
+        color : black ;
+        font-family : Arial,Helvetica,sans-serif ;
+        font-size : 110% ;
+    } .botones button:hover {
+        font-weight : bold ;
+    }
 
 .botones button {
     width: 100%;

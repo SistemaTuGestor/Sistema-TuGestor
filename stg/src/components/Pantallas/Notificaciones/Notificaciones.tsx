@@ -1,14 +1,14 @@
+
 import "./Notificaciones.css";
+
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+
+
 
 interface DatosNotificacionesIzq {
   asunto: string;
   contactos: string;
-}
-
-interface DatosNotificacionesDer {
-  registro: string;
 }
 
 interface Borrador {
@@ -27,7 +27,6 @@ const estructuras: Record<string, string[]> = {
 
 function Notificaciones() {
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
-  const [datosDer, setDatosDer] = useState<DatosNotificacionesDer[]>([]);
   const [estructurasSeleccionadas, setEstructurasSeleccionadas] = useState<string[]>([]);
   const [atributos, setAtributos] = useState<string[]>([]);
   const [controlData, setControlData] = useState<any[]>([]);
@@ -156,17 +155,25 @@ function Notificaciones() {
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
-        <div className="desplazadora">
-          {datosIzq.map((row, index) => (
-            <div key={index} className="casilla">
-              <p className="asunto-casilla">{row.asunto}</p>
-              <p className="contactos-casilla">{row.contactos}</p>
-            </div>
-          ))}
+        <div className="opciones-izquierda">
+          <button>
+            Inicio
+          </button>
+          <button>
+            +
+          </button>
         </div>
+        <ul className="desplazadora">
+          {datosIzq.map((row, index) => (
+            <li key={index} className="casilla">
+              <p className="asunto-casilla">{row.asunto}</p>
+              <p className="contactos-casilla">{"contactos"}</p>
+            </li>
+          ))}
+        </ul>
       </div>
       <div className="contenedor_PanelDerecho">
-        <div className="opciones">
+        <div className="opciones-derecha">
           <select multiple onChange={handleSeleccionDestinatario}>
             {Object.keys(estructuras).map((estructura) => (
               <option key={estructura} value={estructura}>{estructura}</option>
@@ -212,4 +219,6 @@ function Notificaciones() {
   );
 }
 
-export default Notificaciones;
+
+export default Notificaciones ;
+
