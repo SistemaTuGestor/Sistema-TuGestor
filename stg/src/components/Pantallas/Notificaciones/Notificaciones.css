@@ -9,22 +9,28 @@
 .contenedor_PanelIzquierdo {
     height: inherit;
     flex: 1;
-    background-color: lightgray;
-    border: 2px solid gray;
+    background-color: #77BFC7; /* Azul */
+    border: 2px solid #8A2BE2; /* Morado */
     border-radius: 8px;
-    overflow: hidden;
+}
+
+.contenedor_PanelDerecho {
+    margin-left: 10px;
+    height: inherit;
+    flex: 2.2;
+    background-color: #77BFC7; /* Azul */
+    border: 2px solid #8A2BE2; /* Morado */
+    border-radius: 8px;
 }
 
 .desplazadora {
-    overflow-y: auto;
+    overflow: scroll;
     height: 100%;
 }
 
 .casilla {
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #8A2BE2; /* Morado */
     padding: 0 12px;
-    display: flex;
-    flex-direction: column;
     justify-content: space-between;
 }
 
@@ -37,26 +43,17 @@
 .contactos-casilla {
     margin: -4px 0 2px 0;
     font-size: 80%;
-    color: gray;
+    color: #FFC901; /* Amarillo */
     font-style: italic;
 }
 
-.contenedor_PanelDerecho {
-    margin-left: 10px;
-    height: inherit;
-    flex: 2.2;
-    background-color: lightgray;
-    border: 2px solid gray;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-}
-
 .opciones {
-    border-bottom: 2px solid gray;
-    padding: 15px 10%;
-    display: flex;
+    position: static;
+    border-bottom: 2px solid #8A2BE2; /* Morado */
+    background-color: #F18200; /* Naranja */
+    padding: 15px 10% 14px;
     gap: 10%;
+    display: flex;
 }
 
 .opciones select {
@@ -69,7 +66,7 @@
     border-radius: 8px;
     padding: 0 0 0 4%;
     font-size: 100%;
-    color: black;
+    color: white;
 }
 
 .opciones select:hover {
@@ -77,18 +74,21 @@
 }
 
 .mensaje {
+    position: static;
     margin: 40px;
     height: 64%;
-    width: calc(100% - 80px);
+    width: calc(100% - 0);
     display: flex;
     flex-direction: column;
+    border: 2px solid #8A2BE2; /* Morado */
+    background-color: white;
 }
 
 .asunto-mensaje input {
     margin-bottom: 10px;
-    width: 100%;
-    background-color: lightgray;
-    border: 2px solid gray;
+    width: 89.9%;
+    background-color: white;
+    border: 2px solid #8A2BE2; /* Morado */
     border-radius: 8px;
     box-shadow: none;
     color: black;
@@ -103,10 +103,10 @@
 
 .contenido-mensaje textarea {
     resize: none;
-    height: 100%;
-    width: 100%;
-    background-color: lightgray;
-    border: 2px solid gray;
+    height: 440%;
+    width: 95.8%;
+    background-color: white;
+    border: 2px solid #8A2BE2; /* Morado */
     border-radius: 8px;
     box-shadow: none;
     padding: 10px;
@@ -120,6 +120,7 @@
 }
 
 .botones {
+    position: static;
     padding: 0 40px;
     display: flex;
     justify-content: space-evenly;
@@ -128,7 +129,7 @@
 
 .botones button {
     width: 100%;
-    background-color: lightgrey;
+    background-color: #FFC901; /* Amarillo */
     border: 2px solid black;
     border-radius: 8px;
     box-shadow: none;
@@ -140,4 +141,3 @@
 .botones button:hover {
     font-weight: bold;
 }
-
