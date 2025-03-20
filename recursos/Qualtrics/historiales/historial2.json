@@ -1,9 +1,9 @@
 [
   {
     "destinatarios": [
-      "Destinatario 1"
+      "Destinatario 2"
     ],
-    "asunto": "Notas",
+    "asunto": "Prueba",
     "mensaje": "Se adjuntan notas finales"
   }
 ]

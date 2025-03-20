@@ -35,6 +35,8 @@ function Notificaciones ( ) {
   const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [destinatarios, setDestinatarios] = useState<string[]>([]);
+  const [modoEdicion, setModoEdicion] = useState(false); // Estado para ver lo que se edita
+  const [asuntoOriginal, setAsuntoOriginal] = useState(""); // Para recordar el asunto original a editar
 
   useEffect(() => {
     invoke("leer_archivo_emparejados")
@@ -139,20 +141,83 @@ function Notificaciones ( ) {
     console.log("Datos a enviar:", data);
 
     try {
+      //Modo edición
+      if (modoEdicion) {
+        await invoke("actualizar_historial", { 
+          asuntoOriginal: asuntoOriginal,
+          data 
+        });
+        alert("Historial actualizado con éxito");
+        setModoEdicion(false);
+      setAsuntoOriginal("");
+    } else {
+      // No modo edicion
       await invoke("guardar_historial", { data });
       alert("Historial guardado con éxito");
+    }
+ 
+    // Recargar la lista después de guardar
+    const historial = await invoke<Borrador[]>("leer_historial");
+    const datosFormateados = historial.map(item => ({
+      asunto: item.asunto,
+      contactos: item.destinatarios.join(", ")
+    }));
+    setDatosIzq(datosFormateados);
+    
+    // Limpiar el formulario
+    setAsunto("");
+    setMensaje("");
+    setDestinatarios([]);
+  } catch (error) {
+    console.error("Error al guardar el historial:", error);
+  }
+};
+
+const handleCancelarEdicion = () => {
+  setModoEdicion(false);
+  setAsuntoOriginal("");
+  setAsunto("");
+  setMensaje("");
+  setDestinatarios([]);
+};
+
+const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
+  // Detener la propagación para evitar que se active el onClick del <li>
+  event.stopPropagation();
   
-      // Recargar la lista después de guardar
+
+  const confirmarEliminacion = window.confirm(`¿Estás seguro de que deseas eliminar "${asunto}"?`);
+
+  if (confirmarEliminacion) {
+    try {
+      
+      await invoke("eliminar_historial", { asunto });
+      
+     
+      alert("Entrada eliminada con éxito");
+      
+     
       const historial = await invoke<Borrador[]>("leer_historial");
       const datosFormateados = historial.map(item => ({
         asunto: item.asunto,
         contactos: item.destinatarios.join(", ")
       }));
       setDatosIzq(datosFormateados);
+      
+      if (modoEdicion && asuntoOriginal === asunto) {
+        setModoEdicion(false);
+        setAsuntoOriginal("");
+        setAsunto("");
+        setMensaje("");
+        setDestinatarios([]);
+      }
     } catch (error) {
-      console.error("Error al guardar el historial:", error);
+      console.error("Error al eliminar la entrada:", error);
+      alert("Error al eliminar la entrada: " + error);
     }
-  };
+  }
+};
+
 
   // Botón de inicio.
 
@@ -162,6 +227,35 @@ function Notificaciones ( ) {
     setShowInicio(true);
   };
 
+  const handleNuevoClick = () => {
+    setAsunto("");
+    setMensaje("");
+  };
+
+  async function handleCasillaClick(row: DatosNotificacionesIzq): Promise<void> {
+    try {
+      const historial = await invoke<Borrador[]>("editar_historial", { asunto: row.asunto });
+      console.log("Historial recibido:", historial);
+      
+      if (historial && historial.length > 0) {
+        const borrador = historial[0];
+        
+        setAsunto(borrador.asunto);
+        setMensaje(borrador.mensaje);
+        setDestinatarios(borrador.destinatarios);
+
+        setModoEdicion(true);
+        setAsuntoOriginal(borrador.asunto);
+        
+        console.log("Formulario actualizado con los datos del historial");
+      } else {
+        console.log("No se encontró ningún historial con ese asunto");
+      }
+    } catch (error) {
+      console.error("Error al leer el historial:", error);
+    }
+  }
+
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
@@ -169,15 +263,19 @@ function Notificaciones ( ) {
           <button onClick={handleInicioClick}>
             Inicio
           </button>
-          <button>
+          <button  onClick={handleNuevoClick}>
             +
           </button>
         </div>
         <ul className="desplazadora">
           {datosIzq.map((row, index) => (
-            <li key={index} className="casilla">
+            <li key={index} className="casilla" onClick={() => handleCasillaClick(row)}
+            style={{ cursor: 'pointer' }}>
               <p className="asunto-casilla">{row.asunto}</p>
               <p className="contactos-casilla">{"contactos"}</p>
+              <button onClick={(e) => handleEliminar(row.asunto, e)}>
+                Eliminar
+              </button>
             </li>
           ))}
         </ul>
@@ -222,11 +320,16 @@ function Notificaciones ( ) {
             </div>
             <div className="botones">
               <button onClick={handleGuardar}>
-                Guardar
+              {modoEdicion ? "Actualizar" : "Guardar"}
               </button>
               <button>
                 Enviar
               </button>
+              {modoEdicion && (
+                <button onClick={handleCancelarEdicion}>
+                  Cancelar edición
+                </button>
+              )}
             </div>
           </>
         )}

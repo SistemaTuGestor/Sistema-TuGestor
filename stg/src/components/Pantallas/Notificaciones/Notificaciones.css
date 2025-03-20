@@ -80,6 +80,22 @@
             word-wrap : break-word ;
             padding-right : 20px ;
         }
+
+        button{
+            /* Posición */
+            position: relative;
+            top: -50px;
+            margin-left : 100px ;
+            /* Letra */
+            color : white ;
+            font-size : 100% ;
+            word-wrap : break-word ;
+            padding-right : 20px ;
+        }
+
+        
+
+        
     }
 
     .contenedor_PanelDerecho {
@@ -196,6 +212,11 @@
     } .botones button:hover {
         font-weight : bold ;
     }
+      
+      .casilla:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+      
 
 }
 

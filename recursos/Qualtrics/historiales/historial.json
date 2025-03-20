@@ -1,0 +1,14 @@
+[
+  {
+    "destinatarios": [
+      "Destinatario 1"
+    ],
+    "asunto": "Javier",
+    "mensaje": "Prueba de Updatedasdsa"
+  },
+  {
+    "destinatarios": [],
+    "asunto": "Pau",
+    "mensaje": "dasdsad"
+  }
+]
