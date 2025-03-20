@@ -95,6 +95,44 @@ function Reportes ( ) {
   } ;
 
 
+  //// Apertura de explorador de archivos para XLSX de Emparejamiento de PUJ.
+
+
+  const [archivoPath_Emparejamiento,setArchivoPath_Emparejamiento] = useState("Ubicación de archivo Emparejamiento") ;
+  
+  const handleSelectArchivo_Emparejamiento = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar archivos.
+        multiple : false ,  // Solo permite seleccionar uno.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        setArchivoPath_Emparejamiento ( selectedPath ) ;
+
+        // Enviar la ruta al backend.
+        invoke ( "reportes_lee_recibir_emparejamiento",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch ( error ) {
+
+      console.error ( "Error al seleccionar la archivo:",error ) ;
+
+    }
+
+  } ;
+
+
   //// Apertura de explorador de archivos para plantilla de PUJ.
 
 
@@ -536,6 +574,9 @@ function Reportes ( ) {
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
+          </li>
+          <li onClick={handleSelectArchivo_Emparejamiento} className="hover-underline">
+            {archivoPath_Emparejamiento}
           </li>
           <li onClick={() => handleSelectFolder_LEE()} className="hover-underline">
             {folderPath_LEE}
