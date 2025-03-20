@@ -1,4 +1,3 @@
-
 // VARIOS
 use serde::Serialize ;
 // FECHA
@@ -15,18 +14,14 @@ use calamine::{open_workbook, Reader, Xlsx} ;
 use zip::{ZipArchive, write::FileOptions} ;
 
 
-
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
 
-
 ////    FECHA   ////
-
 #[tauri::command]
-pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
-
+pub fn reportes_constanciastutorados_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), String> {
     let fecha = match nueva_fecha {
         Some(fecha) => {
             let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
@@ -41,63 +36,42 @@ pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:Option<String
     FECHA.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&fecha) ;
-    
-    // println! ( "Nueva fecha (Tutorados): {}", fecha ) ;
+        .clone_from(&fecha);
 
-Ok(())
+    Ok(())
 }
 
 
 ////    PATH    ////
-
-#[derive(Serialize)]
-pub struct NombrePlantilla {
-    nombre: String,
-}
-
 #[tauri::command]
-pub fn reportes_constanciastutorados_recibir_pathplantilla ( path:String ) -> Result<(),String> {
+pub fn reportes_constanciastutorados_recibir_pathplantilla(path: String) -> Result<(), String> {
+    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new()));
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = path;
 
-    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
-    
-    let mut nombre_guardado = nombre.lock().unwrap() ;
-    *nombre_guardado = path ;
-
-    // println!("📂 Ruta de la carpeta recibida (Constancias tutorados): {}",*nombre_guardado) ;
-
-Ok(())
+    Ok(())
 }
 
 
 ////    NOMBRE REPORTE     ////
-
 #[tauri::command]
-pub fn reportes_constanciastutorados_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
+pub fn reportes_constanciastutorados_recibir_nombrereporte(nombrereporte: String) -> Result<(), String> {
+    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = nombrereporte;
 
-    // Initialize the global variable if it hasn't been initialized yet
-    let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new())) ;
-    
-    // Store the report name in the global variable
-    let mut nombre_guardado = nombre.lock().unwrap() ;
-    *nombre_guardado = nombrereporte ;
-    
-    // println!("📂 Nombre del reporte (Constancias tutorados): {}",*nombre_guardado) ;
-
-Ok(())
+    Ok(())
 }
 
 
 ////    LÓGICA DE ARCHIVOS      ////
 
 // Ruta de archivos.
-// const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
+const ARCHIVO_EXCEL: &str = "/home/user/Downloads/Emparejamiento.xlsx";
 
 #[tauri::command]
-pub fn reportes_constanciastutorados_generar ( ) -> Result<(),String> {
-
-    println!("📖 Cargando archivo Excel...") ;
+pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
+    println!("📖 Cargando archivo Excel...");
 
     let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
@@ -111,57 +85,50 @@ pub fn reportes_constanciastutorados_generar ( ) -> Result<(),String> {
         .get()
         .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
         .lock()
-        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))? ;
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
-    fs::create_dir_all(&*directorio).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))? ;
+    fs::create_dir_all(&*directorio).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))?;
 
-    for (i,row) in range.rows().enumerate() {
+    for (i, row) in range.rows().enumerate() {
         if i == 0 {
             println!("⚠ Ignorando encabezado...");
             continue;
         }
 
-        if row.len() < 2 {
-            eprintln!("⚠ ERROR: Fila {} tiene menos de 2 columnas, se omite.", i + 1);
+        if row.len() < 35 {  // La columna AI es la número 34 (índice 34 en Rust)
+            eprintln!("⚠ ERROR: Fila {} tiene menos de 35 columnas, se omite.", i + 1);
             continue;
         }
 
-        let nombre_tutorado = row[0].to_string().trim().to_string();
-        let apellido_tutorado = row[1].to_string().trim().to_string();
+        let nombre_tutorado = row[34].to_string().trim().to_string();  // Extraer nombre de la columna AI
 
-        // println! ( "📝 Generando constancia para: {} {}" , nombre_tutorado,apellido_tutorado ) ;
-
-        // Se obtiene la fecha de la variable global.
         let fecha = FECHA
             .get()
             .ok_or("❌ FECHA no ha sido inicializado")?
             .lock()
             .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
-        let salida_docx = PathBuf::from(&*directorio).join ( format! (
-            "Constancia Tutorado {} {} ({}).docx",
-            nombre_tutorado , apellido_tutorado , fecha
-        ) ) ;
+        let salida_docx = PathBuf::from(&*directorio).join(format!(
+            "Constancia Tutorado {} ({}).docx",
+            nombre_tutorado, fecha
+        ));
 
-        // Convert PathBuf to String safely
         let salida_documento = salida_docx.into_os_string()
             .into_string()
-            .map_err(|e| format!("❌ El nombre del archivo no es válido UTF-8: {:?}", e))? ;
-        
-        match crear_constancia ( &nombre_tutorado,&apellido_tutorado,&salida_documento ) {
+            .map_err(|e| format!("❌ Nombre de archivo no válido UTF-8: {:?}", e))?;
+
+        match crear_constancia(&nombre_tutorado, &salida_documento) {
             Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
-            Err(e) => eprintln!("❌ Error al generar constancia para {} {}: {}" ,
-            nombre_tutorado , apellido_tutorado , e )
+            Err(e) => eprintln!("❌ Error al generar constancia para {}: {}", nombre_tutorado, e)
         }
     }
 
     println!("🎉 ¡Todas las constancias han sido generadas!");
-
-Ok(())
+    Ok(())
 }
 
-fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),String> {
 
+fn crear_constancia(nombre: &str, salida_path: &str) -> Result<(), String> {
     let path_plantilla = PATH_PLANTILLA
         .get()
         .ok_or("❌ PATH_PLANTILLA no ha sido inicializado")?
@@ -184,7 +151,6 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
     }
 
     document_xml = document_xml.replace("«nom_tutor»", nombre);
-    document_xml = document_xml.replace("«Apellido_tutor»", apellido);
 
     let mut buffer = std::io::Cursor::new(Vec::new());
     {
@@ -193,11 +159,11 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
             let mut file = zip.by_index(i)
                 .map_err(|e| format!("❌ Error al leer archivo del ZIP: {}", e))?;
             let options = FileOptions::default().compression_method(file.compression());
-            
+
             let mut content = Vec::new();
             file.read_to_end(&mut content)
                 .map_err(|e| format!("❌ Error al leer contenido de '{}': {}", file.name(), e))?;
-            
+
             if file.name() == "word/document.xml" {
                 zip_writer.start_file(file.name(), options)
                     .map_err(|e| format!("❌ Error al escribir archivo ZIP: {}", e))?;
@@ -215,8 +181,5 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
     fs::write(salida_path, buffer.into_inner())
         .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
-    // println! ( "✔ Constancia guardada: {}",salida_path ) ;
-
-Ok(())
+    Ok(())
 }
-
