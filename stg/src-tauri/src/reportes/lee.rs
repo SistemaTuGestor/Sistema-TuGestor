@@ -95,6 +95,7 @@ pub struct DatosMonitoreo {
     correo: String,
     institucion: String,
     horas: String,
+    modalidad: String,
     minutos_por_semana: Vec<u32>,
     minutos_totales: u32,
     horas_totales: f32,
@@ -104,6 +105,7 @@ pub struct DatosMonitoreo {
 pub struct Emparejamiento {
     nombre_completo: String,
     correo: String,
+    modalidad: String,
     horas: String,
 }
 
@@ -161,12 +163,13 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
     }
 
     let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, institucion, horas, minutos_por_semana, minutos_totales))| {
-        println!("Correo: {} | Nombre: {} | Institucion: {} | Horas: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, institucion, horas, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
+       // println!("Correo: {} | Nombre: {} | Institucion: {} | Horas: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, institucion, horas, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
         DatosMonitoreo {
             nombre_completo,
             correo,
             institucion,
             horas,
+            modalidad: "".to_string(),
             minutos_por_semana,
             minutos_totales,
             horas_totales: minutos_totales as f32 / 60.0,
@@ -188,7 +191,7 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
     let archivo_excel = "C:\\Users\\USUARIO\\Downloads\\ejemplo.xlsx";  // Cambia la ruta por la correcta
 
     let path = Path::new(&archivo_excel);
-    println!("Ruta del archivo: {}", path.display());
+   // println!("Ruta del archivo: {}", path.display());
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
@@ -210,6 +213,7 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         let nombre = row.get(0).map_or("".to_string(), |cell| cell.to_string());
         let apellido = row.get(1).map_or("".to_string(), |cell| cell.to_string());
         let correo = row.get(2).map_or("".to_string(), |cell| cell.to_string());
+        let modalidad = row.get(7).map_or("".to_string(), |cell| cell.to_string());
         let horas = row.get(8).map_or("".to_string(), |cell| cell.to_string());
 
         let nombre_completo = format!("{} {}", nombre, apellido);
@@ -217,27 +221,32 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         registros.push(Emparejamiento {
             nombre_completo: nombre_completo.clone(),
             correo: correo.clone(),
+            modalidad: modalidad.clone(),
             horas: horas.clone(),
         });
 
-        println!("Nombre: {} | Correo: {} | Horas: {}", nombre_completo, correo, horas);
+        //println!("Nombre: {} | Correo: {} | Horas: {} | Modalidad: {}", nombre_completo, correo, horas, modalidad);
     }
 
     Ok(registros)
 }
 
 pub fn actualizar_horas(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamientos: Vec<Emparejamiento>) -> Vec<DatosMonitoreo> {
-    let emparejamientos_map: HashMap<String, String> = emparejamientos.into_iter()
-        .map(|e| (e.correo, e.horas))
+    let emparejamientos_map: HashMap<String, (String, String)> = emparejamientos.into_iter()
+        .map(|e| (e.correo, (e.horas, e.modalidad)))
         .collect();
 
     for dato in &mut datos_monitoreo {
-        if let Some(horas) = emparejamientos_map.get(&dato.correo) {
+        if let Some((horas, modalidad)) = emparejamientos_map.get(&dato.correo) {
             dato.horas = horas.clone();
+            dato.modalidad = modalidad.clone();
+            
         }
     }
-
+   // println!("✔ Horas actualizadas");
+   // println!("📂 Datos actualizados: {:#?}", datos_monitoreo);
     datos_monitoreo
+  
 }
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
@@ -248,58 +257,63 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
-    /*
-    // Se obtiene la fecha de la variable global.
-    let fecha = FECHA
-        .get()
-        .ok_or("❌ FECHA no ha sido inicializado")?
-        .lock()
-        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+    //println!("📂 Generando archivo Excel en: {}", output_path);
 
-    // Construir el nuevo nombre del archivo con la fecha.
-    let output_path = format!("{} ({})", nombre_reporte, *fecha);
-    */
+    // Check if the file already exists and try to delete it
+    if Path::new(&*output_path).exists() {
+        println!("⚠ Archivo ya existe, intentando eliminarlo...");
+        fs::remove_file(&*output_path).map_err(|e| format!("Error al eliminar el archivo existente: {}", e))?;
+        println!("✔ Archivo existente eliminado");
+    }
 
     // Crear el archivo de Excel.
     let workbook = Workbook::new(&output_path)
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("Error creating workbook: {}", e))?;
+    //println!("✔ Workbook creado");
 
-    let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
+    let mut sheet = workbook.add_worksheet(None).map_err(|e| format!("Error adding worksheet: {}", e))?;
+    //println!("✔ Worksheet agregado");
 
     // Encabezados con formato de semanas dinámicas
     sheet.write_string(0, 0, "Correo", None).unwrap();
     sheet.write_string(0, 1, "Nombre_tutorado", None).unwrap();
     sheet.write_string(0, 2, "Institucion", None).unwrap();
     sheet.write_string(0, 3, "Horas", None).unwrap();
+    sheet.write_string(0, 4, "Modalidad", None).unwrap();
+   // println!("✔ Encabezados escritos");
 
     // Agregar encabezados para cada semana
     let max_semanas = data.iter().map(|d| d.minutos_por_semana.len()).max().unwrap_or(0);
     for i in 0..max_semanas {
-        sheet.write_string(0, (i + 4) as u16, &format!("Semana {}", i + 1), None).unwrap();
+        sheet.write_string(0, (i + 5) as u16, &format!("Semana {}", i + 1), None).unwrap();
     }
+    //println!("✔ Encabezados de semanas escritos");
 
     // Agregar columnas de total y horas
-    sheet.write_string(0, (max_semanas + 4) as u16, "Minutos totales", None).unwrap();
-    sheet.write_string(0, (max_semanas + 5) as u16, "Horas totales", None).unwrap();
+    sheet.write_string(0, (max_semanas + 5) as u16, "Minutos totales", None).unwrap();
+    sheet.write_string(0, (max_semanas + 6) as u16, "Horas totales", None).unwrap();
+   // println!("✔ Columnas de total y horas escritos");
 
     for (i, dato) in data.iter().enumerate() {
         sheet.write_string((i + 1) as u32, 0, &dato.correo, None).unwrap();
         sheet.write_string((i + 1) as u32, 1, &dato.nombre_completo, None).unwrap();
         sheet.write_string((i + 1) as u32, 2, &dato.institucion, None).unwrap();
         sheet.write_string((i + 1) as u32, 3, &dato.horas, None).unwrap();
+        sheet.write_string((i + 1) as u32, 4, &dato.modalidad, None).unwrap();
 
         // Escribir minutos por semana
         for (j, min_semana) in dato.minutos_por_semana.iter().enumerate() {
-            sheet.write_number((i + 1) as u32, (j + 4) as u16, *min_semana as f64, None).unwrap();
+            sheet.write_number((i + 1) as u32, (j + 5) as u16, *min_semana as f64, None).unwrap();
         }
 
         // Escribir totales
-        sheet.write_number((i + 1) as u32, (max_semanas + 4) as u16, dato.minutos_totales as f64, None).unwrap();
-        sheet.write_number((i + 1) as u32, (max_semanas + 5) as u16, dato.horas_totales as f64, None).unwrap();
+        sheet.write_number((i + 1) as u32, (max_semanas + 5) as u16, dato.minutos_totales as f64, None).unwrap();
+        sheet.write_number((i + 1) as u32, (max_semanas + 6) as u16, dato.horas_totales as f64, None).unwrap();
     }
+    //println!("✔ Datos escritos");
 
-    workbook.close().map_err(|e| e.to_string())?;
-    // println! ( "✔ Archivo generado en: {}",output_path ) ;
+    workbook.close().map_err(|e| format!("Error closing workbook: {}", e))?;
+    //println!("✔ Workbook cerrado");
 
     Ok(())
 }
