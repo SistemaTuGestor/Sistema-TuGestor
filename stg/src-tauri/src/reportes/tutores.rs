@@ -130,7 +130,7 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
 
         let nombre_tutor = row[0].to_string().trim().to_string();
         let apellido_tutor = row[1].to_string().trim().to_string();
-
+        let modality = row[2].to_string().trim().to_string();
         // println! ( "📝 Generando constancia para: {} {}",nombre_tutor,apellido_tutor ) ;
 
         // Se obtiene la fecha de la variable global.
@@ -150,7 +150,7 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
             .into_string()
             .map_err(|e| format!("❌ El nombre del archivo no es válido UTF-8: {:?}", e))? ;
         
-        match crear_constancia ( &nombre_tutor,&apellido_tutor,&salida_documento ) {
+        match crear_constancia ( &nombre_tutor,&apellido_tutor,&modality,&salida_documento ) {
             Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
             Err(e) => eprintln!("❌ Error al generar constancia para {} {}: {}" ,
             nombre_tutor , apellido_tutor , e )
@@ -162,7 +162,7 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
 Ok(())
 }
 
-fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),String> {
+fn crear_constancia ( nombre:&str,apellido:&str,modality: &str,salida_path:&str ) -> Result<(),String> {
 
     let path_plantilla = PATH_PLANTILLA
         .get()
@@ -187,6 +187,7 @@ fn crear_constancia ( nombre:&str,apellido:&str,salida_path:&str ) -> Result<(),
 
     document_xml = document_xml.replace("«nom_tutor»", nombre);
     document_xml = document_xml.replace("«Apellido_tutor»", apellido);
+    document_xml = document_xml.replace("<<modality>>", modality);
 
     let mut buffer = std::io::Cursor::new(Vec::new());
     {

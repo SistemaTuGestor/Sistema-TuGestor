@@ -94,8 +94,8 @@ function Notificaciones ( ) {
   const handleObjetoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
     // Si se selecciona una opción distinta a la opción por defecto "objetos"
-    if (selected !== "objetos") {
-      setMensaje(prevMensaje => prevMensaje + selected);
+    if (selected !== "") {
+      setMensaje(prevMensaje => prevMensaje + " "+ selected);
     }
   };
 
@@ -291,7 +291,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
                   <option key={estructura} value={estructura}>{estructura}</option>
                 ))}
               </select>
-              <select multiple>
+              <select multiple onChange={handleObjetoChange}>
                 <option value="">Seleccionar Objeto</option>
                 {atributos.length > 0 ? (
                   atributos.map((atributo) => (
