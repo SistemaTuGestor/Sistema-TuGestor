@@ -18,7 +18,7 @@ use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento,leer_ar
 use notificaciones::{leer_archivos::leer_archivo_emparejados,leer_archivos::leer_archivo_control} ;
 // Reportes.
 use reportes::fecha::obtener_fecha ;
-use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,reportes_lee_leer_archivos_en_carpeta} ;
+use reportes::lee::{reportes_lee_actualizarfecha,reportes_lee_recibir_emparejamiento,reportes_lee_recibir_pathcarpeta,reportes_lee_recibir_nombrereporte,reportes_lee_leer_archivos_en_carpeta} ;
 use reportes::puj::{reportes_puj_actualizarfecha,reportes_puj_recibir_pathplantilla,reportes_puj_recibir_nombrereporte,reportes_puj_leer_universitarios_aprobados,reporte_puj_generar} ;
 use reportes::colegios::{reportes_colegios_actualizarfecha,reportes_colegios_recibir_pathplantilla,reportes_colegios_recibir_nombrereporte,reportes_colegios_leer_estudiantes_aprobados,reportes_colegios_generar} ;
 use reportes::tutores::{reportes_constanciastutores_actualizarfecha,reportes_constanciastutores_recibir_pathplantilla,reportes_constanciastutores_recibir_nombrereporte,reportes_constanciastutores_generar} ;
@@ -56,6 +56,7 @@ fn main ( ) {
             obtener_fecha ,
             // LEE
             reportes_lee_actualizarfecha ,
+            reportes_lee_recibir_emparejamiento ,
             reportes_lee_recibir_pathcarpeta ,
             reportes_lee_recibir_nombrereporte ,
             reportes_lee_leer_archivos_en_carpeta ,

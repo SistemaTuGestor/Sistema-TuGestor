@@ -1,3 +1,4 @@
+
 // VARIOS
 use serde::Serialize;
 // FECHA
@@ -14,6 +15,7 @@ use xlsxwriter::*;
 use std::path::Path;
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
+static PATH_EMPAREJAMIENTO : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_CARPETA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 
@@ -25,7 +27,7 @@ pub struct Fecha {
 }
 
 #[tauri::command]
-pub fn reportes_lee_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), String> {
+pub fn reportes_lee_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
     let fecha = match nueva_fecha {
         Some(fecha) => {
             let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
@@ -42,7 +44,27 @@ pub fn reportes_lee_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), S
 
     // println! ( "Nueva fecha (LEE): {}", fecha ) ;
 
-    Ok(())
+Ok(())
+}
+
+////    ARCHIVO EMPAREJAMIENTO  ////
+
+#[derive(Serialize)]
+pub struct NombreArchivo {
+    nombre:String ,
+}
+
+#[tauri::command]
+pub fn reportes_lee_recibir_emparejamiento ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new())) ;
+    
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+    // println! ( "📂 Ruta archivo recibido (Emparejamiento): {}",*nombre_guardado ) ;
+
+Ok(())
 }
 
 ////    PATH    ////
@@ -53,7 +75,8 @@ pub struct NombreCarpeta {
 }
 
 #[tauri::command]
-pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(), String> {
+pub fn reportes_lee_recibir_pathcarpeta ( path:String ) -> Result<(),String> {
+    
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = PATH_CARPETA.get_or_init(|| Mutex::new(String::new()));
 
@@ -63,7 +86,7 @@ pub fn reportes_lee_recibir_pathcarpeta(path: String) -> Result<(), String> {
 
     // println!("📂 Ruta de la carpeta recibida (LEE): {}",path) ;
 
-    Ok(())
+Ok(())
 }
 
 #[derive(Serialize)]
@@ -74,7 +97,8 @@ pub struct NombreReporte {
 ////    NOMBRE REPORTE     ////
 
 #[tauri::command]
-pub fn reportes_lee_recibir_nombrereporte(nombrereporte: String) -> Result<(), String> {
+pub fn reportes_lee_recibir_nombrereporte ( nombrereporte:String ) -> Result<(),String> {
+    
     // Initialize the global variable if it hasn't been initialized yet
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
 
@@ -84,7 +108,7 @@ pub fn reportes_lee_recibir_nombrereporte(nombrereporte: String) -> Result<(), S
 
     // println!("📂 Nombre del reporte (LEE): {}",nombrereporte) ;
 
-    Ok(())
+Ok(())
 }
 
 ////    LÓGICA DE GENERAR REPORTE     ////
@@ -111,6 +135,7 @@ pub struct Emparejamiento {
 
 #[tauri::command]
 pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
+
     let mut registros: HashMap<String, (String, String, String, Vec<u32>, u32)> = HashMap::new();
 
     let carpeta_path = PATH_CARPETA.get().expect("Global variable not initialized");
@@ -184,14 +209,17 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
 
 #[tauri::command]
 pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>, String> {
-    println!("📂 Leyendo archivo de emparejamiento...");
-    let mut registros: Vec<Emparejamiento> = Vec::new();
 
-    // 🔥 Ruta quemada del archivo Excel
-    let archivo_excel = "C:\\Users\\USUARIO\\Downloads\\ejemplo.xlsx";  // Cambia la ruta por la correcta
+    // println! ( "📂 Leyendo archivo de emparejamiento..." ) ;
+    let mut registros : Vec<Emparejamiento> = Vec::new() ;
 
-    let path = Path::new(&archivo_excel);
-   // println!("Ruta del archivo: {}", path.display());
+    let ubicacioon = PATH_EMPAREJAMIENTO
+        .get()
+        .ok_or("❌ PATH_EMPAREJAMIENTO no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+    let path = Path::new(&*ubicacioon);
+    // println! ( "Ruta del archivo: {}",path.display() ) ;
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
