@@ -67,7 +67,8 @@ pub fn reportes_constanciastutorados_recibir_nombrereporte(nombrereporte: String
 ////    LÓGICA DE ARCHIVOS      ////
 
 // Ruta de archivos.
-const ARCHIVO_EXCEL: &str = "/home/user/Downloads/Emparejamiento.xlsx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\Emparejamiento.xlsx";
+
 
 #[tauri::command]
 pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
