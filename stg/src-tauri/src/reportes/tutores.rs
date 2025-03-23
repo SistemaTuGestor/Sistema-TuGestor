@@ -94,7 +94,7 @@ Ok(())
 ////    LÓGICA DE ARCHIVOS      ////
 
 // const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const ARCHIVO_EXCEL:&str = "/home/user/Downloads/LEE.xlsx" ;
+const ARCHIVO_EXCEL:&str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/Sistema-TuGestor/recursos/LEE.xlsx" ;
 
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
@@ -128,9 +128,9 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
             continue;
         }
 
-        let nombre_tutor = row[0].to_string().trim().to_string();
-        let apellido_tutor = row[1].to_string().trim().to_string();
-        let modality = row[2].to_string().trim().to_string();
+        let nombre_tutor = row[1].to_string().trim().to_string();
+        let apellido_tutor = row[0].to_string().trim().to_string();
+        let modality = row[4].to_string().trim().to_string();
         // println! ( "📝 Generando constancia para: {} {}",nombre_tutor,apellido_tutor ) ;
 
         // Se obtiene la fecha de la variable global.
@@ -187,7 +187,7 @@ fn crear_constancia ( nombre:&str,apellido:&str,modality: &str,salida_path:&str 
 
     document_xml = document_xml.replace("«nom_tutor»", nombre);
     document_xml = document_xml.replace("«Apellido_tutor»", apellido);
-    document_xml = document_xml.replace("<<modality>>", modality);
+    document_xml = document_xml.replace("«modality»", modality);
 
     let mut buffer = std::io::Cursor::new(Vec::new());
     {

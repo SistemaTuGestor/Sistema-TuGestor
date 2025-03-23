@@ -67,8 +67,7 @@ pub fn reportes_constanciastutorados_recibir_nombrereporte(nombrereporte: String
 ////    LÓGICA DE ARCHIVOS      ////
 
 // Ruta de archivos.
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\Emparejamiento.xlsx";
-
+const ARCHIVO_EXCEL: &str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/Sistema-TuGestor/recursos/Emparejamiento.xlsx";
 
 #[tauri::command]
 pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
@@ -78,8 +77,8 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook
-        .worksheet_range("Sheet1")
-        .map_err(|e| format!("❌ No se pudo cargar 'Sheet1': {}", e))?;
+        .worksheet_range("Emparejamiento")
+        .map_err(|e| format!("❌ No se pudo cargar 'Emparejamiento': {}", e))?;
 
     // Asegurar que la carpeta de salida exista.
     let directorio = NOMBRE_REPORTE
@@ -96,18 +95,23 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
             continue;
         }
 
-        if row.len() < 35 {  // La columna AI es la número 34 (índice 34 en Rust)
+        if row.len() < 28 {  // La columna ab es la número 28 (índice 28 en Rust)
             eprintln!("⚠ ERROR: Fila {} tiene menos de 35 columnas, se omite.", i + 1);
             continue;
         }
 
-        let nombre_tutorado = row[34].to_string().trim().to_string();  // Extraer nombre de la columna AI
-
+        let tutorado_1 = row[9].to_string().trim().to_string();
+        let tutorado_2 = row[27].to_string().trim().to_string();
+        
         let fecha = FECHA
             .get()
             .ok_or("❌ FECHA no ha sido inicializado")?
             .lock()
             .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+        let generar_constancia = |nombre_tutorado: &str| -> Result<(), String> {
+                if nombre_tutorado.is_empty() {
+                    return Ok(());
+                }
 
         let salida_docx = PathBuf::from(&*directorio).join(format!(
             "Constancia Tutorado {} ({}).docx",
@@ -120,8 +124,12 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
 
         match crear_constancia(&nombre_tutorado, &salida_documento) {
             Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
-            Err(e) => eprintln!("❌ Error al generar constancia para {}: {}", nombre_tutorado, e)
+            Err(e) => eprintln!("❌ Error al generar constancia para {}: {}", nombre_tutorado, e),
         }
+        Ok(())
+    };
+        generar_constancia(&tutorado_1)?;
+        generar_constancia(&tutorado_2)?;
     }
 
     println!("🎉 ¡Todas las constancias han sido generadas!");
