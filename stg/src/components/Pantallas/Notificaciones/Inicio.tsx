@@ -162,8 +162,6 @@ const Inicio = ( ) => {
 
     <div className="inicio">
 
-      <img src="../dist/Logo.png" className="imagen"/>
-      
       <ul className="lista">
         <li onClick={handleSelectArchivo_Emparejamiento}>
             {archivoPath_Emparejamiento}
