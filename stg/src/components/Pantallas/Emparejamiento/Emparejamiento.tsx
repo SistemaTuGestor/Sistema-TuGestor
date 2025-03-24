@@ -108,8 +108,8 @@ function Emparejamiento() {
 
   return (
     <div className="emparejamiento">
-      <h2>Emparejamiento Manual</h2>
-      <button onClick={iniciarEmparejamiento}>Iniciar Emparejamiento</button>
+      <h2>Emparejamiento</h2>
+      <button onClick={iniciarEmparejamiento} style={{ marginRight: "10px" }}>Iniciar Emparejamiento</button>
       <button onClick={exportarAExcel}>Exportar a Excel</button>
 
       <div className="table-container">
