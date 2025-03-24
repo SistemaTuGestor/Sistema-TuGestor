@@ -9,12 +9,14 @@
 h2 {
     color: #8A2BE2; /* Morado */
     text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Contenedor con scroll */
 .table-container {
     max-height: 400px;
     overflow-y: auto;
+    overflow-x: hidden;
     border: 1px solid #ccc;
     border-radius: 10px;
     background: #E0F7FA; /* Azul más suave */
@@ -29,14 +31,15 @@ table {
 
 /* Encabezados */
 th {
-    background-color: #8A2BE2; /* Azul más oscuro */
+    background-color: #8A2BE2; /* Morado */
     color: white;
     font-weight: bold;
     text-transform: uppercase;
     position: sticky;
-    top: 0; /* Fijar encabezados */
+    top: 0;
     z-index: 2;
     padding: 12px;
+    background-clip: padding-box;
 }
 
 /* Celdas */
@@ -75,24 +78,23 @@ tr:nth-child(even) {
 tr:hover {
     background-color: #FFC901; /* Amarillo */
     color: #333;
-    
 }
 
 /* Botones */
 button {
-    background-color: #F18200;; /* Morado */
+    background-color: #F18200; /* Naranja */
     color: white;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    
-}
-button:hover {
-    background-color: #6A1BA0; /* Morado más oscuro */
+    transition: background-color 0.2s ease-in-out;
 }
 
+button:hover {
+    background-color: #C46A00; /* Naranja más oscuro */
+}
 
 /* Botón específico para Excel */
 .btn-excel {
@@ -100,13 +102,34 @@ button:hover {
 }
 
 .btn-excel:hover {
-    background-color: #6A1BA0; 
+    background-color: #C46A00; /* Naranja más oscuro */
 }
 
-.btn-incial {
+/* Botón específico para inicialización */
+.btn-inicial {
     background-color: #F18200;
 }
 
-.btn-incial:hover {
-    background-color: #6A1BA0;
+.btn-inicial:hover {
+    background-color: #C46A00;
+}
+
+/* Drag & Drop */
+.draggable-tutorado {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: grab;
+    user-select: none;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.draggable-tutorado.dragging {
+    opacity: 0.6;
+    transform: scale(1.05);
+}
+
+td.highlight {
+    background-color: #ffff99 !important; /* Amarillo claro */
 }
