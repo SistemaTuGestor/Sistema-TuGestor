@@ -133,3 +133,27 @@ button:hover {
 td.highlight {
     background-color: #ffff99 !important; /* Amarillo claro */
 }
+
+.tutorado-ingles {
+    background-color: #8A2BE2;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .tutorado-matematicas {
+    background-color: #F18200;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+  }
+  
+  .draggable-tutorado {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .dragging {
+    opacity: 0.5;
+  }

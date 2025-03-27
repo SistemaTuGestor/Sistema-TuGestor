@@ -8,9 +8,12 @@ const ARCHIVO_EXCEL: &str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/
 
 pub struct EmparejamientoItem {  
     pub tutor: String,           
-    pub materia: String,
+    pub materiaTutor: String,
     pub tutorado1: String,
     pub tutorado2: String,
+    pub materiaTutorado1: String,
+    pub materiaTutorado2: String,
+    pub disponibilidad: String,
 }
 
 
@@ -45,27 +48,43 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
             row.get(1).and_then(|c| c.as_string()).map(|s| s.to_string()).unwrap_or_else(|| "VACÍO".to_string())
         );
 
-        let materia = row.get(6)
+        let materiaTutor = row.get(6)
+            .and_then(|c| c.as_string())
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| "VACÍO".to_string());
+        let materiaTutorado1 = row.get(17)
+            .and_then(|c| c.as_string())
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| "VACÍO".to_string());
+        let materiaTutorado2 = row.get(36)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
 
-        let tutorado1 = row.get(9)
+        let tutorado1 = row.get(10)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let tutorado2 = row.get(27)
+        let tutorado2 = row.get(30)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
 
-        println!("👤 Tutor: {}, Materia: {}, Tutorado1: {}, Tutorado2: {}", tutor, materia, tutorado1, tutorado2);
+        let disponibilidad = row.get(9)
+            .and_then(|c| c.as_string())
+            .map(|s| s.to_string())
+            .unwrap_or_else(|| "VACÍO".to_string());
+
+        println!("👤 Tutor: {}, materiaTutor: {},materiaTutorado1: {},materiaTutorado2: {}, Tutorado1: {}, Tutorado2: {}, disponibilidad: {} ", tutor, materiaTutor,materiaTutorado1,materiaTutorado2, tutorado1, tutorado2, disponibilidad);
 
         emparejamientos.push(EmparejamientoItem {
             tutor,
-            materia,
+            materiaTutor,
             tutorado1,
             tutorado2,
+            materiaTutorado1,
+            materiaTutorado2,
+            disponibilidad,
         });
     }
 
