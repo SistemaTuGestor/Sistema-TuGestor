@@ -1,7 +1,135 @@
-
 .emparejamiento {
-
-    /* ... */
-    
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #77BFC7;
+    color: #333;
 }
 
+/* Título */
+h2 {
+    color: #8A2BE2; /* Morado */
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Contenedor con scroll */
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #E0F7FA; /* Azul más suave */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Encabezados */
+th {
+    background-color: #8A2BE2; /* Morado */
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 12px;
+    background-clip: padding-box;
+}
+
+/* Celdas */
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+td {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Inputs dentro de la tabla */
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #FFF;
+    color: #333;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #F18200; /* Naranja */
+    background: #FFF7E6; /* Suave amarillo */
+}
+
+/* Alternar colores en filas */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Hover en filas */
+tr:hover {
+    background-color: #FFC901; /* Amarillo */
+    color: #333;
+}
+
+/* Botones */
+button {
+    background-color: #F18200; /* Naranja */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #C46A00; /* Naranja más oscuro */
+}
+
+/* Botón específico para Excel */
+.btn-excel {
+    background-color: #F18200; /* Naranja */
+}
+
+.btn-excel:hover {
+    background-color: #C46A00; /* Naranja más oscuro */
+}
+
+/* Botón específico para inicialización */
+.btn-inicial {
+    background-color: #F18200;
+}
+
+.btn-inicial:hover {
+    background-color: #C46A00;
+}
+
+/* Drag & Drop */
+.draggable-tutorado {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: grab;
+    user-select: none;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.draggable-tutorado.dragging {
+    opacity: 0.6;
+    transform: scale(1.05);
+}
+
+td.highlight {
+    background-color: #ffff99 !important; /* Amarillo claro */
+}

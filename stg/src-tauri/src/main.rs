@@ -7,6 +7,7 @@
 mod monitoreo ;
 mod notificaciones ;
 mod reportes ;
+mod emparejamiento ;
 
 ////  FUNCIONES DE MÓDULOS  ////
 // Monitoreo.
@@ -23,7 +24,8 @@ use reportes::puj::{reportes_puj_actualizarfecha,reportes_puj_recibir_pathplanti
 use reportes::colegios::{reportes_colegios_actualizarfecha,reportes_colegios_recibir_pathplantilla,reportes_colegios_recibir_nombrereporte,reportes_colegios_leer_estudiantes_aprobados,reportes_colegios_generar} ;
 use reportes::tutores::{reportes_constanciastutores_actualizarfecha,reportes_constanciastutores_recibir_pathplantilla,reportes_constanciastutores_recibir_nombrereporte,reportes_constanciastutores_generar} ;
 use reportes::tutorados::{reportes_constanciastutorados_actualizarfecha,reportes_constanciastutorados_recibir_pathplantilla,reportes_constanciastutorados_recibir_nombrereporte,reportes_constanciastutorados_generar} ;
-
+// Emparejamiento.
+use emparejamiento::emparejamiento::obtener_emparejamiento ;
 
 
 fn main ( ) {
@@ -85,6 +87,8 @@ fn main ( ) {
             reportes_constanciastutorados_recibir_pathplantilla ,
             reportes_constanciastutorados_recibir_nombrereporte ,
             reportes_constanciastutorados_generar ,
+            // EMPAREJAMIENTO
+            obtener_emparejamiento ,
             
         
         ] )

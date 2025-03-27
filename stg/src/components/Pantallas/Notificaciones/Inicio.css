@@ -8,7 +8,7 @@
 
     .lista {
         /* Posición */
-        margin : 0 10% ;
+        margin : 10% ;
         /* Contenedor */
         background-color : #77BFC7 ;    /* Azul */
         border : 2px solid #8A2BE2 ;    /* Morado */
@@ -18,7 +18,7 @@
     } .lista li {
         margin-left: -40px ;
         /* Contenedor */
-        width : 98.5% ;
+        width : inherit ;
         border-bottom : 2px solid #8A2BE2 ;
         /* Elementos */
         padding : 5% ;
