@@ -1,6 +1,9 @@
+
 import "./Notificaciones.css";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+
+
 
 interface DatosNotificacionesIzq {
   asunto: string;
@@ -17,7 +20,15 @@ interface Borrador {
   mensaje: string;
 }
 
-function Notificaciones() {
+interface EmailData {
+  destinatarios: string[];
+  asunto: string;
+  mensaje: string;
+  archivo_adjunto?: string;
+}
+
+
+function Notificaciones ( ) {
 
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [datosDer, setDatosDer] = useState<DatosNotificacionesDer[]>([]);
@@ -135,64 +146,28 @@ function Notificaciones() {
 
   // Enviar
   
-  // Add new state for loading and QR code
   const [loading, setLoading] = useState(false);
-  // const [qrCode, setQrCode] = useState("");
+  const [archivoAdjunto, setArchivoAdjunto] = useState("");
 
-  /*
-  // Add this useEffect for QR code monitoring
-  useEffect(() => {
-    const checkQrCode = async () => {
-      try {
-        const qr = await invoke<string>("leer_qr_code");
-        if (qr) setQrCode(qr);
-      } catch (error) {
-        console.error("Error reading QR code:", error);
-      }
-    };
-    
-    const interval = setInterval(checkQrCode, 1000);
-    return () => clearInterval(interval);
-  }, []);
-  */
-
-  // Update handleEnviar function
+  // Modifica la función handleEnviar
   const handleEnviar = async () => {
 
-    setLoading(true);
-
     try {
-      await invoke("enviar_mensaje_whatsapp");  // Invoke Rust without arguments
-      alert("Mensajes enviados con éxito");
-    } catch (error) {
-      console.error("Error:", error);
-      alert("Error al enviar mensajes");
-    } finally {
-      setLoading(false);
-    }   
-
-    /*
-    if (destinatarios.length === 0) {
-      alert("Selecciona al menos un destinatario");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await invoke("enviar_mensaje_whatsapp", {
+      const data: EmailData = {
         destinatarios,
         asunto,
         mensaje,
-      });
-      alert("Mensajes enviados con éxito");
+        archivo_adjunto: archivoAdjunto || undefined
+      };
+
+      await invoke("enviar_correo", { data });
+      alert("Correo enviado con éxito");
     } catch (error) {
       console.error("Error:", error);
-      alert("Error al enviar mensajes");
+      alert("Error al enviar correo");
     } finally {
       setLoading(false);
     }
-    */
-   
   };
 
   return (
