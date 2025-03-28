@@ -7,7 +7,8 @@
 
 /* Título */
 h2 {
-    color: #8A2BE2; /* Morado */
+    color: #8A2BE2;
+    /* Morado */
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
@@ -19,7 +20,8 @@ h2 {
     overflow-x: hidden;
     border: 1px solid #ccc;
     border-radius: 10px;
-    background: #E0F7FA; /* Azul más suave */
+    background: #E0F7FA;
+    /* Azul más suave */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -31,7 +33,8 @@ table {
 
 /* Encabezados */
 th {
-    background-color: #8A2BE2; /* Morado */
+    background-color: #8A2BE2;
+    /* Morado */
     color: white;
     font-weight: bold;
     text-transform: uppercase;
@@ -43,7 +46,8 @@ th {
 }
 
 /* Celdas */
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
 }
@@ -65,8 +69,10 @@ input {
 
 input:focus {
     outline: none;
-    border: 2px solid #F18200; /* Naranja */
-    background: #FFF7E6; /* Suave amarillo */
+    border: 2px solid #F18200;
+    /* Naranja */
+    background: #FFF7E6;
+    /* Suave amarillo */
 }
 
 /* Alternar colores en filas */
@@ -76,13 +82,15 @@ tr:nth-child(even) {
 
 /* Hover en filas */
 tr:hover {
-    background-color: #FFC901; /* Amarillo */
+    background-color: #FFC901;
+    /* Amarillo */
     color: #333;
 }
 
 /* Botones */
 button {
-    background-color: #F18200; /* Naranja */
+    background-color: #F18200;
+    /* Naranja */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -93,16 +101,19 @@ button {
 }
 
 button:hover {
-    background-color: #C46A00; /* Naranja más oscuro */
+    background-color: #C46A00;
+    /* Naranja más oscuro */
 }
 
 /* Botón específico para Excel */
 .btn-excel {
-    background-color: #F18200; /* Naranja */
+    background-color: #F18200;
+    /* Naranja */
 }
 
 .btn-excel:hover {
-    background-color: #C46A00; /* Naranja más oscuro */
+    background-color: #C46A00;
+    /* Naranja más oscuro */
 }
 
 /* Botón específico para inicialización */
@@ -131,7 +142,8 @@ button:hover {
 }
 
 td.highlight {
-    background-color: #ffff99 !important; /* Amarillo claro */
+    background-color: #ffff99 !important;
+    /* Amarillo claro */
 }
 
 .tutorado-ingles {
@@ -139,21 +151,28 @@ td.highlight {
     color: white;
     padding: 5px;
     border-radius: 5px;
-  }
-  
-  .tutorado-matematicas {
+}
+
+.tutorado-matematicas {
     background-color: #F18200;
     color: white;
     padding: 5px;
     border-radius: 5px;
-  }
-  
-  .draggable-tutorado {
+}
+
+.tutorado-pendiente {
+    background-color: #77BFC7;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.draggable-tutorado {
     display: inline-block;
     width: 100%;
     text-align: center;
-  }
-  
-  .dragging {
+}
+
+.dragging {
     opacity: 0.5;
-  }
+}
