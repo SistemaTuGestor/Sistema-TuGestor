@@ -471,7 +471,7 @@ function Emparejamiento() {
 
   return (
     <div className="emparejamiento">
-      <h2>Emparejamiento</h2>
+     
       <div
         style={{
           display: "flex",
