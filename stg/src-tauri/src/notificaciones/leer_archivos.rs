@@ -191,15 +191,15 @@ pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegi
 
     let mut tutores_puj: Vec<TutoresPUJ> = Vec::new();
     let mut tutores_colegio: Vec<TutoresColegio> = Vec::new();
-    let mut funcionarios_colegio: Vec<FuncionariosColegio> = Vec::new();
+    let funcionarios_colegio: Vec<FuncionariosColegio> = Vec::new();
     let mut tutorados_emparejados: Vec<TutoradosEmparejados> = Vec::new();
 
    // println!("Comenzando a leer las filas de la hoja de cálculo...");
-    let mut fila_actual = 1; // Contador de filas para debug
+    let mut _fila_actual = 1; // Contador de filas para debug
 
     for row in range.rows().skip(1) { // Omitir encabezados
-        //println!("Leyendo fila {}", fila_actual);
-        fila_actual += 1;
+        //println!("Leyendo fila {}", _fila_actual);
+        _fila_actual += 1;
 
         if row.len() < 9 {
            // println!("Fila con menos de 9 columnas, se omite.");
@@ -366,11 +366,11 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
     let mut tutorados_control: Vec<TutoradosControl> = Vec::new();
 
     //println!("Comenzando a leer las filas de la hoja de cálculo...");
-    let mut fila_actual = 1; // Contador de filas para debug
+    let mut _fila_actual = 1; // Contador de filas para debug
 
     for row in range.rows().skip(1) { // Omitir encabezados
-       // println!("Leyendo fila {}", fila_actual);
-        fila_actual += 1;
+       // println!("Leyendo fila {}", _fila_actual);
+        _fila_actual += 1;
 
         if row.len() < 17 {
             //println!("Fila con menos de 17 columnas, se omite.");

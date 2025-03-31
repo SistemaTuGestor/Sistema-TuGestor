@@ -10,7 +10,7 @@ use std::sync::Mutex ;
 // ARCHIVOS
 use std::fs::{self} ;
 use std::io::{Read, Write} ;
-use std::path::PathBuf ;
+use std::path::{Path,PathBuf} ;
 use zip::write::FileOptions ;
 use zip::ZipArchive ;
 use calamine::{open_workbook, Reader, Xlsx} ;
@@ -18,6 +18,7 @@ use calamine::{open_workbook, Reader, Xlsx} ;
 
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
@@ -45,6 +46,22 @@ pub fn reportes_constanciastutores_actualizarfecha ( nueva_fecha:Option<String> 
         .clone_from(&fecha) ;
     
     // println! ( "Nueva fecha (Tutores): {}", fecha ) ;
+
+Ok(())
+}
+
+
+////    LEE     ////
+
+#[tauri::command]
+pub fn reportes_tutores_recibir_lee ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_LEE.get_or_init(|| Mutex::new(String::new()));
+
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = path;
+
+    // println!("📂 Ruta de archivo LEE (Tutores): {}", *nombre_guardado);
 
 Ok(())
 }
@@ -91,17 +108,23 @@ Ok(())
 }
 
 
-////    LÓGICA DE ARCHIVOS      ////
 
-// const ARCHIVO_EXCEL:&str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-const ARCHIVO_EXCEL:&str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/Sistema-TuGestor/recursos/LEE.xlsx" ;
+////    LÓGICA DE ARCHIVOS      ////
 
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
 
-    println!("📖 Cargando archivo Excel...") ;
+    // println!("📖 Cargando archivo Excel...") ;
 
-    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
+    let archivo_lee = PATH_LEE
+        .get()
+        .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    let path = Path::new(&*archivo_lee);
+    
+    let mut workbook: Xlsx<_> = open_workbook(path)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook

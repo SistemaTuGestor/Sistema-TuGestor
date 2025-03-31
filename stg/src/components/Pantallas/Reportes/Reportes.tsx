@@ -54,6 +54,48 @@ function Reportes ( ) {
       .then ( (response) => setFechaConstanciasTutorados(response.fecha) )
       .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
   } , [] ) ;
+  
+  
+  //// Apertura de explorador de archivos para XLSX de Emparejamiento en LEE.
+
+
+  const [archivoPath_Emparejamiento,setArchivoPath_Emparejamiento] = useState("Ubicación de archivo Emparejamiento") ;
+  
+  const handleSelectArchivo_Emparejamiento = async ( ) => {
+
+    try {
+
+      const selectedPath = await open ( {
+        directory : false ,  // Permite seleccionar archivos.
+        multiple : false ,  // Solo permite seleccionar uno.
+      } ) ;
+
+      if ( typeof selectedPath === "string" ) {
+
+        // Imprimir por consola.
+        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+
+        // Imprimir por GUI.
+        setArchivoPath_Emparejamiento ( selectedPath ) ;
+
+        // Enviar la ruta al backend de LEE.
+        invoke ( "reportes_lee_recibir_emparejamiento",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        // Enviar la ruta al backend de Tutorados.
+        invoke ( "reportes_tutorados_recibir_emparejamiento",{path:selectedPath} )
+        .then ( () => console.log("Ruta enviada correctamente") )
+        .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+      
+      }
+
+    } catch ( error ) {
+
+      console.error ( "Error al seleccionar la archivo:",error ) ;
+
+    }
+
+  } ;
 
 
   //// Apertura de explorador de archivos para formularios.
@@ -95,12 +137,12 @@ function Reportes ( ) {
   } ;
 
 
-  //// Apertura de explorador de archivos para XLSX de Emparejamiento de PUJ.
+  //// Apertura de explorador para lectura de archivo LEE para otros reportes.
 
 
-  const [archivoPath_Emparejamiento,setArchivoPath_Emparejamiento] = useState("Ubicación de archivo Emparejamiento") ;
+  const [archivoPath_LEE,setArchivoPath_LEE] = useState("Ubicación de archivo LEE") ;
   
-  const handleSelectArchivo_Emparejamiento = async ( ) => {
+  const handleSelectArchivo_LEE = async ( ) => {
 
     try {
 
@@ -115,13 +157,21 @@ function Reportes ( ) {
         console.log ( "Plantilla seleccionada:",selectedPath ) ;
 
         // Imprimir por GUI.
-        setArchivoPath_Emparejamiento ( selectedPath ) ;
+        setArchivoPath_LEE ( selectedPath ) ;
 
-        // Enviar la ruta al backend.
-        invoke ( "reportes_lee_recibir_emparejamiento",{path:selectedPath} )
+        // Enviar la ruta al backend para PUJ.
+        invoke ( "reportes_puj_recibir_lee",{path:selectedPath} )
           .then ( () => console.log("Ruta enviada correctamente") )
           .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        // Enviar la ruta al backend para Colegios.
+        invoke ( "reportes_colegios_recibir_lee",{path:selectedPath} )
+        .then ( () => console.log("Ruta enviada correctamente") )
+        .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        // Enviar la ruta al backend para Tutores.
+        invoke ( "reportes_tutores_recibir_lee",{path:selectedPath} )
+          .then ( () => console.log("Ruta enviada correctamente") )
+          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+
       }
 
     } catch ( error ) {
@@ -613,6 +663,9 @@ function Reportes ( ) {
               }}
             />
           </li>
+          <li onClick={() => handleSelectArchivo_LEE()} className="hover-underline">
+            {archivoPath_LEE}
+          </li>
           <li onClick={() => handleSelectPlantilla_PUJ()} className="hover-underline">
             {plantillaPath_PUJ}
           </li>
@@ -647,6 +700,9 @@ function Reportes ( ) {
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
+          </li>
+          <li onClick={() => handleSelectArchivo_LEE()} className="hover-underline">
+            {archivoPath_LEE}
           </li>
           <li onClick={() => handleSelectPlantilla_Colegios()} className="hover-underline">
             {plantillaPath_Colegios}
@@ -683,6 +739,9 @@ function Reportes ( ) {
               }}
             />
           </li>
+          <li onClick={() => handleSelectArchivo_LEE()} className="hover-underline">
+            {archivoPath_LEE}
+          </li>
           <li onClick={() => handleSelectPlantilla_ConstanciasTutores()} className="hover-underline">
             {plantillaPath_ConstanciasTutores}
           </li>
@@ -717,6 +776,9 @@ function Reportes ( ) {
                   .catch((err) => console.error("Failed to update date:", err));
               }}
             />
+          </li>
+          <li onClick={() => handleSelectArchivo_Emparejamiento()} className="hover-underline">
+            {archivoPath_Emparejamiento}
           </li>
           <li onClick={() => handleSelectPlantilla_ConstanciasTutorados()} className="hover-underline">
             {plantillaPath_ConstanciasTutorados}

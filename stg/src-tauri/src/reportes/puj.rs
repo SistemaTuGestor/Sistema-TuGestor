@@ -1,3 +1,4 @@
+
 // VARIOS
 use serde::{Serialize, Deserialize}; // Import Deserialize
 // FECHA
@@ -13,7 +14,10 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 
+
+
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
+static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 
@@ -24,20 +28,35 @@ pub fn reportes_puj_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), S
     let fecha = match nueva_fecha {
         Some(fecha) => {
             let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
-                .map_err(|e| format!("Failed to parse date: {}", e))?;
-            parsed_date.format("%d-%m-%Y").to_string()
-        }
-        None => Local::now().format("%d-%m-%Y").to_string(),
-    };
+            .map_err(|e| format!("Failed to parse date: {}", e))?;
+        parsed_date.format("%d-%m-%Y").to_string()
+    }
+    None => Local::now().format("%d-%m-%Y").to_string(),
+};
 
-    FECHA.get_or_init(|| Mutex::new(String::new()))
-        .lock()
-        .map_err(|e| format!("Failed to lock mutex: {}", e))?
-        .clone_from(&fecha);
+FECHA.get_or_init(|| Mutex::new(String::new()))
+.lock()
+.map_err(|e| format!("Failed to lock mutex: {}", e))?
+.clone_from(&fecha);
 
-    // println! ( "Nueva fecha (PUJ): {}", fecha ) ;
+// println! ( "Nueva fecha (PUJ): {}", fecha ) ;
 
-    Ok(())
+Ok(())
+}
+
+////    LEE     ////
+
+#[tauri::command]
+pub fn reportes_puj_recibir_lee ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_LEE.get_or_init(|| Mutex::new(String::new()));
+
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = path;
+
+    // println!("📂 Ruta de archivo LEE (PUJ): {}", *nombre_guardado);
+
+Ok(())
 }
 
 ////    PATH    ////
@@ -54,7 +73,7 @@ pub fn reportes_puj_recibir_pathplantilla(path: String) -> Result<(), String> {
     let mut nombre_guardado = nombre.lock().unwrap();
     *nombre_guardado = path;
 
-    println!("📂 Ruta de la plantilla recibida (PUJ): {}", *nombre_guardado);
+    // println!("📂 Ruta de la plantilla recibida (PUJ): {}", *nombre_guardado);
 
     Ok(())
 }
@@ -63,14 +82,15 @@ pub fn reportes_puj_recibir_pathplantilla(path: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn reportes_puj_recibir_nombrereporte(nombrereporte: String) -> Result<(), String> {
+    
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
 
     let mut nombre_guardado = nombre.lock().unwrap();
     *nombre_guardado = nombrereporte;
 
-    println!("📂 Nombre del reporte (PUJ): {}", *nombre_guardado);
+    // println!("📂 Nombre del reporte (PUJ): {}", *nombre_guardado);
 
-    Ok(())
+Ok(())
 }
 
 ////    LÓGICA DE ARCHIVOS      ////
@@ -82,14 +102,20 @@ pub struct Estudiante {
     modalidad: f64,
 }
 
-//  --> 🔹 Rutas de los archivos.
-//const ARCHIVO_EXCEL: &str = "C:\\Users\\Javier\\Downloads\\LEE.xlsx";
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\Downloads\\LEE.xlsx" ;
-//const ARCHIVO_EXCEL: &str = "/home/user/Downloads/LEE.xlsx";
+
 
 #[tauri::command]
 pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, String> {
-    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
+
+    let archivo_lee = PATH_LEE
+        .get()
+        .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    let path = Path::new(&*archivo_lee);
+    
+    let mut workbook: Xlsx<_> = open_workbook(path)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook
@@ -109,7 +135,7 @@ pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, S
         let horas_totales: f64 = row.get(row.len() - 1)
             .and_then(|cell| cell.to_string().parse::<f64>().ok())
             .unwrap_or(0.0);
-        println!("📂 Correo: {}", correo);
+        // println!("📂 Correo: {}", correo);
 
         if correo.ends_with("@javeriana.edu.co")  {
             estudiantes_aprobados.push(Estudiante {
@@ -120,15 +146,16 @@ pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, S
         }
     }
 
-    println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes_aprobados);
+    // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes_aprobados);
 
-    Ok(estudiantes_aprobados)
+Ok(estudiantes_aprobados)
 }
 
 #[tauri::command]
 pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
+
     // imprimir la lista de estudiantes
-    println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes);
+    // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes);
 
     let lista_tutores = estudiantes.iter()
         .map(|e| {
@@ -218,6 +245,6 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
 
     zip_writer.finish().expect("Error al cerrar el ZIP");
 
-    Ok(())
+Ok(())
 }
 

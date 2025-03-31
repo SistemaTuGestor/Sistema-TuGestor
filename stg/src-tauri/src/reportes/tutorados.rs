@@ -1,5 +1,4 @@
-// VARIOS
-use serde::Serialize ;
+
 // FECHA
 use chrono::Local ;
 use chrono::NaiveDate ;
@@ -8,20 +7,24 @@ use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
 use std::fs::{self} ;
-use std::path::PathBuf ;
+use std::path::{Path,PathBuf} ;
 use std::io::{Read, Write} ;
 use calamine::{open_workbook, Reader, Xlsx} ;
 use zip::{ZipArchive, write::FileOptions} ;
 
 
+
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
+static PATH_EMPAREJAMIENTO: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 
 
 ////    FECHA   ////
+
 #[tauri::command]
 pub fn reportes_constanciastutorados_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), String> {
+
     let fecha = match nueva_fecha {
         Some(fecha) => {
             let parsed_date = NaiveDate::parse_from_str(&fecha, "%Y-%m-%d")
@@ -38,42 +41,69 @@ pub fn reportes_constanciastutorados_actualizarfecha(nueva_fecha: Option<String>
         .map_err(|e| format!("Failed to lock mutex: {}", e))?
         .clone_from(&fecha);
 
-    Ok(())
+Ok(())
+}
+
+
+////    EMPAREJAMIENTO     ////
+
+#[tauri::command]
+pub fn reportes_tutorados_recibir_emparejamiento ( path:String ) -> Result<(),String> {
+
+    let nombre = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new()));
+
+    let mut nombre_guardado = nombre.lock().unwrap();
+    *nombre_guardado = path;
+
+    // println!("📂 Ruta de archivo Emparejamiento (Tutorados): {}", *nombre_guardado);
+
+Ok(())
 }
 
 
 ////    PATH    ////
-#[tauri::command]
-pub fn reportes_constanciastutorados_recibir_pathplantilla(path: String) -> Result<(), String> {
-    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new()));
-    let mut nombre_guardado = nombre.lock().unwrap();
-    *nombre_guardado = path;
 
-    Ok(())
+#[tauri::command]
+pub fn reportes_constanciastutorados_recibir_pathplantilla ( path:String) -> Result<(),String> {
+
+    let nombre = PATH_PLANTILLA.get_or_init(|| Mutex::new(String::new())) ;
+    let mut nombre_guardado = nombre.lock().unwrap() ;
+    *nombre_guardado = path ;
+
+Ok(())
 }
 
 
 ////    NOMBRE REPORTE     ////
+
 #[tauri::command]
 pub fn reportes_constanciastutorados_recibir_nombrereporte(nombrereporte: String) -> Result<(), String> {
+
     let nombre = NOMBRE_REPORTE.get_or_init(|| Mutex::new(String::new()));
     let mut nombre_guardado = nombre.lock().unwrap();
     *nombre_guardado = nombrereporte;
 
-    Ok(())
+Ok(())
 }
+
 
 
 ////    LÓGICA DE ARCHIVOS      ////
 
-// Ruta de archivos.
-const ARCHIVO_EXCEL: &str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/Sistema-TuGestor/recursos/Emparejamiento.xlsx";
-
 #[tauri::command]
 pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
-    println!("📖 Cargando archivo Excel...");
 
-    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
+    // println!("📖 Cargando archivo Excel...");
+
+    let archivo_emparejamiento = PATH_EMPAREJAMIENTO
+        .get()
+        .ok_or("❌ ARCHIVO_EMPAREJAMIENTO no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    let path = Path::new(&*archivo_emparejamiento);
+    
+    let mut workbook: Xlsx<_> = open_workbook(path)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     let range = workbook
@@ -90,6 +120,7 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
     fs::create_dir_all(&*directorio).map_err(|e| format!("❌ Error creando carpeta de salida: {}", e))?;
 
     for (i, row) in range.rows().enumerate() {
+        
         if i == 0 {
             println!("⚠ Ignorando encabezado...");
             continue;
@@ -108,36 +139,43 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
             .ok_or("❌ FECHA no ha sido inicializado")?
             .lock()
             .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
         let generar_constancia = |nombre_tutorado: &str| -> Result<(), String> {
-                if nombre_tutorado.is_empty() {
-                    return Ok(());
-                }
+            
+            if nombre_tutorado.is_empty() {
+                return Ok(());
+            }
 
-        let salida_docx = PathBuf::from(&*directorio).join(format!(
-            "Constancia Tutorado {} ({}).docx",
-            nombre_tutorado, fecha
-        ));
+            let salida_docx = PathBuf::from(&*directorio).join(format!(
+                "Constancia Tutorado {} ({}).docx",
+                nombre_tutorado, fecha
+            ));
 
-        let salida_documento = salida_docx.into_os_string()
-            .into_string()
-            .map_err(|e| format!("❌ Nombre de archivo no válido UTF-8: {:?}", e))?;
+            let salida_documento = salida_docx.into_os_string()
+                .into_string()
+                .map_err(|e| format!("❌ Nombre de archivo no válido UTF-8: {:?}", e))?;
 
-        match crear_constancia(&nombre_tutorado, &salida_documento) {
-            Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
-            Err(e) => eprintln!("❌ Error al generar constancia para {}: {}", nombre_tutorado, e),
-        }
+            match crear_constancia(&nombre_tutorado, &salida_documento) {
+                Ok(_) => println!("✔ Constancia generada: {}", salida_documento),
+                Err(e) => eprintln!("❌ Error al generar constancia para {}: {}", nombre_tutorado, e),
+            }
+
         Ok(())
-    };
+        };
+
         generar_constancia(&tutorado_1)?;
         generar_constancia(&tutorado_2)?;
+
     }
 
-    println!("🎉 ¡Todas las constancias han sido generadas!");
-    Ok(())
+    // println!("🎉 ¡Todas las constancias han sido generadas!");
+
+Ok(())
 }
 
 
-fn crear_constancia(nombre: &str, salida_path: &str) -> Result<(), String> {
+fn crear_constancia ( nombre:&str , salida_path:&str ) -> Result<(),String> {
+
     let path_plantilla = PATH_PLANTILLA
         .get()
         .ok_or("❌ PATH_PLANTILLA no ha sido inicializado")?
@@ -190,5 +228,5 @@ fn crear_constancia(nombre: &str, salida_path: &str) -> Result<(), String> {
     fs::write(salida_path, buffer.into_inner())
         .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
-    Ok(())
+Ok(())
 }

@@ -140,21 +140,19 @@
 
     .mensaje {
         /* Posición */
-        position : static ;
-        margin : 30px 40px ;
+        margin : 30px 40px 0 ;
         /* Contenedor */
-        /* border : 1px solid red ; */
         height : 64% ;
-        width : calc ( 100% - 0 ) ;
+        width : calc ( 100% - 80px ) ;
         /* Ítems */
         display : flex ;
         flex-direction : column ;
+        gap : 10px ;
         .asunto-mensaje input {
-            /* Posición */
-            position : static ;
-            margin-bottom : 10px ;
             /* Contenedor */
-            width : 89.9% ;
+            width : 100% !important ;
+            max-width : 100% ;
+            box-sizing : border-box ;
             background-color : white ;
             border : 2px solid #8A2BE2 ;        /* Morado */
             border-radius : 8px ;
@@ -170,10 +168,11 @@
         .contenido-mensaje textarea {
             /* Posición */
             resize : none ;
-            position : static ;
             /* Contenedor */
-            height : 440% ;
-            width : 95.8% ;
+            height : 300% ;
+            width : 100% !important ;
+            max-width : 100% ;
+            box-sizing : border-box ;
             background-color : white ;
             border : 2px solid #8A2BE2 ;        /* Morado */
             border-radius : 8px ;
@@ -191,12 +190,13 @@
 
     .botones {
         /* Posición */
-        position : static ;
+        margin-top : -10px ;
         /* Contenedor */
+        width : calc ( 100% - 80px ) ;
         padding : 0 40px ;
         /* Ítems */
         display : flex ;
-        justify-content : space-evenly ;
+        justify-content : space-between ;
         gap : 10px ;
     } .botones button {
         /* Contenedor */

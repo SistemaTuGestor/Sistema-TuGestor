@@ -1,6 +1,8 @@
+
 use calamine::{open_workbook, Reader, Xlsx, DataType};
 use serde::Serialize;
-use tauri::command; 
+
+
 
 const ARCHIVO_EXCEL: &str = "C:/Users/darve/OneDrive/Documentos/GitHub/tugestor/Sistema-TuGestor/recursos/emparejamiento.xlsx";
 
