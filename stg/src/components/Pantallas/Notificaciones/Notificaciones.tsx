@@ -5,7 +5,16 @@ import Inicio from "./Inicio" ;
 import { useEffect,useState } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri" ;
 
-
+interface TutoresPUJ {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  institucion: string;
+  telefono: string[];
+  horas: string;
+  tutorados: string[];
+  link: string;
+}
 
 interface DatosNotificacionesIzq {
   asunto : string ;
@@ -85,17 +94,23 @@ function Notificaciones ( ) {
   }, []);
 
   // Maneja el cambio de que destinatario está en ese momento
-  const handleDestinatariosChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setDestinatarios(value ? [value] : []);
-  };
+  // const handleDestinatariosChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const value = event.target.value;
+  //   setDestinatarios(value ? [value] : []);
+  // };
 
   // Función para manejar el cambio en la lista de objetos
   const handleObjetoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
-    // Si se selecciona una opción distinta a la opción por defecto "objetos"
+    
     if (selected !== "") {
-      setMensaje(prevMensaje => prevMensaje + " "+ selected);
+      //Escoge la estructura de origen
+      const estructuraOrigen = estructurasSeleccionadas.find(estructura => 
+        estructuras[estructura] && estructuras[estructura].includes(selected)
+      ) || "";
+            
+      //Mensaje que se muestra 
+      setMensaje(prevMensaje => prevMensaje + " <<" + selected + " " + estructuraOrigen + ">> ");
     }
   };
 
@@ -163,6 +178,15 @@ function Notificaciones ( ) {
       contactos: item.destinatarios.join(", ")
     }));
     setDatosIzq(datosFormateados);
+
+    await invoke("init_path_pruebas");
+    console.log("PATH_LINKS inicializado correctamente");
+
+    const tutores = await invoke<TutoresPUJ[]>("generar_tutores");
+    console.log("Tutores generados:", tutores);
+
+    const tutoresenlaces = await invoke<TutoresPUJ[]>("generar_tutores_enlaces");
+    console.log("Tutores generados:", tutoresenlaces);
     
     // Limpiar el formulario
     setAsunto("");

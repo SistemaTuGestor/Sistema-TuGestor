@@ -9,6 +9,7 @@ use std::path::Path ;
 
 
 
+
 //// UBICACIÓN DE ARCHIVOS PARA ELEMENTOS
 
 static PATH_EMPAREJAMIENTO : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -20,6 +21,17 @@ static PATH_LINKS : OnceCell<Mutex<String>> = OnceCell::new() ;
 #[derive(Serialize)]
 pub struct NombreArchivo {
     nombre: String,
+}
+
+#[tauri::command]//Función meramente de pruebas para inicializar los paths en caso de que no se pueda de la manera elegida
+pub fn init_path_pruebas() {
+    PATH_LINKS.set(Mutex::new(
+        String::from("C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Links.xlsx")
+    )).expect("Error al inicializar PATH_LINKS");
+
+    PATH_SEGUIMIENTO.set(Mutex::new(
+        String::from("C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\enlaces.xlsx")
+    )).expect("Error al inicializar PATH_SEGUIMIENTO");
 }
 
 #[tauri::command]
@@ -428,8 +440,142 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
 
     Ok(tutorados_control)
 }
-//funcion para tener los links
+
+//funcion para tener los links (Prueba con TutoresPUJ)
+
+#[tauri::command]
+pub fn generar_tutores() -> Vec<TutoresPUJ> {
+    let mut tutores = Vec::new();
+    let path_guard = PATH_LINKS.get().expect("PATH_LINKS no ha sido inicializado").lock().unwrap();
+    let path_str = path_guard.clone(); // Clonamos para evitar bloqueos
+    
+    let mut workbook: Xlsx<_> = open_workbook(path_str).expect("No se pudo abrir el archivo Excel");
+    
+    let sheet_name = "Sheet1"; // Esto se cambia el nombre de la hoja del excel que se va a leer
+    let mut horas_links: Vec<(String, String)> = Vec::new();
+    
+    if let Ok(range) = workbook.worksheet_range(sheet_name) {
+        for row_index in 1..range.height() {
+            let row = row_index as u32;
+            
+            if let Some(hora_cell) = range.get_value((row, 0)) {
+                if let Some(link_cell) = range.get_value((row, 1)) {
+                    let hora = hora_cell.to_string();
+                    let link = link_cell.to_string();
+                    
+                    if !hora.is_empty() && !link.is_empty() {
+                        horas_links.push((hora, link));
+                    }
+                }
+            }
+        }
+    } else {
+        println!("No se pudo obtener la hoja '{}'", sheet_name);
+    }
+    
+    const TOTAL_TUTORES: usize = 30;
+    const TUTORES_POR_GRUPO: usize = 10;
+    
+    for i in 1..=TOTAL_TUTORES {
+        let grupo = (i - 1) / TUTORES_POR_GRUPO;
+        
+        let (horas, link) = if grupo < horas_links.len() {
+            horas_links[grupo].clone()
+        } else {
+            (format!("{} horas", 10 + i), format!("https://tutor{}.example.com", i))
+        };
+        
+        tutores.push(TutoresPUJ {
+            nombre: format!("Nombre{}", i),
+            apellido: format!("Apellido{}", i),
+            correo: format!("tutor{}@example.com", i),
+            institucion: format!("Institución{}", i),
+            telefono: vec![format!("+57 30012345{}", i)],
+            horas, 
+            tutorados: vec![format!("Tutorado{}A", i), format!("Tutorado{}B", i)],
+            link,
+        });
+    }
+
+    println!("Se generaron {} tutores:", tutores.len());
+    for (i, tutor) in tutores.iter().enumerate() {
+        println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
+        println!("  Correo: {}", tutor.correo);
+        println!("  Institución: {}", tutor.institucion);
+        println!("  Teléfono: {}", tutor.telefono.join(", "));
+        println!("  Horas: {}", tutor.horas);
+        println!("  Link: {}", tutor.link);
+        println!("  Tutorados: {}", tutor.tutorados.join(", "));
+        println!("-----------------------------------");
+    }
+    
+    tutores
+}
 
 
+#[tauri::command]
+pub fn generar_tutores_enlaces() -> Vec<TutoresPUJ> {
+    let mut tutores = Vec::new();
+    let path_guard = PATH_SEGUIMIENTO.get().expect("PATH_SEGUIMIENTO no ha sido inicializado").lock().unwrap();
+    let path_str = path_guard.clone(); // Clonamos para evitar bloqueos
+    
+    let mut workbook: Xlsx<_> = open_workbook(path_str).expect("No se pudo abrir el archivo Excel");
+    
+    let sheet_name = "export-EMD_YJ3PpzHCwjeMKig-2025"; // Esto se cambia el nombre de la hoja del excel que se va a leer
+    let mut links: Vec<(String)> = Vec::new();
+    
+    if let Ok(range) = workbook.worksheet_range(sheet_name) {
+        for row_index in 1..range.height() {
+            let row = row_index as u32;
 
+            if let Some(link_cell) = range.get_value((row, 4)) { 
+                let link = link_cell.to_string();
+                if !link.is_empty() {
+                    links.push(link);
+                }
+            }
+        }
+        println!("Links extraídos: {:?}", links);
+    } else {
+        println!("No se pudo obtener la hoja '{}'", sheet_name);
+    }
+    
+    const TOTAL_TUTORES: usize = 20;
+    const TUTORES_POR_GRUPO: usize = 10;
+
+    for i in 1..=TOTAL_TUTORES {
+        let grupo = (i - 1) / TUTORES_POR_GRUPO; // Determina el índice del grupo cada 10 tutores
+        
+        let link = if grupo < links.len() {
+            links[grupo].clone() // Toma el link del grupo correspondiente
+        } else {
+            format!("https://tutor{}.example.com", i) // Valor por defecto si no hay suficientes links
+        };
+
+        tutores.push(TutoresPUJ {
+            nombre: format!("Nombre{}", i),
+            apellido: format!("Apellido{}", i),
+            correo: format!("tutor{}@example.com", i),
+            institucion: format!("Institución{}", i),
+            telefono: vec![format!("+57 30012345{}", i)],
+            horas: "N/A".to_string(), // Se elimina la dependencia de horas del Excel
+            tutorados: vec![format!("Tutorado{}A", i), format!("Tutorado{}B", i)],
+            link,
+        });
+    }
+
+    println!("Se generaron {} tutores:", tutores.len());
+    for (i, tutor) in tutores.iter().enumerate() {
+        println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
+        println!("  Correo: {}", tutor.correo);
+        println!("  Institución: {}", tutor.institucion);
+        println!("  Teléfono: {}", tutor.telefono.join(", "));
+        println!("  Horas: {}", tutor.horas);
+        println!("  Link: {}", tutor.link);
+        println!("  Tutorados: {}", tutor.tutorados.join(", "));
+        println!("-----------------------------------");
+    }
+    
+    tutores
+}
 
