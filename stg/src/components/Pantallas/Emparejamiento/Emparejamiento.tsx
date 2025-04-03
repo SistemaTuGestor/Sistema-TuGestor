@@ -44,7 +44,6 @@ function calcularColor(materia: string): string {
 }
 
 const availabilityMapping: { [key: string]: string } = {
-  "vacío": "",
   "Entre semana por la mañana": "0",
   "Entre semana de 2:00pm-3:00pm": "1",
   "Entre semana de 3:00pm-4:00pm": "2",
@@ -243,6 +242,10 @@ function Emparejamiento() {
         col === "tutorado1"
           ? newEmparejamientos[rowIndex].colorOriginal1
           : newEmparejamientos[rowIndex].colorOriginal2,
+      id :
+      col === "tutorado1"
+         ? newEmparejamientos[rowIndex].tutorado1_id
+         : newEmparejamientos[rowIndex].tutorado2_id,
     });
 
     const sourceData = getTutoradoData(sourceRow, sourceCol);
@@ -254,10 +257,12 @@ function Emparejamiento() {
       newEmparejamientos[sourceRow].materiaTutorado1 = destData.materia;
       newEmparejamientos[sourceRow].disponibilidadTutorado1 = destData.disponibilidad;
       newEmparejamientos[sourceRow].colorOriginal1 = destData.color;
+      newEmparejamientos[sourceRow].tutorado1_id = destData.id;
     } else {
       newEmparejamientos[sourceRow].materiaTutorado2 = destData.materia;
       newEmparejamientos[sourceRow].disponibilidadTutorado2 = destData.disponibilidad;
       newEmparejamientos[sourceRow].colorOriginal2 = destData.color;
+      newEmparejamientos[sourceRow].tutorado2_id = destData.id;
     }
 
     // Intercambio: asignar la data de origen en la posición de destino
@@ -266,10 +271,12 @@ function Emparejamiento() {
       newEmparejamientos[destRow].materiaTutorado1 = sourceData.materia;
       newEmparejamientos[destRow].disponibilidadTutorado1 = sourceData.disponibilidad;
       newEmparejamientos[destRow].colorOriginal1 = sourceData.color;
+      newEmparejamientos[destRow].tutorado1_id = sourceData.id;
     } else {
       newEmparejamientos[destRow].materiaTutorado2 = sourceData.materia;
       newEmparejamientos[destRow].disponibilidadTutorado2 = sourceData.disponibilidad;
       newEmparejamientos[destRow].colorOriginal2 = sourceData.color;
+      newEmparejamientos[destRow].tutorado2_id = sourceData.id;
     }
 
     // Si alguna celda quedó vacía, se reemplaza con un ítem "nuevo" (sin datos heredados)
@@ -282,10 +289,12 @@ function Emparejamiento() {
         newEmparejamientos[rowIndex].materiaTutorado1 = "VACÍO";
         newEmparejamientos[rowIndex].disponibilidadTutorado1 = "VACÍO";
         newEmparejamientos[rowIndex].colorOriginal1 = "";
+        newEmparejamientos[rowIndex].tutorado1_id = "";
       } else {
         newEmparejamientos[rowIndex].materiaTutorado2 = "VACÍO";
         newEmparejamientos[rowIndex].disponibilidadTutorado2 = "VACÍO";
         newEmparejamientos[rowIndex].colorOriginal2 = "";
+        newEmparejamientos[rowIndex].tutorado2_id = "";
       }
     };
 
@@ -631,11 +640,16 @@ function Emparejamiento() {
                           colIndex === 0 ? fila.disponibilidadTutorado1 : fila.disponibilidadTutorado2
                         ];
                         const realId = colIndex === 0 ? fila.tutorado1_id : fila.tutorado2_id;
-                        const tutoradoDisplay = tutorado.trim()
-                          ? dispNumber
-                            ? `-nombre: ${tutorado} \n id ${realId} \n disp(${dispNumber})`
-                            : tutorado
-                          : "VACÍO";
+                        let tutoradoDisplay;
+                        if (tutorado.trim()) {
+                          if (dispNumber) {
+                            tutoradoDisplay = `-nombre: ${tutorado} \n id ${realId} \n disp(${dispNumber})`;
+                          } else {
+                            tutoradoDisplay = tutorado;
+                          }
+                        } else {
+                          tutoradoDisplay = "VACÍO";
+                        }
                         return (
                           <td key={tutoradoId} className={highlightedId === tutoradoId ? "highlight" : ""}>
                             <Draggable draggableId={tutoradoId} index={rowIndex * 2 + colIndex}>
