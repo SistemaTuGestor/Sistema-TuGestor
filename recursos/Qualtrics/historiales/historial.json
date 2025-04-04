@@ -1,14 +1,16 @@
 [
   {
     "destinatarios": [
-      "Destinatario 1"
+      "TutoresColegio"
     ],
-    "asunto": "Javier",
-    "mensaje": "Prueba de Updatedasdsa"
+    "asunto": "Prueba Destinatarios",
+    "mensaje": " <<nombre TutoresPUJ>>  <<horas TutoresColegio>> "
   },
   {
-    "destinatarios": [],
-    "asunto": "Pau",
-    "mensaje": "dasdsad"
+    "destinatarios": [
+      "TutoradosControl"
+    ],
+    "asunto": "Javier",
+    "mensaje": " <<nombre TutoradosControl>> "
   }
 ]

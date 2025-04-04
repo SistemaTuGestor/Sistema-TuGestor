@@ -5,7 +5,16 @@ import Inicio from "./Inicio" ;
 import { useEffect,useState } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri" ;
 
-
+interface TutoresPUJ {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  institucion: string;
+  telefono: string[];
+  horas: string;
+  tutorados: string[];
+  link: string;
+}
 
 interface DatosNotificacionesIzq {
   asunto : string ;
@@ -85,17 +94,23 @@ function Notificaciones ( ) {
   }, []);
 
   // Maneja el cambio de que destinatario está en ese momento
-  const handleDestinatariosChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
-    setDestinatarios(value ? [value] : []);
-  };
+  // const handleDestinatariosChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const value = event.target.value;
+  //   setDestinatarios(value ? [value] : []);
+  // };
 
   // Función para manejar el cambio en la lista de objetos
   const handleObjetoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
-    // Si se selecciona una opción distinta a la opción por defecto "objetos"
+    
     if (selected !== "") {
-      setMensaje(prevMensaje => prevMensaje + " "+ selected);
+      //Escoge la estructura de origen
+      const estructuraOrigen = estructurasSeleccionadas.find(estructura => 
+        estructuras[estructura] && estructuras[estructura].includes(selected)
+      ) || "";
+            
+      //Mensaje que se muestra 
+      setMensaje(prevMensaje => prevMensaje + " <<" + selected + " " + estructuraOrigen + ">> ");
     }
   };
 
@@ -128,6 +143,7 @@ function Notificaciones ( ) {
   const handleSeleccionDestinatario = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const opcionesSeleccionadas = Array.from(e.target.selectedOptions, (option) => option.value);
     setEstructurasSeleccionadas(opcionesSeleccionadas);
+    setDestinatarios(opcionesSeleccionadas);
   };
 
   // Guardar en JSON y enviarlo al backend
@@ -163,6 +179,15 @@ function Notificaciones ( ) {
       contactos: item.destinatarios.join(", ")
     }));
     setDatosIzq(datosFormateados);
+
+    await invoke("init_path_pruebas");
+    console.log("PATH_LINKS inicializado correctamente");
+
+    const tutores = await invoke<TutoresPUJ[]>("generar_tutores");
+    console.log("Tutores generados:", tutores);
+
+    const tutoresenlaces = await invoke<TutoresPUJ[]>("generar_tutores_enlaces");
+    console.log("Tutores generados:", tutoresenlaces);
     
     // Limpiar el formulario
     setAsunto("");
@@ -184,40 +209,66 @@ const handleCancelarEdicion = () => {
 const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
   // Detener la propagación para evitar que se active el onClick del <li>
   event.stopPropagation();
+  event.preventDefault(); // Agregar esto también para asegurarnos
   
+  // Ejecutar la confirmación en un setTimeout para separarlo del flujo de eventos
+  setTimeout(() => {
 
-  const confirmarEliminacion = window.confirm(`¿Estás seguro de que deseas eliminar "${asunto}"?`);
-
-  if (confirmarEliminacion) {
-    try {
-      
-      await invoke("eliminar_historial", { asunto });
-      
-     
-      alert("Entrada eliminada con éxito");
-      
-     
-      const historial = await invoke<Borrador[]>("leer_historial");
-      const datosFormateados = historial.map(item => ({
-        asunto: item.asunto,
-        contactos: item.destinatarios.join(", ")
-      }));
-      setDatosIzq(datosFormateados);
-      
-      if (modoEdicion && asuntoOriginal === asunto) {
-        setModoEdicion(false);
-        setAsuntoOriginal("");
-        setAsunto("");
-        setMensaje("");
-        setDestinatarios([]);
-      }
-    } catch (error) {
-      console.error("Error al eliminar la entrada:", error);
-      alert("Error al eliminar la entrada: " + error);
-    }
-  }
+      (async () => {
+        try {
+          await invoke("eliminar_historial", { asunto });
+          
+          // Notificar éxito
+          setTimeout(() => {
+            alert("Entrada eliminada con éxito");
+          }, 100);
+          
+          // Actualizar la interfaz
+          const historial = await invoke<Borrador[]>("leer_historial");
+          const datosFormateados = historial.map(item => ({
+            asunto: item.asunto,
+            contactos: item.destinatarios.join(", ")
+          }));
+          setDatosIzq(datosFormateados);
+          
+          // Reiniciar estado si es necesario
+          if (modoEdicion && asuntoOriginal === asunto) {
+            setModoEdicion(false);
+            setAsuntoOriginal("");
+            setAsunto("");
+            setMensaje("");
+            setDestinatarios([]);
+          }
+        } catch (error) {
+          console.error("Error al eliminar la entrada:", error);
+          alert("Error al eliminar la entrada: " + error);
+        }
+      })();
+    
+  },); 
 };
 
+  //Boton de envio.
+  const handleEnviar = async () => {
+    try {
+      const historiales = await invoke<Borrador[]>("enviar_historiales");
+      
+      console.log("Historiales enviados:");
+      historiales.forEach((item, index) => {
+        console.log(`🔹 Historial ${index + 1}`);
+        console.log(`   📌 Asunto: ${item.asunto}`);
+        console.log(`   ✉️ Destinatarios: ${item.destinatarios.join(", ")}`);
+        console.log(`   📝 Mensaje: ${item.mensaje}`);
+        console.log("-----------------------------------");
+      });
+  
+      alert("Historiales enviados exitosamente");
+    } catch (error) {
+      console.error("Error al enviar los historiales:", error);
+      alert("Error al enviar los historiales: " + error);
+    }
+  };
+  
 
   // Botón de inicio.
 
@@ -272,7 +323,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
             <li key={index} className="casilla" onClick={() => handleCasillaClick(row)}
             style={{ cursor: 'pointer' }}>
               <p className="asunto-casilla">{row.asunto}</p>
-              <p className="contactos-casilla">{"contactos"}</p>
+              <p className="contactos-casilla">{row.contactos}</p>
               <button onClick={(e) => handleEliminar(row.asunto, e)}>
                 Eliminar
               </button>
@@ -322,7 +373,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
               <button onClick={handleGuardar}>
               {modoEdicion ? "Actualizar" : "Guardar"}
               </button>
-              <button>
+              <button onClick={handleEnviar}>
                 Enviar
               </button>
               {modoEdicion && (
