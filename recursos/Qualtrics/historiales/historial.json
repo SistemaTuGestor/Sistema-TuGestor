@@ -12,5 +12,12 @@
     ],
     "asunto": "Javier",
     "mensaje": " <<nombre TutoradosControl>> "
+  },
+  {
+    "destinatarios": [
+      "TutoresColegio"
+    ],
+    "asunto": "Pau",
+    "mensaje": " <<nombre TutoresColegio>>  <<telefono FuncionariosColegio>> "
   }
 ]
