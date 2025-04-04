@@ -1,57 +1,16 @@
 [
   {
-    "destinatarios": [],
-    "asunto": "Pau",
-    "mensaje": "dasdsad"
+    "destinatarios": [
+      "TutoresColegio"
+    ],
+    "asunto": "Prueba Destinatarios",
+    "mensaje": " <<nombre TutoresPUJ>>  <<horas TutoresColegio>> "
   },
   {
-    "destinatarios": [],
-    "asunto": "Prueba con banderas correctas",
-    "mensaje": " <<nombre FuncionariosColegio>>  <<correo FuncionariosColegio>>  <<nombre TutoradosEmparejados>> "
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba 2",
-    "mensaje": " <<nombre FuncionariosColegio>> "
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba Tutores",
-    "mensaje": " <<nombre TutoresPUJ>> "
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Ahora siii",
-    "mensaje": " <<nombre TutoresColegio>> "
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba con datos correctos (ahora si)",
-    "mensaje": "aass"
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba de 30 tutores",
-    "mensaje": "a"
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba imprimir por consola",
-    "mensaje": "a"
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Prueba con enlaces v1.2",
-    "mensaje": "a"
-  },
-  {
-    "destinatarios": [],
-    "asunto": "Otra mas",
-    "mensaje": "saa"
-  },
-  {
-    "destinatarios": [],
-    "asunto": "asdas",
-    "mensaje": "sads"
+    "destinatarios": [
+      "TutoradosControl"
+    ],
+    "asunto": "Javier",
+    "mensaje": " <<nombre TutoradosControl>> "
   }
 ]

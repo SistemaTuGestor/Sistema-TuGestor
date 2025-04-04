@@ -287,3 +287,42 @@ pub fn eliminar_historial(asunto: String) -> Result<(), String> {
     
     Ok(())
 }
+
+#[tauri::command]
+pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
+    let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales";
+
+    if !Path::new(carpeta_path).exists() {
+        return Err("La carpeta de historiales no existe".to_string());
+    }
+
+    let mut historiales: Vec<Borrador> = Vec::new();
+
+    let archivos = fs::read_dir(carpeta_path)
+        .map_err(|e| format!("Error al leer la carpeta: {}", e))?;
+
+    for archivo in archivos {
+        if let Ok(entrada) = archivo {
+            let path = entrada.path();
+
+            if path.is_file() && path.extension().map_or(false, |ext| ext == "json") {
+                if let Ok(contenido) = fs::read_to_string(&path) {
+                    if let Ok(historial) = serde_json::from_str::<Vec<Borrador>>(&contenido) {
+                        historiales.extend(historial);
+                    }
+                }
+            }
+        }
+    }
+
+    println!("📜 Historiales encontrados:");
+    for (i, historial) in historiales.iter().enumerate() {
+        println!("🔹 Historial {}:", i + 1);
+        println!("   📌 Asunto: {}", historial.asunto);
+        println!("   ✉️ Destinatarios: {}", historial.destinatarios.join(", "));
+        println!("   📝 Mensaje: {}", historial.mensaje);
+        println!("-----------------------------------");
+    }
+
+    Ok(historiales)
+}

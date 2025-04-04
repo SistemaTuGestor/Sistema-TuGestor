@@ -1,9 +1,9 @@
 [
   {
     "destinatarios": [
-      "Destinatario 2"
+      "TutoradosEmparejados"
     ],
-    "asunto": "Prueba",
-    "mensaje": "Se adjuntan notas finales"
+    "asunto": "Prueba Destinatarios Emp",
+    "mensaje": "  <<colegio TutoradosEmparejados>> "
   }
 ]

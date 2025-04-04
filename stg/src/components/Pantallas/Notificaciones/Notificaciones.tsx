@@ -143,6 +143,7 @@ function Notificaciones ( ) {
   const handleSeleccionDestinatario = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const opcionesSeleccionadas = Array.from(e.target.selectedOptions, (option) => option.value);
     setEstructurasSeleccionadas(opcionesSeleccionadas);
+    setDestinatarios(opcionesSeleccionadas);
   };
 
   // Guardar en JSON y enviarlo al backend
@@ -208,40 +209,66 @@ const handleCancelarEdicion = () => {
 const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
   // Detener la propagación para evitar que se active el onClick del <li>
   event.stopPropagation();
+  event.preventDefault(); // Agregar esto también para asegurarnos
   
+  // Ejecutar la confirmación en un setTimeout para separarlo del flujo de eventos
+  setTimeout(() => {
 
-  const confirmarEliminacion = window.confirm(`¿Estás seguro de que deseas eliminar "${asunto}"?`);
-
-  if (confirmarEliminacion) {
-    try {
-      
-      await invoke("eliminar_historial", { asunto });
-      
-     
-      alert("Entrada eliminada con éxito");
-      
-     
-      const historial = await invoke<Borrador[]>("leer_historial");
-      const datosFormateados = historial.map(item => ({
-        asunto: item.asunto,
-        contactos: item.destinatarios.join(", ")
-      }));
-      setDatosIzq(datosFormateados);
-      
-      if (modoEdicion && asuntoOriginal === asunto) {
-        setModoEdicion(false);
-        setAsuntoOriginal("");
-        setAsunto("");
-        setMensaje("");
-        setDestinatarios([]);
-      }
-    } catch (error) {
-      console.error("Error al eliminar la entrada:", error);
-      alert("Error al eliminar la entrada: " + error);
-    }
-  }
+      (async () => {
+        try {
+          await invoke("eliminar_historial", { asunto });
+          
+          // Notificar éxito
+          setTimeout(() => {
+            alert("Entrada eliminada con éxito");
+          }, 100);
+          
+          // Actualizar la interfaz
+          const historial = await invoke<Borrador[]>("leer_historial");
+          const datosFormateados = historial.map(item => ({
+            asunto: item.asunto,
+            contactos: item.destinatarios.join(", ")
+          }));
+          setDatosIzq(datosFormateados);
+          
+          // Reiniciar estado si es necesario
+          if (modoEdicion && asuntoOriginal === asunto) {
+            setModoEdicion(false);
+            setAsuntoOriginal("");
+            setAsunto("");
+            setMensaje("");
+            setDestinatarios([]);
+          }
+        } catch (error) {
+          console.error("Error al eliminar la entrada:", error);
+          alert("Error al eliminar la entrada: " + error);
+        }
+      })();
+    
+  },); 
 };
 
+  //Boton de envio.
+  const handleEnviar = async () => {
+    try {
+      const historiales = await invoke<Borrador[]>("enviar_historiales");
+      
+      console.log("Historiales enviados:");
+      historiales.forEach((item, index) => {
+        console.log(`🔹 Historial ${index + 1}`);
+        console.log(`   📌 Asunto: ${item.asunto}`);
+        console.log(`   ✉️ Destinatarios: ${item.destinatarios.join(", ")}`);
+        console.log(`   📝 Mensaje: ${item.mensaje}`);
+        console.log("-----------------------------------");
+      });
+  
+      alert("Historiales enviados exitosamente");
+    } catch (error) {
+      console.error("Error al enviar los historiales:", error);
+      alert("Error al enviar los historiales: " + error);
+    }
+  };
+  
 
   // Botón de inicio.
 
@@ -296,7 +323,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
             <li key={index} className="casilla" onClick={() => handleCasillaClick(row)}
             style={{ cursor: 'pointer' }}>
               <p className="asunto-casilla">{row.asunto}</p>
-              <p className="contactos-casilla">{"contactos"}</p>
+              <p className="contactos-casilla">{row.contactos}</p>
               <button onClick={(e) => handleEliminar(row.asunto, e)}>
                 Eliminar
               </button>
@@ -346,7 +373,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
               <button onClick={handleGuardar}>
               {modoEdicion ? "Actualizar" : "Guardar"}
               </button>
-              <button>
+              <button onClick={handleEnviar}>
                 Enviar
               </button>
               {modoEdicion && (
