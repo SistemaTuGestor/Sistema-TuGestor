@@ -1,4 +1,3 @@
-
 // VARIOS
 use serde::Serialize;
 // FECHA
@@ -130,18 +129,28 @@ pub struct Emparejamiento {
     nombre_completo: String,
     correo: String,
     modalidad: String,
+    institucion: String,
     horas: String,
 }
 
 #[tauri::command]
 pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
+    // Leer los emparejamientos primero
+    let emparejamientos = reportes_lee_leer_archivo_emparejamiento()?;
 
-    let mut registros: HashMap<String, (String, String, String, Vec<u32>, u32)> = HashMap::new();
+    // Crear un mapa de emparejamientos para búsqueda rápida por correo
+    let emparejamientos_map: HashMap<String, (String, String, String, String)> = emparejamientos
+        .into_iter()
+        .map(|e| (e.correo.clone(), (e.nombre_completo, e.institucion, e.horas, e.modalidad)))
+        .collect();
 
+    // Leer los archivos de la carpeta
     let carpeta_path = PATH_CARPETA.get().expect("Global variable not initialized");
-    // println!("📂 Ruta de la carpeta recibida (LEE): {}",PATH_CARPETA.get().unwrap().lock().unwrap()) ;
     let carpeta_path_guard = carpeta_path.lock().unwrap();
-    let archivos = fs::read_dir(carpeta_path_guard.as_str()).map_err(|e| format!("Error al leer la carpeta: {}", e))?;
+    let archivos = fs::read_dir(carpeta_path_guard.as_str())
+        .map_err(|e| format!("Error al leer la carpeta: {}", e))?;
+
+    let mut registros: HashMap<String, (String, String, String, String, Vec<u32>, u32)> = HashMap::new();
 
     for entrada in archivos {
         let entrada = entrada.map_err(|e| format!("Error al leer un archivo en la carpeta: {}", e))?;
@@ -166,45 +175,50 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
             }
         };
 
-        for row in range.rows().skip(1) { // Omitir encabezados
+        for row in range.rows().skip(1) {
             if row.len() < 13 {
                 continue;
             }
 
-            let nombre = row.get(10).map_or("".to_string(), |cell| cell.to_string());
-            let apellido = row.get(9).map_or("".to_string(), |cell| cell.to_string());
             let correo = row.get(11).map_or("".to_string(), |cell| cell.to_string());
-            let institucion = row.get(19).map_or("".to_string(), |cell| cell.to_string());
-            let horas = row.get(20).map_or("".to_string(), |cell| cell.to_string());
             let minutos = row.get(22).map_or("0".to_string(), |cell| cell.to_string()).parse::<u32>().unwrap_or(0);
 
-            let nombre_completo = format!("{} {}", nombre, apellido);
-
-            registros.entry(correo.clone()).and_modify(|(_, _, _, semanas, total_minutos)| {
-                semanas.push(minutos);
-                *total_minutos += minutos;
-            }).or_insert((nombre_completo, institucion, horas, vec![minutos], minutos));
+            // Verificar si el correo está en los emparejamientos
+            if let Some((nombre_completo, institucion, horas, modalidad)) = emparejamientos_map.get(&correo) {
+                registros.entry(correo.clone()).and_modify(|(_, _, _, _, semanas, total_minutos)| {
+                    semanas.push(minutos);
+                    *total_minutos += minutos;
+                }).or_insert((
+                    nombre_completo.clone(),
+                    institucion.clone(),
+                    horas.clone(),
+                    modalidad.clone(),
+                    vec![minutos],
+                    minutos,
+                ));
+            }
         }
     }
 
-    let data: Vec<DatosMonitoreo> = registros.into_iter().map(|(correo, (nombre_completo, institucion, horas, minutos_por_semana, minutos_totales))| {
-       // println!("Correo: {} | Nombre: {} | Institucion: {} | Horas: {} | Minutos por semana: {:?} | Minutos totales: {} | Horas totales: {:.2}", correo, nombre_completo, institucion, horas, minutos_por_semana, minutos_totales, minutos_totales as f32 / 60.0);
-        DatosMonitoreo {
-            nombre_completo,
-            correo,
-            institucion,
-            horas,
-            modalidad: "".to_string(),
-            minutos_por_semana,
-            minutos_totales,
-            horas_totales: minutos_totales as f32 / 60.0,
-        }
-    }).collect();
+    // Convertir los registros en el formato final
+    let data: Vec<DatosMonitoreo> = registros
+        .into_iter()
+        .map(|(correo, (nombre_completo, institucion, horas, modalidad, minutos_por_semana, minutos_totales))| {
+            DatosMonitoreo {
+                nombre_completo,
+                correo,
+                institucion,
+                horas,
+                modalidad,
+                minutos_por_semana,
+                minutos_totales,
+                horas_totales: minutos_totales as f32 / 60.0,
+            }
+        })
+        .collect();
 
-    let emparejamientos = reportes_lee_leer_archivo_emparejamiento()?;
-    let data_actualizada = actualizar_horas(data, emparejamientos);
-    generar_excel(&data_actualizada)?;
-    Ok(data_actualizada)
+    generar_excel(&data)?;
+    Ok(data)
 }
 
 #[tauri::command]
@@ -241,6 +255,7 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         let nombre = row.get(0).map_or("".to_string(), |cell| cell.to_string());
         let apellido = row.get(1).map_or("".to_string(), |cell| cell.to_string());
         let correo = row.get(2).map_or("".to_string(), |cell| cell.to_string());
+        let institucion = row.get(4).map_or("".to_string(), |cell| cell.to_string());
         let modalidad = row.get(7).map_or("".to_string(), |cell| cell.to_string());
         let horas = row.get(8).map_or("".to_string(), |cell| cell.to_string());
 
@@ -249,6 +264,7 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         registros.push(Emparejamiento {
             nombre_completo: nombre_completo.clone(),
             correo: correo.clone(),
+            institucion: institucion.clone(),
             modalidad: modalidad.clone(),
             horas: horas.clone(),
         });
@@ -260,12 +276,13 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
 }
 
 pub fn actualizar_horas(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamientos: Vec<Emparejamiento>) -> Vec<DatosMonitoreo> {
-    let emparejamientos_map: HashMap<String, (String, String)> = emparejamientos.into_iter()
-        .map(|e| (e.correo, (e.horas, e.modalidad)))
+    let emparejamientos_map: HashMap<String, (String, String, String)> = emparejamientos.into_iter()
+        .map(|e| (e.correo, (e.nombre_completo, e.horas, e.modalidad)))
         .collect();
 
     for dato in &mut datos_monitoreo {
-        if let Some((horas, modalidad)) = emparejamientos_map.get(&dato.correo) {
+        if let Some((nombre_completo,horas, modalidad)) = emparejamientos_map.get(&dato.correo) {
+            dato.nombre_completo = nombre_completo.clone();
             dato.horas = horas.clone();
             dato.modalidad = modalidad.clone();
             
