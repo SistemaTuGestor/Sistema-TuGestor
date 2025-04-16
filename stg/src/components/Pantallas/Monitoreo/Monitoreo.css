@@ -16,6 +16,40 @@
         border-radius : 8px ;
     }
 
+    .opciones-izquierda {
+        /* Posición */
+        position : static ;
+        /* Contenedor */
+        border-bottom : 2px solid #8A2BE2 ;     /* Morado */
+        /* Elementos */
+        padding : 15px 5% 14px ;
+        gap : 5% ;
+        display : flex ;
+    } .opciones-izquierda select {
+        /* Reseteo de estilo */
+        appearance : none ;
+        -moz-appearance : none ;
+        -webkit-appearance : none ;
+        /* Contenedor */
+        width : 80% ;
+        height : 52px ;
+        background-color : #F18200 ;            /* Naranja */
+        border : 2px solid white ;
+        border-radius : 8px ;
+        /* Letra */
+        font-size : 70% ;
+        color : white ;
+    } .opciones-izquierda select:hover {
+        font-weight : bold ;
+    }
+
+    .barra-buusqueda {
+        /* Posición */
+        position : static ;
+        /* Contenedor */
+        width : 100% ;
+    }
+
     .casilla {
         /* Contenedor */
         border-bottom : 1px solid #8A2BE2 ;    /* Morado */
@@ -45,7 +79,7 @@
             margin : -4px 0 2px 0 ;
             /* Letra */
             font-size: 80% ;
-            color : #FFC901 ;       /* Amarillo */
+            color : white ;
             font-style : italic ;
         }
     }
@@ -65,7 +99,7 @@
         /* Posición */
         margin : 2% ;
         /* Contenedor */
-        background-color : #F18200 ;    /* Naranja */
+        background-color : #FFC901 ;
         border : 2px solid #8A2BE2 ;    /* Morado */
         border-radius : 8px ;
         /* Elementos */

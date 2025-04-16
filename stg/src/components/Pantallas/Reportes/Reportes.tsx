@@ -1,7 +1,7 @@
 
 import "./Reportes.css" ;
 
-import Emergente from "../Emergente/Emergente" ;
+import Emergente from "./Emergente/Emergente" ;
 
 import { useRef,useState,useEffect } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri";

@@ -40,7 +40,7 @@ function Notificaciones ( ) {
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [estructurasSeleccionadas, setEstructurasSeleccionadas] = useState<string[]>([]);
   const [atributos, setAtributos] = useState<string[]>([]);
-  const [controlData, setControlData] = useState<any[]>([]);
+  const [, setControlData] = useState<any[]>([]);
   const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [destinatarios, setDestinatarios] = useState<string[]>([]);
@@ -61,20 +61,6 @@ function Notificaciones ( ) {
       })
       .catch((error) => console.error("Error al leer el archivo de control:", error));
   }, []);
-
-  // // Fetch data from the backend.
-  // useEffect(() => {
-  //   invoke<DatosNotificacionesIzq[]>("notificaciones_izquierda")
-  //     .then((response) => setDatosIzq(response))
-  //     .catch((error) => console.error("Failed to fetch data:", error));
-  // }, []);
-
-  // // Fetch data from the backend.
-  // useEffect(() => {
-  //   invoke<DatosNotificacionesDer[]>("notificaciones_derecha")
-  //     .then((response) => setDatosDer(response))
-  //     .catch((error) => console.error("Failed to fetch data:", error));
-  // }, []);
 
   useEffect(() => {
     const cargarHistorial = async () => {
