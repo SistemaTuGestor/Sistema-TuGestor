@@ -95,6 +95,11 @@ function Monitoreo ( ) {
             </div>
           ))}
         </div>
+        <div className="nuevo-registro">
+          <button>
+            +
+          </button>
+        </div>
       </div>
     </div>
   

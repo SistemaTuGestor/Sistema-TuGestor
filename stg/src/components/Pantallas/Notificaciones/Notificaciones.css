@@ -210,9 +210,9 @@
         font-weight : bold ;
     }
       
-      .casilla:hover {
-        background-color: rgba(0, 0, 0, 0.1);
-      }
+    .casilla:hover {
+        background-color : rgba(0,0,0,0.1) ;
+    }
       
 
 }
