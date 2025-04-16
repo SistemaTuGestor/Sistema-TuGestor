@@ -108,7 +108,7 @@ function Reportes ( ) {
     try {
 
       const selectedPath = await open ( {
-        directory : true,  // Permite seleccionar una carpeta.
+        directory : true ,  // Permite seleccionar una carpeta.
         multiple : false ,  // Solo permite seleccionar una.
       } ) ;
 
