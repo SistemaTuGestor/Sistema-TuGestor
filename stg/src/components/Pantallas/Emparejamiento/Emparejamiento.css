@@ -8,7 +8,6 @@
 /* Título */
 h2 {
     color: #8A2BE2;
-    /* Morado */
     text-align: center;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
@@ -21,7 +20,6 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 10px;
     background: #E0F7FA;
-    /* Azul más suave */
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -34,7 +32,6 @@ table {
 /* Encabezados */
 th {
     background-color: #8A2BE2;
-    /* Morado */
     color: white;
     font-weight: bold;
     text-transform: uppercase;
@@ -48,7 +45,7 @@ th {
 /* Celdas */
 th,
 td {
-    padding: 12px;
+    padding: 12px 8px;
     text-align: left;
 }
 
@@ -70,9 +67,7 @@ input {
 input:focus {
     outline: none;
     border: 2px solid #F18200;
-    /* Naranja */
     background: #FFF7E6;
-    /* Suave amarillo */
 }
 
 /* Alternar colores en filas */
@@ -83,14 +78,12 @@ tr:nth-child(even) {
 /* Hover en filas */
 tr:hover {
     background-color: #FFC901;
-    /* Amarillo */
     color: #333;
 }
 
 /* Botones */
 button {
     background-color: #F18200;
-    /* Naranja */
     color: white;
     padding: 10px 15px;
     border: none;
@@ -102,18 +95,15 @@ button {
 
 button:hover {
     background-color: #C46A00;
-    /* Naranja más oscuro */
 }
 
 /* Botón específico para Excel */
 .btn-excel {
     background-color: #F18200;
-    /* Naranja */
 }
 
 .btn-excel:hover {
     background-color: #C46A00;
-    /* Naranja más oscuro */
 }
 
 /* Botón específico para inicialización */
@@ -125,27 +115,61 @@ button:hover {
     background-color: #C46A00;
 }
 
-/* Drag & Drop */
+/* Drag & Drop zona destino */
+.drop-target {
+    transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+}
+
+.drop-target.highlight {
+    background-color: #e0ffe0 !important;
+    border: 2px dashed #2e7d32;
+}
+
+/* Estilo de tutorado draggable */
 .draggable-tutorado {
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: 2px solid transparent;
+    border-radius: 8px;
     background-color: white;
     cursor: grab;
     user-select: none;
-    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+    transition: background-color 0.3s ease-in-out, transform 0.1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+    animation: fadeIn 0.3s ease-in;
 }
 
 .draggable-tutorado.dragging {
-    opacity: 0.6;
+    opacity: 0.75;
     transform: scale(1.05);
+    border-color: #F18200;
+    background-color: #fff3e0;
 }
 
-td.highlight {
-    background-color: #ffff99 !important;
-    /* Amarillo claro */
+/* Animación de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
+/* Texto cuando no hay tutorado */
+.tutorado-vacio {
+    font-style: italic;
+    color: #999;
+    text-align: center;
+    padding: 4px;
+    width: 100%;
+}
+
+/* Etiquetas por materia */
 .tutorado-ingles {
     background-color: #8A2BE2;
     color: white;
@@ -165,14 +189,4 @@ td.highlight {
     color: white;
     padding: 5px;
     border-radius: 5px;
-}
-
-.draggable-tutorado {
-    display: inline-block;
-    width: 100%;
-    text-align: center;
-}
-
-.dragging {
-    opacity: 0.5;
 }

@@ -25,7 +25,9 @@ use reportes::tutores::{reportes_constanciastutores_actualizarfecha,reportes_tut
 use reportes::tutorados::{reportes_constanciastutorados_actualizarfecha,reportes_tutorados_recibir_emparejamiento,reportes_constanciastutorados_recibir_pathplantilla,reportes_constanciastutorados_recibir_nombrereporte,reportes_constanciastutorados_generar} ;
 // Emparejamiento.
 use emparejamiento::emparejamiento::obtener_emparejamiento ;
-
+use emparejamiento::emparejamiento::filtrar_emparejamientos ;
+use emparejamiento::emparejamiento::emparejamiento_automatico ;
+use emparejamiento::emparejamiento::actualizar_campo_tutor;
 
 fn main ( ) {
 
@@ -94,7 +96,9 @@ fn main ( ) {
             reportes_constanciastutorados_generar ,
             // EMPAREJAMIENTO
             obtener_emparejamiento ,
-            
+            filtrar_emparejamientos ,
+            emparejamiento_automatico ,
+            actualizar_campo_tutor ,
         
         ] )
         .run ( tauri::generate_context!() )
