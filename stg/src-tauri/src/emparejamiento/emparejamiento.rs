@@ -146,8 +146,10 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
             let max_tutorados = match modalidad.as_str() {
-                "1" => 1,
-                "2" => 2,
+                "40 horas - 1 tutorado" => 1,
+                "80 horas - 1 tutorado" => 1,
+                "100 horas - 1 tutorado" => 1,
+                "80 horas - 2 tutorado" => 2,
                 _ => 2 // Valor por defecto para códigos desconocidos
             };
         // Datos del primer tutorado
@@ -505,41 +507,21 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                normalize(&fila.materiaTutor) == normalize(materia) &&
                fila.disponibilidadTutor == *disponibilidad {
 
-                // Intentar en slot 1
-                if fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO" {
-                    println!("✅ Asignando {} al slot 1 de {}", nombre, fila.tutor);
-                    fila.tutorado1 = nombre.clone();
-                    fila.tutorado1_id = id.clone();
-                    fila.materiaTutorado1 = materia.clone();
-                    fila.disponibilidadTutorado1 = disponibilidad.clone();
-                    fila.colorOriginal1 = Some(color.clone());
-                    asignado = true;
-                    break;
-                }
+                // Verificar si el tutor tiene capacidad para más tutorados
+                let tutorados_actuales = match (fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO",
+                                              fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO") {
+                    (true, true) => 0,   // Ningún tutorado asignado
+                    (false, true) => 1,  // Solo tutorado1 asignado
+                    (true, false) => 1,  // Solo tutorado2 asignado
+                    (false, false) => 2, // Ambos tutorados asignados
+                };
 
-                // Intentar en slot 2
-                if fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO" {
-                    println!("✅ Asignando {} al slot 2 de {}", nombre, fila.tutor);
-                    fila.tutorado2 = nombre.clone();
-                    fila.tutorado2_id = id.clone();
-                    fila.materiaTutorado2 = materia.clone();
-                    fila.disponibilidadTutorado2 = disponibilidad.clone();
-                    fila.colorOriginal2 = Some(color.clone());
-                    asignado = true;
-                    break;
-                }
-            }
-        }
-
-        // Si no se encontró un tutor exacto, ser más flexible con la disponibilidad
-        if !asignado {
-            for fila in &mut nuevo_emparejamiento {
-                if !fila.tutor.trim().is_empty() && 
-                   normalize(&fila.materiaTutor) == normalize(materia) {
-                    
+                // Solo asignar si no excedemos max_tutorados
+                if tutorados_actuales < fila.max_tutorados as usize {
                     // Intentar en slot 1
                     if fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO" {
-                        println!("⚠️ Asignando {} al slot 1 de {} (disponibilidad diferente)", nombre, fila.tutor);
+                        println!("✅ Asignando {} al slot 1 de {} (max_tutorados: {})", 
+                            nombre, fila.tutor, fila.max_tutorados);
                         fila.tutorado1 = nombre.clone();
                         fila.tutorado1_id = id.clone();
                         fila.materiaTutorado1 = materia.clone();
@@ -551,7 +533,8 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
 
                     // Intentar en slot 2
                     if fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO" {
-                        println!("⚠️ Asignando {} al slot 2 de {} (disponibilidad diferente)", nombre, fila.tutor);
+                        println!("✅ Asignando {} al slot 2 de {} (max_tutorados: {})", 
+                            nombre, fila.tutor, fila.max_tutorados);
                         fila.tutorado2 = nombre.clone();
                         fila.tutorado2_id = id.clone();
                         fila.materiaTutorado2 = materia.clone();
@@ -559,6 +542,59 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                         fila.colorOriginal2 = Some(color.clone());
                         asignado = true;
                         break;
+                    }
+                } else {
+                    println!("⚠️ No se puede asignar a {} porque el tutor {} ya tiene {} tutorados (max: {})",
+                        nombre, fila.tutor, tutorados_actuales, fila.max_tutorados);
+                }
+            }
+        }
+
+        // Si no se encontró un tutor exacto, ser más flexible con la disponibilidad
+        if !asignado {
+            for fila in &mut nuevo_emparejamiento {
+                if !fila.tutor.trim().is_empty() && 
+                   normalize(&fila.materiaTutor) == normalize(materia) {
+                    
+                    // Verificar si el tutor tiene capacidad para más tutorados
+                    let tutorados_actuales = match (fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO",
+                                                  fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO") {
+                        (true, true) => 0,   // Ningún tutorado asignado
+                        (false, true) => 1,  // Solo tutorado1 asignado
+                        (true, false) => 1,  // Solo tutorado2 asignado
+                        (false, false) => 2, // Ambos tutorados asignados
+                    };
+
+                    // Solo asignar si no excedemos max_tutorados
+                    if tutorados_actuales < fila.max_tutorados as usize {
+                        // Intentar en slot 1
+                        if fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO" {
+                            println!("⚠️ Asignando {} al slot 1 de {} (disponibilidad diferente, max_tutorados: {})", 
+                                nombre, fila.tutor, fila.max_tutorados);
+                            fila.tutorado1 = nombre.clone();
+                            fila.tutorado1_id = id.clone();
+                            fila.materiaTutorado1 = materia.clone();
+                            fila.disponibilidadTutorado1 = disponibilidad.clone();
+                            fila.colorOriginal1 = Some(color.clone());
+                            asignado = true;
+                            break;
+                        }
+
+                        // Intentar en slot 2
+                        if fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO" {
+                            println!("⚠️ Asignando {} al slot 2 de {} (disponibilidad diferente, max_tutorados: {})", 
+                                nombre, fila.tutor, fila.max_tutorados);
+                            fila.tutorado2 = nombre.clone();
+                            fila.tutorado2_id = id.clone();
+                            fila.materiaTutorado2 = materia.clone();
+                            fila.disponibilidadTutorado2 = disponibilidad.clone();
+                            fila.colorOriginal2 = Some(color.clone());
+                            asignado = true;
+                            break;
+                        }
+                    } else {
+                        println!("⚠️ No se puede asignar a {} porque el tutor {} ya tiene {} tutorados (max: {})",
+                            nombre, fila.tutor, tutorados_actuales, fila.max_tutorados);
                     }
                 }
             }
@@ -579,7 +615,6 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
     println!("📦 Emparejamiento final contiene {} filas", nuevo_emparejamiento.len());
     nuevo_emparejamiento
 }
-
 
 
 #[tauri::command]
