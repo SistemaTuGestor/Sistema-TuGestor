@@ -28,6 +28,7 @@ function Monitoreo() {
   }, []);
 
   const [datosDer, setDatosDer] = useState<DatosMonitoreoDer[]>([]);
+  const [datosOriginales, setDatosOriginales] = useState<any[]>([]); //Guarda datos originales de las tareas de todos los usuarios 
 
   useEffect(() => {
     // Fetch data from the backend
@@ -54,7 +55,6 @@ function Monitoreo() {
     invoke("cargar_datos_json")
       .then((res) => {
         const jsonData = JSON.parse(res as string);
-
         let contador = 1;
 
         const mapPersona = (p: any): DatosMonitoreoIzq => ({
@@ -64,18 +64,41 @@ function Monitoreo() {
           email: p.correo,
         });
 
-        const datos = [
-          ...jsonData.tutores.map(mapPersona),
-          ...jsonData.tutorado1.map(mapPersona),
-          ...jsonData.tutorado2.map(mapPersona),
+        const personas = [
+          ...jsonData.tutores,
+          ...jsonData.tutorado1,
+          ...jsonData.tutorado2,
         ];
 
-        setDatosIzq(datos);
+        const datosIzquierda = personas.map(mapPersona);
+
+        setDatosIzq(datosIzquierda);
+        setDatosOriginales(personas); // 🔥 Guardamos todo el contenido original
       })
       .catch((err) => {
         console.error("Error cargando datos del JSON:", err);
       });
   }, []);
+
+  const handleCasillaClick = (row: DatosMonitoreoIzq) => {
+    const persona = datosOriginales.find(p => p.correo === row.email);
+    if (!persona) return;
+  
+    const nuevasEntradas: DatosMonitoreoDer[] = [];
+  
+    persona.tareas.forEach((tarea: any) => {
+      nuevasEntradas.push({
+        registro: `${tarea.nombre}: ${tarea.descripcion}`
+      });
+    });
+  
+    nuevasEntradas.push({
+      registro: `Imagen: ${persona.imagenes}`
+    });
+  
+    setDatosDer(nuevasEntradas);
+  };
+
 
 
   return (
@@ -117,7 +140,12 @@ function Monitoreo() {
         </div>
         <div className="desplazadora">
           {datosIzq.map((row, index) => (
-            <div key={index} className="casilla">
+            <div
+              key={index}
+              className="casilla"
+              onClick={() => handleCasillaClick(row)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="rootulo">
                 <p className="id">{`${row.rol}, ${row.id}`}</p>
               </div>
