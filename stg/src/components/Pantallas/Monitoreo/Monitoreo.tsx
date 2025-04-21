@@ -1,41 +1,82 @@
 
-import "./Monitoreo.css" ;
+import "./Monitoreo.css";
 
-import { useEffect, useState } from "react" ;
-import { invoke } from "@tauri-apps/api/tauri" ;
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 
 interface DatosMonitoreoIzq {
-  id : string ;
-  rol : string ;
-  teleefono : string ;
-  email : string ;
+  id: string;
+  rol: string;
+  teleefono: string;
+  email: string;
 }
 interface DatosMonitoreoDer {
-  registro : string ;
+  registro: string;
 }
 
-function Monitoreo ( ) {
+function Monitoreo() {
 
-  const [datosIzq,setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
+  const [datosIzq, setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
 
-  useEffect ( () => {
+  useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoIzq[]>("monitoreo_izquierda")
-      .then ( (response) => setDatosIzq(response) )
-      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-  }, [] ) ;
+      .then((response) => setDatosIzq(response))
+      .catch((error) => console.error("Failed to fetch data:", error));
+  }, []);
 
-  const [datosDer,setDatosDer] = useState<DatosMonitoreoDer[]>([]);
+  const [datosDer, setDatosDer] = useState<DatosMonitoreoDer[]>([]);
 
-  useEffect ( () => {
+  useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoDer[]>("monitoreo_derecha")
-      .then ( (response) => setDatosDer(response) )
-      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-  }, [] ) ;
-  
+      .then((response) => setDatosDer(response))
+      .catch((error) => console.error("Failed to fetch data:", error));
+  }, []);
+
+  useEffect(() => {
+    const cargarEmparejamiento = async () => {
+      try {
+        const resultado = await invoke("leer_excel_emparejamiento");
+        console.log("Emparejamiento cargado automáticamente:", resultado);
+      } catch (error) {
+        console.error("Error al cargar el emparejamiento al inicio:", error);
+      }
+    };
+
+    cargarEmparejamiento();
+  }, []);
+
+
+  useEffect(() => {
+    invoke("cargar_datos_json")
+      .then((res) => {
+        const jsonData = JSON.parse(res as string);
+
+        let contador = 1;
+
+        const mapPersona = (p: any): DatosMonitoreoIzq => ({
+          id: `Usuario ${contador++}`,
+          rol: p.rol,
+          teleefono: Array.isArray(p.telefono) ? p.telefono[0] : p.telefono,
+          email: p.correo,
+        });
+
+        const datos = [
+          ...jsonData.tutores.map(mapPersona),
+          ...jsonData.tutorado1.map(mapPersona),
+          ...jsonData.tutorado2.map(mapPersona),
+        ];
+
+        setDatosIzq(datos);
+      })
+      .catch((err) => {
+        console.error("Error cargando datos del JSON:", err);
+      });
+  }, []);
+
 
   return (
 
@@ -78,8 +119,7 @@ function Monitoreo ( ) {
           {datosIzq.map((row, index) => (
             <div key={index} className="casilla">
               <div className="rootulo">
-                <p className="id">{row.id}</p>
-                <p className="rol">{row.rol}</p>
+                <p className="id">{`${row.rol}, ${row.id}`}</p>
               </div>
               <p className="contacto">{row.teleefono}</p>
               <p className="contacto">{row.email}</p>
@@ -102,12 +142,12 @@ function Monitoreo ( ) {
         </div>
       </div>
     </div>
-  
-  ) ;
+
+  );
 
 
 }
 
 
-export default Monitoreo ;
+export default Monitoreo;
 

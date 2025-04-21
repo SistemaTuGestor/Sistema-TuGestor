@@ -11,7 +11,7 @@ mod emparejamiento ;
 
 ////  FUNCIONES DE MÓDULOS  ////
 // Monitoreo.
-use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha} ;
+use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha,persistencia::leer_excel_emparejamiento, persistencia::cargar_datos_json} ;
 // Notificaciones.
 use notificaciones::{historial::guardar_historial,historial::leer_historial,historial::editar_historial,historial::actualizar_historial,historial::eliminar_historial,historial::enviar_historiales} ;
 use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento,leer_archivos::notificaciones_inicio_control,leer_archivos::notificaciones_inicio_seguimiento,leer_archivos::notificaciones_inicio_links} ;
@@ -40,6 +40,8 @@ fn main ( ) {
             /* MONITOREO */
             monitoreo_izquierda ,
             monitoreo_derecha ,
+            leer_excel_emparejamiento ,
+            cargar_datos_json ,
 
             /* NOTIFICACIONES */
             editar_historial ,
