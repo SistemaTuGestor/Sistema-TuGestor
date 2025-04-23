@@ -286,5 +286,22 @@ pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+pub fn guardar_datos_json(datos: String) -> Result<String, String> {
+    let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
+    
+    // Verificar que los datos sean un JSON válido antes de escribir
+    match serde_json::from_str::<serde_json::Value>(&datos) {
+        Ok(_) => {
+            // JSON válido, proceder a escribir
+            match std::fs::write(ruta, datos) {
+                Ok(_) => Ok("Datos guardados correctamente".to_string()),
+                Err(e) => Err(format!("Error al escribir el archivo JSON: {}", e))
+            }
+        },
+        Err(e) => Err(format!("JSON inválido: {}", e))
+    }
+}
+
 
 

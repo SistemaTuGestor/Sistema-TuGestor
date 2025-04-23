@@ -206,11 +206,14 @@ function Monitoreo() {
   };
 
   // Función para guardar los cambios de la edición
+  // Función modificada para guardar los cambios
   const handleGuardarEdicion = async () => {
     if (editandoIndex === null) return;
 
     const itemToEdit = datosDer[editandoIndex];
     const isImage = itemToEdit.registro.startsWith("Imagen:");
+
+    // Encontrar el usuario actual basado en los datos mostrados
     const currentUser = datosOriginales.find(p => {
       const matchingEmail = datosIzq.find(row => row.email === p.correo);
       return matchingEmail && datosDer.some(item => {
@@ -225,45 +228,85 @@ function Monitoreo() {
     });
 
     if (!currentUser) return;
-    const updatedData = JSON.parse(JSON.stringify(datosOriginales));
-    const userIndex = updatedData.findIndex((p: any) => p.correo === currentUser.correo);
-
-    if (userIndex === -1) return;
-
-    if (isImage) {
-      const newImageValue = textoEditado.substring(textoEditado.indexOf(":") + 1).trim();
-      updatedData[userIndex].imagenes = newImageValue;
-    } else {
-      const oldTaskText = itemToEdit.registro;
-      const oldTaskName = oldTaskText.split(":")[0].trim();
-
-      const parts = textoEditado.split(":");
-      const newTaskName = parts[0].trim();
-      const newTaskDesc = parts.slice(1).join(":").trim();
-
-      const taskIndex = updatedData[userIndex].tareas.findIndex(
-        (tarea: any) => tarea.nombre === oldTaskName
-      );
-
-      if (taskIndex !== -1) {
-        updatedData[userIndex].tareas[taskIndex] = {
-          nombre: newTaskName,
-          descripcion: newTaskDesc
-        };
-      }
-    }
 
     try {
+      // Primero, cargamos el JSON completo actual desde el archivo
+      const jsonActual = await invoke<string>("cargar_datos_json");
+      const jsonCompleto = JSON.parse(jsonActual);
+
+      // Determinamos en qué categoría está el usuario (tutores, tutorado1, tutorado2)
+      let categoria = '';
+      let userIndex = -1;
+
+      // Buscar en tutores
+      userIndex = jsonCompleto.tutores.findIndex((p: any) => p.correo === currentUser.correo);
+      if (userIndex !== -1) categoria = 'tutores';
+
+      // Si no se encontró en tutores, buscar en tutorado1
+      if (userIndex === -1) {
+        userIndex = jsonCompleto.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) categoria = 'tutorado1';
+      }
+
+      // Si no se encontró en tutorado1, buscar en tutorado2
+      if (userIndex === -1) {
+        userIndex = jsonCompleto.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) categoria = 'tutorado2';
+      }
+
+      if (categoria === '' || userIndex === -1) {
+        console.error("No se encontró el usuario en ninguna categoría");
+        return;
+      }
+
+      // Modificar los datos según corresponda
+      if (isImage) {
+        // Actualizar la imagen
+        const newImageValue = textoEditado.substring(textoEditado.indexOf(":") + 1).trim();
+        jsonCompleto[categoria][userIndex].imagenes = newImageValue;
+      } else {
+        // Actualizar la tarea
+        const oldTaskText = itemToEdit.registro;
+        const oldTaskName = oldTaskText.split(":")[0].trim();
+
+        // Extraer el nuevo nombre y descripción
+        const parts = textoEditado.split(":");
+        const newTaskName = parts[0].trim();
+        const newTaskDesc = parts.slice(1).join(":").trim();
+
+        // Encontrar la tarea y actualizarla
+        const taskIndex = jsonCompleto[categoria][userIndex].tareas.findIndex(
+          (tarea: any) => tarea.nombre === oldTaskName
+        );
+
+        if (taskIndex !== -1) {
+          jsonCompleto[categoria][userIndex].tareas[taskIndex] = {
+            nombre: newTaskName,
+            descripcion: newTaskDesc
+          };
+        }
+      }
+
+      // Enviar los datos actualizados al backend para guardar en JSON
       await invoke("actualizar_json_monitoreo", {
-        jsonData: JSON.stringify(updatedData)
+        jsonData: JSON.stringify(jsonCompleto)
       });
 
+      // Actualizar la UI
       const newDatosDer = [...datosDer];
       newDatosDer[editandoIndex] = { registro: textoEditado };
       setDatosDer(newDatosDer);
 
-      setDatosOriginales(updatedData);
+      // Actualizar los datos originales - importante para mantener consistencia
+      // Esta vez debemos reconstruir el array plano de datosOriginales
+      const nuevosOriginales = [
+        ...jsonCompleto.tutores,
+        ...jsonCompleto.tutorado1,
+        ...jsonCompleto.tutorado2
+      ];
+      setDatosOriginales(nuevosOriginales);
 
+      // Salir del modo edición
       setEditandoIndex(null);
       setTextoEditado("");
 
