@@ -267,5 +267,24 @@ pub fn cargar_datos_json() -> Result<String, String> {
     std::fs::read_to_string(ruta).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
+#[tauri::command] //Función para eliminación
+pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
+    let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
+    
+    // Validar que el JSON sea válido antes de escribirlo
+    match serde_json::from_str::<serde_json::Value>(&json_data) {
+        Ok(_) => {
+            // El JSON es válido, proceder a escribirlo
+            std::fs::write(ruta, json_data)
+                .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
+            
+            Ok("JSON actualizado correctamente".to_string())
+        },
+        Err(e) => {
+            Err(format!("JSON inválido: {}", e))
+        }
+    }
+}
+
 
 
