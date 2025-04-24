@@ -217,8 +217,11 @@ pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, St
         })
         .collect();
 
-    generar_excel(&data)?;
-    Ok(data)
+    let emparejamientos = reportes_lee_leer_archivo_emparejamiento()?;
+    let data_actualizada = actualizar_horas(data, emparejamientos);
+    generar_excel(&data_actualizada)?;
+
+Ok(data_actualizada)
 }
 
 #[tauri::command]
@@ -272,7 +275,7 @@ pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>,
         //println!("Nombre: {} | Correo: {} | Horas: {} | Modalidad: {}", nombre_completo, correo, horas, modalidad);
     }
 
-    Ok(registros)
+Ok(registros)
 }
 
 pub fn actualizar_horas(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamientos: Vec<Emparejamiento>) -> Vec<DatosMonitoreo> {
@@ -288,20 +291,33 @@ pub fn actualizar_horas(mut datos_monitoreo: Vec<DatosMonitoreo>, emparejamiento
             
         }
     }
-   // println!("✔ Horas actualizadas");
-   // println!("📂 Datos actualizados: {:#?}", datos_monitoreo);
+
+    //println!("✔ Horas actualizadas");
+    //println!("📂 Datos actualizados: {:#?}", datos_monitoreo);
+
     datos_monitoreo
   
 }
 
 pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
+
     // Se obtiene el nombre del reporte de la variable global.
-    let output_path = NOMBRE_REPORTE
+    let nombre_reporte = NOMBRE_REPORTE
         .get()
         .ok_or("❌ NOMBRE_REPORTE no ha sido inicializado")?
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
 
+    // Se obtiene la fecha de la variable global.
+    let fecha = FECHA
+        .get()
+        .ok_or("❌ FECHA no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    // Construir el nuevo nombre del archivo con la fecha.
+    let output_path = format!("{} ({}).xlsx", nombre_reporte, *fecha);
+ 
     //println!("📂 Generando archivo Excel en: {}", output_path);
 
     // Check if the file already exists and try to delete it
@@ -325,7 +341,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     sheet.write_string(0, 2, "Institucion", None).unwrap();
     sheet.write_string(0, 3, "Horas", None).unwrap();
     sheet.write_string(0, 4, "Modalidad", None).unwrap();
-   // println!("✔ Encabezados escritos");
+   //println!("✔ Encabezados escritos");
 
     // Agregar encabezados para cada semana
     let max_semanas = data.iter().map(|d| d.minutos_por_semana.len()).max().unwrap_or(0);
@@ -360,6 +376,6 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
     workbook.close().map_err(|e| format!("Error closing workbook: {}", e))?;
     //println!("✔ Workbook cerrado");
 
-    Ok(())
+Ok(())
 }
 

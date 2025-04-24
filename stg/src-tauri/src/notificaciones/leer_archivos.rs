@@ -522,7 +522,7 @@ pub fn generar_tutores_enlaces() -> Vec<TutoresPUJ> {
     let mut workbook: Xlsx<_> = open_workbook(path_str).expect("No se pudo abrir el archivo Excel");
     
     let sheet_name = "export-EMD_YJ3PpzHCwjeMKig-2025"; // Esto se cambia el nombre de la hoja del excel que se va a leer
-    let mut links: Vec<(String)> = Vec::new();
+    let mut links: Vec<String> = Vec::new();
     
     if let Ok(range) = workbook.worksheet_range(sheet_name) {
         for row_index in 1..range.height() {

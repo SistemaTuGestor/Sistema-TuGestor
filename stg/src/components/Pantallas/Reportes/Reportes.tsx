@@ -1,7 +1,7 @@
 
 import "./Reportes.css" ;
 
-import Emergente from "../Emergente/Emergente" ;
+import Emergente from "./Emergente/Emergente" ;
 
 import { useRef,useState,useEffect } from "react" ;
 import { invoke } from "@tauri-apps/api/tauri";
@@ -108,7 +108,7 @@ function Reportes ( ) {
     try {
 
       const selectedPath = await open ( {
-        directory : true,  // Permite seleccionar una carpeta.
+        directory : true ,  // Permite seleccionar una carpeta.
         multiple : false ,  // Solo permite seleccionar una.
       } ) ;
 

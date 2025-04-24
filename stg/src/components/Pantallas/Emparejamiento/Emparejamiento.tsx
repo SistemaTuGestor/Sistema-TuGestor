@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -12,656 +12,465 @@ import {
 } from "@hello-pangea/dnd";
 import "./Emparejamiento.css";
 
-// Definir el tipo de datos que se espera del backend (sin pendiente)
+// Tipo de datos recibido del backend
 type EmparejamientoEntry = {
   tutor: string;
   disponibilidadTutor: string;
   materiaTutor: string;
+  modalidad: string;
+  max_tutorados: number;
   tutorado1: string;
   tutorado1_id: string;
   disponibilidadTutorado1: string;
   materiaTutorado1: string;
-  colorOriginal1?: string; // Color fijo para tutorado1
+  colorOriginal1?: string;
   tutorado2: string;
   tutorado2_id: string;
   disponibilidadTutorado2: string;
   materiaTutorado2: string;
-  colorOriginal2?: string; // Color fijo para tutorado2
+  colorOriginal2?: string;
+  contactoTutor: string;
+  contactoTutorado1: string;
+  contactoTutorado2: string;
+  grupoTutorado1: string;
+  grupoTutorado2: string;
 };
 
-// Funciones helper
-function removeAccents(str: string): string {
-  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-}
-function normalize(str: string): string {
-  return removeAccents(str).trim().toLowerCase();
-}
-function calcularColor(materia: string): string {
-  const n = normalize(materia);
-  if (n === "ingles") return "tutorado-ingles";
-  if (n === "matematicas") return "tutorado-matematicas";
-  return "";
-}
-
-const availabilityMapping: { [key: string]: string } = {
-  "Entre semana por la mañana": "0",
-  "Entre semana de 2:00pm-3:00pm": "1",
-  "Entre semana de 3:00pm-4:00pm": "2",
-  "Entre semana de 4:00pm-5:00pm": "3",
-  "Entre semana de 5:00pm-6:00pm": "4",
-  "Entre semana de 6:00pm-8:00pm": "5",
-  "Sábados en la mañana": "6",
-  "Sábados en la tarde": "7",
-};
-
-const disponibilidadOptions = Object.keys(availabilityMapping);
+const disponibilidadOptions = [
+  "Entre semana por la mañana",
+  "Entre semana de 2:00pm-3:00pm",
+  "Entre semana de 3:00pm-4:00pm",
+  "Entre semana de 4:00pm-5:00pm",
+  "Entre semana de 5:00pm-6:00pm",
+  "Entre semana de 6:00pm-8:00pm",
+  "Sábados en la mañana",
+  "Sábados en la tarde",
+];
 
 function Emparejamiento() {
-  const [emparejamientos, setEmparejamientos] = useState<EmparejamientoEntry[]>([]);
+  const [allData, setAllData] = useState<EmparejamientoEntry[]>([]);
+  const [filtered, setFiltered] = useState<EmparejamientoEntry[]>([]);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [invalidDropId, setInvalidDropId] = useState<string | null>(null);
 
-  // Estados para búsqueda y ordenamiento
+  // Estados de búsqueda y ordenamiento
   const [searchTutor, setSearchTutor] = useState("");
   const [searchTutorado, setSearchTutorado] = useState("");
+  const [searchTutoradoId, setSearchTutoradoId] = useState("");
   const [searchDisponibilidadTutor, setSearchDisponibilidadTutor] = useState("");
   const [searchDisponibilidadTutorado, setSearchDisponibilidadTutorado] = useState("");
   const [sortColumn, setSortColumn] = useState<"tutor" | "materiaTutor" | "disponibilidadTutor" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [searchTutoradoId, setSearchTutoradoId] = useState("");
 
-  // Cargar datos desde localStorage al iniciar
+  // Carga inicial de emparejamientos
   useEffect(() => {
-    const datosGuardados = localStorage.getItem("emparejamientos");
-    if (datosGuardados) {
-      setEmparejamientos(JSON.parse(datosGuardados));
+    async function load() {
+      const data = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento");
+      setAllData(data);
+      setFiltered(data);
     }
+    load();
   }, []);
 
-  // Guardar en localStorage cada vez que cambien los emparejamientos
+  // Filtrar y ordenar usando backend
   useEffect(() => {
-    if (emparejamientos.length > 0) {
-      localStorage.setItem("emparejamientos", JSON.stringify(emparejamientos));
-    }
-  }, [emparejamientos]);
-
-  // Obtener datos desde el backend y guardarlos en localStorage
-  const iniciarEmparejamiento = async () => {
-    try {
-      localStorage.removeItem("emparejamientos");
-      const data = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento");
-      // Asignar el colorOriginal a cada tutorado usando calcularColor
-      const dataConColor = data.map((item) => ({
-        ...item,
-        colorOriginal1: calcularColor(item.materiaTutorado1),
-        colorOriginal2: calcularColor(item.materiaTutorado2),
-      }));
-      setEmparejamientos(dataConColor);
-      localStorage.setItem("emparejamientos", JSON.stringify(dataConColor));
-    } catch (error) {
-      console.error("Error al obtener emparejamiento:", error);
-    }
-  };
-
-  const exportarAExcel = () => {
-    const hojaDatos = emparejamientos.map(
-      ({ tutor, materiaTutor, disponibilidadTutor, tutorado1, tutorado2 }) => ({
-        Tutor: tutor,
-        Materia: materiaTutor,
-        Disponibilidad: disponibilidadTutor,
-        "Tutorado 1": tutorado1,
-        "Tutorado 2": tutorado2,
-      })
-    );
-
-    const hoja = XLSX.utils.json_to_sheet(hojaDatos);
-    const libro = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(libro, hoja, "Emparejamiento");
-
-    const excelBuffer = XLSX.write(libro, { bookType: "xlsx", type: "array" });
-    const archivo = new Blob([excelBuffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-
-    saveAs(archivo, "Emparejamiento.xlsx");
-  };
-
-  // Función para manejar ordenamiento
-  const handleSort = (column: "tutor" | "materiaTutor" | "disponibilidadTutor") => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(column);
-      setSortDirection("asc");
-    }
-  };
-
-  // Filtrado y ordenamiento usando useMemo
-  const filteredEmparejamientos = useMemo(() => {
-    let data = [...emparejamientos];
-
-    // Filtrar por Tutor
-    if (searchTutor.trim() !== "") {
-      data = data.filter((fila) =>
-        fila.tutor.toLowerCase().includes(searchTutor.toLowerCase())
-      );
-    }
-    if (searchTutoradoId.trim() !== "") {
-      data = data.filter(
-        (fila) =>
-          fila.tutorado1_id.toLowerCase().includes(searchTutoradoId.toLowerCase()) ||
-          fila.tutorado2_id.toLowerCase().includes(searchTutoradoId.toLowerCase())
-      );
-    }
-
-    // Filtrar por Tutorados: si alguno de los dos tutorados incluye el texto
-    if (searchTutorado.trim() !== "") {
-      data = data.filter(
-        (fila) =>
-          fila.tutorado1.toLowerCase().includes(searchTutorado.toLowerCase()) ||
-          fila.tutorado2.toLowerCase().includes(searchTutorado.toLowerCase())
-      );
-    }
-    // Filtrar por disponibilidad del Tutor
-    if (searchDisponibilidadTutor !== "") {
-      data = data.filter(
-        (fila) => fila.disponibilidadTutor === searchDisponibilidadTutor
-      );
-    }
-    // Filtrar por disponibilidad de los Tutorados: si al menos uno coincide
-    if (searchDisponibilidadTutorado !== "") {
-      data = data.filter(
-        (fila) =>
-          fila.disponibilidadTutorado1 === searchDisponibilidadTutorado ||
-          fila.disponibilidadTutorado2 === searchDisponibilidadTutorado
-      );
-    }
-
-    if (sortColumn) {
-      data.sort((a, b) => {
-        const aValue = a[sortColumn].toLowerCase();
-        const bValue = b[sortColumn].toLowerCase();
-        if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
-        if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
-        return 0;
+    async function applyFilter() {
+      console.log("Invocando filtro con", {
+        searchTutor: searchTutor,
+        searchTutorado: searchTutorado,
+        searchTutorado_id: searchTutoradoId,
+        search_disponibilidadTutor: searchDisponibilidadTutor,
+        search_disponibilidadTutorado: searchDisponibilidadTutorado,
+        sort_column: sortColumn,
+        sort_direction: sortDirection,
       });
+      const result = await invoke<EmparejamientoEntry[]>("filtrar_emparejamientos", {
+               emparejamientos: allData,
+               searchTutor:        searchTutor,
+               searchTutorado:     searchTutorado,
+               searchTutoradoId:   searchTutoradoId,
+               searchDisponibilidadTutor:     searchDisponibilidadTutor,
+               searchDisponibilidadTutorado:  searchDisponibilidadTutorado,
+               sortColumn:  sortColumn,
+               sortDirection: sortDirection,
+            });
+      setFiltered(result);
     }
+    applyFilter();
+  }, [allData, searchTutor, searchTutorado, searchTutoradoId, searchDisponibilidadTutor, searchDisponibilidadTutorado, sortColumn, sortDirection]);
 
-    return data;
-  }, [
-    emparejamientos,
-    searchTutor,
-    searchTutorado,
-    searchTutoradoId,
-    searchDisponibilidadTutor,
-    searchDisponibilidadTutorado,
-    sortColumn,
-    sortDirection,
-  ]);
-
-  // DRAG & DROP
-  const handleDragStart = (start: DragStart) => {
-    setDraggingId(start.draggableId);
-    setHighlightedId(null);
+  // Exportar a Excel
+  const exportarAExcel = () => {
+    const dataForSheet = filtered.map(({
+      tutor,
+      materiaTutor,
+      disponibilidadTutor,
+      tutorado1,
+      tutorado1_id,
+      disponibilidadTutorado1,
+      materiaTutorado1,
+      tutorado2,
+      tutorado2_id,
+      disponibilidadTutorado2,
+      materiaTutorado2,
+      grupoTutorado1,
+      grupoTutorado2,
+      contactoTutor,
+      contactoTutorado1,
+      contactoTutorado2,
+      modalidad,
+      max_tutorados
+    }) => ({
+      TUTOR: tutor,
+      'CONTACTO TUTOR': contactoTutor,
+      MATERIA: materiaTutor,
+      DISPONIBILIDAD: disponibilidadTutor,
+      MODALIDAD: modalidad,
+      'MAX TUTORADOS': max_tutorados,
+      
+      // Tutorado 1
+      'TUTORADO 1': tutorado1,
+      'ID T1': tutorado1_id,
+      'GRUPO T1': grupoTutorado1,
+      'CONTACTO T1': contactoTutorado1,
+      'DISP. T1': disponibilidadTutorado1,
+      'MATERIA T1': materiaTutorado1,
+  
+      // Tutorado 2
+      'TUTORADO 2': tutorado2,
+      'ID T2': tutorado2_id,
+      'GRUPO T2': grupoTutorado2,
+      'CONTACTO T2': contactoTutorado2,
+      'DISP. T2': disponibilidadTutorado2,
+      'MATERIA T2': materiaTutorado2,
+    }));
+  
+    const ws = XLSX.utils.json_to_sheet(dataForSheet);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Emparejamiento");
+    const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    saveAs(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Emparejamiento_Completo.xlsx");
   };
 
+  // Emparejamiento automático via backend
+  const emparejamientoAutomatico = async () => {
+    // Usar allData en lugar de filtered
+    const result = await invoke<EmparejamientoEntry[]>(
+      "emparejamiento_automatico",
+      { emparejamientos: allData }
+    );
+    
+    // Actualizar allData con el resultado completo
+    setAllData(result);
+    
+    // Luego aplicar los filtros actuales al resultado completo
+    const filteredResult = await invoke<EmparejamientoEntry[]>("filtrar_emparejamientos", {
+      emparejamientos: result,
+      searchTutor: searchTutor,
+      searchTutorado: searchTutorado,
+      searchTutoradoId: searchTutoradoId,
+      searchDisponibilidadTutor: searchDisponibilidadTutor,
+      searchDisponibilidadTutorado: searchDisponibilidadTutorado,
+      sortColumn: sortColumn,
+      sortDirection: sortDirection,
+    });
+    
+    // Actualizar filtered con el resultado filtrado
+    setFiltered(filteredResult);
+  };
+
+  // Handler de ordenamiento
+  const handleSort = (col: typeof sortColumn) => {
+    if (sortColumn === col) setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    else { setSortColumn(col); setSortDirection("asc"); }
+  };
+
+  // Verificar si un tutor ya ha alcanzado su máximo de tutorados
+  const checkMaxTutoradosLimit = (rowIndex: number, colIndex: number) => {
+    const targetRow = filtered[Math.floor(rowIndex / 2)];
+    
+    // Si no hay datos o el tutor está vacío, no hay restricción
+    if (!targetRow || !targetRow.tutor) return false;
+    
+    // Contar cuántos tutorados ya tiene este tutor
+    const tieneTutorado1 = targetRow.tutorado1 && targetRow.tutorado1.trim() !== "" && targetRow.tutorado1 !== "VACÍO";
+    const tieneTutorado2 = targetRow.tutorado2 && targetRow.tutorado2.trim() !== "" && targetRow.tutorado2 !== "VACÍO";
+    const tutoradosActuales = (tieneTutorado1 ? 1 : 0) + (tieneTutorado2 ? 1 : 0);
+    
+    // Si la columna que estamos intentando llenar ya tiene un tutorado, no contamos ese
+    const colIdx = rowIndex % 2;
+    if ((colIdx === 0 && tieneTutorado1) || (colIdx === 1 && tieneTutorado2)) {
+      return false; // El slot ya está ocupado pero estamos reemplazándolo
+    }
+    
+    // Si ya alcanzó o superó el límite, no se puede agregar más
+    return tutoradosActuales >= targetRow.max_tutorados;
+  };
+
+  // Drag & Drop handlers con swap completo de campos y validación de max_tutorados
+  const handleDragStart = (start: DragStart) => { 
+    setDraggingId(start.draggableId); 
+    setHighlightedId(null); 
+    setInvalidDropId(null);
+  };
+  
   const handleDragUpdate = (update: DragUpdate) => {
-    if (!update.destination) return;
-    setHighlightedId(update.destination.droppableId);
+    if (!update.destination) {
+      setHighlightedId(null);
+      setInvalidDropId(null);
+      return;
+    }
+    
+    const idx = update.destination.index;
+    const row = Math.floor(idx / 2);
+    const col = idx % 2;
+    const cellId = `${row}-${col}`;
+    
+    // Verificar si el destino excedería el límite de tutorados
+    if (checkMaxTutoradosLimit(idx, col)) {
+      setHighlightedId(null);
+      setInvalidDropId(cellId); // Marcar como inválido
+    } else {
+      setHighlightedId(cellId); // Resaltar como válido
+      setInvalidDropId(null);
+    }
   };
-
-  // Intercambio de tutorados sin lógica pendiente
+  
   const handleDragEnd = (result: DropResult) => {
     setDraggingId(null);
     setHighlightedId(null);
+    setInvalidDropId(null);
+    
     if (!result.destination) return;
-
+  
     const { source, destination } = result;
-    const sourceRow = Math.floor(source.index / 2);
-    const destRow = Math.floor(destination.index / 2);
-    const sourceCol = source.index % 2 === 0 ? "tutorado1" : "tutorado2";
-    const destCol = destination.index % 2 === 0 ? "tutorado1" : "tutorado2";
-
-    const newEmparejamientos = [...emparejamientos];
-
-    // Función helper para extraer la data completa del tutorado
-    const getTutoradoData = (
-      rowIndex: number,
-      col: "tutorado1" | "tutorado2"
-    ) => ({
-      nombre: newEmparejamientos[rowIndex][col],
-      materia:
-        col === "tutorado1"
-          ? newEmparejamientos[rowIndex].materiaTutorado1
-          : newEmparejamientos[rowIndex].materiaTutorado2,
-      disponibilidad:
-        col === "tutorado1"
-          ? newEmparejamientos[rowIndex].disponibilidadTutorado1
-          : newEmparejamientos[rowIndex].disponibilidadTutorado2,
-      color:
-        col === "tutorado1"
-          ? newEmparejamientos[rowIndex].colorOriginal1
-          : newEmparejamientos[rowIndex].colorOriginal2,
-      id :
-      col === "tutorado1"
-         ? newEmparejamientos[rowIndex].tutorado1_id
-         : newEmparejamientos[rowIndex].tutorado2_id,
-    });
-
-    const sourceData = getTutoradoData(sourceRow, sourceCol);
-    const destData = getTutoradoData(destRow, destCol);
-
-    // Intercambio: asignar la data de destino en la posición de origen
-    newEmparejamientos[sourceRow][sourceCol] = destData.nombre;
-    if (sourceCol === "tutorado1") {
-      newEmparejamientos[sourceRow].materiaTutorado1 = destData.materia;
-      newEmparejamientos[sourceRow].disponibilidadTutorado1 = destData.disponibilidad;
-      newEmparejamientos[sourceRow].colorOriginal1 = destData.color;
-      newEmparejamientos[sourceRow].tutorado1_id = destData.id;
-    } else {
-      newEmparejamientos[sourceRow].materiaTutorado2 = destData.materia;
-      newEmparejamientos[sourceRow].disponibilidadTutorado2 = destData.disponibilidad;
-      newEmparejamientos[sourceRow].colorOriginal2 = destData.color;
-      newEmparejamientos[sourceRow].tutorado2_id = destData.id;
+    const srcRow = Math.floor(source.index / 2);
+    const dstRow = Math.floor(destination.index / 2);
+    const srcCol = source.index % 2 === 0 ? "tutorado1" : "tutorado2";
+    const dstCol = destination.index % 2 === 0 ? "tutorado1" : "tutorado2";
+    
+    // Verificar si el destino excedería el límite de max_tutorados
+    if (checkMaxTutoradosLimit(destination.index, destination.index % 2)) {
+      console.warn("No se puede soltar aquí: el tutor ya alcanzó su límite de tutorados");
+      return; // Cancelar la operación de drag and drop
     }
-
-    // Intercambio: asignar la data de origen en la posición de destino
-    newEmparejamientos[destRow][destCol] = sourceData.nombre;
-    if (destCol === "tutorado1") {
-      newEmparejamientos[destRow].materiaTutorado1 = sourceData.materia;
-      newEmparejamientos[destRow].disponibilidadTutorado1 = sourceData.disponibilidad;
-      newEmparejamientos[destRow].colorOriginal1 = sourceData.color;
-      newEmparejamientos[destRow].tutorado1_id = sourceData.id;
-    } else {
-      newEmparejamientos[destRow].materiaTutorado2 = sourceData.materia;
-      newEmparejamientos[destRow].disponibilidadTutorado2 = sourceData.disponibilidad;
-      newEmparejamientos[destRow].colorOriginal2 = sourceData.color;
-      newEmparejamientos[destRow].tutorado2_id = sourceData.id;
+  
+    // Obtener los objetos reales del arreglo filtered
+    const srcFilteredRow = filtered[srcRow];
+    const dstFilteredRow = filtered[dstRow];
+  
+    // Encontrar los índices correspondientes en allData
+    const srcAllDataIdx = allData.findIndex(item => 
+      item.tutor === srcFilteredRow.tutor && 
+      item.tutorado1_id === srcFilteredRow.tutorado1_id && 
+      item.tutorado2_id === srcFilteredRow.tutorado2_id
+    );
+    
+    const dstAllDataIdx = allData.findIndex(item => 
+      item.tutor === dstFilteredRow.tutor && 
+      item.tutorado1_id === dstFilteredRow.tutorado1_id && 
+      item.tutorado2_id === dstFilteredRow.tutorado2_id
+    );
+  
+    if (srcAllDataIdx === -1 || dstAllDataIdx === -1) {
+      console.error("No se encontraron elementos correspondientes en allData");
+      return;
     }
-
-    // Si alguna celda quedó vacía, se reemplaza con un ítem "nuevo" (sin datos heredados)
-    const reinitializeCell = (
-      rowIndex: number,
-      col: "tutorado1" | "tutorado2"
-    ) => {
-      newEmparejamientos[rowIndex][col] = "";
-      if (col === "tutorado1") {
-        newEmparejamientos[rowIndex].materiaTutorado1 = "VACÍO";
-        newEmparejamientos[rowIndex].disponibilidadTutorado1 = "VACÍO";
-        newEmparejamientos[rowIndex].colorOriginal1 = "";
-        newEmparejamientos[rowIndex].tutorado1_id = "";
-      } else {
-        newEmparejamientos[rowIndex].materiaTutorado2 = "VACÍO";
-        newEmparejamientos[rowIndex].disponibilidadTutorado2 = "VACÍO";
-        newEmparejamientos[rowIndex].colorOriginal2 = "";
-        newEmparejamientos[rowIndex].tutorado2_id = "";
-      }
+  
+    const updated = [...allData];
+  
+    // Helper para extraer campos del tutorado
+    const getFields = (rowIdx: number, col: string) => {
+      return {
+        name: updated[rowIdx][col as keyof EmparejamientoEntry] as string,
+        id: col === "tutorado1" ? updated[rowIdx].tutorado1_id : updated[rowIdx].tutorado2_id,
+        disp: col === "tutorado1" ? updated[rowIdx].disponibilidadTutorado1 : updated[rowIdx].disponibilidadTutorado2,
+        materia: col === "tutorado1" ? updated[rowIdx].materiaTutorado1 : updated[rowIdx].materiaTutorado2,
+        color: col === "tutorado1" ? updated[rowIdx].colorOriginal1 : updated[rowIdx].colorOriginal2,
+        grupo: col === "tutorado1" ? updated[rowIdx].grupoTutorado1 : updated[rowIdx].grupoTutorado2,
+        contacto: col === "tutorado1" ? updated[rowIdx].contactoTutorado1 : updated[rowIdx].contactoTutorado2,
+      };
     };
-
-    if (newEmparejamientos[sourceRow][sourceCol].trim() === "") {
-      reinitializeCell(sourceRow, sourceCol);
+  
+    const src = getFields(srcAllDataIdx, srcCol);
+    const dst = getFields(dstAllDataIdx, dstCol);
+  
+    // Asignar dst en src
+    if (srcCol === "tutorado1") {
+      updated[srcAllDataIdx].tutorado1 = dst.name;
+      updated[srcAllDataIdx].tutorado1_id = dst.id;
+      updated[srcAllDataIdx].disponibilidadTutorado1 = dst.disp;
+      updated[srcAllDataIdx].materiaTutorado1 = dst.materia;
+      updated[srcAllDataIdx].colorOriginal1 = dst.color;
+      updated[srcAllDataIdx].grupoTutorado1 = dst.grupo;
+      updated[srcAllDataIdx].contactoTutorado1 = dst.contacto;
+    } else {
+      updated[srcAllDataIdx].tutorado2 = dst.name;
+      updated[srcAllDataIdx].tutorado2_id = dst.id;
+      updated[srcAllDataIdx].disponibilidadTutorado2 = dst.disp;
+      updated[srcAllDataIdx].materiaTutorado2 = dst.materia;
+      updated[srcAllDataIdx].colorOriginal2 = dst.color;
+      updated[srcAllDataIdx].grupoTutorado2 = dst.grupo;
+      updated[srcAllDataIdx].contactoTutorado2 = dst.contacto; 
     }
-    if (newEmparejamientos[destRow][destCol].trim() === "") {
-      reinitializeCell(destRow, destCol);
+  
+    // Asignar src en dst
+    if (dstCol === "tutorado1") {
+      updated[dstAllDataIdx].tutorado1 = src.name;
+      updated[dstAllDataIdx].tutorado1_id = src.id;
+      updated[dstAllDataIdx].disponibilidadTutorado1 = src.disp;
+      updated[dstAllDataIdx].materiaTutorado1 = src.materia;
+      updated[dstAllDataIdx].colorOriginal1 = src.color;
+      updated[dstAllDataIdx].grupoTutorado1 = src.grupo;
+      updated[dstAllDataIdx].contactoTutorado1 = src.contacto;
+    } else {
+      updated[dstAllDataIdx].tutorado2 = src.name;
+      updated[dstAllDataIdx].tutorado2_id = src.id;
+      updated[dstAllDataIdx].disponibilidadTutorado2 = src.disp;
+      updated[dstAllDataIdx].materiaTutorado2 = src.materia;
+      updated[dstAllDataIdx].colorOriginal2 = src.color;
+      updated[dstAllDataIdx].grupoTutorado2 = src.grupo;
+      updated[dstAllDataIdx].contactoTutorado2 = src.contacto;
     }
-
-    setEmparejamientos(newEmparejamientos);
+  
+    setAllData(updated);
   };
 
-  // Actualizar select de materia o disponibilidad del tutor
-  const actualizarCampo = (
-    index: number,
-    campo: "materiaTutor" | "disponibilidadTutor",
-    valor: string
-  ) => {
-    const nuevaLista = [...emparejamientos];
-    nuevaLista[index][campo] = valor;
-    setEmparejamientos(nuevaLista);
+  // Actualizar campo tutor
+  const actualizarTutor = async (index: number, campo: "materiaTutor" | "disponibilidadTutor"| "contactoTutor", valor: string) => {
+    const updated = await invoke<EmparejamientoEntry[]>("actualizar_campoTutor", { emparejamientos: allData, index, campo, valor });
+    setAllData(updated);
   };
-
-  // EMPAREJAMIENTO AUTOMÁTICO
-  const emparejamientoAutomatico = () => {
-    if (draggingId) return;
-
-    const nuevoEmparejamiento = emparejamientos.map((row) => ({ ...row }));
-
-    // Lista de tutorados pendientes (se extraen y se vacían para evitar duplicados)
-    const tutoradosPendientes: {
-      nombre: string;
-      materia: string;
-      disponibilidad: string;
-      columna: 1 | 2;
-    }[] = [];
-
-    nuevoEmparejamiento.forEach((fila) => {
-      if (
-        fila.tutorado1 &&
-        (normalize(fila.materiaTutorado1) !== normalize(fila.materiaTutor) ||
-          fila.disponibilidadTutorado1 !== fila.disponibilidadTutor)
-      ) {
-        tutoradosPendientes.push({
-          nombre: fila.tutorado1,
-          materia: fila.materiaTutorado1,
-          disponibilidad: fila.disponibilidadTutorado1,
-          columna: 1,
-        });
-        // Vaciamos para evitar duplicados
-        fila.tutorado1 = "";
-        fila.tutorado1_id = "";
-        fila.materiaTutorado1 = "VACÍO";
-        fila.disponibilidadTutorado1 = "VACÍO";
-        fila.colorOriginal1 = "";
-      }
-
-      if (
-        fila.tutorado2 &&
-        (normalize(fila.materiaTutorado2) !== normalize(fila.materiaTutor) ||
-          fila.disponibilidadTutorado2 !== fila.disponibilidadTutor)
-      ) {
-        tutoradosPendientes.push({
-          nombre: fila.tutorado2,
-          materia: fila.materiaTutorado2,
-          disponibilidad: fila.disponibilidadTutorado2,
-          columna: 2,
-        });
-        fila.tutorado2 = "";
-        fila.tutorado2_id = "";
-        fila.materiaTutorado2 = "VACÍO";
-        fila.disponibilidadTutorado2 = "VACÍO";
-        fila.colorOriginal2 = "";
-      }
-    });
-
-    tutoradosPendientes.forEach(({ nombre, materia, disponibilidad, columna }) => {
-      const normalizedMateria = normalize(materia);
-      const tutorDestino = nuevoEmparejamiento.find((fila) => {
-        return (
-          normalize(fila.materiaTutor) === normalizedMateria &&
-          fila.disponibilidadTutor === disponibilidad &&
-          ((columna === 1 && fila.tutorado1 === "") ||
-            (columna === 2 && fila.tutorado2 === ""))
-        );
-      });
-
-      if (tutorDestino) {
-        if (columna === 1) {
-          tutorDestino.tutorado1 = nombre;
-          tutorDestino.materiaTutorado1 = materia;
-          tutorDestino.disponibilidadTutorado1 = disponibilidad;
-          tutorDestino.colorOriginal1 = calcularColor(materia);
-        } else {
-          tutorDestino.tutorado2 = nombre;
-          tutorDestino.materiaTutorado2 = materia;
-          tutorDestino.disponibilidadTutorado2 = disponibilidad;
-          tutorDestino.colorOriginal2 = calcularColor(materia);
-        }
-      } else {
-        // Crear nueva fila solo si el nombre no es vacío
-        if (nombre.trim() !== "" && nombre !== "N/A") {
-          const yaExiste = nuevoEmparejamiento.some(
-            (fila) =>
-              fila.tutor === "" &&
-              (fila.tutorado1 === nombre || fila.tutorado2 === nombre)
-          );
-          if (!yaExiste) {
-            if (columna === 1) {
-              nuevoEmparejamiento.push({
-                tutor: "",
-                disponibilidadTutor: "",
-                materiaTutor: "", // materia vacía para nueva fila
-                tutorado1: nombre,
-                tutorado1_id: "",
-                disponibilidadTutorado1: disponibilidad,
-                materiaTutorado1: materia,
-                colorOriginal1: calcularColor(materia),
-                tutorado2: "",
-                tutorado2_id: "",
-                disponibilidadTutorado2: "VACÍO",
-                materiaTutorado2: "VACÍO",
-                colorOriginal2: "",
-              });
-            } else {
-              nuevoEmparejamiento.push({
-                tutor: "",
-                disponibilidadTutor: "",
-                materiaTutor: "", // materia vacía para nueva fila
-                tutorado1: "",
-                tutorado1_id: "",
-                disponibilidadTutorado1: "VACÍO",
-                materiaTutorado1: "VACÍO",
-                colorOriginal1: "",
-                tutorado2: nombre,
-                tutorado2_id: "",
-                disponibilidadTutorado2: disponibilidad,
-                materiaTutorado2: materia,
-                colorOriginal2: calcularColor(materia),
-              });
-            }
-          }
-        }
-      }
-    });
-
-    // Aquí ya no llamamos a reinitializeCell para todas las filas
-
-    // Filtrar: eliminar filas que tengan disponibilidad y materia del tutor vacíos o "VACÍO"
-    // y que además tengan ambos tutorados vacíos o "VACÍO".
-    // En las filas que se van a eliminar, se borra el id (aunque al final no se incluyen en el arreglo final).
-    const filtrado = nuevoEmparejamiento.filter((fila) => {
-      const disponibilidadVacia =
-        fila.disponibilidadTutor.trim().toUpperCase() === "VACÍO" ||
-        fila.disponibilidadTutor.trim() === "";
-      const materiaVacia =
-        fila.materiaTutor.trim().toUpperCase() === "VACÍO" ||
-        fila.materiaTutor.trim() === "";
-      const tutorado1Vacio =
-        fila.tutorado1.trim() === "" ||
-        fila.tutorado1.trim().toUpperCase() === "VACÍO";
-      const tutorado2Vacio =
-        fila.tutorado2.trim() === "" ||
-        fila.tutorado2.trim().toUpperCase() === "VACÍO";
-
-      const eliminarFila = disponibilidadVacia && materiaVacia && tutorado1Vacio && tutorado2Vacio;
-      if (eliminarFila) {
-        // Borrar los id de esta fila
-        fila.tutorado1_id = "";
-        fila.tutorado2_id = "";
-      }
-      return !eliminarFila;
-    });
-
-    console.log("Nuevo emparejamiento:", filtrado);
-    setEmparejamientos(filtrado);
-  };
-
-
-
-
 
   return (
     <div className="emparejamiento">
-     
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          justifyContent: "center",
-          marginBottom: "10px"
-        }}
-      >
-        <button
-          onClick={iniciarEmparejamiento}
-          style={{
-            flex: "1 1 200px",
-            padding: "10px",
-            fontSize: "16px"
-          }}
-        >
-          Iniciar Emparejamiento
-        </button>
-        <button
-          onClick={emparejamientoAutomatico}
-          style={{
-            flex: "1 1 200px",
-            padding: "10px",
-            fontSize: "16px"
-          }}
-        >
-          Emparejamiento Automático
-        </button>
-        <button
-          onClick={exportarAExcel}
-          style={{
-            flex: "1 1 200px",
-            padding: "10px",
-            fontSize: "16px"
-          }}
-        >
-          Exportar a Excel
-        </button>
-        <div
-          className="search-bar"
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            alignItems: "center",
-            gap: "10px",
-            maxWidth: "800px",
-            margin: "10px auto"
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Buscar Tutor"
-            value={searchTutor}
-            onChange={(e) => setSearchTutor(e.target.value)}
-            style={{ flex: "1 1 150px", maxWidth: "200px" }}
-          />
-          <input
-            type="text"
-            placeholder="Buscar Tutorados"
-            value={searchTutorado}
-            onChange={(e) => setSearchTutorado(e.target.value)}
-            style={{ flex: "1 1 150px", maxWidth: "200px" }}
-          />
-          <input
-            type="text"
-            placeholder="Buscar ID Tutorados"
-            value={searchTutoradoId}
-            onChange={(e) => setSearchTutoradoId(e.target.value)}
-            style={{ flex: "1 1 150px", maxWidth: "200px" }}
-          />
-          <select
-            value={searchDisponibilidadTutor}
-            onChange={(e) => setSearchDisponibilidadTutor(e.target.value)}
-            style={{ flex: "1 1 150px", maxWidth: "200px" }}
-          >
-            <option value="">Disponibilidad Tutor: Todos</option>
-            {disponibilidadOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <select
-            value={searchDisponibilidadTutorado}
-            onChange={(e) => setSearchDisponibilidadTutorado(e.target.value)}
-            style={{ flex: "1 1 150px", maxWidth: "200px" }}
-          >
-            <option value="">Disponibilidad Tutorados: Todos</option>
-            {disponibilidadOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "15px" }}>
+        <button onClick={emparejamientoAutomatico} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Emparejamiento Automático</button>
+        <button onClick={exportarAExcel} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Exportar a Excel</button>
       </div>
-
+      <div className="search-bar" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", maxWidth: "900px", margin: "0 auto 20px" }}>
+        <input type="text" placeholder="Buscar Tutor" value={searchTutor} onChange={(e) => setSearchTutor(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />
+        <input type="text" placeholder="Buscar Tutorados" value={searchTutorado} onChange={(e) => setSearchTutorado(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />
+        <input type="text" placeholder="Buscar ID Tutorados" value={searchTutoradoId} onChange={(e) => setSearchTutoradoId(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />
+        <select value={searchDisponibilidadTutor} onChange={(e) => setSearchDisponibilidadTutor(e.target.value)} style={{ flex: "1 1 180px", padding: "8px" }}>
+          <option value="">Disponibilidad Tutor: Todos</option>
+          {disponibilidadOptions.map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+        </select>
+        <select value={searchDisponibilidadTutorado} onChange={(e) => setSearchDisponibilidadTutorado(e.target.value)} style={{ flex: "1 1 180px", padding: "8px" }}>
+          <option value="">Disponibilidad Tutorados: Todos</option>
+          {disponibilidadOptions.map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+        </select>
+      </div>
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th onClick={() => handleSort("tutor")}>
-                Tutor {sortColumn === "tutor" && (sortDirection === "asc" ? "▲" : "▼")}
-              </th>
-              <th onClick={() => handleSort("materiaTutor")}>
-                Materia {sortColumn === "materiaTutor" && (sortDirection === "asc" ? "▲" : "▼")}
-              </th>
-              <th onClick={() => handleSort("disponibilidadTutor")}>
-                Disponibilidad {sortColumn === "disponibilidadTutor" && (sortDirection === "asc" ? "▲" : "▼")}
-              </th>
+              <th onClick={() => handleSort("tutor")}>Tutor {sortColumn === "tutor" && (sortDirection === "asc" ? "▲" : "▼")}</th>
+              <th onClick={() => handleSort("materiaTutor")}>Materia {sortColumn === "materiaTutor" && (sortDirection === "asc" ? "▲" : "▼")}</th>
+              <th onClick={() => handleSort("disponibilidadTutor")}>Disponibilidad {sortColumn === "disponibilidadTutor" && (sortDirection === "asc" ? "▲" : "▼")}</th>
               <th>Tutorado 1</th>
               <th>Tutorado 2</th>
             </tr>
           </thead>
-          <DragDropContext
-            onDragStart={handleDragStart}
-            onDragUpdate={handleDragUpdate}
-            onDragEnd={handleDragEnd}
-          >
+          <DragDropContext onDragStart={handleDragStart} onDragUpdate={handleDragUpdate} onDragEnd={handleDragEnd}>
             <Droppable droppableId="tutorados" direction="vertical">
               {(provided) => (
                 <tbody ref={provided.innerRef} {...provided.droppableProps}>
-                  {filteredEmparejamientos.map((fila, rowIndex) => (
+                  {filtered.map((fila, rowIndex) => (
                     <tr key={rowIndex}>
-                      <td>{fila.tutor}</td>
                       <td>
-                        <select
-                          value={fila.materiaTutor}
-                          onChange={(e) =>
-                            actualizarCampo(rowIndex, "materiaTutor", e.target.value)
-                          }
+                        {fila.tutor}
+                        {fila.max_tutorados === 1 && (
+                          <span style={{ marginLeft: '5px', color: '#ff6b6b', fontWeight: 'bold', fontSize: '11px' }}>
+                            (Max: 1)
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        <select 
+                          value={fila.materiaTutor} 
+                          onChange={(e) => actualizarTutor(rowIndex, "materiaTutor", e.target.value)} 
+                          style={{ padding: "6px" }}
                         >
                           <option value="">Vacío</option>
                           <option value="Ingles">Inglés</option>
-                          <option value="ingles">Inglés</option>
                           <option value="Matematicas">Matemáticas</option>
-                          <option value="matematicas">Matemáticas</option>
                         </select>
                       </td>
                       <td>
-                        <select
-                          value={fila.disponibilidadTutor}
-                          onChange={(e) =>
-                            actualizarCampo(rowIndex, "disponibilidadTutor", e.target.value)
-                          }
+                        <select 
+                          value={fila.disponibilidadTutor} 
+                          onChange={(e) => actualizarTutor(rowIndex, "disponibilidadTutor", e.target.value)} 
+                          style={{ padding: "6px" }}
                         >
-                          {disponibilidadOptions.map((opt, index) => (
-                            <option key={index} value={opt}>
-                              {index}. {opt}
-                            </option>
+                          {disponibilidadOptions.map((opt) => (
+                            <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
                       </td>
-                      {[fila.tutorado1, fila.tutorado2].map((tutorado, colIndex) => {
-                        const tutoradoId = `${rowIndex}-${colIndex}`;
-                        const dispNumber = availabilityMapping[
-                          colIndex === 0 ? fila.disponibilidadTutorado1 : fila.disponibilidadTutorado2
-                        ];
-                        const realId = colIndex === 0 ? fila.tutorado1_id : fila.tutorado2_id;
-                        let tutoradoDisplay;
-                        if (tutorado.trim()) {
-                          if (dispNumber) {
-                            tutoradoDisplay = `-nombre: ${tutorado} \n id ${realId} \n disp(${dispNumber})`;
-                          } else {
-                            tutoradoDisplay = tutorado;
-                          }
-                        } else {
-                          tutoradoDisplay = "VACÍO";
-                        }
+                      {[fila.tutorado1, fila.tutorado2].map((_, colIdx) => {
+                        const cellId = `${rowIndex}-${colIdx}`;
+                        const item = colIdx === 0 ? {
+                          name: fila.tutorado1,
+                          id: fila.tutorado1_id,
+                          disp: fila.disponibilidadTutorado1,
+                          contacto: fila.contactoTutorado1,
+                          color: fila.colorOriginal1
+                        } : {
+                          name: fila.tutorado2,
+                          id: fila.tutorado2_id,
+                          disp: fila.disponibilidadTutorado2,
+                          contacto: fila.contactoTutorado2,
+                          color: fila.colorOriginal2
+                        };
+                        const isEmpty = !item.name.trim() || item.name.toUpperCase() === "VACÍO";
+                        
+                        // Si es la segunda columna y el tutor solo puede tener 1 tutorado y ya tiene uno en la primera columna
+                        const isForbiddenSlot = colIdx === 1 && 
+                                             fila.max_tutorados === 1 && 
+                                             fila.tutorado1 && 
+                                             fila.tutorado1.trim() !== "" && 
+                                             fila.tutorado1 !== "VACÍO";
+                        
                         return (
-                          <td key={tutoradoId} className={highlightedId === tutoradoId ? "highlight" : ""}>
-                            <Draggable draggableId={tutoradoId} index={rowIndex * 2 + colIndex}>
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  className={`draggable-tutorado ${colIndex === 0 ? fila.colorOriginal1 : fila.colorOriginal2
-                                    } ${draggingId === tutoradoId ? "dragging" : ""}`}
+                          <td 
+                            key={cellId} 
+                            className={`
+                              drop-target 
+                              ${highlightedId === cellId ? "highlight" : ""} 
+                              ${invalidDropId === cellId ? "invalid-drop" : ""}
+                              ${isForbiddenSlot ? "forbidden-slot" : ""}
+                            `}
+                          >
+                            <Draggable 
+                              draggableId={cellId} 
+                              index={rowIndex * 2 + colIdx}
+                              isDragDisabled={isForbiddenSlot && isEmpty}
+                            >
+                              {(prov) => (
+                                <div 
+                                  ref={prov.innerRef} 
+                                  {...prov.draggableProps} 
+                                  {...prov.dragHandleProps} 
+                                  className={`
+                                    draggable 
+                                    ${item.color} 
+                                    ${draggingId === cellId ? "dragging" : ""} 
+                                    ${isForbiddenSlot ? "forbidden-tutorado" : ""}
+                                  `}
                                 >
-                                  {tutoradoDisplay}
+                                  {isEmpty ? (
+                                    <div className="tutorado-vacio">
+                                      {isForbiddenSlot ? "NO DISPONIBLE" : "VACÍO"}
+                                    </div>
+                                  ) : (
+                                    <div className="tutorado-info">
+                                      <div className="tutorado-name">{item.name}</div>
+                                      <div className="tutorado-id">ID: {item.id}</div>
+                                      <div className="tutorado-disp">Disp: {item.disp}</div>
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </Draggable>
