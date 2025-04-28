@@ -1,41 +1,321 @@
+import "./Monitoreo.css";
 
-import "./Monitoreo.css" ;
-
-import { useEffect, useState } from "react" ;
-import { invoke } from "@tauri-apps/api/tauri" ;
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 
 interface DatosMonitoreoIzq {
-  id : string ;
-  rol : string ;
-  teleefono : string ;
-  email : string ;
+  id: string;
+  rol: string;
+  teleefono: string;
+  email: string;
 }
 interface DatosMonitoreoDer {
-  registro : string ;
+  registro: string;
 }
 
-function Monitoreo ( ) {
+function Monitoreo() {
 
-  const [datosIzq,setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
+  const [datosIzq, setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
 
-  useEffect ( () => {
+  useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoIzq[]>("monitoreo_izquierda")
-      .then ( (response) => setDatosIzq(response) )
-      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-  }, [] ) ;
+      .then((response) => setDatosIzq(response))
+      .catch((error) => console.error("Failed to fetch data:", error));
+  }, []);
 
-  const [datosDer,setDatosDer] = useState<DatosMonitoreoDer[]>([]);
+  const [datosDer, setDatosDer] = useState<DatosMonitoreoDer[]>([]);
+  const [datosOriginales, setDatosOriginales] = useState<any[]>([]); //Guarda datos originales de las tareas de todos los usuarios 
+  const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
+  const [textoEditado, setTextoEditado] = useState<string>("");
 
-  useEffect ( () => {
+
+  useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoDer[]>("monitoreo_derecha")
-      .then ( (response) => setDatosDer(response) )
-      .catch ( (error) => console.error("Failed to fetch data:", error) ) ;
-  }, [] ) ;
-  
+      .then((response) => setDatosDer(response))
+      .catch((error) => console.error("Failed to fetch data:", error));
+  }, []);
+
+  useEffect(() => {
+    const cargarEmparejamiento = async () => {
+      try {
+        const resultado = await invoke("leer_excel_emparejamiento");
+        console.log("Emparejamiento cargado automáticamente:", resultado);
+      } catch (error) {
+        console.error("Error al cargar el emparejamiento al inicio:", error);
+      }
+    };
+
+    cargarEmparejamiento();
+  }, []);
+
+
+  useEffect(() => {
+    invoke("cargar_datos_json")
+      .then((res) => {
+        const jsonData = JSON.parse(res as string);
+        let contador = 1;
+
+        const mapPersona = (p: any): DatosMonitoreoIzq => ({
+          id: `Usuario ${contador++}`,
+          rol: p.rol,
+          teleefono: Array.isArray(p.telefono) ? p.telefono[0] : p.telefono,
+          email: p.correo,
+        });
+
+        const personas = [
+          ...jsonData.tutores,
+          ...jsonData.tutorado1,
+          ...jsonData.tutorado2,
+        ];
+
+        const datosIzquierda = personas.map(mapPersona);
+
+        setDatosIzq(datosIzquierda);
+        setDatosOriginales(personas);
+      })
+      .catch((err) => {
+        console.error("Error cargando datos del JSON:", err);
+      });
+  }, []);
+
+  const handleCasillaClick = (row: DatosMonitoreoIzq) => {
+    const persona = datosOriginales.find(p => p.correo === row.email);
+    if (!persona) return;
+
+    const nuevasEntradas: DatosMonitoreoDer[] = [];
+
+    persona.tareas.forEach((tarea: any) => {
+      nuevasEntradas.push({
+        registro: `${tarea.nombre}: ${tarea.descripcion}`
+      });
+    });
+
+    nuevasEntradas.push({
+      registro: `Imagen: ${persona.imagenes}`
+    });
+
+    setDatosDer(nuevasEntradas);
+  };
+
+
+  // Función mejorada para manejar la eliminación
+  const handleDeleteItem = async (index: number) => {
+    const actualIndex = datosDer.length - 1 - index;
+    const itemToDelete = datosDer[actualIndex];
+    const isImage = itemToDelete.registro.startsWith("Imagen:");
+
+
+    const currentUser = datosOriginales.find(p => {
+
+      const matchingEmail = datosIzq.find(row => row.email === p.correo);
+      return matchingEmail && datosDer.some(item => {
+
+        if (isImage) {
+          return item.registro.includes(p.imagenes);
+        } else {
+          return p.tareas.some((tarea: any) =>
+            item.registro.includes(`${tarea.nombre}: ${tarea.descripcion}`)
+          );
+        }
+      });
+    });
+
+    if (!currentUser) return;
+
+    try {
+
+      const jsonResponse = await invoke("cargar_datos_json");
+      const jsonData = JSON.parse(jsonResponse as string);
+
+
+      let userType = "";
+      let userIndex = -1;
+
+
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === currentUser.correo);
+      if (userIndex !== -1) userType = "tutores";
+
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) userType = "tutorado1";
+      }
+
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) userType = "tutorado2";
+      }
+
+      if (userType === "" || userIndex === -1) {
+        console.error("No se pudo encontrar al usuario en el JSON");
+        return;
+      }
+
+
+      if (isImage) {
+
+        jsonData[userType][userIndex].imagenes = "";
+      } else {
+
+        const taskText = itemToDelete.registro;
+        const taskName = taskText.split(":")[0].trim();
+
+        jsonData[userType][userIndex].tareas = jsonData[userType][userIndex].tareas.filter(
+          (tarea: any) => tarea.nombre !== taskName
+        );
+      }
+
+      await invoke("actualizar_json_monitoreo", {
+        jsonData: JSON.stringify(jsonData)
+      });
+
+      const newDatosDer = [...datosDer];
+      newDatosDer.splice(actualIndex, 1);
+      setDatosDer(newDatosDer);
+
+      const personas = [
+        ...jsonData.tutores,
+        ...jsonData.tutorado1,
+        ...jsonData.tutorado2,
+      ];
+      setDatosOriginales(personas);
+
+      console.log("Item deleted successfully");
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
+  // Función para activar el modo de edición
+  const handleActivarEdicion = (index: number) => {
+    const actualIndex = datosDer.length - 1 - index;
+    const item = datosDer[actualIndex];
+    setEditandoIndex(actualIndex);
+    setTextoEditado(item.registro);
+  };
+
+  // Función para cancelar la edición
+  const handleCancelarEdicion = () => {
+    setEditandoIndex(null);
+    setTextoEditado("");
+  };
+
+  // Función para guardar los cambios de la edición
+  // Función modificada para guardar los cambios
+  const handleGuardarEdicion = async () => {
+    if (editandoIndex === null) return;
+
+    const itemToEdit = datosDer[editandoIndex];
+    const isImage = itemToEdit.registro.startsWith("Imagen:");
+
+    // Encontrar el usuario actual basado en los datos mostrados
+    const currentUser = datosOriginales.find(p => {
+      const matchingEmail = datosIzq.find(row => row.email === p.correo);
+      return matchingEmail && datosDer.some(item => {
+        if (isImage) {
+          return item.registro.includes(p.imagenes);
+        } else {
+          return p.tareas.some((tarea: any) =>
+            item.registro.includes(`${tarea.nombre}: ${tarea.descripcion}`)
+          );
+        }
+      });
+    });
+
+    if (!currentUser) return;
+
+    try {
+      // Primero, cargamos el JSON completo actual desde el archivo
+      const jsonActual = await invoke<string>("cargar_datos_json");
+      const jsonCompleto = JSON.parse(jsonActual);
+
+      // Determinamos en qué categoría está el usuario (tutores, tutorado1, tutorado2)
+      let categoria = '';
+      let userIndex = -1;
+
+      // Buscar en tutores
+      userIndex = jsonCompleto.tutores.findIndex((p: any) => p.correo === currentUser.correo);
+      if (userIndex !== -1) categoria = 'tutores';
+
+      // Si no se encontró en tutores, buscar en tutorado1
+      if (userIndex === -1) {
+        userIndex = jsonCompleto.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) categoria = 'tutorado1';
+      }
+
+      // Si no se encontró en tutorado1, buscar en tutorado2
+      if (userIndex === -1) {
+        userIndex = jsonCompleto.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
+        if (userIndex !== -1) categoria = 'tutorado2';
+      }
+
+      if (categoria === '' || userIndex === -1) {
+        console.error("No se encontró el usuario en ninguna categoría");
+        return;
+      }
+
+      // Modificar los datos según corresponda
+      if (isImage) {
+        // Actualizar la imagen
+        const newImageValue = textoEditado.substring(textoEditado.indexOf(":") + 1).trim();
+        jsonCompleto[categoria][userIndex].imagenes = newImageValue;
+      } else {
+        // Actualizar la tarea
+        const oldTaskText = itemToEdit.registro;
+        const oldTaskName = oldTaskText.split(":")[0].trim();
+
+        // Extraer el nuevo nombre y descripción
+        const parts = textoEditado.split(":");
+        const newTaskName = parts[0].trim();
+        const newTaskDesc = parts.slice(1).join(":").trim();
+
+        // Encontrar la tarea y actualizarla
+        const taskIndex = jsonCompleto[categoria][userIndex].tareas.findIndex(
+          (tarea: any) => tarea.nombre === oldTaskName
+        );
+
+        if (taskIndex !== -1) {
+          jsonCompleto[categoria][userIndex].tareas[taskIndex] = {
+            nombre: newTaskName,
+            descripcion: newTaskDesc
+          };
+        }
+      }
+
+      // Enviar los datos actualizados al backend para guardar en JSON
+      await invoke("actualizar_json_monitoreo", {
+        jsonData: JSON.stringify(jsonCompleto)
+      });
+
+      // Actualizar la UI
+      const newDatosDer = [...datosDer];
+      newDatosDer[editandoIndex] = { registro: textoEditado };
+      setDatosDer(newDatosDer);
+
+      // Actualizar los datos originales - importante para mantener consistencia
+      // Esta vez debemos reconstruir el array plano de datosOriginales
+      const nuevosOriginales = [
+        ...jsonCompleto.tutores,
+        ...jsonCompleto.tutorado1,
+        ...jsonCompleto.tutorado2
+      ];
+      setDatosOriginales(nuevosOriginales);
+
+      // Salir del modo edición
+      setEditandoIndex(null);
+      setTextoEditado("");
+
+      console.log("Item actualizado exitosamente");
+    } catch (error) {
+      console.error("Error actualizando item:", error);
+    }
+  };
+
 
   return (
 
@@ -76,10 +356,14 @@ function Monitoreo ( ) {
         </div>
         <div className="desplazadora">
           {datosIzq.map((row, index) => (
-            <div key={index} className="casilla">
+            <div
+              key={index}
+              className="casilla"
+              onClick={() => handleCasillaClick(row)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="rootulo">
-                <p className="id">{row.id}</p>
-                <p className="rol">{row.rol}</p>
+                <p className="id">{`${row.rol}, ${row.id}`}</p>
               </div>
               <p className="contacto">{row.teleefono}</p>
               <p className="contacto">{row.email}</p>
@@ -89,12 +373,82 @@ function Monitoreo ( ) {
       </div>
       <div className="contenedor_PanelDerecho">
         <div className="desplazadora">
-          {datosDer.slice(0).reverse().map((row, index) => (
-            <div className="registro">
-              <p key={index}>{row.registro}</p>
-            </div>
-          ))}
+          {datosDer.slice(0).reverse().map((row, index) => {
+            const esTarea = !row.registro.startsWith("Imagen:");
+            const actualIndex = datosDer.length - 1 - index;
+            const isEditing = editandoIndex === actualIndex;
+
+            return (
+              <div
+                key={index}
+                className="registro"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '8px',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  marginBottom: '8px',
+                  minHeight: '50px'
+                }}
+              >
+                <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+                  {esTarea && <input type="checkbox" />}
+                </div>
+
+                {isEditing ? (
+                  // Modo de edición
+                  <input
+                    type="text"
+                    value={textoEditado}
+                    onChange={(e) => setTextoEditado(e.target.value)}
+                    style={{ flexGrow: 1, margin: '0 10px', padding: '5px' }}
+                  />
+                ) : (
+                  // Modo de visualización
+                  <p
+                    style={{
+                      flexGrow: 1,
+                      margin: '0 10px',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => handleActivarEdicion(index)}
+                  >
+                    {row.registro}
+                  </p>
+                )}
+
+                {isEditing ? (
+                  // Botones para el modo de edición
+                  <>
+                    <button
+                      style={{ marginLeft: '5px' }}
+                      onClick={handleGuardarEdicion}
+                    >
+                      Actualizar
+                    </button>
+                    <button
+                      style={{ marginLeft: '5px' }}
+                      onClick={handleCancelarEdicion}
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  // Botón de eliminar en modo normal
+                  <button
+                    style={{ marginLeft: '10px' }}
+                    onClick={() => handleDeleteItem(index)}
+                  >
+                    Eliminar
+                  </button>
+                )}
+              </div>
+            );
+          })}
         </div>
+
+
         <div className="nuevo-registro">
           <button>
             +
@@ -102,12 +456,10 @@ function Monitoreo ( ) {
         </div>
       </div>
     </div>
-  
-  ) ;
 
+  );
 
 }
 
 
-export default Monitoreo ;
-
+export default Monitoreo;
