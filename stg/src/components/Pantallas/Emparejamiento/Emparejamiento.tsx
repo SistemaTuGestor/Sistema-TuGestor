@@ -446,7 +446,7 @@ function Emparejamiento() {
                             <Draggable 
                               draggableId={cellId} 
                               index={rowIndex * 2 + colIdx}
-                              isDragDisabled={isForbiddenSlot && isEmpty}
+                              isDragDisabled={!!(isForbiddenSlot && isEmpty)}
                             >
                               {(prov) => (
                                 <div 

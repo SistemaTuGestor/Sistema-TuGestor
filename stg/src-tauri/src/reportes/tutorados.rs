@@ -131,8 +131,8 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
             continue;
         }
 
-        let tutorado_1 = row[9].to_string().trim().to_string();
-        let tutorado_2 = row[27].to_string().trim().to_string();
+        let tutorado_1 = row[10].to_string().trim().to_string();
+        let tutorado_2 = row[30].to_string().trim().to_string();
         
         let fecha = FECHA
             .get()

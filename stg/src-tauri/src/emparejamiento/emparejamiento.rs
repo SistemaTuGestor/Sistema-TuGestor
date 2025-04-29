@@ -2,7 +2,7 @@ use calamine::{open_workbook, Reader, Xlsx, DataType};
 use serde::{Serialize, Deserialize};
 use std::collections::HashSet;
 
-const ARCHIVO_EXCEL: &str = "/home/user/Downloads/Sistema-TuGestor/recursos/Emparejamiento.xlsx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EmparejamientoItem {  
