@@ -2,7 +2,7 @@ use calamine::{open_workbook, Reader, Xlsx, DataType};
 use serde::{Serialize, Deserialize};
 use std::collections::HashSet;
 
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
+const ARCHIVO_EXCEL: &str = "C:\\Users\\USER\\Documents\\GitHub\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct EmparejamientoItem {  
@@ -103,7 +103,6 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
         .worksheet_range("Emparejamiento")
         .map_err(|e| format!("❌ No se pudo cargar la hoja 'Emparejamiento': {}", e))?;
     let mut emparejamientos = Vec::new();
-    let mut asignados = HashSet::new();
 
     for (i, row) in range.rows().enumerate() {
         if i == 0 { continue; } // Saltar encabezado
@@ -230,14 +229,7 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
         let colorOriginal1 = calcular_color(&materiaTutorado1);
         let colorOriginal2 = calcular_color(&materiaTutorado2);
          
-        // Registrar ids asignados (evitamos "VACÍO")
-        if tutorado1_id != "VACÍO" {
-            asignados.insert(tutorado1_id.clone());
-        }
-        if tutorado2_id != "VACÍO" {
-            asignados.insert(tutorado2_id.clone());
-        }
-
+     
         println!("👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
             tutor, disponibilidadTutor, materiaTutor, contactoTutor,
             tutorado1, tutorado1_id, disponibilidadTutorado1, materiaTutorado1, contactoTutorado1, grupoTutorado1,
@@ -268,59 +260,7 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
         });
     }
 
-    // --- Procesar la hoja "Tutorados" ---
-    let range_tutorados = workbook
-        .worksheet_range("Todos los tutorados ")
-        .map_err(|e| format!("❌ No se pudo cargar la hoja 'Tutorados': {}", e))?;
     
-
-    for (i, row) in range_tutorados.rows().enumerate() {
-        if i == 0 { continue; } // Saltar encabezado
-
-        let tutorado_id = row.get(1)
-            .and_then(|c| c.as_string())
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| "VACÍO".to_string());
-        let tutorado_name = row.get(0)
-            .and_then(|c| c.as_string())
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| "VACÍO".to_string());
-        let disponibilidadTutorado1 = row.get(18)
-            .and_then(|c| c.as_string())
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| "VACÍO".to_string());
-        let materia = row.get(6)
-            .and_then(|c| c.as_string())
-            .map(|s| s.to_string())
-            .unwrap_or_else(|| "VACÍO".to_string());
-
-        if !asignados.contains(&tutorado_id) {
-            let colorOriginal1 = calcular_color(&materia);
-            
-            emparejamientos.push(EmparejamientoItem {
-                tutor: "".to_string(),
-                disponibilidadTutor: "VACÍO".to_string(),
-                materiaTutor: "VACÍO".to_string(),
-                tutorado1: tutorado_name,
-                tutorado1_id: tutorado_id,
-                disponibilidadTutorado1,
-                materiaTutorado1: materia,
-                tutorado2: "".to_string(),
-                tutorado2_id: "".to_string(),
-                disponibilidadTutorado2: "VACÍO".to_string(),
-                materiaTutorado2: "VACÍO".to_string(),
-                grupoTutorado1: "VACÍO".to_string(),
-                grupoTutorado2: "VACÍO".to_string(),
-                contactoTutor: "VACÍO".to_string(),
-                contactoTutorado1: "VACÍO".to_string(),
-                contactoTutorado2: "VACÍO".to_string(),
-                colorOriginal1: Some(colorOriginal1),
-                colorOriginal2: Some("".to_string()),
-                modalidad: "VACÍO".to_string(),
-                max_tutorados : 2,
-            });
-        }
-    }
 
     println!("✅ Emparejamiento generado con {} elementos.", emparejamientos.len());
     Ok(emparejamientos)
@@ -482,6 +422,57 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             }
         }
     }
+// --- Stage 1B: Asegurar que ningún tutor supere su max_tutorados ---
+for fila in &mut nuevo_emparejamiento {
+    let mut actuales = Vec::new();
+    if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
+        actuales.push((
+            1,
+            fila.tutorado1.clone(),
+            fila.materiaTutorado1.clone(),
+            fila.disponibilidadTutorado1.clone(),
+            fila.colorOriginal1.clone().unwrap_or_default(),
+            fila.tutorado1_id.clone(),
+        ));
+    }
+    if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
+        actuales.push((
+            2,
+            fila.tutorado2.clone(),
+            fila.materiaTutorado2.clone(),
+            fila.disponibilidadTutorado2.clone(),
+            fila.colorOriginal2.clone().unwrap_or_default(),
+            fila.tutorado2_id.clone(),
+        ));
+    }
+
+    let to_remove = actuales.len().saturating_sub(fila.max_tutorados as usize);
+    if to_remove > 0 {
+        for (slot, nombre, materia, dispo, color, id) 
+            in actuales.into_iter().rev().take(to_remove)
+        {
+            tutorados_pendientes.push((nombre, materia, dispo, color, id, slot as i32));
+            match slot {
+                1 => {
+                    fila.tutorado1.clear();
+                    fila.tutorado1_id.clear();
+                    fila.materiaTutorado1 = "VACÍO".into();
+                    fila.disponibilidadTutorado1 = "VACÍO".into();
+                    fila.colorOriginal1 = Some("".into());
+                }
+                2 => {
+                    fila.tutorado2.clear();
+                    fila.tutorado2_id.clear();
+                    fila.materiaTutorado2 = "VACÍO".into();
+                    fila.disponibilidadTutorado2 = "VACÍO".into();
+                    fila.colorOriginal2 = Some("".into());
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
 
     // --- Etapa 2: Ordenar tutorados pendientes para mejorar asignación ---
     // Ordenamos primero por disponibilidad y luego por materia para agrupar casos similares
@@ -497,113 +488,73 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
     // Filtrar tutorados vacíos
     tutorados_pendientes.retain(|(nombre, _, _, _, _, _)| !nombre.trim().is_empty() && nombre != "VACÍO");
 
-    // --- Etapa 3: Reubicar los tutorados pendientes ---
-    for (nombre, materia, disponibilidad, color, id, _) in &tutorados_pendientes {
-        let mut asignado = false;
+   // --- Etapa 3: Reubicar los tutorados pendientes ---
+let mut asignados: HashSet<String> = HashSet::new();
 
-        // Primero, intentamos encontrar un tutor exacto
-        for fila in &mut nuevo_emparejamiento {
-            if !fila.tutor.trim().is_empty() && 
-               normalize(&fila.materiaTutor) == normalize(materia) &&
-               fila.disponibilidadTutor == *disponibilidad {
-
-                // Verificar si el tutor tiene capacidad para más tutorados
-                let tutorados_actuales = match (fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO",
-                                              fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO") {
-                    (true, true) => 0,   // Ningún tutorado asignado
-                    (false, true) => 1,  // Solo tutorado1 asignado
-                    (true, false) => 1,  // Solo tutorado2 asignado
-                    (false, false) => 2, // Ambos tutorados asignados
-                };
-
-                // Solo asignar si no excedemos max_tutorados
-                if tutorados_actuales < fila.max_tutorados as usize {
-                    // Intentar en slot 1
-                    if fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO" {
-                        println!("✅ Asignando {} al slot 1 de {} (max_tutorados: {})", 
-                            nombre, fila.tutor, fila.max_tutorados);
-                        fila.tutorado1 = nombre.clone();
-                        fila.tutorado1_id = id.clone();
-                        fila.materiaTutorado1 = materia.clone();
-                        fila.disponibilidadTutorado1 = disponibilidad.clone();
-                        fila.colorOriginal1 = Some(color.clone());
-                        asignado = true;
-                        break;
-                    }
-
-                    // Intentar en slot 2
-                    if fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO" {
-                        println!("✅ Asignando {} al slot 2 de {} (max_tutorados: {})", 
-                            nombre, fila.tutor, fila.max_tutorados);
-                        fila.tutorado2 = nombre.clone();
-                        fila.tutorado2_id = id.clone();
-                        fila.materiaTutorado2 = materia.clone();
-                        fila.disponibilidadTutorado2 = disponibilidad.clone();
-                        fila.colorOriginal2 = Some(color.clone());
-                        asignado = true;
-                        break;
-                    }
+for (nombre, materia, disponibilidad, color, id, _) in &tutorados_pendientes {
+    for fila in &mut nuevo_emparejamiento {
+        if !fila.tutor.trim().is_empty()
+            && normalize(&fila.materiaTutor) == normalize(materia)
+            && fila.disponibilidadTutor == *disponibilidad
+        {
+            let actuales = [
+                !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO",
+                !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO",
+            ];
+            let count = actuales.iter().filter(|&&b| b).count();
+            if count < fila.max_tutorados as usize {
+                // intentamos slot 1
+                if fila.tutorado1.trim().is_empty() || fila.tutorado1 == "VACÍO" {
+                    fila.tutorado1 = nombre.clone();
+                    fila.tutorado1_id = id.clone();
+                    fila.materiaTutorado1 = materia.clone();
+                    fila.disponibilidadTutorado1 = disponibilidad.clone();
+                    fila.colorOriginal1 = Some(color.clone());
                 } else {
-                    println!("⚠️ No se puede asignar a {} porque el tutor {} ya tiene {} tutorados (max: {})",
-                        nombre, fila.tutor, tutorados_actuales, fila.max_tutorados);
+                    // slot 2
+                    fila.tutorado2 = nombre.clone();
+                    fila.tutorado2_id = id.clone();
+                    fila.materiaTutorado2 = materia.clone();
+                    fila.disponibilidadTutorado2 = disponibilidad.clone();
+                    fila.colorOriginal2 = Some(color.clone());
                 }
+                asignados.insert(id.clone());
+                break;
             }
-        }
-
-        // Si no se encontró un tutor exacto, ser más flexible con la disponibilidad
-        if !asignado {
-            for fila in &mut nuevo_emparejamiento {
-                if !fila.tutor.trim().is_empty() && 
-                   normalize(&fila.materiaTutor) == normalize(materia) {
-                    
-                    // Verificar si el tutor tiene capacidad para más tutorados
-                    let tutorados_actuales = match (fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO",
-                                                  fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO") {
-                        (true, true) => 0,   // Ningún tutorado asignado
-                        (false, true) => 1,  // Solo tutorado1 asignado
-                        (true, false) => 1,  // Solo tutorado2 asignado
-                        (false, false) => 2, // Ambos tutorados asignados
-                    };
-
-                    // Solo asignar si no excedemos max_tutorados
-                    if tutorados_actuales < fila.max_tutorados as usize {
-                        // Intentar en slot 1
-                        if fila.tutorado1.is_empty() || fila.tutorado1 == "VACÍO" {
-                            println!("⚠️ Asignando {} al slot 1 de {} (disponibilidad diferente, max_tutorados: {})", 
-                                nombre, fila.tutor, fila.max_tutorados);
-                            fila.tutorado1 = nombre.clone();
-                            fila.tutorado1_id = id.clone();
-                            fila.materiaTutorado1 = materia.clone();
-                            fila.disponibilidadTutorado1 = disponibilidad.clone();
-                            fila.colorOriginal1 = Some(color.clone());
-                            asignado = true;
-                            break;
-                        }
-
-                        // Intentar en slot 2
-                        if fila.tutorado2.is_empty() || fila.tutorado2 == "VACÍO" {
-                            println!("⚠️ Asignando {} al slot 2 de {} (disponibilidad diferente, max_tutorados: {})", 
-                                nombre, fila.tutor, fila.max_tutorados);
-                            fila.tutorado2 = nombre.clone();
-                            fila.tutorado2_id = id.clone();
-                            fila.materiaTutorado2 = materia.clone();
-                            fila.disponibilidadTutorado2 = disponibilidad.clone();
-                            fila.colorOriginal2 = Some(color.clone());
-                            asignado = true;
-                            break;
-                        }
-                    } else {
-                        println!("⚠️ No se puede asignar a {} porque el tutor {} ya tiene {} tutorados (max: {})",
-                            nombre, fila.tutor, tutorados_actuales, fila.max_tutorados);
-                    }
-                }
-            }
-        }
-
-        if !asignado {
-            println!("⚠️ No se encontró tutor disponible para {}", nombre);
         }
     }
+}
+
+// --- Solo los no asignados generan fila vacía ---
+for (nombre, materia, disponibilidad, color, id, _) in tutorados_pendientes {
+    if asignados.contains(&id) {
+        continue;
+    }
+    let fila_vacia = EmparejamientoItem {
+        tutor: "".into(),
+        disponibilidadTutor: "VACÍO".into(),
+        materiaTutor: "VACÍO".into(),
+        modalidad: "VACÍO".into(),
+        max_tutorados: 2,
+        tutorado1: nombre.clone(),
+        tutorado1_id: id.clone(),
+        disponibilidadTutorado1: disponibilidad.clone(),
+        materiaTutorado1: materia.clone(),
+        colorOriginal1: Some(color.clone()),
+        tutorado2: "".into(),
+        tutorado2_id: "".into(),
+        disponibilidadTutorado2: "VACÍO".into(),
+        materiaTutorado2: "VACÍO".into(),
+        colorOriginal2: Some("".into()),
+        grupoTutorado1: "VACÍO".into(),
+        grupoTutorado2: "VACÍO".into(),
+        contactoTutor: "VACÍO".into(),
+        contactoTutorado1: "VACÍO".into(),
+        contactoTutorado2: "VACÍO".into(),
+    };
+    nuevo_emparejamiento.push(fila_vacia);
+}
+
 
     // Eliminar elementos que no tienen tutores ni tutorados
     nuevo_emparejamiento.retain(|fila| {

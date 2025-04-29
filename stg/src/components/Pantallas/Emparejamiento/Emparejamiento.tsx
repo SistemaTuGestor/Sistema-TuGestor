@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import { save } from "@tauri-apps/api/dialog";
+import { writeBinaryFile } from "@tauri-apps/api/fs";
 import {
   DragDropContext,
   Droppable,
@@ -48,7 +49,10 @@ const disponibilidadOptions = [
 ];
 
 function Emparejamiento() {
-  const [allData, setAllData] = useState<EmparejamientoEntry[]>([]);
+  const [allData, setAllData] = useState<EmparejamientoEntry[]>(() => {
+    const saved = localStorage.getItem("emparejamientoData");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [filtered, setFiltered] = useState<EmparejamientoEntry[]>([]);
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
@@ -65,13 +69,15 @@ function Emparejamiento() {
 
   // Carga inicial de emparejamientos
   useEffect(() => {
-    async function load() {
-      const data = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento");
-      setAllData(data);
-      setFiltered(data);
-    }
-    load();
-  }, []);
+    localStorage.setItem("emparejamientoData", JSON.stringify(allData));
+    if (allData.length === 0) {
+          async function load() {
+            const data = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento");
+           setAllData(data);
+         }
+         load();
+        }
+  }, [allData]);
 
   // Filtrar y ordenar usando backend
   useEffect(() => {
@@ -101,57 +107,34 @@ function Emparejamiento() {
   }, [allData, searchTutor, searchTutorado, searchTutoradoId, searchDisponibilidadTutor, searchDisponibilidadTutorado, sortColumn, sortDirection]);
 
   // Exportar a Excel
-  const exportarAExcel = () => {
-    const dataForSheet = filtered.map(({
-      tutor,
-      materiaTutor,
-      disponibilidadTutor,
-      tutorado1,
-      tutorado1_id,
-      disponibilidadTutorado1,
-      materiaTutorado1,
-      tutorado2,
-      tutorado2_id,
-      disponibilidadTutorado2,
-      materiaTutorado2,
-      grupoTutorado1,
-      grupoTutorado2,
-      contactoTutor,
-      contactoTutorado1,
-      contactoTutorado2,
-      modalidad,
-      max_tutorados
-    }) => ({
-      TUTOR: tutor,
-      'CONTACTO TUTOR': contactoTutor,
-      MATERIA: materiaTutor,
-      DISPONIBILIDAD: disponibilidadTutor,
-      MODALIDAD: modalidad,
-      'MAX TUTORADOS': max_tutorados,
-      
-      // Tutorado 1
-      'TUTORADO 1': tutorado1,
-      'ID T1': tutorado1_id,
-      'GRUPO T1': grupoTutorado1,
-      'CONTACTO T1': contactoTutorado1,
-      'DISP. T1': disponibilidadTutorado1,
-      'MATERIA T1': materiaTutorado1,
+  const exportarAExcel = async () => {
+    const dataForSheet = filtered.map(f => ({
+      TUTOR:          f.tutor            !== "VACÍO" ? f.tutor             : "",
+      CONTACTO:       f.contactoTutor    !== "VACÍO" ? f.contactoTutor     : "",
+      MATERIA:        f.materiaTutor     !== "VACÍO" ? f.materiaTutor      : "",
+      DISPONIBILIDAD: f.disponibilidadTutor !== "VACÍO" ? f.disponibilidadTutor : "",
+      MODALIDAD:      f.modalidad        !== "VACÍO" ? f.modalidad         : "",
+    
   
-      // Tutorado 2
-      'TUTORADO 2': tutorado2,
-      'ID T2': tutorado2_id,
-      'GRUPO T2': grupoTutorado2,
-      'CONTACTO T2': contactoTutorado2,
-      'DISP. T2': disponibilidadTutorado2,
-      'MATERIA T2': materiaTutorado2,
+      TUTORADO_1:      f.tutorado1      !== "VACÍO" ? f.tutorado1      : "",
+      ID_T1:           f.tutorado1      !== "VACÍO" ? f.tutorado1_id   : "",
+      DISP_T1:         f.disponibilidadTutorado1 !== "VACÍO" ? f.disponibilidadTutorado1 : "",
+      MATERIA_T1:      f.materiaTutorado1       !== "VACÍO" ? f.materiaTutorado1        : "",
+  
+      TUTORADO_2:      f.tutorado2      !== "VACÍO" ? f.tutorado2      : "",
+      ID_T2:           f.tutorado2      !== "VACÍO" ? f.tutorado2_id   : "",
+      DISP_T2:         f.disponibilidadTutorado2 !== "VACÍO" ? f.disponibilidadTutorado2 : "",
+      MATERIA_T2:      f.materiaTutorado2       !== "VACÍO" ? f.materiaTutorado2        : "",
     }));
-  
     const ws = XLSX.utils.json_to_sheet(dataForSheet);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Emparejamiento");
     const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), "Emparejamiento_Completo.xlsx");
+
+    const path = await save({ defaultPath: "Emparejamiento.xlsx" });
+    if (path) await writeBinaryFile({ path, contents: new Uint8Array(buf) });
   };
+
 
   // Emparejamiento automático via backend
   const emparejamientoAutomatico = async () => {
@@ -348,6 +331,12 @@ function Emparejamiento() {
       <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "15px" }}>
         <button onClick={emparejamientoAutomatico} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Emparejamiento Automático</button>
         <button onClick={exportarAExcel} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Exportar a Excel</button>
+        <button onClick={() => {
+  localStorage.removeItem("emparejamientoData");
+  window.location.reload();
+}}>
+  Reiniciar Tabla
+</button>
       </div>
       <div className="search-bar" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", maxWidth: "900px", margin: "0 auto 20px" }}>
         <input type="text" placeholder="Buscar Tutor" value={searchTutor} onChange={(e) => setSearchTutor(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />
