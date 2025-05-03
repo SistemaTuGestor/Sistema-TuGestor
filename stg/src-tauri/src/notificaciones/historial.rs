@@ -3,6 +3,21 @@ use std::path::Path;
 use serde::{Serialize, Deserialize};
 use tauri::command;
 use std::fs::read_dir;
+use std::env;
+use std::path::PathBuf;
+
+//Funcion para obtener la ruta de los recursos
+fn get_resource_path() -> PathBuf {
+    let current_exe = env::current_exe().expect("Failed to get current executable path");
+    let mut path = current_exe.parent().unwrap().to_path_buf();
+    
+    while !path.ends_with("Sistema-TuGestor") && path.parent().is_some() {
+        path = path.parent().unwrap().to_path_buf();
+    }
+    
+    path.push("recursos");
+    path
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Borrador {
@@ -18,14 +33,16 @@ pub struct BorradorEdit {
     pub mensaje: String,
 }
 
+
+
 #[command]
 pub fn guardar_historial(data: Borrador) -> Result<(), String> {
-    let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales\\historial.json";
-    //let path = "C:\\Users\\USUARIO\\OneDrive\\Documents\\7 semestre\\Sistema-TuGestor\\recursos\\historial.json";
+    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales\\historial.json";
+    let base_path = get_resource_path();
+    let path = base_path.join("historiales").join("historial.json");
 
-    
-    let mut historial: Vec<Borrador> = if Path::new(path).exists() {
-        let contenido = fs::read_to_string(path).map_err(|e| format!("Error al leer archivo: {}", e))?;// lee el JSON
+    let mut historial: Vec<Borrador> = if Path::new(&path).exists() {
+        let contenido = fs::read_to_string(&path).map_err(|e| format!("Error al leer archivo: {}", e))?;// lee el JSON
         serde_json::from_str(&contenido).unwrap_or_else(|_| Vec::new()) // Aqui se guarda toda la información del JSON, la lee para persistir los datos anteriores, si no hay crea una lista vacia
     } else {
         Vec::new()// si no hay archivo crea uno con una lista vacia
@@ -39,8 +56,8 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
         .map_err(|e| format!("Error al serializar JSON: {}", e))?;
     
     // Escribir todo el historial en el archivo
-    fs::write(Path::new(path), json_data)
-        .map_err(|e| format!("Error al guardar archivo: {}", e))?;
+    fs::write(&path, json_data)
+    .map_err(|e| format!("Error al guardar archivo: {}", e))?;
 
     Ok(())
 }
@@ -48,9 +65,11 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
 
 #[command]
 pub fn leer_historial() -> Result<Vec<Borrador>, String> {
-    let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales";
+    //let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales";
+    let base_path = get_resource_path();
+    let carpeta_path = base_path.join("historiales");
 
-    if !Path::new(carpeta_path).exists() {
+    if !Path::new(&carpeta_path).exists() {
         return Ok(Vec::new()); // Si la carpeta no existe, devolver lista vacía
     }
 
@@ -85,8 +104,10 @@ pub fn editar_historial(asunto: String) -> Result<Vec<BorradorEdit>, String> {
     println!("entra a la func");
     println!("Buscando historial con asunto: {}", asunto);
     
-    let directorio = Path::new("C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales");
-    
+    //let directorio = Path::new("C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales");
+    let base_path = get_resource_path();
+    let directorio = base_path.join("historiales");
+
     if !directorio.exists() {
         return Err(format!("El directorio {} no existe", directorio.display()));
     }
@@ -153,16 +174,17 @@ pub fn editar_historial(asunto: String) -> Result<Vec<BorradorEdit>, String> {
 }
 
 #[command]
-pub fn actualizar_historial(asunto_original: String, data: BorradorEdit) -> Result<(), String> {
-    let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales\\historial.json";
-    
+pub fn actualizar_historial(app_handle: tauri::AppHandle, asunto_original: String, data: BorradorEdit) -> Result<(), String> {
+    let base_path = get_resource_path();
+    let path = base_path.join("historiales").join("historial.json");
+
     // Verificar si el archivo existe
-    if !Path::new(path).exists() {
+    if !Path::new(&path).exists() {
         return Err("El archivo de historial no existe".to_string());
     }
     
     // Leer el contenido actual del archivo
-    let contenido = fs::read_to_string(path)
+    let contenido = fs::read_to_string(&path)
         .map_err(|e| format!("Error al leer archivo: {}", e))?;
     
     // Deserializar el contenido
@@ -179,31 +201,33 @@ pub fn actualizar_historial(asunto_original: String, data: BorradorEdit) -> Resu
         }
     }
     
-    // Si no se encontró la entrada, devolver error
     if !encontrado {
         return Err(format!("No se encontró ninguna entrada con el asunto: {}", asunto_original));
     }
     
-    // Serializar todo el historial
+    // Serializar y guardar
     let json_data = serde_json::to_string_pretty(&historial)
         .map_err(|e| format!("Error al serializar JSON: {}", e))?;
     
-    // Escribir todo el historial en el archivo
-    fs::write(Path::new(path), json_data)
+    fs::write(&path, json_data)
         .map_err(|e| format!("Error al guardar archivo: {}", e))?;
     
     println!("Historial actualizado con éxito para el asunto: {}", asunto_original);
+    
+    // Retornar Ok sin intentar leer ningún archivo Excel
     Ok(())
 }
 
 
 #[command]
 pub fn eliminar_historial(asunto: String) -> Result<(), String> {
-    let directorio = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales";
-    
+    //let directorio = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales";
+    let base_path = get_resource_path();
+    let directorio = base_path.join("historiales");
+
     // Verificar si el directorio existe
-    if !Path::new(directorio).exists() {
-        return Err(format!("El directorio {} no existe", directorio));
+    if !Path::new(&directorio).exists() {
+        return Err(format!("El directorio {} no existe", directorio.display()));
     }
     
     // Intentar leer todos los archivos en el directorio
@@ -290,9 +314,11 @@ pub fn eliminar_historial(asunto: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
-    let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\historiales";
+   // let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales";
+   let base_path = get_resource_path();
+   let carpeta_path = base_path.join("historiales");
 
-    if !Path::new(carpeta_path).exists() {
+    if !Path::new(&carpeta_path).exists() {
         return Err("La carpeta de historiales no existe".to_string());
     }
 
