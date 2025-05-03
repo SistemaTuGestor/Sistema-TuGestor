@@ -332,5 +332,13 @@ pub fn guardar_datos_json(datos: String) -> Result<String, String> {
     }
 }
 
+#[tauri::command]
+pub fn get_image(path: String) -> Result<Vec<u8>, String> {
+    match std::fs::read(&path) {
+        Ok(data) => Ok(data),
+        Err(e) => Err(format!("Error al leer la imagen: {}", e)),
+    }
+}
+
 
 
