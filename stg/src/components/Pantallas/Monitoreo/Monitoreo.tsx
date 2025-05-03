@@ -88,15 +88,23 @@ function Monitoreo() {
 
     const nuevasEntradas: DatosMonitoreoDer[] = [];
 
+    // Agregar tareas (como antes)
     persona.tareas.forEach((tarea: any) => {
       nuevasEntradas.push({
         registro: `${tarea.nombre}: ${tarea.descripcion}`
       });
     });
 
-    nuevasEntradas.push({
-      registro: `Imagen: ${persona.imagenes}`
-    });
+    // Agregar imágenes (una por cada entrada en el array)
+    if (persona.imagenes && Array.isArray(persona.imagenes)) {
+      persona.imagenes.forEach((imagen: any) => {
+        if (imagen.url) { // Solo agregar si tiene URL
+          nuevasEntradas.push({
+            registro: `Imagen: ${imagen.url}`
+          });
+        }
+      });
+    }
 
     setDatosDer(nuevasEntradas);
   };

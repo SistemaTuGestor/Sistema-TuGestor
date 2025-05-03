@@ -17,7 +17,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Javier ",
@@ -36,7 +43,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Andrea",
@@ -55,7 +69,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Santiago\t",
@@ -74,7 +95,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Valentina",
@@ -93,7 +121,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Mateo",
@@ -112,7 +147,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Camila",
@@ -131,7 +173,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Daniel",
@@ -150,7 +199,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Javier",
@@ -169,7 +225,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
       "nombre": "Ilian David ",
@@ -188,20 +251,27 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     }
   ],
   "tutorado1": [
     {
-      "nombre": "Miguel EsparzaT",
-      "cedula": "1000477320",
+      "nombre": "Entre semana de 6:00pm-8:00pm",
+      "cedula": "Miguel EsparzaT",
       "rol": "Tutorado",
       "telefono": [
-        "3058829527",
-        "3498597548"
+        "Colegio Ejemplo1",
+        "3058829527"
       ],
       "correo": "quintana.nicolas@javeriana.edi.co",
-      "institucion": "Colegio Ejemplo1",
+      "institucion": "1000477320",
       "tareas": [
         {
           "nombre": "tarea2",
@@ -212,18 +282,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Mariana CastroT",
-      "cedula": "1037883695",
+      "nombre": "Entre semana de 6:00pm-8:00pm",
+      "cedula": "Mariana CastroT",
       "rol": "Tutorado",
       "telefono": [
-        "3117565623",
-        "3113735209"
+        "Colegio Bolivar",
+        "3117565623"
       ],
       "correo": "jecheverry@javeriana.edu.co",
-      "institucion": "Colegio Bolivar",
+      "institucion": "1037883695",
       "tareas": [
         {
           "nombre": "tarea3",
@@ -234,18 +311,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Andrés RamírezT",
-      "cedula": "1040872361",
+      "nombre": "Entre semana de 5:00pm-6:00pm",
+      "cedula": "Andrés RamírezT",
       "rol": "Tutorado",
       "telefono": [
-        "3244716820",
-        "3146538937"
+        "Colegio Ejemplo1",
+        "3244716820"
       ],
       "correo": "andrea.torres@gmail.com",
-      "institucion": "Colegio Ejemplo1",
+      "institucion": "1040872361",
       "tareas": [
         {
           "nombre": "tarea4",
@@ -256,18 +340,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Sofía FernándezT",
-      "cedula": "1040334221",
+      "nombre": "Sábados en la mañana",
+      "cedula": "Sofía FernándezT",
       "rol": "Tutorado",
       "telefono": [
-        "3107589894",
-        "3025791188"
+        "Colegio Bolivar",
+        "3107589894"
       ],
       "correo": "Prueba3@pruebmail.com",
-      "institucion": "Colegio Bolivar",
+      "institucion": "1040334221",
       "tareas": [
         {
           "nombre": "tarea5",
@@ -278,18 +369,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Juan PérezT",
-      "cedula": "1046716109",
+      "nombre": "Entre semana de 4:00pm-5:00pm",
+      "cedula": "Juan PérezT",
       "rol": "Tutorado",
       "telefono": [
-        "3243098774",
-        "3044155979"
+        "Colegio Ejemplo3",
+        "3243098774"
       ],
       "correo": "valentina.lopez@javeriana.edu.co",
-      "institucion": "Colegio Ejemplo3",
+      "institucion": "1046716109",
       "tareas": [
         {
           "nombre": "tarea6",
@@ -300,18 +398,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Valeria GómezT",
-      "cedula": "1020316404",
+      "nombre": "Entre semana de 4:00pm-5:00pm",
+      "cedula": "Valeria GómezT",
       "rol": "Tutorado",
       "telefono": [
-        "3225962995",
-        "3105528456"
+        "Institución educativa distrital german vargas cantillo",
+        "3225962995"
       ],
       "correo": "mateo.fernandez@.hotmail.com",
-      "institucion": "Institución educativa distrital german vargas cantillo",
+      "institucion": "1020316404",
       "tareas": [
         {
           "nombre": "tarea7",
@@ -322,18 +427,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Daniel RodríguezT",
-      "cedula": "1137725488",
+      "nombre": "Entre semana de 5:00pm-6:00pm",
+      "cedula": "Daniel RodríguezT",
       "rol": "Tutorado",
       "telefono": [
-        "3294344455",
-        "3284344455"
+        "Gimnasio de la montaña",
+        "3294344455"
       ],
       "correo": "camila.rodriguez@javeriana.edu.co",
-      "institucion": "Gimnasio de la montaña",
+      "institucion": "1137725488",
       "tareas": [
         {
           "nombre": "tarea8",
@@ -344,18 +456,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Camila HerreraT",
-      "cedula": "1070753987",
+      "nombre": "Entre Semana de 3:00pm - 4:00pm",
+      "cedula": "Camila HerreraT",
       "rol": "Tutorado",
       "telefono": [
-        "3262122233",
-        "3295455566"
+        "Colegio Especial",
+        "3262122233"
       ],
       "correo": "daniel.perez@gmail.com",
-      "institucion": "Colegio Especial",
+      "institucion": "1070753987",
       "tareas": [
         {
           "nombre": "tarea9",
@@ -366,18 +485,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Sebastián Torres",
-      "cedula": "1070653287",
+      "nombre": "Sábados en la tarde",
+      "cedula": "Sebastián Torres",
       "rol": "Tutorado",
       "telefono": [
-        "3249900112",
-        "3251011123"
+        "",
+        "3249900112"
       ],
       "correo": "javier.gomez@javeriana.edu.co",
-      "institucion": "",
+      "institucion": "1070653287",
       "tareas": [
         {
           "nombre": "tarea10",
@@ -388,18 +514,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Daniel García",
-      "cedula": "1044655071",
+      "nombre": "Entre semana de 2:00pm-3:00pm",
+      "cedula": "Daniel García",
       "rol": "Tutorado",
       "telefono": [
-        "3023365321",
+        "German vargas cantillo",
         "3023365321"
       ],
       "correo": "ilian18are@gmail.com",
-      "institucion": "German vargas cantillo",
+      "institucion": "1044655071",
       "tareas": [
         {
           "nombre": "tarea11",
@@ -410,20 +543,27 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     }
   ],
   "tutorado2": [
     {
-      "nombre": "Santiago AlbaT",
-      "cedula": "1010944104",
+      "nombre": "3.1",
+      "cedula": "Sábados en la mañana",
       "rol": "Tutorado",
       "telefono": [
-        "3045124420",
-        "3032568220"
+        "Santiago AlbaT",
+        "1010944104"
       ],
-      "correo": "CorreoEjemplo2@gmail.com",
-      "institucion": "Colegio Ejemplo1",
+      "correo": "Colegio Ejemplo1",
+      "institucion": "mañana",
       "tareas": [
         {
           "nombre": "tarea2",
@@ -434,18 +574,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Natalia LópezT",
-      "cedula": "1023456789",
+      "nombre": "4.2",
+      "cedula": "Entre semana de 6:00pm-8:00pm",
       "rol": "Tutorado",
       "telefono": [
-        "3101234567",
-        "3155551212"
+        "Natalia LópezT",
+        "1023456789"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Colegio Ejemplo1",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea3",
@@ -456,18 +603,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Diego VargasT",
-      "cedula": "1122334455",
+      "nombre": "2.4",
+      "cedula": "Entre semana de 3:00pm-4:00pm",
       "rol": "Tutorado",
       "telefono": [
-        "3112223344",
-        "3224445566"
+        "Diego VargasT",
+        "1122334455"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Colegio Ejemplo2",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea4",
@@ -478,18 +632,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Andrea MoralesT",
-      "cedula": "1234567890",
+      "nombre": "1.5",
+      "cedula": "Sábados en la mañana",
       "rol": "Tutorado",
       "telefono": [
-        "3007778899",
-        "3129991122"
+        "Andrea MoralesT",
+        "1234567890"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Colegio Victoria",
+      "institucion": "mañana",
       "tareas": [
         {
           "nombre": "tarea5",
@@ -500,18 +661,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Mateo CastilloT",
-      "cedula": "1098765432",
+      "nombre": "4",
+      "cedula": "Sábados en la tarde",
       "rol": "Tutorado",
       "telefono": [
-        "3173344556",
-        "3195566778"
+        "Mateo CastilloT",
+        "1098765432"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Colegio Ejemplo9",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea6",
@@ -522,18 +690,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Laura RíosT",
-      "cedula": "",
+      "nombre": "4.9",
+      "cedula": "Entre semana de 5:00pm-6:00pm",
       "rol": "Tutorado",
       "telefono": [
-        "3216677889",
-        "3184455667"
+        "Laura RíosT",
+        "1000939523"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Institucion camilo vargas",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea7",
@@ -544,18 +719,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "Carlos MendozaT",
-      "cedula": "",
+      "nombre": "4.2",
+      "cedula": "Entre semana de 3:00pm-4:00pm",
       "rol": "Tutorado",
       "telefono": [
-        "3237788990",
-        "3248899001"
+        "Carlos MendozaT",
+        "1928412412"
       ],
-      "correo": "",
-      "institucion": "",
+      "correo": "Gimnasio de la montaña",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea8",
@@ -566,18 +748,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "",
-      "cedula": "",
+      "nombre": "3.4",
+      "cedula": "Entre semana de 5:00pm-6:00pm",
       "rol": "Tutorado",
       "telefono": [
         "",
         ""
       ],
       "correo": "",
-      "institucion": "",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea9",
@@ -588,18 +777,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "",
-      "cedula": "",
+      "nombre": "0.2",
+      "cedula": "Entre semana de 3:00pm-4:00pm",
       "rol": "Tutorado",
       "telefono": [
         "",
         ""
       ],
       "correo": "",
-      "institucion": "",
+      "institucion": "Tarde",
       "tareas": [
         {
           "nombre": "tarea10",
@@ -610,18 +806,25 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     },
     {
-      "nombre": "",
-      "cedula": "",
+      "nombre": "0",
+      "cedula": "Entre semana por la mañana",
       "rol": "Tutorado",
       "telefono": [
         "",
         ""
       ],
       "correo": "",
-      "institucion": "",
+      "institucion": "mañana",
       "tareas": [
         {
           "nombre": "tarea11",
@@ -632,7 +835,14 @@
           "descripcion": "Tarea igual de importante que la otra :3!!!"
         }
       ],
-      "imagenes": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+      "imagenes": [
+        {
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+        },
+        {
+          "url": "C:\\Users\\Javier\\Diferente"
+        }
+      ]
     }
   ]
 }
