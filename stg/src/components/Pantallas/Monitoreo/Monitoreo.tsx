@@ -416,6 +416,11 @@ function Monitoreo() {
     setMostrarEmergente(true);
   };
 
+  const handleEnviarItem = async (index: number) => {
+    await invoke("monitoreo_enviar_tarea", {nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion});
+    
+  };
+
 
   return (
     <div className="monitoreo">
@@ -532,12 +537,17 @@ function Monitoreo() {
                     </button>
                   </>
                 ) : (
-                  <button
-                    style={{ marginLeft: '10px' }}
-                    onClick={() => handleDeleteItem(index)}
-                  >
-                    Eliminar
-                  </button>
+                  <><button
+                  onClick={() => handleEnviarItem(index)}>
+                      Enviar
+                    </button>
+                    <button
+                      style={{ marginLeft: '10px' }}
+                      onClick={() => handleDeleteItem(index)}
+                    >
+                        Eliminar
+                      </button></>
+                  
                 )}
               </div>
             );

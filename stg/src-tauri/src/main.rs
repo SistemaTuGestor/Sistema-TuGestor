@@ -8,8 +8,11 @@ mod monitoreo ;
 mod notificaciones ;
 mod reportes ;
 mod emparejamiento ;
+mod servicios ;
 
 ////  FUNCIONES DE MÓDULOS  ////
+// Servicios.
+use servicios::tarea::monitoreo_enviar_tarea ;
 // Monitoreo.
 use monitoreo::{izquierda::monitoreo_izquierda,derecha::monitoreo_derecha,persistencia::leer_excel_emparejamiento, persistencia::cargar_datos_json, persistencia::actualizar_json_monitoreo} ;
 // Notificaciones.
@@ -29,6 +32,7 @@ use emparejamiento::emparejamiento::filtrar_emparejamientos ;
 use emparejamiento::emparejamiento::emparejamiento_automatico ;
 use emparejamiento::emparejamiento::actualizar_campo_tutor;
 
+
 fn main ( ) {
 
 
@@ -36,6 +40,8 @@ fn main ( ) {
 
         .invoke_handler ( tauri::generate_handler! [
             
+            /* SERVICIOS */
+            monitoreo_enviar_tarea ,
 
             /* MONITOREO */
             monitoreo_izquierda ,
