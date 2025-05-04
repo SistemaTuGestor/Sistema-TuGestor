@@ -263,7 +263,7 @@ useEffect(() => {
   };
 
   // Verificar si un tutor ya ha alcanzado su máximo de tutorados
-  const checkMaxTutoradosLimit = (rowIndex: number, colIndex: number) => {
+  const checkMaxTutoradosLimit = (rowIndex: number) => {
     const targetRow = filtered[Math.floor(rowIndex / 2)];
     
     // Si no hay datos o el tutor está vacío, no hay restricción
@@ -304,7 +304,7 @@ useEffect(() => {
     const cellId = `${row}-${col}`;
     
     // Verificar si el destino excedería el límite de tutorados
-    if (checkMaxTutoradosLimit(idx, col)) {
+    if (checkMaxTutoradosLimit(idx)) {
       setHighlightedId(null);
       setInvalidDropId(cellId); // Marcar como inválido
     } else {
@@ -328,7 +328,7 @@ const handleDragEnd = (result: DropResult) => {
   const dstCol = destination.index % 2 === 0 ? "tutorado1" : "tutorado2";
   
   // Verificar si el destino excedería el límite de max_tutorados
-  if (checkMaxTutoradosLimit(destination.index, destination.index % 2)) {
+  if (checkMaxTutoradosLimit(destination.index)) {
     console.warn("No se puede soltar aquí: el tutor ya alcanzó su límite de tutorados");
     return; // Cancelar la operación de drag and drop
   }

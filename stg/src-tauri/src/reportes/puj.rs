@@ -14,6 +14,12 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 
+use std::fs;
+use docx_rs::*;
+use std::io::BufWriter;
+use printpdf::*;
+use std::path::PathBuf;
+
 
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
@@ -248,3 +254,60 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
 Ok(())
 }
 
+
+#[tauri::command]
+pub fn convertir_puj_pdf(urldocs: String) -> Result<(), String> {
+    let path = Path::new(&urldocs);
+    let dir_path = if path.is_file() {
+        path.parent()
+            .ok_or_else(|| format!("No se pudo obtener el directorio padre de: {}", urldocs))?
+    } else {
+        path
+    };
+    
+    if !dir_path.exists() {
+        return Err(format!("El directorio {} no existe", dir_path.display()));
+    }
+
+    println!("🔍 Buscando archivos DOCX en: {}", dir_path.display());
+
+    let entries = fs::read_dir(dir_path)
+        .map_err(|e| format!("Error al leer el directorio: {}", e))?;
+
+    let mut converted_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("Error al leer entrada: {}", e))?;
+        let path = entry.path();
+        
+        if path.to_string_lossy().contains("PUJ") && path.extension().and_then(|s| s.to_str()) == Some("docx") {
+            let pdf_name = path.with_extension("pdf");
+            
+            println!("📄 Convirtiendo: {} -> {}", path.display(), pdf_name.display());
+
+            let (doc, page1, layer1) = PdfDocument::new(
+                "Reporte PUJ", 
+                Mm(210.0),
+                Mm(297.0),
+                "Layer 1"
+            );
+
+            let file = File::create(&pdf_name)
+                .map_err(|e| format!("Error al crear PDF {}: {}", pdf_name.display(), e))?;
+            let mut writer = BufWriter::new(file);
+
+            doc.save(&mut writer)
+                .map_err(|e| format!("Error al guardar PDF {}: {}", pdf_name.display(), e))?;
+
+            println!("✅ Convertido exitosamente: {}", pdf_name.display());
+            converted_count += 1;
+        }
+    }
+
+    if converted_count == 0 {
+        return Err("No se encontraron archivos DOCX de PUJ para convertir".to_string());
+    }
+
+    println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
+    Ok(())
+}
