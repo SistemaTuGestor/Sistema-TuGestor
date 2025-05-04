@@ -379,3 +379,114 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
 Ok(())
 }
 
+
+
+// TESTING
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+    use std::path::PathBuf;
+    use std::fs;
+
+    // Función helper para obtener rutas de prueba
+    fn get_test_data_path(filename: &str) -> PathBuf {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("../../recursos/test_data");
+        path.push(filename);
+        path
+    }
+
+    #[test]
+    fn test_actualizar_fecha() {
+        let result = reportes_lee_actualizarfecha(Some("2023-05-15".to_string()));
+        assert!(result.is_ok());
+        
+        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
+        assert_eq!(*fecha_guardada, "15-05-2023");
+    }
+
+    #[test]
+    fn test_recibir_paths() {
+        assert!(reportes_lee_recibir_emparejamiento("test_emparejamiento.xlsx".to_string()).is_ok());
+        assert!(reportes_lee_recibir_pathcarpeta("test_carpeta".to_string()).is_ok());
+        assert!(reportes_lee_recibir_nombrereporte("Test Report".to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "Requiere archivo de emparejamiento"]
+    fn test_leer_archivo_emparejamiento() {
+        let test_file = get_test_data_path("emparejamiento_final.xlsx");
+        assert!(test_file.exists(), "Archivo de emparejamiento no encontrado: {:?}", test_file);
+        
+        reportes_lee_recibir_emparejamiento(test_file.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_EMPAREJAMIENTO");
+        
+        let result = reportes_lee_leer_archivo_emparejamiento();
+        assert!(result.is_ok(), "Error: {:?}", result.err());
+        
+        let emparejamientos = result.unwrap();
+        assert!(!emparejamientos.is_empty(), "El archivo debería contener emparejamientos");
+    }
+
+    #[test]
+    #[ignore = "Requiere carpeta con archivos de monitoreo"]
+    fn test_leer_archivos_en_carpeta() {
+        // Configurar paths de prueba
+        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
+        let carpeta_path = get_test_data_path("test_carpeta");
+        
+        assert!(emparejamiento_path.exists(), "Archivo de emparejamiento no encontrado");
+        assert!(carpeta_path.exists(), "Carpeta de monitoreo no encontrada");
+        
+        reportes_lee_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_EMPAREJAMIENTO");
+            
+        reportes_lee_recibir_pathcarpeta(carpeta_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_CARPETA");
+        
+        let result = reportes_lee_leer_archivos_en_carpeta();
+        assert!(result.is_ok(), "Error: {:?}", result.err());
+        
+        let datos = result.unwrap();
+        assert!(!datos.is_empty(), "Debería haber datos procesados");
+    }
+
+    #[test]
+    #[ignore = "Requiere archivos de prueba completos"]
+    fn test_generar_excel() {
+        // Configuración inicial
+        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
+        let carpeta_path = get_test_data_path("test_carpeta");
+        
+        reportes_lee_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_EMPAREJAMIENTO");
+            
+        reportes_lee_recibir_pathcarpeta(carpeta_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_CARPETA");
+            
+        reportes_lee_recibir_nombrereporte("Test Report".to_string())
+            .expect("Error al configurar NOMBRE_REPORTE");
+            
+        reportes_lee_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+        
+        // Obtener datos de prueba
+        let datos = reportes_lee_leer_archivos_en_carpeta()
+            .expect("Error al obtener datos de prueba");
+        
+        // Ejecutar prueba
+        let result = generar_excel(&datos);
+        assert!(result.is_ok(), "Error al generar Excel: {:?}", result.err());
+        
+        // Verificar archivo generado
+        let output_file = Path::new("Test Report (01-01-2023).xlsx");
+        assert!(output_file.exists(), "No se generó el archivo Excel");
+        
+        // Limpieza
+        fs::remove_file(output_file).ok();
+    }
+
+}
+
