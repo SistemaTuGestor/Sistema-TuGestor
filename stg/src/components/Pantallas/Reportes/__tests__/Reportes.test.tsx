@@ -2,23 +2,29 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Reportes from '../Reportes';
-import { jest } from '@jest/globals';
-import { invoke } from '@tauri-apps/api/tauri';
-import { open } from '@tauri-apps/api/dialog';
 
 
-// Mock Tauri APIs antes de importar 'invoke' y 'open'
+// Mock Tauri APIs
 jest.mock('@tauri-apps/api/tauri', () => ({
-  invoke: jest.fn(),
+  __esModule: true,
+  invoke: jest.fn((cmd) => {
+    if (cmd === 'obtener_fecha') {
+      return Promise.resolve({ fecha: '2023-01-01' });
+    }
+    return Promise.resolve({});
+  })
 }));
+
 jest.mock('@tauri-apps/api/dialog', () => ({
+  __esModule: true,
   open: jest.fn(),
+  save: jest.fn()
 }));
 
+import { invoke, dialog } from '@tauri-apps/api';
 
-// Casts seguros de los mocks
-const mockedInvoke = invoke as jest.Mock;
-const mockedOpen = open as jest.Mock;
+const mockedInvoke = invoke as jest.MockedFunction<typeof invoke>;
+const mockedOpen = dialog.open as jest.MockedFunction<typeof dialog.open>;
 
 // Mock window.alert
 const mockedAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
@@ -27,7 +33,7 @@ describe('Reportes Component', () => {
   
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedInvoke.mockImplementation((cmd) => {
+    mockedInvoke.mockImplementation((cmd: any) => {
       if (cmd === 'obtener_fecha') {
         return Promise.resolve({ fecha: '2023-01-01' });
       }
