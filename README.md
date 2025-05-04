@@ -1,3 +1,4 @@
+
 # Sistema-TuGestor
 Repositorio para implementación, testeo y despliegue del Sistema TuGestor (STG): software de coordinación para la Iniciativa Proyecto TuTutor de la Pontificia Universidad Javeriana sede Bogotá D.C.
 
@@ -24,8 +25,24 @@ cd stg
 npm run tauri dev
 ```
 
+## Testeo
+```cd src-tauri```
+### Pruebas básicas
+```cargo test```
+### Pruebas específicas
+```cargo test <archivo RS sin extensión>```
+### Todas las pruebas
+```cargo test -- --include-ignored```
+
 ## Construcción
-### Windows
+### Windows a Windows
+```
+rustup target add x86_64-pc-windows-gnu
+cd src-tauri/
+cargo build --release --target x86_64-pc-windows-gnu
+npm run tauri build
+```
+### Linux a Windows
 ```
 rustup target add x86_64-pc-windows-gnu
 sudo apt install mingw-w64
@@ -33,7 +50,7 @@ cd src-tauri/
 cargo build --release --target x86_64-pc-windows-gnu
 npm run tauri build
 ```
-### Linux
+### Linux a Linux
 ```
 rustup target add x86_64-unknown-linux-gnu
 cd src-tauri/
