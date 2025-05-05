@@ -21,6 +21,7 @@ use docx_rs::*;
 use std::io::BufWriter;
 use printpdf::*;
 
+use std::process::Command;
 
 
 
@@ -279,25 +280,34 @@ pub fn convertir_tutores_pdf(urldocs: String) -> Result<(), String> {
         let path = entry.path();
         
         if path.to_string_lossy().contains("Tutor") && path.extension().and_then(|s| s.to_str()) == Some("docx") {
-            let pdf_name = path.with_extension("pdf");
+            let docx_path = path.to_string_lossy().to_string();
+            let pdf_path = path.with_extension("pdf").to_string_lossy().to_string();
             
-            println!("📄 Convirtiendo: {} -> {}", path.display(), pdf_name.display());
+            println!("📄 Convirtiendo: {} -> {}", docx_path, pdf_path);
 
-            let (doc, page1, layer1) = PdfDocument::new(
-                "Constancia Tutor", 
-                Mm(210.0),
-                Mm(297.0),
-                "Layer 1"
-            );
+            let ps_script = format!(r#"
+                $word = New-Object -ComObject Word.Application
+                $word.Visible = $false
+                $doc = $word.Documents.Open("{}")
+                $doc.SaveAs([ref] "{}", [ref] 17)
+                $doc.Close()
+                $word.Quit()
+                [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+            "#, docx_path.replace("\\", "\\\\"), pdf_path.replace("\\", "\\\\"));
 
-            let file = File::create(&pdf_name)
-                .map_err(|e| format!("Error al crear PDF {}: {}", pdf_name.display(), e))?;
-            let mut writer = BufWriter::new(file);
+            let output = Command::new("powershell")
+                .args(["-Command", &ps_script])
+                .output()
+                .map_err(|e| format!("Error al ejecutar PowerShell: {}", e))?;
 
-            doc.save(&mut writer)
-                .map_err(|e| format!("Error al guardar PDF {}: {}", pdf_name.display(), e))?;
+            if !output.status.success() {
+                return Err(format!(
+                    "Error al convertir archivo: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                ));
+            }
 
-            println!("✅ Convertido exitosamente: {}", pdf_name.display());
+            println!("✅ Convertido exitosamente: {}", pdf_path);
             converted_count += 1;
         }
     }
