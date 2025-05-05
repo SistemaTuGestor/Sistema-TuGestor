@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import * as XLSX from "xlsx";
 import { save } from "@tauri-apps/api/dialog";
+import { open } from '@tauri-apps/api/dialog';
 import { writeBinaryFile } from "@tauri-apps/api/fs";
 import {
   DragDropContext,
@@ -123,6 +124,22 @@ useEffect(() => {
 }, []);
 
 
+  // Función para seleccionar archivo Excel
+  const seleccionarArchivo = async () => {
+    const selected = await open({
+      filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+      multiple: false,
+    });
+  
+    if (typeof selected === 'string') {
+      console.log("📂 Archivo seleccionado:", selected);
+      const datos = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento", { ruta: selected });
+      if (datos) {
+        setAllData(datos);
+      }
+    }
+  };
+
   // Filtrar y ordenar usando backend
   useEffect(() => {
     async function applyFilter() {
@@ -130,9 +147,9 @@ useEffect(() => {
         emparejamientos:               allData,
         searchtutor:                   searchTutor,
         searchtutorado:                searchTutorado,
-        searchtutoradoId:              searchTutoradoId, // Corregido: cambiar searchtutorado_id a searchtutoradoId
-        searchdisponibilidadTutor:     searchDisponibilidadTutor, // Corregido: cambiar searchdisponibilidad_tutor a searchdisponibilidadTutor
-        searchdisponibilidadTutorado:  searchDisponibilidadTutorado, // Corregido: cambiar searchdisponibilidad_tutorado a searchdisponibilidadTutorado
+        searchtutoradoId:              searchTutoradoId,
+        searchdisponibilidadTutor:     searchDisponibilidadTutor,
+        searchdisponibilidadTutorado:  searchDisponibilidadTutorado,
         sortColumn:                   sortColumn,
         sortDirection:                sortDirection,
       };
@@ -541,12 +558,18 @@ const handleDragEnd = (result: DropResult) => {
       <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "15px" }}>
         <button onClick={emparejamientoAutomatico} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Emparejamiento Automático</button>
         <button onClick={exportarAExcel} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Exportar a Excel</button>
-        <button onClick={() => {
-  localStorage.removeItem("emparejamientoData");
-  window.location.reload();
-}}>
-  Reiniciar Tabla
-</button>
+        <button onClick={() => {localStorage.removeItem("emparejamientoData");
+        window.location.reload();
+        }}>Reiniciar Tabla</button>
+        <button
+          onClick={seleccionarArchivo}
+          style={{ flex: "1 1 160px", padding: "10px", fontSize: "16px" }}
+        >
+          Seleccionar archivo Excel
+        </button>
+
+
+
       </div>
       <div className="search-bar" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", maxWidth: "900px", margin: "0 auto 20px" }}>
         <input type="text" placeholder="Buscar Tutor" value={searchTutor} onChange={(e) => setSearchTutor(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />
