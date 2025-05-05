@@ -577,33 +577,56 @@ function Reportes() {
   };
 
   const evento_clickEnviar = async (seccioon: string) => {
-    const directorioBase = "C:\\Users\\Javier\\Desktop\\Reportes";
-    
     try {
       if (seccioon === "LEE") {
         alert(`¡Envío exitoso del módulo ${seccioon}!`);
       }
       else if (seccioon === "PUJ") {
+        const dirPath = directorioReportePUJ;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de PUJ");
+          return;
+        }
+        // Obtener solo el directorio base
+        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
         await invoke("convertir_puj_pdf", {
-          urldocs: directorioBase
+          urldocs: baseDir
         });
         alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
       }
       else if (seccioon === "Colegios") {
+        const dirPath = directorioReporteColegios;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Colegios");
+          return;
+        }
+        // Obtener solo el directorio base
+        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
         await invoke("convertir_colegios_pdf", {
-          urldocs: directorioBase
+          urldocs: baseDir
         });
         alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
       }
+      
       else if (seccioon === "Tutores") {
+        const dirPath = directorioReporteConstanciasTutores;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Tutores");
+          return;
+        }
         await invoke("convertir_tutores_pdf", {
-          urldocs: directorioBase
+          urldocs: dirPath
         });
         alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
       }
       else if (seccioon === "Tutorados") {
+        const dirPath = directorioReporteConstanciasTutorados;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Tutorados");
+          return;
+        }
         await invoke("convertir_tutorados_pdf", {
-          urldocs: directorioBase
+          urldocs: dirPath
         });
         alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
       }
@@ -614,7 +637,7 @@ function Reportes() {
       console.error(`Error al convertir reportes de ${seccioon} a PDF:`, error);
       alert(`Error al convertir reportes de ${seccioon} a PDF: ${error}`);
     }
-  
+
     setEmergenteVisible(false);
   };
 
