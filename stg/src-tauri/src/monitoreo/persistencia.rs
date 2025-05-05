@@ -3,6 +3,8 @@ use serde::Serialize ;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use std::env;
+use std::path::PathBuf;
 
 #[derive(Serialize, Debug, Clone)]
 pub struct Tarea {
@@ -26,6 +28,25 @@ impl std::fmt::Display for Tarea {
 }
 
 #[derive(Serialize, Debug, Clone)]
+pub struct Imagen {
+    url: String,
+}
+
+impl Imagen {
+    pub fn new(url: &str) -> Self {
+        Imagen {
+            url: url.to_string(),
+        }
+    }
+}
+
+impl std::fmt::Display for Imagen {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.url)
+    }
+}
+
+#[derive(Serialize, Debug, Clone)]
 pub struct Tutor {
     nombre: String,
     apellido: String,
@@ -34,7 +55,7 @@ pub struct Tutor {
     correo: String,
     institucion: String, 
     tareas: Vec<Tarea>,
-    imagenes: String,
+    imagenes: Vec<Imagen>,
 
 }
 
@@ -47,7 +68,7 @@ pub struct Tutorado {
     correo: String,
     institucion: String, 
     tareas: Vec<Tarea>,
-    imagenes: String,
+    imagenes: Vec<Imagen>,
 
 }
 
@@ -58,26 +79,38 @@ struct MonitoreoData {
     tutorado2: Vec<Tutorado>,
 }
 
+//Conseguir ruta auxiliar para los archivos de recursos
+fn get_resource_path() -> PathBuf {
+    let current_exe = env::current_exe().expect("Failed to get current executable path");
+    let mut path = current_exe.parent().unwrap().to_path_buf();
+    
+    // Navegar hacia arriba hasta encontrar la carpeta "Sistema-TuGestor"
+    while !path.ends_with("Sistema-TuGestor") && path.parent().is_some() {
+        path = path.parent().unwrap().to_path_buf();
+    }
+    
+    // Añadir la carpeta recursos
+    path.push("recursos");
+    path
+}
+
 #[tauri::command]
 pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tutorado>), String>{
 
-    let json_path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
-    
-    if Path::new(json_path).exists() {
+    let base_path = get_resource_path();
+
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
+    let excel_path = base_path.join("EmparejamientoFINAL.xlsx");
+
+    if json_path.exists() {
         println!("El archivo JSON ya existe, no es necesario regenerarlo.");
-        return Err("Ya existe el archivo JSON".to_string()); // O simplemente retorna Ok con datos vacíos si prefieres
+        return Err("Ya existe el archivo JSON".to_string());
     }
 
-    let ubicacion = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Emparejamiento.xlsx";
-    let mut workbook: Xlsx<_> = match open_workbook(ubicacion) {
-        Ok(wb) => {
-           // println!("Archivo abierto correctamente.");
-            wb
-        }
-        Err(e) => {
-           // println!("Error al abrir el archivo: {}", e);
-            return Err(format!("Error al abrir el archivo: {}", e));
-        }   
+    //let ubicacion = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
+    let mut workbook: Xlsx<_> = match open_workbook(&excel_path) {
+        Ok(wb) => wb,
+        Err(e) => return Err(format!("Error al abrir el archivo: {}", e))
     };
 
     let range = match workbook.worksheet_range("Emparejamiento") {
@@ -126,9 +159,21 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             descripcion: "Tarea igual de importante que la otra :3!!!".to_string(), 
         };
 
+        let mut imagen = Imagen{
+            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string(),
+        };
+
+        let mut imagen2 = Imagen{
+            url: "C:\\Users\\Javier\\Diferente".to_string(),
+        };
+
         let mut lista_tareas = Vec::new();
         lista_tareas.push(tarea);
         lista_tareas.push(tarea2);
+        
+        let mut lista_imagenes = Vec::new();
+        lista_imagenes.push(imagen);
+        lista_imagenes.push(imagen2);
 
         let mut lista_tutoradoNumeros = Vec::new();
         lista_tutoradoNumeros.push(telefonotut1);
@@ -138,8 +183,6 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         lista_tutoradoNumeros2.push(telefonotut2);
         lista_tutoradoNumeros2.push(telefono2tut2);
 
-        let imagen: String = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string();
-
         let mut tutor = Tutor{
             nombre: nombretutor.clone(),
             apellido: apellidotutor.clone(),
@@ -148,7 +191,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             telefono: telefono.clone(),
             institucion: institucion.clone(),
             tareas: lista_tareas.clone(),
-            imagenes: imagen.clone(),
+            imagenes: lista_imagenes.clone(),
         };
 
         let mut tutorado1 = Tutorado{
@@ -159,7 +202,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             telefono: lista_tutoradoNumeros,
             correo: correo.clone(),
             tareas: lista_tareas.clone(),
-            imagenes: imagen.clone(),
+            imagenes: lista_imagenes.clone(),
         };
 
         let mut tutorado2 = Tutorado{
@@ -170,7 +213,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             telefono: lista_tutoradoNumeros2,
             correo: correotut2.clone(),
             tareas: lista_tareas.clone(),
-            imagenes: imagen.clone(),
+            imagenes: lista_imagenes.clone(),
         };
 
         tutores.push(tutor);
@@ -187,7 +230,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         println!("  Teléfono: {}", tutores.telefono);
         println!("  Institución: {}", tutores.institucion);
         println!("  Tareas: {}", tutores.tareas.iter().map(|t| t.to_string()).collect::<Vec<_>>().join(", "));
-        println!("  imagen: {}", tutores.imagenes);
+        println!("  imagen: {}", tutores.imagenes.iter().map(|i| i.url.clone()).collect::<Vec<_>>().join(", "));
         println!("-----------------------------------");
     }
 
@@ -200,7 +243,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         println!("  Teléfonos: {}", tutorados1.telefono.join(", "));
         println!("  Correo: {}", tutorados1.correo);
         println!("  Tareas: {}", tutorados1.tareas.iter().map(|t| t.to_string()).collect::<Vec<_>>().join(", "));
-        println!("  imagen: {}", tutorados1.imagenes);
+        println!("  imagen: {}", tutorados1.imagenes.iter().map(|i| i.url.clone()).collect::<Vec<_>>().join(", "));
         println!("-----------------------------------");
     }
 
@@ -213,7 +256,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         println!("  Teléfonos: {}", tutorados2.telefono.join(", "));
         println!("  Correo: {}", tutorados2.correo);
         println!("  Tareas: {}", tutorados2.tareas.iter().map(|t| t.to_string()).collect::<Vec<_>>().join(", "));
-        println!("  imagen: {}", tutorados2.imagenes);
+        println!("  imagen: {}", tutorados2.imagenes.iter().map(|i| i.url.clone()).collect::<Vec<_>>().join(", "));
         println!("-----------------------------------");
     }
 
@@ -234,6 +277,9 @@ fn guardar_monitoreo_json(
     tutorado1: Vec<Tutorado>,
     tutorado2: Vec<Tutorado>,
 ) -> Result<(), String> {
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
+
     let data = MonitoreoData {
         tutores,
         tutorado1,
@@ -245,9 +291,14 @@ fn guardar_monitoreo_json(
         Err(e) => return Err(format!("Error serializando JSON: {}", e)),
     };
 
-    let path = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
+    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    if let Some(parent) = json_path.parent() {
+        if let Err(e) = std::fs::create_dir_all(parent) {
+            return Err(format!("Error creando directorios: {}", e));
+        }
+    }
 
-    match File::create(path) {
+    match File::create(json_path) {
         Ok(mut file) => {
             if let Err(e) = file.write_all(json_string.as_bytes()) {
                 return Err(format!("Error escribiendo el archivo JSON: {}", e));
@@ -262,20 +313,24 @@ fn guardar_monitoreo_json(
 
 #[tauri::command]
 pub fn cargar_datos_json() -> Result<String, String> {
-    let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
+    //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
-    std::fs::read_to_string(ruta).map_err(|e| format!("No se pudo leer el JSON: {}", e))
+    std::fs::read_to_string(json_path).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
 #[tauri::command] //Función para eliminación
 pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
-    let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
-    
+    //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
+
     // Validar que el JSON sea válido antes de escribirlo
     match serde_json::from_str::<serde_json::Value>(&json_data) {
         Ok(_) => {
             // El JSON es válido, proceder a escribirlo
-            std::fs::write(ruta, json_data)
+            std::fs::write(&json_path, json_data)
                 .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
             
             Ok("JSON actualizado correctamente".to_string())
@@ -288,13 +343,15 @@ pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
 
 #[tauri::command]
 pub fn guardar_datos_json(datos: String) -> Result<String, String> {
-    let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\Qualtrics\\monitoreo\\monitoreo.json";
-    
+    //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
+
     // Verificar que los datos sean un JSON válido antes de escribir
     match serde_json::from_str::<serde_json::Value>(&datos) {
         Ok(_) => {
             // JSON válido, proceder a escribir
-            match std::fs::write(ruta, datos) {
+            match std::fs::write(&json_path, datos) {
                 Ok(_) => Ok("Datos guardados correctamente".to_string()),
                 Err(e) => Err(format!("Error al escribir el archivo JSON: {}", e))
             }
@@ -302,6 +359,15 @@ pub fn guardar_datos_json(datos: String) -> Result<String, String> {
         Err(e) => Err(format!("JSON inválido: {}", e))
     }
 }
+
+#[tauri::command]
+pub fn get_image(path: String) -> Result<Vec<u8>, String> {
+    match std::fs::read(&path) {
+        Ok(data) => Ok(data),
+        Err(e) => Err(format!("Error al leer la imagen: {}", e)),
+    }
+}
+
 
 
 

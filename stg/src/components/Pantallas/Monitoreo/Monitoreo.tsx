@@ -2,7 +2,7 @@ import "./Monitoreo.css";
 
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-
+import EmergenteMonitoreo from "./EmergenteMonitoreo/EmergenteMonitoreo";
 
 
 interface DatosMonitoreoIzq {
@@ -30,6 +30,8 @@ function Monitoreo() {
   const [datosOriginales, setDatosOriginales] = useState<any[]>([]); //Guarda datos originales de las tareas de todos los usuarios 
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
   const [textoEditado, setTextoEditado] = useState<string>("");
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<any>(null);
+  const [mostrarEmergente, setMostrarEmergente] = useState(false);
 
 
   useEffect(() => {
@@ -86,17 +88,27 @@ function Monitoreo() {
     const persona = datosOriginales.find(p => p.correo === row.email);
     if (!persona) return;
 
+    setUsuarioSeleccionado(persona);
+
     const nuevasEntradas: DatosMonitoreoDer[] = [];
 
+    // Agregar tareas (como antes)
     persona.tareas.forEach((tarea: any) => {
       nuevasEntradas.push({
         registro: `${tarea.nombre}: ${tarea.descripcion}`
       });
     });
 
-    nuevasEntradas.push({
-      registro: `Imagen: ${persona.imagenes}`
-    });
+    // Agregar imágenes (una por cada entrada en el array)
+    if (persona.imagenes && Array.isArray(persona.imagenes)) {
+      persona.imagenes.forEach((imagen: any) => {
+        if (imagen.url) { // Solo agregar si tiene URL
+          nuevasEntradas.push({
+            registro: `Imagen: ${imagen.url}`
+          });
+        }
+      });
+    }
 
     setDatosDer(nuevasEntradas);
   };
@@ -316,9 +328,101 @@ function Monitoreo() {
     }
   };
 
+  const handleGuardarNuevoRegistro = async (tipo: 'tarea' | 'imagen', datos: any) => {
+    if (!usuarioSeleccionado) return;
+
+    try {
+      const jsonResponse = await invoke("cargar_datos_json");
+      const jsonData = JSON.parse(jsonResponse as string);
+
+      let userType = "";
+      let userIndex = -1;
+
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+      if (userIndex !== -1) userType = "tutores";
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        if (userIndex !== -1) userType = "tutorado1";
+      }
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        if (userIndex !== -1) userType = "tutorado2";
+      }
+
+      if (userType === "" || userIndex === -1) {
+        console.error("No se pudo encontrar al usuario en el JSON");
+        return;
+      }
+
+      if (tipo === 'tarea') {
+        if (!jsonData[userType][userIndex].tareas) {
+          jsonData[userType][userIndex].tareas = [];
+        }
+        jsonData[userType][userIndex].tareas.push(datos);
+      } else {
+        if (!jsonData[userType][userIndex].imagenes) {
+          jsonData[userType][userIndex].imagenes = [];
+        }
+        jsonData[userType][userIndex].imagenes.push(datos);
+      }
+
+      await invoke("actualizar_json_monitoreo", {
+        jsonData: JSON.stringify(jsonData)
+      });
+
+      // Actualizar la UI
+      const personas = [
+        ...jsonData.tutores,
+        ...jsonData.tutorado1,
+        ...jsonData.tutorado2,
+      ];
+      setDatosOriginales(personas);
+
+      // Actualizar la vista derecha
+      const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
+      if (personaActualizada) {
+        const nuevasEntradas: DatosMonitoreoDer[] = [];
+
+        personaActualizada.tareas.forEach((tarea: any) => {
+          nuevasEntradas.push({
+            registro: `${tarea.nombre}: ${tarea.descripcion}`
+          });
+        });
+
+        if (personaActualizada.imagenes && Array.isArray(personaActualizada.imagenes)) {
+          personaActualizada.imagenes.forEach((imagen: any) => {
+            if (imagen.url) {
+              nuevasEntradas.push({
+                registro: `Imagen: ${imagen.url}`
+              });
+            }
+          });
+        }
+
+        setDatosDer(nuevasEntradas);
+      }
+    } catch (error) {
+      console.error("Error al guardar el nuevo registro:", error);
+    }
+  };
+
+  const abrirEmergente = () => {
+    if (!usuarioSeleccionado) {
+      alert("Por favor selecciona un usuario primero");
+      return;
+    }
+    setMostrarEmergente(true);
+  };
+
+  const handleEnviarItem = async (index: number) => {
+    await invoke("monitoreo_enviar_tarea", {nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion});
+    
+  };
+
 
   return (
-
     <div className="monitoreo">
       <div className="contenedor_PanelIzquierdo">
         <div className="opciones-izquierda">
@@ -371,6 +475,7 @@ function Monitoreo() {
           ))}
         </div>
       </div>
+
       <div className="contenedor_PanelDerecho">
         <div className="desplazadora">
           {datosDer.slice(0).reverse().map((row, index) => {
@@ -397,7 +502,6 @@ function Monitoreo() {
                 </div>
 
                 {isEditing ? (
-                  // Modo de edición
                   <input
                     type="text"
                     value={textoEditado}
@@ -405,7 +509,6 @@ function Monitoreo() {
                     style={{ flexGrow: 1, margin: '0 10px', padding: '5px' }}
                   />
                 ) : (
-                  // Modo de visualización
                   <p
                     style={{
                       flexGrow: 1,
@@ -419,7 +522,6 @@ function Monitoreo() {
                 )}
 
                 {isEditing ? (
-                  // Botones para el modo de edición
                   <>
                     <button
                       style={{ marginLeft: '5px' }}
@@ -435,31 +537,40 @@ function Monitoreo() {
                     </button>
                   </>
                 ) : (
-                  // Botón de eliminar en modo normal
-                  <button
-                    style={{ marginLeft: '10px' }}
-                    onClick={() => handleDeleteItem(index)}
-                  >
-                    Eliminar
-                  </button>
+                  <><button
+                  onClick={() => handleEnviarItem(index)}>
+                      Enviar
+                    </button>
+                    <button
+                      style={{ marginLeft: '10px' }}
+                      onClick={() => handleDeleteItem(index)}
+                    >
+                        Eliminar
+                      </button></>
+                  
                 )}
               </div>
             );
           })}
         </div>
 
-
         <div className="nuevo-registro">
-          <button>
+          <button onClick={abrirEmergente}>
             +
           </button>
         </div>
       </div>
+
+      {/* Ventana emergente tipo popup */}
+      {mostrarEmergente && (
+        <EmergenteMonitoreo
+          mensaje={`Agregar nuevo registro a ${usuarioSeleccionado?.nombre || 'usuario seleccionado'}`}
+          cancelar={() => setMostrarEmergente(false)}
+          onGuardar={handleGuardarNuevoRegistro}
+        />
+      )}
     </div>
-
   );
-
 }
-
 
 export default Monitoreo;

@@ -6,12 +6,18 @@ use chrono::NaiveDate ;
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
+use std::fs::File;
 use std::fs::{self} ;
 use std::path::{Path,PathBuf} ;
 use std::io::{Read, Write} ;
 use calamine::{open_workbook, Reader, Xlsx} ;
 use zip::{ZipArchive, write::FileOptions} ;
 
+use docx_rs::*;
+use std::io::BufWriter;
+use printpdf::*;
+
+use std::process::Command;
 
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -229,4 +235,70 @@ fn crear_constancia ( nombre:&str , salida_path:&str ) -> Result<(),String> {
         .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
 Ok(())
+}
+
+#[tauri::command]
+pub fn convertir_tutorados_pdf(urldocs: String) -> Result<(), String> {
+    let path = Path::new(&urldocs);
+    let dir_path = if path.is_file() {
+        path.parent()
+            .ok_or_else(|| format!("No se pudo obtener el directorio padre de: {}", urldocs))?
+    } else {
+        path
+    };
+    
+    if !dir_path.exists() {
+        return Err(format!("El directorio {} no existe", dir_path.display()));
+    }
+
+    println!("🔍 Buscando archivos DOCX en: {}", dir_path.display());
+
+    let entries = fs::read_dir(dir_path)
+        .map_err(|e| format!("Error al leer el directorio: {}", e))?;
+
+    let mut converted_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("Error al leer entrada: {}", e))?;
+        let path = entry.path();
+        
+        if path.to_string_lossy().contains("Tutorado") && path.extension().and_then(|s| s.to_str()) == Some("docx") {
+            let docx_path = path.to_string_lossy().to_string();
+            let pdf_path = path.with_extension("pdf").to_string_lossy().to_string();
+            
+            println!("📄 Convirtiendo: {} -> {}", docx_path, pdf_path);
+
+            let ps_script = format!(r#"
+                $word = New-Object -ComObject Word.Application
+                $word.Visible = $false
+                $doc = $word.Documents.Open("{}")
+                $doc.SaveAs([ref] "{}", [ref] 17)
+                $doc.Close()
+                $word.Quit()
+                [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+            "#, docx_path.replace("\\", "\\\\"), pdf_path.replace("\\", "\\\\"));
+
+            let output = Command::new("powershell")
+                .args(["-Command", &ps_script])
+                .output()
+                .map_err(|e| format!("Error al ejecutar PowerShell: {}", e))?;
+
+            if !output.status.success() {
+                return Err(format!(
+                    "Error al convertir archivo: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                ));
+            }
+
+            println!("✅ Convertido exitosamente: {}", pdf_path);
+            converted_count += 1;
+        }
+    }
+
+    if converted_count == 0 {
+        return Err("No se encontraron archivos DOCX de constancias de tutorados para convertir".to_string());
+    }
+
+    println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
+    Ok(())
 }

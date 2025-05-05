@@ -1,0 +1,16 @@
+[
+  {
+    "destinatarios": [
+      "TutoresPUJ"
+    ],
+    "asunto": "Javier",
+    "mensaje": " <<nombre TutoresPUJ>> "
+  },
+  {
+    "destinatarios": [
+      "TutoresColegio"
+    ],
+    "asunto": "Pau ",
+    "mensaje": " <<horas TutoresColegio>> "
+  }
+]
