@@ -4,13 +4,45 @@
       "TutoresPUJ"
     ],
     "asunto": "Javier",
-    "mensaje": " <<nombre TutoresPUJ>> "
+    "mensaje": " <<nombre TutoresPUJ>> ",
+    "estado": true
   },
   {
     "destinatarios": [
-      "TutoresColegio"
+      "TutoresPUJ"
     ],
-    "asunto": "Pau ",
-    "mensaje": " <<horas TutoresColegio>> "
+    "asunto": "nuevo actualizado",
+    "mensaje": "sdadasf <<apellido TutoresPUJ>> actualizado",
+    "estado": true
+  },
+  {
+    "destinatarios": [
+      "TutoresPUJ"
+    ],
+    "asunto": "jola",
+    "mensaje": " <<apellido TutoresPUJ>> ",
+    "estado": true
+  },
+  {
+    "destinatarios": [
+      "TutoresPUJ"
+    ],
+    "asunto": "nuevo actualizado false",
+    "mensaje": "ksdsd <<nombre TutoresPUJ>>  <<apellido TutoresPUJ>> ",
+    "estado": true
+  },
+  {
+    "destinatarios": [],
+    "asunto": "Nuevo actualizado",
+    "mensaje": "sdasds",
+    "estado": true
+  },
+  {
+    "destinatarios": [
+      "FuncionariosColegio"
+    ],
+    "asunto": "Nuevo funcionario COlegio",
+    "mensaje": " <<nombre FuncionariosColegio>> ",
+    "estado": true
   }
 ]

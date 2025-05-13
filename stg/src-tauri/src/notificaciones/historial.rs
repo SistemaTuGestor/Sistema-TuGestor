@@ -24,6 +24,7 @@ pub struct Borrador {
     destinatarios: Vec<String>,
     asunto: String,
     mensaje: String,
+    estado: bool, // Nuevo campo para el estado
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -31,6 +32,7 @@ pub struct BorradorEdit {
     pub destinatarios: Vec<String>,
     pub asunto: String,
     pub mensaje: String,
+    pub estado: bool,
 }
 
 
@@ -42,22 +44,24 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
     let path = base_path.join("historiales").join("historial.json");
 
     let mut historial: Vec<Borrador> = if Path::new(&path).exists() {
-        let contenido = fs::read_to_string(&path).map_err(|e| format!("Error al leer archivo: {}", e))?;// lee el JSON
-        serde_json::from_str(&contenido).unwrap_or_else(|_| Vec::new()) // Aqui se guarda toda la información del JSON, la lee para persistir los datos anteriores, si no hay crea una lista vacia
+        let contenido = fs::read_to_string(&path).map_err(|e| format!("Error al leer archivo: {}", e))?;
+        serde_json::from_str(&contenido).unwrap_or_else(|_| Vec::new())
     } else {
         Vec::new()// si no hay archivo crea uno con una lista vacia
+        
     };
-    
-    // Agregar el nuevo dato al historial
-    historial.push(data);
+
+    // Agregar el nuevo dato al historial con estado `false`
+    let mut nuevo_dato = data;
+    nuevo_dato.estado = false; // Estado inicial al guardar
+    historial.push(nuevo_dato);
 
     // Serializar **todo el historial**
     let json_data = serde_json::to_string_pretty(&historial)
         .map_err(|e| format!("Error al serializar JSON: {}", e))?;
-    
+
     // Escribir todo el historial en el archivo
-    fs::write(&path, json_data)
-    .map_err(|e| format!("Error al guardar archivo: {}", e))?;
+    fs::write(&path, json_data).map_err(|e| format!("Error al guardar archivo: {}", e))?;
 
     Ok(())
 }
@@ -324,7 +328,7 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
 
     let mut historiales: Vec<Borrador> = Vec::new();
 
-    let archivos = fs::read_dir(carpeta_path)
+    let archivos = fs::read_dir(&carpeta_path)
         .map_err(|e| format!("Error al leer la carpeta: {}", e))?;
 
     for archivo in archivos {
@@ -333,7 +337,18 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
 
             if path.is_file() && path.extension().map_or(false, |ext| ext == "json") {
                 if let Ok(contenido) = fs::read_to_string(&path) {
-                    if let Ok(historial) = serde_json::from_str::<Vec<Borrador>>(&contenido) {
+                    if let Ok(mut historial) = serde_json::from_str::<Vec<Borrador>>(&contenido) {
+                        // Cambiar el estado de los historiales a `true`
+                        for borrador in &mut historial {
+                            borrador.estado = true;
+                        }
+
+                        // Sobrescribir el archivo con el historial actualizado
+                        let json_data = serde_json::to_string_pretty(&historial)
+                            .map_err(|e| format!("Error al serializar JSON: {}", e))?;
+                        fs::write(&path, json_data)
+                            .map_err(|e| format!("Error al guardar archivo: {}", e))?;
+
                         historiales.extend(historial);
                     }
                 }
@@ -341,12 +356,13 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
         }
     }
 
-    println!("📜 Historiales encontrados:");
+    println!("📜 Historiales enviados:");
     for (i, historial) in historiales.iter().enumerate() {
         println!("🔹 Historial {}:", i + 1);
         println!("   📌 Asunto: {}", historial.asunto);
         println!("   ✉️ Destinatarios: {}", historial.destinatarios.join(", "));
         println!("   📝 Mensaje: {}", historial.mensaje);
+        println!("   ✅ Estado: {}", historial.estado);
         println!("-----------------------------------");
     }
 

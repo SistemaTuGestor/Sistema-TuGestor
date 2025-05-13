@@ -1,9 +1,8 @@
-
 import "./Notificaciones.css";
-import Inicio from "./Inicio" ;
+import Inicio from "./Inicio";
 
-import { useEffect,useState } from "react" ;
-import { invoke } from "@tauri-apps/api/tauri" ;
+import { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/tauri";
 
 interface TutoresPUJ {
   nombre: string;
@@ -27,16 +26,15 @@ interface Borrador {
   mensaje : string ;
 }
 
-const estructuras : Record<string,string[]> = {
-  TutoresPUJ : ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"] ,
-  TutoresColegio : ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"] ,
-  FuncionariosColegio : ["nombre", "correo", "telefono", "institucion"] ,
-  TutoradosEmparejados : ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"] ,
-  TutoradosControl : ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"]
-} ;
+const estructuras: Record<string, string[]> = {
+  TutoresPUJ: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
+  TutoresColegio: ["nombre", "apellido", "correo", "institucion", "telefono", "horas", "tutorados"],
+  FuncionariosColegio: ["nombre", "correo", "telefono", "institucion"],
+  TutoradosEmparejados: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"],
+  TutoradosControl: ["nombre", "correo", "telefono", "id", "colegio", "vocabulario", "gramatica", "escucha", "lectura", "a", "b", "c", "d", "e", "f", "g"],
+};
 
-function Notificaciones ( ) {
-
+function Notificaciones() {
   const [datosIzq, setDatosIzq] = useState<DatosNotificacionesIzq[]>([]);
   const [estructurasSeleccionadas, setEstructurasSeleccionadas] = useState<string[]>([]);
   const [atributos, setAtributos] = useState<string[]>([]);
@@ -134,55 +132,50 @@ function Notificaciones ( ) {
 
   // Guardar en JSON y enviarlo al backend
   const handleGuardar = async () => {
-    const data = {
-      destinatarios,
-      asunto,
-      mensaje
-    };
-
-    console.log("Datos a enviar:", data);
-
     try {
-      //Modo edición
+      // Prepara los datos para guardar
+      const data = {
+        destinatarios,
+        asunto,
+        mensaje,
+        estado: false, // Asegúrate de incluir el estado inicial como `false`
+      };
+
+      console.log("Datos a guardar:", data);
+
+      // Llama al backend para guardar el historial
       if (modoEdicion) {
-        await invoke("actualizar_historial", { 
-          asuntoOriginal: asuntoOriginal,
-          data 
+        // Si está en modo edición, actualiza el historial existente
+        await invoke("actualizar_historial", {
+          asuntoOriginal,
+          data,
         });
         alert("Historial actualizado con éxito");
         setModoEdicion(false);
-      setAsuntoOriginal("");
-    } else {
-      // No modo edicion
-      await invoke("guardar_historial", { data });
-      alert("Historial guardado con éxito");
+        setAsuntoOriginal("");
+      } else {
+        // Si no está en modo edición, guarda un nuevo historial
+        await invoke("guardar_historial", { data });
+        alert("Historial guardado con éxito");
+      }
+
+      // Recarga la lista de historiales después de guardar
+      const historial = await invoke<Borrador[]>("leer_historial");
+      const datosFormateados = historial.map((item) => ({
+        asunto: item.asunto,
+        contactos: item.destinatarios.join(", "),
+      }));
+      setDatosIzq(datosFormateados);
+
+      // Limpia el formulario después de guardar
+      setAsunto("");
+      setMensaje("");
+      setDestinatarios([]);
+    } catch (error) {
+      console.error("Error al guardar el historial:", error);
+      alert("Error al guardar el historial: " + error);
     }
- 
-    // Recargar la lista después de guardar
-    const historial = await invoke<Borrador[]>("leer_historial");
-    const datosFormateados = historial.map(item => ({
-      asunto: item.asunto,
-      contactos: item.destinatarios.join(", ")
-    }));
-    setDatosIzq(datosFormateados);
-
-    await invoke("init_path_pruebas");
-    console.log("PATH_LINKS inicializado correctamente");
-
-    const tutores = await invoke<TutoresPUJ[]>("generar_tutores");
-    console.log("Tutores generados:", tutores);
-
-    const tutoresenlaces = await invoke<TutoresPUJ[]>("generar_tutores_enlaces");
-    console.log("Tutores generados:", tutoresenlaces);
-    
-    // Limpiar el formulario
-    setAsunto("");
-    setMensaje("");
-    setDestinatarios([]);
-  } catch (error) {
-    console.error("Error al guardar el historial:", error);
-  }
-};
+  };
 
 const handleCancelarEdicion = () => {
   setModoEdicion(false);
