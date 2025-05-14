@@ -15,6 +15,62 @@ interface TutoresPUJ {
   link: string;
 }
 
+interface TutoresColegio {
+  nombre: string;
+  apellido: string;
+  correo: string;
+  institucion: string;
+  telefono: string[];
+  horas: string;
+  tutorados: string[];
+  link: string;
+}
+
+interface FuncionariosColegio {
+  nombre: string;
+  correo: string;
+  telefono: string[];
+  institucion: string;
+}
+
+interface TutoradosEmparejados {
+  nombre: string;
+  correo: string;
+  telefono: string[];
+  id: string;
+  colegio: string;
+  vocabulario: string;
+  gramatica: string;
+  escucha: string;
+  lectura: string;
+  a: string;
+  b: string;
+  c: string;
+  d: string;
+  e: string;
+  f: string;
+  g: string;
+}
+
+interface TutoradosControl {
+  nombre: string;
+  correo: string;
+  telefono: string[];
+  id: string;
+  colegio: string;
+  vocabulario: string;
+  gramatica: string;
+  escucha: string;
+  lectura: string;
+  a: string;
+  b: string;
+  c: string;
+  d: string;
+  e: string;
+  f: string;
+  g: string;
+}
+
 interface DatosNotificacionesIzq {
   asunto : string ;
   contactos : string ;
@@ -42,8 +98,23 @@ function Notificaciones() {
   const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [destinatarios, setDestinatarios] = useState<string[]>([]);
-  const [modoEdicion, setModoEdicion] = useState(false); // Estado para ver lo que se edita
-  const [asuntoOriginal, setAsuntoOriginal] = useState(""); // Para recordar el asunto original a editar
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [asuntoOriginal, setAsuntoOriginal] = useState("");
+
+  // Llama a procesar_datos_para_whatsapp al cargar la pantalla
+  useEffect(() => {
+    const obtenerDatosWhatsApp = async () => {
+      console.log("Intentando invocar procesar_datos_para_whatsapp...");
+      try {
+        await invoke("procesar_datos_para_whatsapp");
+        console.log("Datos procesados para WhatsApp correctamente.");
+      } catch (error) {
+        console.error("Error al procesar los datos para WhatsApp:", error);
+      }
+    };
+
+    obtenerDatosWhatsApp();
+  }, []);
 
   useEffect(() => {
     invoke("leer_archivo_emparejados")
@@ -286,6 +357,19 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
     }
   }
 
+  async function enviarMensajes() {
+    try {
+      // Llama a la función `procesar_mensajes_desde_json` desde el backend
+      const mensajes = await invoke('procesar_mensajes_desde_json');
+
+      console.log('Mensajes generados:', mensajes);
+      alert('Mensajes enviados correctamente');
+    } catch (error) {
+      console.error('Error al procesar los mensajes:', error);
+      alert('Error al enviar los mensajes');
+    }
+  }
+
   return (
     <div className="notificaciones">
       <div className="contenedor_PanelIzquierdo">
@@ -360,6 +444,9 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
                   Cancelar edición
                 </button>
               )}
+              <button onClick={enviarMensajes}>
+                Enviar Mensajes
+              </button>
             </div>
           </>
         )}

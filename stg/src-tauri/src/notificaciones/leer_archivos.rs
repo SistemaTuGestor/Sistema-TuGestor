@@ -1,4 +1,3 @@
-
 // ARCHIVOS
 use serde::Serialize ;
 use calamine::{open_workbook,Reader,Xlsx} ;
@@ -129,90 +128,95 @@ Ok(())
 
 #[derive(Serialize, Debug)]
 pub struct TutoresPUJ {
-    nombre: String,
-    apellido: String,
-    correo: String,
-    institucion: String,
-    telefono: Vec<String>,
-    horas: String,
-    tutorados: Vec<String>,
-    link: String,
+    pub nombre: String,
+    pub apellido: String,
+    pub correo: String,
+    pub institucion: String,
+    pub telefono: Vec<String>,
+    pub horas: String,
+    pub tutorados: Vec<String>,
+    pub link: String,
 }
 
 #[derive(Serialize, Debug)]
 pub struct TutoresColegio {
-    nombre: String,
-    apellido: String,
-    correo: String,
-    institucion: String,
-    telefono: Vec<String>,
-    horas: String,
-    tutorados: Vec<String>,
-    link: String,
+    pub nombre: String,
+    pub apellido: String,
+    pub correo: String,
+    pub institucion: String,
+    pub telefono: Vec<String>,
+    pub horas: String,
+    pub tutorados: Vec<String>,
+    pub link: String,
 }
 
 #[derive(Serialize, Debug)]
 pub struct FuncionariosColegio {
-    nombre: String,
-    correo: String,
-    telefono: Vec<String>,
-    institucion: String,
-    
+    pub nombre: String,
+    pub correo: String,
+    pub telefono: Vec<String>,
+    pub institucion: String,
 }
 
 #[derive(Serialize, Debug)]
 pub struct TutoradosEmparejados {
-    nombre: String,
-    correo: String,
-    telefono: Vec<String>,
-    id: String,
-    colegio: String,
-    vocabulario: String,
-    gramatica: String,
-    escucha: String,
-    lectura: String,
-    a: String,
-    b: String,
-    c: String,
-    d: String,
-    e: String,
-    f: String,
-    g: String,
+   pub nombre: String,
+   pub correo: String,
+   pub telefono: Vec<String>,
+  pub  id: String,
+ pub   colegio: String,
+  pub  vocabulario: String,
+  pub gramatica: String,
+  pub escucha: String,
+  pub lectura: String,
+  pub a: String,
+  pub b: String,
+  pub c: String,
+  pub d: String,
+  pub e: String,
+  pub f: String,
+    pub g: String,
 
 }
 
 #[derive(Serialize, Debug)]
 pub struct TutoradosControl {
-    nombre: String,
-    correo: String,
-    telefono: Vec<String>,
-    id: String,
-    colegio: String,
-    vocabulario: String,
-    gramatica: String,
-    escucha: String,
-    lectura: String,
-    a: String,
-    b: String,
-    c: String,
-    d: String,
-    e: String,
-    f: String,
-    g: String,
+    pub nombre: String,
+    pub correo: String,
+    pub telefono: Vec<String>,
+    pub id: String,
+    pub colegio: String,
+    pub vocabulario: String,
+    pub gramatica: String,
+    pub escucha: String,
+    pub lectura: String,
+    pub a: String,
+    pub b: String,
+    pub c: String,
+    pub d: String,
+    pub e: String,
+    pub f: String,
+    pub g: String,
 }
 
 #[tauri::command]
 pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegio>,Vec<FuncionariosColegio>,Vec<TutoradosEmparejados>),String> {
     
-    // println!("Iniciando la función leer_archivo_control...");
-
+   // println!("Iniciando la función emparejados...");
+    //println!("Leyendo archivo de emparejamiento...");
     let ubicacioon = PATH_EMPAREJAMIENTO
         .get()
         .ok_or("❌ PATH_EMPAREJAMIENTO no ha sido inicializado")?
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+   // println!("Ruta del archivo: {}", ubicacioon);
     let path = Path::new(&*ubicacioon);
-    // println!("Ruta del archivo: {}", path.display());
+    if !path.exists() {
+        println!("❌ El archivo no existe en la ruta: {}", path.display());
+        return Err(format!("El archivo no existe en la ruta: {}", path.display()));
+    }
+   // println!("✅ El archivo existe en la ruta: {}", path.display());
+    //println!("Iniciando la función leer_archivo_emparejados...");
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
@@ -261,8 +265,8 @@ pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegi
         let telefono = row.get(3).map_or("".to_string(), |cell| cell.to_string());
         let institucion = row.get(4).map_or("".to_string(), |cell| cell.to_string());
         let horas = row.get(8).map_or("".to_string(), |cell| cell.to_string());
-        let tutoradonombre = row.get(9).map_or("".to_string(), |cell| cell.to_string());
-        let tutorado2 = row.get(27).map_or("".to_string(), |cell| cell.to_string());
+        let tutoradonombre = row.get(10).map_or("".to_string(), |cell| cell.to_string());
+        let tutorado2 = row.get(30).map_or("".to_string(), |cell| cell.to_string());
 
         if institucion.is_empty() {
             //println!("Institución vacía, se omite la fila.");
@@ -317,55 +321,55 @@ pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegi
         if !tutoradonombre.is_empty() {
             tutorados_emparejados.push(TutoradosEmparejados {
                 nombre: tutoradonombre.clone(),
-                correo: row.get(14).map_or("".to_string(), |cell| cell.to_string()),
+                correo: row.get(15).map_or("".to_string(), |cell| cell.to_string()),
                 telefono: vec![
-                    row.get(12).map_or("".to_string(), |cell| cell.to_string()),
                     row.get(13).map_or("".to_string(), |cell| cell.to_string()),
+                    row.get(14).map_or("".to_string(), |cell| cell.to_string()),
                 ],
-                id: row.get(10).map_or("".to_string(), |cell| cell.to_string()),
-                colegio: row.get(11).map_or("".to_string(), |cell| cell.to_string()),
-                vocabulario: row.get(16).map_or("".to_string(), |cell| cell.to_string()),
-                gramatica: row.get(17).map_or("".to_string(), |cell| cell.to_string()),
-                escucha: row.get(18).map_or("".to_string(), |cell| cell.to_string()),
-                lectura: row.get(19).map_or("".to_string(), |cell| cell.to_string()),
-                a: row.get(20).map_or("".to_string(), |cell| cell.to_string()),
-                b: row.get(21).map_or("".to_string(), |cell| cell.to_string()),
-                c: row.get(22).map_or("".to_string(), |cell| cell.to_string()),
-                d: row.get(23).map_or("".to_string(), |cell| cell.to_string()),
-                e: row.get(24).map_or("".to_string(), |cell| cell.to_string()),
-                f: row.get(25).map_or("".to_string(), |cell| cell.to_string()),
-                g: row.get(26).map_or("".to_string(), |cell| cell.to_string()),
+                id: row.get(11).map_or("".to_string(), |cell| cell.to_string()),
+                colegio: row.get(12).map_or("".to_string(), |cell| cell.to_string()),
+                vocabulario: row.get(17).map_or("".to_string(), |cell| cell.to_string()),
+                gramatica: row.get(18).map_or("".to_string(), |cell| cell.to_string()),
+                escucha: row.get(19).map_or("".to_string(), |cell| cell.to_string()),
+                lectura: row.get(20).map_or("".to_string(), |cell| cell.to_string()),
+                a: row.get(21).map_or("".to_string(), |cell| cell.to_string()),
+                b: row.get(22).map_or("".to_string(), |cell| cell.to_string()),
+                c: row.get(23).map_or("".to_string(), |cell| cell.to_string()),
+                d: row.get(24).map_or("".to_string(), |cell| cell.to_string()),
+                e: row.get(25).map_or("".to_string(), |cell| cell.to_string()),
+                f: row.get(26).map_or("".to_string(), |cell| cell.to_string()),
+                g: row.get(27).map_or("".to_string(), |cell| cell.to_string()),
             });
         }
 
         if !tutorado2.is_empty() {
             tutorados_emparejados.push(TutoradosEmparejados {
                 nombre: tutorado2.clone(),
-                correo: row.get(32).map_or("".to_string(), |cell| cell.to_string()),
+                correo: row.get(35).map_or("".to_string(), |cell| cell.to_string()),
                 telefono: vec![
-                    row.get(30).map_or("".to_string(), |cell| cell.to_string()),
-                    row.get(31).map_or("".to_string(), |cell| cell.to_string()),
+                    row.get(33).map_or("".to_string(), |cell| cell.to_string()),
+                    row.get(34).map_or("".to_string(), |cell| cell.to_string()),
                 ],
-                id: row.get(28).map_or("".to_string(), |cell| cell.to_string()),
-                colegio: row.get(29).map_or("".to_string(), |cell| cell.to_string()),
-                vocabulario: row.get(34).map_or("".to_string(), |cell| cell.to_string()),
-                gramatica: row.get(35).map_or("".to_string(), |cell| cell.to_string()),
-                escucha: row.get(36).map_or("".to_string(), |cell| cell.to_string()),
-                lectura: row.get(37).map_or("".to_string(), |cell| cell.to_string()),
-                a: row.get(38).map_or("".to_string(), |cell| cell.to_string()),
-                b: row.get(39).map_or("".to_string(), |cell| cell.to_string()),
-                c: row.get(40).map_or("".to_string(), |cell| cell.to_string()),
-                d: row.get(41).map_or("".to_string(), |cell| cell.to_string()),
-                e: row.get(42).map_or("".to_string(), |cell| cell.to_string()),
-                f: row.get(43).map_or("".to_string(), |cell| cell.to_string()),
-                g: row.get(44).map_or("".to_string(), |cell| cell.to_string()),
+                id: row.get(31).map_or("".to_string(), |cell| cell.to_string()),
+                colegio: row.get(32).map_or("".to_string(), |cell| cell.to_string()),
+                vocabulario: row.get(37).map_or("".to_string(), |cell| cell.to_string()),
+                gramatica: row.get(38).map_or("".to_string(), |cell| cell.to_string()),
+                escucha: row.get(39).map_or("".to_string(), |cell| cell.to_string()),
+                lectura: row.get(40).map_or("".to_string(), |cell| cell.to_string()),
+                a: row.get(41).map_or("".to_string(), |cell| cell.to_string()),
+                b: row.get(42).map_or("".to_string(), |cell| cell.to_string()),
+                c: row.get(43).map_or("".to_string(), |cell| cell.to_string()),
+                d: row.get(44).map_or("".to_string(), |cell| cell.to_string()),
+                e: row.get(45).map_or("".to_string(), |cell| cell.to_string()),
+                f: row.get(46).map_or("".to_string(), |cell| cell.to_string()),
+                g: row.get(47).map_or("".to_string(), |cell| cell.to_string()),
             });
         }
     }
 
    // println!("Lectura finalizada.");
-    println!("Total Tutores PUJ: {}", tutores_puj.len());
-    println!("Total Tutores Colegio: {}", tutores_colegio.len());
+  //  println!("Total Tutores PUJ: {}", tutores_puj.len());
+   // println!("Total Tutores Colegio: {}", tutores_colegio.len());
     //println!("Total Tutorados Emparejados: {}", tutorados_emparejados.len());
 
     //println!("Tutores PUJ: {:?}", tutores_puj);
@@ -378,7 +382,7 @@ pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegi
 #[tauri::command]
 pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
     
-    // println!("Iniciando la función leer_archivo_control...");
+ //println!("Iniciando la función leer_archivo_control...");
 
     let ubicacioon = PATH_CONTROL
         .get()
@@ -386,7 +390,11 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
     let path = Path::new(&*ubicacioon);
-    // println!("Ruta del archivo: {}", path.display());
+    if !path.exists() {
+      //  println!("❌ El archivo no existe en la ruta: {}", path.display());
+        return Err(format!("El archivo no existe en la ruta: {}", path.display()));
+    }
+    //println!("✅ El archivo existe en la ruta: {}", path.display());
 
     // Intentar abrir el archivo
     let mut workbook: Xlsx<_> = match open_workbook(path) {
@@ -472,7 +480,7 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
     }
 
     //println!("Lectura finalizada.");
-    println!("Total Tutorados Control: {}", tutorados_control.len());
+   // println!("Total Tutorados Control: {}", tutorados_control.len());
     //println!("Tutorados Control: {:?}", tutorados_control);
 
     Ok(tutorados_control)
@@ -552,16 +560,16 @@ pub fn generar_tutores() -> Result<Vec<TutoresPUJ>, String> {
     }
 
     // Imprimir información de debug
-    println!("Se generaron {} tutores:", tutores.len());
+   // println!("Se generaron {} tutores:", tutores.len());
     for (i, tutor) in tutores.iter().enumerate() {
-        println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
-        println!("  Correo: {}", tutor.correo);
-        println!("  Institución: {}", tutor.institucion);
-        println!("  Teléfono: {}", tutor.telefono.join(", "));
-        println!("  Horas: {}", tutor.horas);
-        println!("  Link: {}", tutor.link);
-        println!("  Tutorados: {}", tutor.tutorados.join(", "));
-        println!("-----------------------------------");
+      //  println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
+      //  println!("  Correo: {}", tutor.correo);
+      //  println!("  Institución: {}", tutor.institucion);
+     //   println!("  Teléfono: {}", tutor.telefono.join(", "));
+    //    println!("  Horas: {}", tutor.horas);
+     //   println!("  Link: {}", tutor.link);
+     //   println!("  Tutorados: {}", tutor.tutorados.join(", "));
+     //   println!("-----------------------------------");
     }
     
     Ok(tutores)
@@ -579,8 +587,8 @@ pub fn generar_tutores_enlaces() -> Result<Vec<TutoresPUJ>, String> {
     let mut workbook: Xlsx<_> = match open_workbook(&excel_path) {
         Ok(wb) => wb,
         Err(e) => {
-            println!("Error abriendo el archivo Excel: {:?}", e);
-            println!("Ruta intentada: {:?}", excel_path);
+          ///  println!("Error abriendo el archivo Excel: {:?}", e);
+            //println!("Ruta intentada: {:?}", excel_path);
             return Err(format!("No se pudo abrir el archivo Excel: {}", e));
         }
     };
@@ -592,7 +600,7 @@ pub fn generar_tutores_enlaces() -> Result<Vec<TutoresPUJ>, String> {
     let range = match workbook.worksheet_range(sheet_name) {
         Ok(range) => range,
         Err(e) => {
-            println!("Error accediendo a la hoja '{}': {:?}", sheet_name, e);
+           // println!("Error accediendo a la hoja '{}': {:?}", sheet_name, e);
             return Err(format!("No se pudo acceder a la hoja '{}': {}", sheet_name, e));
         }
     };
@@ -610,11 +618,11 @@ pub fn generar_tutores_enlaces() -> Result<Vec<TutoresPUJ>, String> {
     }
 
     if links.is_empty() {
-        println!("No se encontraron enlaces en el archivo");
+      // println!("No se encontraron enlaces en el archivo");
         return Err("No se encontraron enlaces en el archivo".to_string());
     }
 
-    println!("Links extraídos: {:?}", links);
+    //println!("Links extraídos: {:?}", links);
 
     const TOTAL_TUTORES: usize = 20;
     const TUTORES_POR_GRUPO: usize = 10;
@@ -642,16 +650,16 @@ pub fn generar_tutores_enlaces() -> Result<Vec<TutoresPUJ>, String> {
     }
 
     // Imprimir información de debug
-    println!("Se generaron {} tutores:", tutores.len());
+   // println!("Se generaron {} tutores:", tutores.len());
     for (i, tutor) in tutores.iter().enumerate() {
-        println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
-        println!("  Correo: {}", tutor.correo);
-        println!("  Institución: {}", tutor.institucion);
-        println!("  Teléfono: {}", tutor.telefono.join(", "));
-        println!("  Horas: {}", tutor.horas);
-        println!("  Link: {}", tutor.link);
-        println!("  Tutorados: {}", tutor.tutorados.join(", "));
-        println!("-----------------------------------");
+     //   println!("Tutor #{}: {} {}", i+1, tutor.nombre, tutor.apellido);
+     //   println!("  Correo: {}", tutor.correo);
+     //   println!("  Institución: {}", tutor.institucion);
+      //  println!("  Teléfono: {}", tutor.telefono.join(", "));
+      //  println!("  Horas: {}", tutor.horas);
+      //  println!("  Link: {}", tutor.link);
+       // println!("  Tutorados: {}", tutor.tutorados.join(", "));
+      //  println!("-----------------------------------");
     }
     
     Ok(tutores)
