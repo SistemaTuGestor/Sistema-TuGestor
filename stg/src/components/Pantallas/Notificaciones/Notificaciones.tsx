@@ -359,14 +359,18 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
 
   async function enviarMensajes() {
     try {
-      // Llama a la función `procesar_mensajes_desde_json` desde el backend
-      const mensajes = await invoke('procesar_mensajes_desde_json');
+      // 1. Obtener los mensajes procesados desde el backend
+      const mensajes = await invoke<any[]>("procesar_mensajes_desde_json");
 
       console.log('Mensajes generados:', mensajes);
-      alert('Mensajes enviados correctamente');
+
+      // 2. Generar el Excel con los mensajes procesados
+      const rutaExcel = await invoke<string>("exportar_mensajes_a_excel", { mensajes });
+
+      alert(`Mensajes enviados correctamente y Excel generado en:\n${rutaExcel}`);
     } catch (error) {
       console.error('Error al procesar los mensajes:', error);
-      alert('Error al enviar los mensajes');
+      alert('Error al enviar los mensajes o generar el Excel');
     }
   }
 

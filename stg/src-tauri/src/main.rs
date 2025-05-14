@@ -17,7 +17,7 @@ use monitoreo::{izquierda::monitoreo_izquierda, derecha::monitoreo_derecha, pers
 use notificaciones::{historial::guardar_historial, historial::leer_historial, historial::editar_historial, historial::actualizar_historial, historial::eliminar_historial, historial::enviar_historiales};
 use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento, leer_archivos::notificaciones_inicio_control, leer_archivos::notificaciones_inicio_seguimiento, leer_archivos::notificaciones_inicio_links};
 use notificaciones::{leer_archivos::leer_archivo_emparejados, leer_archivos::leer_archivo_control, leer_archivos::generar_tutores, leer_archivos::init_path_pruebas, leer_archivos::generar_tutores_enlaces};
-use notificaciones::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_mensajes_desde_json};
+use notificaciones::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_mensajes_desde_json,whatsapp::exportar_mensajes_a_excel};
 
 // Reportes.
 use reportes::fecha::obtener_fecha;
@@ -52,6 +52,7 @@ fn main() {
             enviar_historiales,
             procesar_mensajes_desde_json,
             procesar_datos_para_whatsapp,
+            exportar_mensajes_a_excel,
             // ELEMENTOS
             notificaciones_inicio_emparejamiento,
             notificaciones_inicio_control,

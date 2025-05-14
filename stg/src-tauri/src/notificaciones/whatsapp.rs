@@ -88,14 +88,15 @@ pub struct TutoradosControlwhatsapp {
     f: String,
     g: String,
 }
-#[derive(Serialize, Debug)]
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Mensaje {
     correo: String,
     numero: String,
     nombre: String,
     asunto: String,
     mensaje: String,
-    link: String, // Nuevo campo
+    link: String,
 }
 
 #[tauri::command]
@@ -425,6 +426,45 @@ pub fn procesar_mensajes_desde_json() -> Result<Vec<Mensaje>, String> {
     }
 
     Ok(mensajes_generados)
+}
+
+#[tauri::command]
+pub fn exportar_mensajes_a_excel(mensajes: Vec<Mensaje>, ruta: Option<String>) -> Result<String, String> {
+    let fecha = Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let nombre_archivo = format!("whatsapp_para_enviar_{}.xlsx", fecha);
+
+    // Guardar en la carpeta recursos
+    let mut ruta_archivo = get_resource_path();
+    ruta_archivo.push(&nombre_archivo);
+
+    // Si el usuario pasa una ruta personalizada, usarla
+    let ruta_archivo = ruta.unwrap_or_else(|| ruta_archivo.to_string_lossy().to_string());
+
+    let workbook = Workbook::new(&ruta_archivo).map_err(|e| e.to_string())?;
+    let mut sheet = workbook.add_worksheet(None).map_err(|e| e.to_string())?;
+
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Correo", None).unwrap();
+    sheet.write_string(0, 1, "Número", None).unwrap();
+    sheet.write_string(0, 2, "Nombre", None).unwrap();
+    sheet.write_string(0, 3, "Asunto", None).unwrap();
+    sheet.write_string(0, 4, "Mensaje", None).unwrap();
+    sheet.write_string(0, 5, "Link", None).unwrap();
+
+    // Escribir los datos
+    for (i, m) in mensajes.iter().enumerate() {
+        let fila = (i + 1) as u32;
+        sheet.write_string(fila, 0, &m.correo, None).unwrap();
+        sheet.write_string(fila, 1, &m.numero, None).unwrap();
+        sheet.write_string(fila, 2, &m.nombre, None).unwrap();
+        sheet.write_string(fila, 3, &m.asunto, None).unwrap();
+        sheet.write_string(fila, 4, &m.mensaje, None).unwrap();
+        sheet.write_string(fila, 5, &m.link, None).unwrap();
+    }
+
+    workbook.close().map_err(|e| e.to_string())?;
+    println!("Archivo Excel generado en: {}", &ruta_archivo);
+    Ok(ruta_archivo)
 }
 
 
