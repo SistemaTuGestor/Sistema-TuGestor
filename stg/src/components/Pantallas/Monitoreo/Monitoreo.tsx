@@ -434,6 +434,85 @@ function Monitoreo() {
     
   };
 
+  const handleToggleHecho = async (taskName: string) => {
+    if (!usuarioSeleccionado) return;
+
+    try {
+      // Cargar el JSON actual
+      const jsonResponse = await invoke("cargar_datos_json");
+      const jsonData = JSON.parse(jsonResponse as string);
+
+      // Buscar el usuario en el JSON
+      let userType = "";
+      let userIndex = -1;
+
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+      if (userIndex !== -1) userType = "tutores";
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        if (userIndex !== -1) userType = "tutorado1";
+      }
+
+      if (userIndex === -1) {
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        if (userIndex !== -1) userType = "tutorado2";
+      }
+
+      if (userType === "" || userIndex === -1) return;
+
+      // Buscar la tarea y cambiar el estado de hecho
+      const tareas = jsonData[userType][userIndex].tareas;
+      const tareaIndex = tareas.findIndex((t: any) => t.nombre === taskName);
+      if (tareaIndex !== -1) {
+        tareas[tareaIndex].hecho = !tareas[tareaIndex].hecho;
+      }
+
+      // Recalcular el progreso
+      const total = tareas.length;
+      const hechas = tareas.filter((t: any) => t.hecho).length;
+      jsonData[userType][userIndex].progreso = total > 0 ? hechas / total : 0;
+
+      // Guardar el JSON actualizado
+      await invoke("actualizar_json_monitoreo", {
+        jsonData: JSON.stringify(jsonData)
+      });
+
+      // Actualizar la UI
+      const personas = [
+        ...jsonData.tutores,
+        ...jsonData.tutorado1,
+        ...jsonData.tutorado2,
+      ];
+      setDatosOriginales(personas);
+
+      // Actualizar usuarioSeleccionado y datosDer
+      const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
+      setUsuarioSeleccionado(personaActualizada);
+
+      // Actualizar la vista derecha
+      if (personaActualizada) {
+        const nuevasEntradas: DatosMonitoreoDer[] = [];
+        personaActualizada.tareas.forEach((tarea: any) => {
+          nuevasEntradas.push({
+            registro: `${tarea.nombre}: ${tarea.descripcion}`
+          });
+        });
+        if (personaActualizada.imagenes && Array.isArray(personaActualizada.imagenes)) {
+          personaActualizada.imagenes.forEach((imagen: any) => {
+            if (imagen.url) {
+              nuevasEntradas.push({
+                registro: `Imagen: ${imagen.url}`
+              });
+            }
+          });
+        }
+        setDatosDer(nuevasEntradas);
+      }
+    } catch (error) {
+      console.error("Error actualizando el estado de la tarea:", error);
+    }
+  };
 
   return (
     <div className="monitoreo">
@@ -494,6 +573,14 @@ function Monitoreo() {
             const actualIndex = datosDer.length - 1 - index;
             const isEditing = editandoIndex === actualIndex;
 
+            // Buscar si la tarea está hecha
+            let checked = false;
+            if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
+              const taskName = row.registro.split(":")[0].trim();
+              const tarea = usuarioSeleccionado.tareas.find((t: any) => t.nombre === taskName);
+              checked = tarea ? tarea.hecho : false;
+            }
+
             return (
               <div
                 key={index}
@@ -509,7 +596,18 @@ function Monitoreo() {
                 }}
               >
                 <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-                  {esTarea && <input type="checkbox" />}
+                  {esTarea && (
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => {
+                        if (esTarea) {
+                          const taskName = row.registro.split(":")[0].trim();
+                          handleToggleHecho(taskName);
+                        }
+                      }}
+                    />
+                  )}
                 </div>
 
                 {isEditing ? (
