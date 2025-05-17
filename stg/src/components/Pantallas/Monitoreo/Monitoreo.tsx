@@ -483,6 +483,14 @@ function Monitoreo() {
             const actualIndex = datosDer.length - 1 - index;
             const isEditing = editandoIndex === actualIndex;
 
+            // Buscar si la tarea está hecha
+            let checked = false;
+            if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
+              const taskName = row.registro.split(":")[0].trim();
+              const tarea = usuarioSeleccionado.tareas.find((t: any) => t.nombre === taskName);
+              checked = tarea ? tarea.hecho : false;
+            }
+
             return (
               <div
                 key={index}
@@ -498,7 +506,13 @@ function Monitoreo() {
                 }}
               >
                 <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-                  {esTarea && <input type="checkbox" />}
+                  {esTarea && (
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      readOnly
+                    />
+                  )}
                 </div>
 
                 {isEditing ? (
