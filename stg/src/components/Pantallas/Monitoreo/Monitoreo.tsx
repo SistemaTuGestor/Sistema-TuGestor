@@ -34,6 +34,146 @@ function Monitoreo() {
   const [mostrarEmergente, setMostrarEmergente] = useState(false);
   const [roles, setRoles] = useState<string[]>([]);
   const [instituciones, setInstituciones] = useState<string[]>([]);
+  const [filtroRol, setFiltroRol] = useState<string[]>([]);
+const [filtroInstitucion, setFiltroInstitucion] = useState<string[]>([]);
+const [filtroProgreso, setFiltroProgreso] = useState<string | null>(null);
+const [textoBusqueda, setTextoBusqueda] = useState<string>("");
+
+// Función para manejar la selección de roles
+const handleRolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const options = e.target.options;
+  const selectedValues = [];
+  
+  for (let i = 0; i < options.length; i++) {
+    if (options[i].selected && options[i].value !== "objetos") {
+      selectedValues.push(options[i].value);
+    }
+  }
+  
+  setFiltroRol(selectedValues);
+};
+
+// Función para manejar la selección de instituciones
+const handleInstitucionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const options = e.target.options;
+  const selectedValues = [];
+  
+  for (let i = 0; i < options.length; i++) {
+    if (options[i].selected && options[i].value !== "objetos") {
+      selectedValues.push(options[i].value);
+    }
+  }
+  
+  setFiltroInstitucion(selectedValues);
+};
+
+// Función para manejar la selección de progreso
+const handleProgresoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const options = e.target.options;
+  let selectedValue = null;
+  
+  for (let i = 0; i < options.length; i++) {
+    if (options[i].selected && options[i].value !== "objetos") {
+      selectedValue = options[i].value;
+      break;
+    }
+  }
+  
+  setFiltroProgreso(selectedValue);
+};
+
+// Función para filtrar los datos según los criterios seleccionados
+const getDatosFiltrados = () => {
+  // Primero obtenemos los datos originales completos para tener acceso a todos los campos
+  let datosCompletos = datosOriginales.map((persona, index) => ({
+    ...persona,
+    idDisplay: `Usuario ${index + 1}`,
+  }));
+  
+  // Ahora filtramos estos datos según los criterios
+  return datosCompletos.filter(persona => {
+    // Filtro por rol
+    if (filtroRol.length > 0 && !filtroRol.includes(persona.rol)) {
+      return false;
+    }
+    
+    // Filtro por institución
+    if (filtroInstitucion.length > 0 && !filtroInstitucion.includes(persona.institucion)) {
+      return false;
+    }
+    
+    // Filtro por progreso
+    if (filtroProgreso) {
+      const progresoNumerico = parseFloat(filtroProgreso);
+      if (!isNaN(progresoNumerico)) {
+        // Si el progreso es "nulo", mostramos los que no tienen progreso definido
+        if (filtroProgreso === "nulo") {
+          if (persona.progreso !== undefined && persona.progreso !== null) {
+            return false;
+          }
+        } 
+        // Convertimos el porcentaje seleccionado a decimal para comparar
+        else if (Math.abs(persona.progreso * 100 - progresoNumerico) > 10) {
+          // Permitimos un rango de ±10%
+          return false;
+        }
+      }
+    }
+    
+    // Filtro por texto de búsqueda
+    if (textoBusqueda.trim() !== "") {
+      const busqueda = textoBusqueda.toLowerCase();
+      
+      // Búsqueda en el nombre
+      if (persona.nombre && persona.nombre.toLowerCase().includes(busqueda)) {
+        return true;
+      }
+      
+      // Búsqueda en el apellido (para tutores)
+      if (persona.apellido && persona.apellido.toLowerCase().includes(busqueda)) {
+        return true;
+      }
+      
+      // Búsqueda en el ID mostrado
+      if (persona.idDisplay.toLowerCase().includes(busqueda)) {
+        return true;
+      }
+      
+      // Búsqueda en teléfono(s)
+      if (Array.isArray(persona.telefono)) {
+        if (persona.telefono.some((tel: string) => tel && tel.includes(busqueda))) {
+          return true;
+        }
+      } else if (persona.telefono && persona.telefono.includes(busqueda)) {
+        return true;
+      }
+      
+      // Búsqueda en correo
+      if (persona.correo && persona.correo.toLowerCase().includes(busqueda)) {
+        return true;
+      }
+      
+      // Búsqueda en institución
+      if (persona.institucion && persona.institucion.toLowerCase().includes(busqueda)) {
+        return true;
+      }
+      
+      // Si no coincide con ningún campo, no mostramos este item
+      return false;
+    }
+    
+    // Si pasa todos los filtros, mostramos el item
+    return true;
+  }).map((persona, index) => ({
+    id: `Usuario ${index + 1}`,
+    rol: persona.rol,
+    teleefono: Array.isArray(persona.telefono) ? persona.telefono[0] : persona.telefono,
+    email: persona.correo
+  }));
+};
+
+// Modificado para usar esta función al renderizar
+const datosFiltrados = getDatosFiltrados();
 
 
   useEffect(() => {
@@ -517,53 +657,56 @@ function Monitoreo() {
   return (
     <div className="monitoreo">
       <div className="contenedor_PanelIzquierdo">
-        <div className="opciones-izquierda">
-          <select multiple>
-  <option value="objetos">Rol</option>
-  {roles.map((rol, index) => (
-    <option key={index} value={rol}>{rol}</option>
+       {/* Panel izquierdo con filtros */}
+<div className="opciones-izquierda">
+  <select multiple onChange={handleRolChange}>
+    <option value="objetos">Rol</option>
+    {roles.map((rol, index) => (
+      <option key={index} value={rol}>{rol}</option>
+    ))}
+  </select>
+  <select multiple onChange={handleInstitucionChange}>
+    <option value="objetos">Institución</option>
+    {instituciones.map((institucion, index) => (
+      <option key={index} value={institucion}>{institucion}</option>
+    ))}
+  </select>
+  <select multiple onChange={handleProgresoChange}>
+    <option value="objetos">Progreso</option>
+    <option value="100">100%</option>
+    <option value="80">80%</option>
+    <option value="60">60%</option>
+    <option value="40">40%</option>
+    <option value="20">20%</option>
+    <option value="0">0%</option>
+    <option value="nulo">nulo</option>
+  </select>
+</div>
+<div className="opciones-izquierda">
+  <input
+    type="text"
+    placeholder="Buscar"
+    className="barra-buusqueda"
+    value={textoBusqueda}
+    onChange={(e) => setTextoBusqueda(e.target.value)}
+  />
+</div>
+<div className="desplazadora">
+  {datosFiltrados.map((row, index) => (
+    <div
+      key={index}
+      className="casilla"
+      onClick={() => handleCasillaClick(row)}
+      style={{ cursor: 'pointer' }}
+    >
+      <div className="rootulo">
+        <p className="id">{`${row.rol}, ${row.id}`}</p>
+      </div>
+      <p className="contacto">{row.teleefono}</p>
+      <p className="contacto">{row.email}</p>
+    </div>
   ))}
-</select>
-          <select multiple>
-  <option value="objetos">Institución</option>
-  {instituciones.map((institucion, index) => (
-    <option key={index} value={institucion}>{institucion}</option>
-  ))}
-</select>
-          <select multiple>
-            <option value="objetos">Progreso</option>
-            <option value="opción 1">100%</option>
-            <option value="opción 2">80%</option>
-            <option value="opción 3">60%</option>
-            <option value="opción 4">40%</option>
-            <option value="opción 5">20%</option>
-            <option value="opción 6">0%</option>
-            <option value="opción 7">nulo</option>
-          </select>
-        </div>
-        <div className="opciones-izquierda">
-          <input
-            type="text"
-            placeholder="Buscar"
-            className="barra-buusqueda"
-          />
-        </div>
-        <div className="desplazadora">
-          {datosIzq.map((row, index) => (
-            <div
-              key={index}
-              className="casilla"
-              onClick={() => handleCasillaClick(row)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="rootulo">
-                <p className="id">{`${row.rol}, ${row.id}`}</p>
-              </div>
-              <p className="contacto">{row.teleefono}</p>
-              <p className="contacto">{row.email}</p>
-            </div>
-          ))}
-        </div>
+</div>
       </div>
 
       <div className="contenedor_PanelDerecho">
