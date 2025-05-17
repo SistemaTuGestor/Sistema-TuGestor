@@ -3422,6 +3422,7 @@ dependencies = [
  "once_cell",
  "open 4.2.0",
  "printpdf",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "tauri",

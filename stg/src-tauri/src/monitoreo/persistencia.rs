@@ -1,15 +1,17 @@
 use calamine::{open_workbook, Reader, Xlsx, XlsxError} ;
-use serde::Serialize ;
+use rand::Rng;
+use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
 
-#[derive(Serialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tarea {
     nombre: String,
     descripcion: String,
+    hecho: bool, // Nuevo campo
 }
 
 impl Tarea {
@@ -17,6 +19,7 @@ impl Tarea {
         Tarea {
             nombre: nombre.to_string(),
             descripcion: descripcion.to_string(),
+            hecho: false, // Por defecto, la tarea no está hecha
         }
     }
 }
@@ -53,10 +56,10 @@ pub struct Tutor {
     rol: String,
     telefono: String,
     correo: String,
-    institucion: String, 
+    institucion: String,
     tareas: Vec<Tarea>,
     imagenes: Vec<Imagen>,
-
+    progreso: f32, // Nuevo campo
 }
 
 #[derive(Serialize, Debug, Clone)]
@@ -69,7 +72,7 @@ pub struct Tutorado {
     institucion: String, 
     tareas: Vec<Tarea>,
     imagenes: Vec<Imagen>,
-
+    progreso: f32, // Nuevo campo
 }
 
 #[derive(Serialize, Debug, Clone)]
@@ -152,11 +155,13 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         let mut tarea = Tarea{
           nombre:format!("tarea{}", _fila_actual), 
           descripcion: "Tarea importante !!!".to_string(), 
+          hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut tarea2 = Tarea{
             nombre:"Otra tarea mas".to_string(), 
             descripcion: "Tarea igual de importante que la otra :3!!!".to_string(), 
+            hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut imagen = Imagen{
@@ -192,6 +197,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             institucion: institucion.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
+            progreso: 0.0, // Por defecto, el progreso es 0
         };
 
         let mut tutorado1 = Tutorado{
@@ -203,6 +209,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             correo: correo.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
+            progreso: 0.0, // Por defecto, el progreso es 0
         };
 
         let mut tutorado2 = Tutorado{
@@ -214,6 +221,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             correo: correotut2.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
+            progreso: 0.0, // Por defecto, el progreso es 0
         };
 
         tutores.push(tutor);
@@ -261,6 +269,9 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
     }
 
     
+    // Antes de guardar, actualiza tareas y progreso
+    actualizar_tareas_y_progreso(&mut tutores, &mut tutorados1, &mut tutorados2);
+
     if let Err(e) = guardar_monitoreo_json(tutores.clone(), tutorados1.clone(), tutorados2.clone()) {
         println!("Error al guardar monitoreo: {}", e);
     } else {
@@ -365,6 +376,32 @@ pub fn get_image(path: String) -> Result<Vec<u8>, String> {
     match std::fs::read(&path) {
         Ok(data) => Ok(data),
         Err(e) => Err(format!("Error al leer la imagen: {}", e)),
+    }
+}
+
+// Función para actualizar tareas y progreso
+pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut Vec<Tutorado>, tutorados2: &mut Vec<Tutorado>) {
+    let mut rng = rand::thread_rng();
+
+    for tutor in tutores.iter_mut() {
+        let total = tutor.tareas.len();
+        let mut hechas = 0;
+        for tarea in tutor.tareas.iter_mut() {
+            // Puedes cambiar esto a false si quieres que todas estén sin hacer
+            tarea.hecho = rng.gen_bool(0.5); // Aleatorio true/false
+            if tarea.hecho { hechas += 1; }
+        }
+        tutor.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
+    }
+
+    for tutorado in tutorados1.iter_mut().chain(tutorados2.iter_mut()) {
+        let total = tutorado.tareas.len();
+        let mut hechas = 0;
+        for tarea in tutorado.tareas.iter_mut() {
+            tarea.hecho = rng.gen_bool(0.5);
+            if tarea.hecho { hechas += 1; }
+        }
+        tutorado.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
     }
 }
 
