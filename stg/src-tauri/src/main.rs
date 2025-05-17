@@ -12,7 +12,7 @@ mod servicios;
 // Servicios.
 use servicios::tarea::monitoreo_enviar_tarea;
 // Monitoreo.
-use monitoreo::{izquierda::monitoreo_izquierda, derecha::monitoreo_derecha, persistencia::leer_excel_emparejamiento, persistencia::cargar_datos_json, persistencia::actualizar_json_monitoreo};
+use monitoreo::{izquierda::monitoreo_izquierda, derecha::monitoreo_derecha, persistencia::leer_excel_emparejamiento, persistencia::cargar_datos_json, persistencia::actualizar_json_monitoreo,  persistencia::obtener_roles_unicos,persistencia::obtener_instituciones_unicas};
 // Notificaciones.
 use notificaciones::{historial::guardar_historial, historial::leer_historial, historial::editar_historial, historial::actualizar_historial, historial::eliminar_historial, historial::enviar_historiales};
 use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento, leer_archivos::notificaciones_inicio_control, leer_archivos::notificaciones_inicio_seguimiento, leer_archivos::notificaciones_inicio_links};
@@ -44,6 +44,8 @@ fn main() {
             leer_excel_emparejamiento,
             cargar_datos_json,
             actualizar_json_monitoreo,
+            obtener_roles_unicos,
+            obtener_instituciones_unicas,
 
             /* NOTIFICACIONES */
             editar_historial,

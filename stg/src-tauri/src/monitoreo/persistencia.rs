@@ -405,6 +405,104 @@ pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut V
     }
 }
 
+#[tauri::command]
+pub fn obtener_roles_unicos() -> Result<Vec<String>, String> {
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
+    match std::fs::read_to_string(json_path) {
+        Ok(json_str) => {
+            match serde_json::from_str::<serde_json::Value>(&json_str) {
+                Ok(json_data) => {
+                    let mut roles = std::collections::HashSet::new();
+                    
+                    // Extraer roles de tutores
+                    if let Some(tutores) = json_data["tutores"].as_array() {
+                        for tutor in tutores {
+                            if let Some(rol) = tutor["rol"].as_str() {
+                                roles.insert(rol.to_string());
+                            }
+                        }
+                    }
+                    
+                    // Extraer roles de tutorados1
+                    if let Some(tutorados) = json_data["tutorado1"].as_array() {
+                        for tutorado in tutorados {
+                            if let Some(rol) = tutorado["rol"].as_str() {
+                                roles.insert(rol.to_string());
+                            }
+                        }
+                    }
+                    
+                    // Extraer roles de tutorados2
+                    if let Some(tutorados) = json_data["tutorado2"].as_array() {
+                        for tutorado in tutorados {
+                            if let Some(rol) = tutorado["rol"].as_str() {
+                                roles.insert(rol.to_string());
+                            }
+                        }
+                    }
+                    
+                    Ok(roles.into_iter().collect())
+                },
+                Err(e) => Err(format!("Error al parsear el JSON: {}", e))
+            }
+        },
+        Err(e) => Err(format!("Error al leer el archivo JSON: {}", e))
+    }
+}
+
+#[tauri::command]
+pub fn obtener_instituciones_unicas() -> Result<Vec<String>, String> {
+    let base_path = get_resource_path();
+    let json_path = base_path.join("monitoreo").join("monitoreo.json");
+
+    match std::fs::read_to_string(json_path) {
+        Ok(json_str) => {
+            match serde_json::from_str::<serde_json::Value>(&json_str) {
+                Ok(json_data) => {
+                    let mut instituciones = std::collections::HashSet::new();
+                    
+                    // Extraer instituciones de tutores
+                    if let Some(tutores) = json_data["tutores"].as_array() {
+                        for tutor in tutores {
+                            if let Some(institucion) = tutor["institucion"].as_str() {
+                                if !institucion.is_empty() {
+                                    instituciones.insert(institucion.to_string());
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Extraer instituciones de tutorados1
+                    if let Some(tutorados) = json_data["tutorado1"].as_array() {
+                        for tutorado in tutorados {
+                            if let Some(institucion) = tutorado["institucion"].as_str() {
+                                if !institucion.is_empty() {
+                                    instituciones.insert(institucion.to_string());
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Extraer instituciones de tutorados2
+                    if let Some(tutorados) = json_data["tutorado2"].as_array() {
+                        for tutorado in tutorados {
+                            if let Some(institucion) = tutorado["institucion"].as_str() {
+                                if !institucion.is_empty() {
+                                    instituciones.insert(institucion.to_string());
+                                }
+                            }
+                        }
+                    }
+                    
+                    Ok(instituciones.into_iter().collect())
+                },
+                Err(e) => Err(format!("Error al parsear el JSON: {}", e))
+            }
+        },
+        Err(e) => Err(format!("Error al leer el archivo JSON: {}", e))
+    }
+}
 
 

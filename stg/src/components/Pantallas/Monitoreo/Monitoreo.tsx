@@ -32,8 +32,21 @@ function Monitoreo() {
   const [textoEditado, setTextoEditado] = useState<string>("");
   const [usuarioSeleccionado, setUsuarioSeleccionado] = useState<any>(null);
   const [mostrarEmergente, setMostrarEmergente] = useState(false);
+  const [roles, setRoles] = useState<string[]>([]);
+  const [instituciones, setInstituciones] = useState<string[]>([]);
 
 
+  useEffect(() => {
+  // Cargar roles
+  invoke<string[]>("obtener_roles_unicos")
+    .then((response) => setRoles(response))
+    .catch((error) => console.error("Error al cargar roles:", error));
+  
+  // Cargar instituciones
+  invoke<string[]>("obtener_instituciones_unicas")
+    .then((response) => setInstituciones(response))
+    .catch((error) => console.error("Error al cargar instituciones:", error));
+}, []);
   useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoDer[]>("monitoreo_derecha")
@@ -427,19 +440,17 @@ function Monitoreo() {
       <div className="contenedor_PanelIzquierdo">
         <div className="opciones-izquierda">
           <select multiple>
-            <option value="objetos">Rol</option>
-            <option value="opción 1">Tutor</option>
-            <option value="opción 2">Prioridad</option>
-            <option value="opción 3">Emparejado</option>
-            <option value="opción 4">Control</option>
-          </select>
+  <option value="objetos">Rol</option>
+  {roles.map((rol, index) => (
+    <option key={index} value={rol}>{rol}</option>
+  ))}
+</select>
           <select multiple>
-            <option value="objetos">Institución</option>
-            <option value="opción 1">PUJ</option>
-            <option value="opción 2">Colegio 1</option>
-            <option value="opción 3">Colegio 2</option>
-            <option value="opción 4">Colegio 3</option>
-          </select>
+  <option value="objetos">Institución</option>
+  {instituciones.map((institucion, index) => (
+    <option key={index} value={institucion}>{institucion}</option>
+  ))}
+</select>
           <select multiple>
             <option value="objetos">Progreso</option>
             <option value="opción 1">100%</option>
