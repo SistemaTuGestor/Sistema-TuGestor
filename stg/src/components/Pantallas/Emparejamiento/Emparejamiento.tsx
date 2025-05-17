@@ -565,7 +565,7 @@ const handleDragEnd = (result: DropResult) => {
           onClick={seleccionarArchivo}
           style={{ flex: "1 1 160px", padding: "10px", fontSize: "16px" }}
         >
-          Seleccionar archivo Excel
+          Seleccionar hoja de cálculo
         </button>
 
 
