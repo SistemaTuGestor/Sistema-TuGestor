@@ -1,938 +1,938 @@
 {
-  "tutores": [
-    {
-      "nombre": "Nicolas",
-      "apellido": "Quintana",
-      "rol": "Tutor",
-      "telefono": "3045548660",
-      "correo": "quintana.nicolas@javeriana.edi.co",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
+    "tutores": [
         {
-          "nombre": "tarea2",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "Nicolas",
+            "apellido": "Quintana",
+            "rol": "Tutor",
+            "telefono": "3045548660",
+            "correo": "quintana.nicolas@javeriana.edi.co",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea2",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Javier ",
+            "apellido": "Echeverry",
+            "rol": "Tutor",
+            "telefono": "3128314004",
+            "correo": "jecheverry@javeriana.edu.co",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea3",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Javier ",
-      "apellido": "Echeverry",
-      "rol": "Tutor",
-      "telefono": "3128314004",
-      "correo": "jecheverry@javeriana.edu.co",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
-        {
-          "nombre": "tarea3",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "Andrea",
+            "apellido": "Torres",
+            "rol": "Tutor",
+            "telefono": "3102345678",
+            "correo": "andrea.torres@gmail.com",
+            "institucion": "Colegio San Carlos",
+            "tareas": [
+                {
+                    "nombre": "tarea4",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Santiago\t",
+            "apellido": "Díaz",
+            "rol": "Tutor",
+            "telefono": "3208765432",
+            "correo": "Prueba3@pruebmail.com",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea5",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "Andrea",
-      "apellido": "Torres",
-      "rol": "Tutor",
-      "telefono": "3102345678",
-      "correo": "andrea.torres@gmail.com",
-      "institucion": "Colegio San Carlos",
-      "tareas": [
-        {
-          "nombre": "tarea4",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "Valentina",
+            "apellido": "López",
+            "rol": "Tutor",
+            "telefono": "3159991212",
+            "correo": "valentina.lopez@javeriana.edu.co",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea6",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Mateo",
+            "apellido": "Fernández",
+            "rol": "Tutor",
+            "telefono": "3113334455",
+            "correo": "mateo.fernandez@.hotmail.com",
+            "institucion": "Colegio Rochester",
+            "tareas": [
+                {
+                    "nombre": "tarea7",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Santiago\t",
-      "apellido": "Díaz",
-      "rol": "Tutor",
-      "telefono": "3208765432",
-      "correo": "Prueba3@pruebmail.com",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
-        {
-          "nombre": "tarea5",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "Camila",
+            "apellido": "Rodríguez",
+            "rol": "Tutor",
+            "telefono": "3225556677",
+            "correo": "camila.rodriguez@javeriana.edu.co",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea8",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Daniel",
+            "apellido": "Pérez",
+            "rol": "Tutor",
+            "telefono": "3008889900",
+            "correo": "daniel.perez@gmail.com",
+            "institucion": "Colegio San Agustin",
+            "tareas": [
+                {
+                    "nombre": "tarea9",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Valentina",
-      "apellido": "López",
-      "rol": "Tutor",
-      "telefono": "3159991212",
-      "correo": "valentina.lopez@javeriana.edu.co",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
-        {
-          "nombre": "tarea6",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "Javier",
+            "apellido": "Gómez",
+            "rol": "Tutor",
+            "telefono": "3121112233",
+            "correo": "javier.gomez@javeriana.edu.co",
+            "institucion": "Pontificia Universidad Javeriana",
+            "tareas": [
+                {
+                    "nombre": "tarea10",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+            "nombre": "Ilian David ",
+            "apellido": "Gil Arévalo ",
+            "rol": "Tutor",
+            "telefono": "3214017464",
+            "correo": "ilian18are@gmail.com",
+            "institucion": "Colegio Bolivar",
+            "tareas": [
+                {
+                    "nombre": "tarea11",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         }
-      ],
-      "imagenes": [
+    ],
+    "tutorado1": [
         {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Entre semana de 6:00pm-8:00pm",
+            "cedula": "Miguel EsparzaT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Ejemplo1",
+                "3058829527"
+            ],
+            "correo": "quintana.nicolas@javeriana.edi.co",
+            "institucion": "1000477320",
+            "tareas": [
+                {
+                    "nombre": "tarea2",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Mateo",
-      "apellido": "Fernández",
-      "rol": "Tutor",
-      "telefono": "3113334455",
-      "correo": "mateo.fernandez@.hotmail.com",
-      "institucion": "Colegio Rochester",
-      "tareas": [
-        {
-          "nombre": "tarea7",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "Entre semana de 6:00pm-8:00pm",
+            "cedula": "Mariana CastroT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Bolivar",
+                "3117565623"
+            ],
+            "correo": "jecheverry@javeriana.edu.co",
+            "institucion": "1037883695",
+            "tareas": [
+                {
+                    "nombre": "tarea3",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Entre semana de 5:00pm-6:00pm",
+            "cedula": "Andrés RamírezT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Ejemplo1",
+                "3244716820"
+            ],
+            "correo": "andrea.torres@gmail.com",
+            "institucion": "1040872361",
+            "tareas": [
+                {
+                    "nombre": "tarea4",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Camila",
-      "apellido": "Rodríguez",
-      "rol": "Tutor",
-      "telefono": "3225556677",
-      "correo": "camila.rodriguez@javeriana.edu.co",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
-        {
-          "nombre": "tarea8",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "Sábados en la mañana",
+            "cedula": "Sofía FernándezT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Bolivar",
+                "3107589894"
+            ],
+            "correo": "Prueba3@pruebmail.com",
+            "institucion": "1040334221",
+            "tareas": [
+                {
+                    "nombre": "tarea5",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Entre semana de 4:00pm-5:00pm",
+            "cedula": "Juan PérezT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Ejemplo3",
+                "3243098774"
+            ],
+            "correo": "valentina.lopez@javeriana.edu.co",
+            "institucion": "1046716109",
+            "tareas": [
+                {
+                    "nombre": "tarea6",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Daniel",
-      "apellido": "Pérez",
-      "rol": "Tutor",
-      "telefono": "3008889900",
-      "correo": "daniel.perez@gmail.com",
-      "institucion": "Colegio San Agustin",
-      "tareas": [
-        {
-          "nombre": "tarea9",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "Entre semana de 4:00pm-5:00pm",
+            "cedula": "Valeria GómezT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Institución educativa distrital german vargas cantillo",
+                "3225962995"
+            ],
+            "correo": "mateo.fernandez@.hotmail.com",
+            "institucion": "1020316404",
+            "tareas": [
+                {
+                    "nombre": "tarea7",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Entre semana de 5:00pm-6:00pm",
+            "cedula": "Daniel RodríguezT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Gimnasio de la montaña",
+                "3294344455"
+            ],
+            "correo": "camila.rodriguez@javeriana.edu.co",
+            "institucion": "1137725488",
+            "tareas": [
+                {
+                    "nombre": "tarea8",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Javier",
-      "apellido": "Gómez",
-      "rol": "Tutor",
-      "telefono": "3121112233",
-      "correo": "javier.gomez@javeriana.edu.co",
-      "institucion": "Pontificia Universidad Javeriana",
-      "tareas": [
-        {
-          "nombre": "tarea10",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "Entre Semana de 3:00pm - 4:00pm",
+            "cedula": "Camila HerreraT",
+            "rol": "Tutorado",
+            "telefono": [
+                "Colegio Especial",
+                "3262122233"
+            ],
+            "correo": "daniel.perez@gmail.com",
+            "institucion": "1070753987",
+            "tareas": [
+                {
+                    "nombre": "tarea9",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "Sábados en la tarde",
+            "cedula": "Sebastián Torres",
+            "rol": "Tutorado",
+            "telefono": [
+                "",
+                "3249900112"
+            ],
+            "correo": "javier.gomez@javeriana.edu.co",
+            "institucion": "1070653287",
+            "tareas": [
+                {
+                    "nombre": "tarea10",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+            "nombre": "Entre semana de 2:00pm-3:00pm",
+            "cedula": "Daniel García",
+            "rol": "Tutorado",
+            "telefono": [
+                "German vargas cantillo",
+                "3023365321"
+            ],
+            "correo": "ilian18are@gmail.com",
+            "institucion": "1044655071",
+            "tareas": [
+                {
+                    "nombre": "tarea11",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Ilian David ",
-      "apellido": "Gil Arévalo ",
-      "rol": "Tutor",
-      "telefono": "3214017464",
-      "correo": "ilian18are@gmail.com",
-      "institucion": "Colegio Bolivar",
-      "tareas": [
+    ],
+    "tutorado2": [
         {
-          "nombre": "tarea11",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "3.1",
+            "cedula": "Sábados en la mañana",
+            "rol": "Tutorado",
+            "telefono": [
+                "Santiago AlbaT",
+                "1010944104"
+            ],
+            "correo": "Colegio Ejemplo1",
+            "institucion": "mañana",
+            "tareas": [
+                {
+                    "nombre": "tarea2",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "1.7",
+            "cedula": "Entre semana de 6:00pm-8:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "Natalia LópezT",
+                "1023456789"
+            ],
+            "correo": "Colegio Ejemplo1",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea3",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    }
-  ],
-  "tutorado1": [
-    {
-      "nombre": "Entre semana de 6:00pm-8:00pm",
-      "cedula": "Miguel EsparzaT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Ejemplo1",
-        "3058829527"
-      ],
-      "correo": "quintana.nicolas@javeriana.edi.co",
-      "institucion": "1000477320",
-      "tareas": [
-        {
-          "nombre": "tarea2",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "3.3",
+            "cedula": "Entre semana de 3:00pm-4:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "Diego VargasT",
+                "1122334455"
+            ],
+            "correo": "Colegio Ejemplo2",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea4",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "1.9",
+            "cedula": "Sábados en la mañana",
+            "rol": "Tutorado",
+            "telefono": [
+                "Andrea MoralesT",
+                "1234567890"
+            ],
+            "correo": "Colegio Victoria",
+            "institucion": "mañana",
+            "tareas": [
+                {
+                    "nombre": "tarea5",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "Entre semana de 6:00pm-8:00pm",
-      "cedula": "Mariana CastroT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Bolivar",
-        "3117565623"
-      ],
-      "correo": "jecheverry@javeriana.edu.co",
-      "institucion": "1037883695",
-      "tareas": [
-        {
-          "nombre": "tarea3",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
+            "nombre": "3.2",
+            "cedula": "Sábados en la tarde",
+            "rol": "Tutorado",
+            "telefono": [
+                "Mateo CastilloT",
+                "1098765432"
+            ],
+            "correo": "Colegio Ejemplo9",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea6",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "0.2",
+            "cedula": "Entre semana de 5:00pm-6:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "Laura RíosT",
+                "1000939523"
+            ],
+            "correo": "Institucion camilo vargas",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea7",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "Entre semana de 5:00pm-6:00pm",
-      "cedula": "Andrés RamírezT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Ejemplo1",
-        "3244716820"
-      ],
-      "correo": "andrea.torres@gmail.com",
-      "institucion": "1040872361",
-      "tareas": [
-        {
-          "nombre": "tarea4",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "3.2",
+            "cedula": "Entre semana de 3:00pm-4:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "Carlos MendozaT",
+                "1928412412"
+            ],
+            "correo": "Gimnasio de la montaña",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea8",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0.5
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+            "nombre": "3.6",
+            "cedula": "Entre semana de 5:00pm-6:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "",
+                ""
+            ],
+            "correo": "",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea9",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Sábados en la mañana",
-      "cedula": "Sofía FernándezT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Bolivar",
-        "3107589894"
-      ],
-      "correo": "Prueba3@pruebmail.com",
-      "institucion": "1040334221",
-      "tareas": [
-        {
-          "nombre": "tarea5",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+            "nombre": "3.7",
+            "cedula": "Entre semana de 3:00pm-4:00pm",
+            "rol": "Tutorado",
+            "telefono": [
+                "",
+                ""
+            ],
+            "correo": "",
+            "institucion": "Tarde",
+            "tareas": [
+                {
+                    "nombre": "tarea10",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": false
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": false
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 0
         },
         {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+            "nombre": "0",
+            "cedula": "Entre semana por la mañana",
+            "rol": "Tutorado",
+            "telefono": [
+                "",
+                ""
+            ],
+            "correo": "",
+            "institucion": "mañana",
+            "tareas": [
+                {
+                    "nombre": "tarea11",
+                    "descripcion": "Tarea importante !!!",
+                    "hecho": true
+                },
+                {
+                    "nombre": "Otra tarea mas",
+                    "descripcion": "Tarea igual de importante que la otra :3!!!",
+                    "hecho": true
+                }
+            ],
+            "imagenes": [
+                {
+                    "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
+                },
+                {
+                    "url": "C:\\Users\\Javier\\Diferente"
+                }
+            ],
+            "progreso": 1
         }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Entre semana de 4:00pm-5:00pm",
-      "cedula": "Juan PérezT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Ejemplo3",
-        "3243098774"
-      ],
-      "correo": "valentina.lopez@javeriana.edu.co",
-      "institucion": "1046716109",
-      "tareas": [
-        {
-          "nombre": "tarea6",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Entre semana de 4:00pm-5:00pm",
-      "cedula": "Valeria GómezT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Institución educativa distrital german vargas cantillo",
-        "3225962995"
-      ],
-      "correo": "mateo.fernandez@.hotmail.com",
-      "institucion": "1020316404",
-      "tareas": [
-        {
-          "nombre": "tarea7",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Entre semana de 5:00pm-6:00pm",
-      "cedula": "Daniel RodríguezT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Gimnasio de la montaña",
-        "3294344455"
-      ],
-      "correo": "camila.rodriguez@javeriana.edu.co",
-      "institucion": "1137725488",
-      "tareas": [
-        {
-          "nombre": "tarea8",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Entre Semana de 3:00pm - 4:00pm",
-      "cedula": "Camila HerreraT",
-      "rol": "Tutorado",
-      "telefono": [
-        "Colegio Especial",
-        "3262122233"
-      ],
-      "correo": "daniel.perez@gmail.com",
-      "institucion": "1070753987",
-      "tareas": [
-        {
-          "nombre": "tarea9",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "Sábados en la tarde",
-      "cedula": "Sebastián Torres",
-      "rol": "Tutorado",
-      "telefono": [
-        "",
-        "3249900112"
-      ],
-      "correo": "javier.gomez@javeriana.edu.co",
-      "institucion": "1070653287",
-      "tareas": [
-        {
-          "nombre": "tarea10",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "Entre semana de 2:00pm-3:00pm",
-      "cedula": "Daniel García",
-      "rol": "Tutorado",
-      "telefono": [
-        "German vargas cantillo",
-        "3023365321"
-      ],
-      "correo": "ilian18are@gmail.com",
-      "institucion": "1044655071",
-      "tareas": [
-        {
-          "nombre": "tarea11",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    }
-  ],
-  "tutorado2": [
-    {
-      "nombre": "3.1",
-      "cedula": "Sábados en la mañana",
-      "rol": "Tutorado",
-      "telefono": [
-        "Santiago AlbaT",
-        "1010944104"
-      ],
-      "correo": "Colegio Ejemplo1",
-      "institucion": "mañana",
-      "tareas": [
-        {
-          "nombre": "tarea2",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "1.7",
-      "cedula": "Entre semana de 6:00pm-8:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "Natalia LópezT",
-        "1023456789"
-      ],
-      "correo": "Colegio Ejemplo1",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea3",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "3.3",
-      "cedula": "Entre semana de 3:00pm-4:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "Diego VargasT",
-        "1122334455"
-      ],
-      "correo": "Colegio Ejemplo2",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea4",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "1.9",
-      "cedula": "Sábados en la mañana",
-      "rol": "Tutorado",
-      "telefono": [
-        "Andrea MoralesT",
-        "1234567890"
-      ],
-      "correo": "Colegio Victoria",
-      "institucion": "mañana",
-      "tareas": [
-        {
-          "nombre": "tarea5",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "3.2",
-      "cedula": "Sábados en la tarde",
-      "rol": "Tutorado",
-      "telefono": [
-        "Mateo CastilloT",
-        "1098765432"
-      ],
-      "correo": "Colegio Ejemplo9",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea6",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "0.2",
-      "cedula": "Entre semana de 5:00pm-6:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "Laura RíosT",
-        "1000939523"
-      ],
-      "correo": "Institucion camilo vargas",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea7",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    },
-    {
-      "nombre": "3.2",
-      "cedula": "Entre semana de 3:00pm-4:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "Carlos MendozaT",
-        "1928412412"
-      ],
-      "correo": "Gimnasio de la montaña",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea8",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.5
-    },
-    {
-      "nombre": "3.6",
-      "cedula": "Entre semana de 5:00pm-6:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "",
-        ""
-      ],
-      "correo": "",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea9",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "3.7",
-      "cedula": "Entre semana de 3:00pm-4:00pm",
-      "rol": "Tutorado",
-      "telefono": [
-        "",
-        ""
-      ],
-      "correo": "",
-      "institucion": "Tarde",
-      "tareas": [
-        {
-          "nombre": "tarea10",
-          "descripcion": "Tarea importante !!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 0.0
-    },
-    {
-      "nombre": "0",
-      "cedula": "Entre semana por la mañana",
-      "rol": "Tutorado",
-      "telefono": [
-        "",
-        ""
-      ],
-      "correo": "",
-      "institucion": "mañana",
-      "tareas": [
-        {
-          "nombre": "tarea11",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
-        },
-        {
-          "nombre": "Otra tarea mas",
-          "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        }
-      ],
-      "imagenes": [
-        {
-          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
-        },
-        {
-          "url": "C:\\Users\\Javier\\Diferente"
-        }
-      ],
-      "progreso": 1.0
-    }
-  ]
+    ]
 }
