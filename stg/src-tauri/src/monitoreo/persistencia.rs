@@ -6,7 +6,7 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
-use uuid::Uuid;
+
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tarea {
