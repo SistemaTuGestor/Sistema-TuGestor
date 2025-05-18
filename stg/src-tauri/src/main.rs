@@ -12,11 +12,21 @@ mod servicios;
 // Servicios.
 use servicios::tarea::monitoreo_enviar_tarea;
 // Monitoreo.
-use monitoreo::{izquierda::monitoreo_izquierda, derecha::monitoreo_derecha, persistencia::leer_excel_emparejamiento, persistencia::cargar_datos_json, persistencia::actualizar_json_monitoreo,  persistencia::obtener_roles_unicos,persistencia::obtener_instituciones_unicas};
+use monitoreo::{izquierda::monitoreo_izquierda, derecha::monitoreo_derecha, persistencia::leer_excel_emparejamiento, persistencia::actualizar_json_monitoreo,  persistencia::obtener_roles_unicos, persistencia::obtener_instituciones_unicas};
+use monitoreo::persistencia::{cargar_datos_json,agregar_tarea_y_guardar,agregar_imagen_y_guardar,eliminar_item_monitoreo,editar_item_monitoreo,toggle_hecho_monitoreo};
 // Notificaciones.
 use notificaciones::{historial::guardar_historial, historial::leer_historial, historial::editar_historial, historial::actualizar_historial, historial::eliminar_historial, historial::enviar_historiales};
-use notificaciones::{leer_archivos::notificaciones_inicio_emparejamiento, leer_archivos::notificaciones_inicio_control, leer_archivos::notificaciones_inicio_seguimiento, leer_archivos::notificaciones_inicio_links};
-use notificaciones::{leer_archivos::leer_archivo_emparejados, leer_archivos::leer_archivo_control, leer_archivos::generar_tutores, leer_archivos::init_path_pruebas, leer_archivos::generar_tutores_enlaces};
+use notificaciones::leer_archivos::{
+    notificaciones_inicio_emparejamiento,
+    notificaciones_inicio_control,
+    notificaciones_inicio_seguimiento,
+    notificaciones_inicio_links,
+    leer_archivo_emparejados,
+    generar_tutores,
+    generar_tutores_enlaces,
+    init_path_pruebas,
+    leer_archivo_control,
+};
 use notificaciones::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_mensajes_desde_json,whatsapp::exportar_mensajes_a_excel};
 
 // Reportes.
@@ -46,6 +56,11 @@ fn main() {
             actualizar_json_monitoreo,
             obtener_roles_unicos,
             obtener_instituciones_unicas,
+            agregar_tarea_y_guardar,
+            agregar_imagen_y_guardar,
+            eliminar_item_monitoreo,
+            editar_item_monitoreo,
+            toggle_hecho_monitoreo,
 
             /* NOTIFICACIONES */
             editar_historial,
