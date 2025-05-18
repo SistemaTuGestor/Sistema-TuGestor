@@ -17,44 +17,22 @@ function Reportes() {
 
   const [fechaLee, setFechaLee] = useState("");
 
-  useEffect(() => {
-    invoke<{ fecha: string }>("obtener_fecha")
-      .then((response) => setFechaLee(response.fecha))
-      .catch((err) => console.error("Failed to fetch date:", err));
-  }, []);
-
+  
   const [fechaPUJ, setFechaPUJ] = useState("");
 
-  useEffect(() => {
-    invoke<{ fecha: string }>("obtener_fecha")
-      .then((response) => setFechaPUJ(response.fecha))
-      .catch((err) => console.error("Failed to fetch date:", err));
-  }, []);
+  
 
   const [fechaColegios, setFechaColegios] = useState("");
 
-  useEffect(() => {
-    invoke<{ fecha: string }>("obtener_fecha")
-      .then((response) => setFechaColegios(response.fecha))
-      .catch((err) => console.error("Failed to fetch date:", err));
-  }, []);
+
 
   const [fechaConstanciasTutores, setFechaConstanciasTutores] = useState("");
 
-  useEffect(() => {
-    invoke<{ fecha: string }>("obtener_fecha")
-      .then((response) => setFechaConstanciasTutores(response.fecha))
-      .catch((err) => console.error("Failed to fetch date:", err));
-  }, []);
+  
 
   const [fechaConstanciasTutorados, setFechaConstanciasTutorados] = useState("");
 
-  useEffect(() => {
-    invoke<{ fecha: string }>("obtener_fecha")
-      .then((response) => setFechaConstanciasTutorados(response.fecha))
-      .catch((err) => console.error("Failed to fetch date:", err));
-  }, []);
-
+  
 
   //// Apertura de explorador de archivos para XLSX de Emparejamiento en LEE.
 
@@ -384,193 +362,262 @@ function Reportes() {
 
   const evento_clickGenerar = async (seccioon: string) => {
 
-    if (seccioon === "LEE") {
+  if (seccioon === "LEE") {
 
+    if (folderPath_LEE === "Ubicación de formularios" || archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento" || !fechaLee || fechaLee.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
       if (folderPath_LEE === "Ubicación de formularios") {
-        alert(`Por favor, selecciona un directorio de formularios antes de generar el reporte de ` + seccioon + `.`);
-        setEmergenteVisible(false);
+        mensaje += "\n- Directorio de formularios";
+      }
+      
+      if (archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento") {
+        mensaje += "\n- Archivo de emparejamiento";
+      }
+      
+      if (!fechaLee || fechaLee.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Excel Files", extensions: ["xlsx"] }]
+      });
+
+      if (filePath) {
+        // await invoke ( "reportes_lee_actualizarfecha",{nueva_fecha:fechaLee} ) ;
+        await invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reportes_lee_leer_archivos_en_carpeta");
+        setDirectorioReporteLee(filePath);
+        setNombreReporteLee(filePath.split(/[\\/]/).pop() || "Nombre del reporte");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
         return;
       }
 
-      try {
+    } catch (error) {
 
-        const filePath = await save({
-          defaultPath: seccioon,
-          filters: [{ name: "Excel Files", extensions: ["xlsx"] }]
-        });
-
-        if (filePath) {
-          // await invoke ( "reportes_lee_actualizarfecha",{nueva_fecha:fechaLee} ) ;
-          await invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: filePath });
-          await invoke("reportes_lee_leer_archivos_en_carpeta");
-          setDirectorioReporteLee(filePath);
-          setNombreReporteLee(filePath.split(/[\\/]/).pop() || "Nombre del reporte");
-          alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
-        } else {
-          alert(`¡Generación de ` + seccioon + ` cancelada!`);
-          return;
-        }
-
-      } catch (error) {
-
-        alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
-      }
-
-    } else if (seccioon === "PUJ") {
-
-      if (plantillaPath_PUJ === "Ubicación de plantilla") {
-        alert(`Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de ` + seccioon + `.`);
-        setEmergenteVisible(false);
-        return;
-      }
-
-      try {
-
-        const filePath = await save({
-          defaultPath: seccioon,
-          filters: [{ name: "Word Files", extensions: ["docx"] }]
-        });
-
-        if (filePath) {
-          // Leer estudiantes aprobados.
-          const estudiantesAprobados = await invoke<string[]>("reportes_puj_leer_universitarios_aprobados");
-          if (estudiantesAprobados.length === 0) {
-            alert(`No hay tutores aprobados para generar el reporte.`);
-            return;
-          }
-          // await invoke ( "reportes_puj_actualizarfecha",{nueva_fecha:fechaPUJ} ) ;
-          await invoke("reportes_puj_recibir_nombrereporte", { nombrereporte: filePath });
-          await invoke("reporte_puj_generar", { estudiantes: estudiantesAprobados });
-          setDirectorioReportePUJ(filePath);
-          setNombreReportePUJ(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
-          alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
-        } else {
-          alert(`¡Generación de ` + seccioon + ` cancelada!`);
-          return;
-        }
-
-      } catch (error) {
-
-        alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
-      }
-
-    } else if (seccioon === "Colegios") {
-
-      if (plantillaPath_Colegios === "Ubicación de plantilla") {
-        alert(`Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de ` + seccioon + `.`);
-        setEmergenteVisible(false);
-        return;
-      }
-
-      try {
-
-        const filePath = await save({
-          defaultPath: seccioon,
-          filters: [{ name: "Word Files", extensions: ["docx"] }]
-        });
-
-        if (filePath) {
-          // Leer estudiantes aprobados
-          const estudiantesAprobados = await invoke<string[]>("reportes_colegios_leer_estudiantes_aprobados");
-          if (estudiantesAprobados.length === 0) {
-            alert("No hay tutores aprobados para generar el reporte.");
-            return;
-          }
-          // await invoke ( "reportes_colegios_actualizarfecha",{nueva_fecha:fechaColegios} ) ;
-          await invoke("reportes_colegios_recibir_nombrereporte", { nombrereporte: filePath });
-          await invoke("reportes_colegios_generar", { estudiantes: estudiantesAprobados });
-          setDirectorioReporteColegios(filePath);
-          setNombreReporteColegios(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
-          alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
-        } else {
-          alert(`¡Generación de ` + seccioon + ` cancelada!`);
-          return;
-        }
-
-      } catch (error) {
-
-        alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
-      }
-
-    } else if (seccioon === "Tutores") {
-
-      if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla") {
-        alert(`Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de ` + seccioon + `.`);
-        setEmergenteVisible(false);
-        return;
-      }
-
-      try {
-
-        const dirPath = await open({
-          directory: true,  // Permite seleccionar una carpeta.
-          multiple: false,  // Solo permite seleccionar una.
-        });
-
-        if (dirPath) {
-          // await invoke ( "reportes_constanciastutores_actualizarfecha",{nueva_fecha:fechaConstanciasTutores} ) ;
-          await invoke("reportes_constanciastutores_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
-          await invoke("reportes_constanciastutores_generar");
-          setDirectorioReporteConstanciasTutores(dirPath.toString());
-          setNombreReporteConstanciasTutores("Constancia Tutor");
-          alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
-        } else {
-          alert(`¡Generación de ` + seccioon + ` cancelada!`);
-          return;
-        }
-
-      } catch (error) {
-
-        alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
-      }
-
-    } else if (seccioon === "Tutorados") {
-
-      if (plantillaPath_ConstanciasTutorados === "Ubicación de plantilla") {
-        alert(`Por favor, selecciona una plantilla de constancias para tutorados antes de generar el reporte de ` + seccioon + `.`);
-        setEmergenteVisible(false);
-        return;
-      }
-
-      try {
-
-        const dirPath = await open({
-          directory: true,  // Permite seleccionar una carpeta.
-          multiple: false,  // Solo permite seleccionar una.
-        });
-
-        if (dirPath) {
-          // await invoke ( "reportes_constanciastutorados_actualizarfecha",{nueva_fecha:fechaConstanciasTutorados} ) ;
-          await invoke("reportes_constanciastutorados_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
-          await invoke("reportes_constanciastutorados_generar");
-          setDirectorioReporteConstanciasTutorados(dirPath.toString());
-          setNombreReporteConstanciasTutorados("Constancia Tutorado");
-          alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
-        } else {
-          alert(`¡Generación de ` + seccioon + ` cancelada!`);
-          return;
-        }
-
-      } catch (error) {
-
-        alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
-      }
-
-    } else {
-
-      alert(`¡Error en la selección de sección!`);
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
 
     }
 
-    setEmergenteVisible(true);
+  } else if (seccioon === "PUJ") {
 
-  };
+    if (plantillaPath_PUJ === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaPUJ || fechaPUJ.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_PUJ === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaPUJ || fechaPUJ.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
 
+    try {
+
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
+      });
+
+      if (filePath) {
+        // Leer estudiantes aprobados.
+        const estudiantesAprobados = await invoke<string[]>("reportes_puj_leer_universitarios_aprobados");
+        if (estudiantesAprobados.length === 0) {
+          alert(`No hay tutores aprobados para generar el reporte.`);
+          return;
+        }
+        // await invoke ( "reportes_puj_actualizarfecha",{nueva_fecha:fechaPUJ} ) ;
+        await invoke("reportes_puj_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reporte_puj_generar", { estudiantes: estudiantesAprobados });
+        setDirectorioReportePUJ(filePath);
+        setNombreReportePUJ(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Colegios") {
+
+    if (plantillaPath_Colegios === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaColegios || fechaColegios.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_Colegios === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaColegios || fechaColegios.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
+      });
+
+      if (filePath) {
+        // Leer estudiantes aprobados
+        const estudiantesAprobados = await invoke<string[]>("reportes_colegios_leer_estudiantes_aprobados");
+        if (estudiantesAprobados.length === 0) {
+          alert("No hay tutores aprobados para generar el reporte.");
+          return;
+        }
+        // await invoke ( "reportes_colegios_actualizarfecha",{nueva_fecha:fechaColegios} ) ;
+        await invoke("reportes_colegios_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reportes_colegios_generar", { estudiantes: estudiantesAprobados });
+        setDirectorioReporteColegios(filePath);
+        setNombreReporteColegios(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Tutores") {
+
+    if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const dirPath = await open({
+        directory: true,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
+
+      if (dirPath) {
+        // await invoke ( "reportes_constanciastutores_actualizarfecha",{nueva_fecha:fechaConstanciasTutores} ) ;
+        await invoke("reportes_constanciastutores_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
+        await invoke("reportes_constanciastutores_generar");
+        setDirectorioReporteConstanciasTutores(dirPath.toString());
+        setNombreReporteConstanciasTutores("Constancia Tutor");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Tutorados") {
+
+    if (plantillaPath_ConstanciasTutorados === "Ubicación de plantilla" || archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento" || !fechaConstanciasTutorados || fechaConstanciasTutorados.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_ConstanciasTutorados === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento") {
+        mensaje += "\n- Archivo de emparejamiento";
+      }
+      
+      if (!fechaConstanciasTutorados || fechaConstanciasTutorados.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const dirPath = await open({
+        directory: true,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
+
+      if (dirPath) {
+        // await invoke ( "reportes_constanciastutorados_actualizarfecha",{nueva_fecha:fechaConstanciasTutorados} ) ;
+        await invoke("reportes_constanciastutorados_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
+        await invoke("reportes_constanciastutorados_generar");
+        setDirectorioReporteConstanciasTutorados(dirPath.toString());
+        setNombreReporteConstanciasTutorados("Constancia Tutorado");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else {
+
+    alert(`¡Error en la selección de sección!`);
+
+  }
+
+  setEmergenteVisible(true);
+
+};
   const evento_clickVerificar = () => {
     handleFileClick();
     setEmergenteVisible(true);

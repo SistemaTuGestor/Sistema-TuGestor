@@ -198,6 +198,7 @@ useEffect(() => {
       TELE2_T1:       f.tele2Tutorado1 !== "VACÍO" ? f.tele2Tutorado1 : "",
       CONTACTO_T1:    f.contactoTutorado1 !== "VACÍO" ? f.contactoTutorado1 : "",
       MATERIA_T1:      f.materiaTutorado1       !== "VACÍO" ? f.materiaTutorado1        : "",
+      becartiotutor: f.becariotutor !== "VACÍO" ? f.becariotutor : "",
       VOCABULARIO_T1: f.vocabulariotutorado1 !== "VACÍO" ? f.vocabulariotutorado1 : "",
       GRAMATICA_T1:   f.gramaticatutorado1 !== "VACÍO" ? f.gramaticatutorado1 : "",
       ESCUCHA_T1:     f.escuchatutorado1 !== "VACÍO" ? f.escuchatutorado1 : "",
@@ -556,17 +557,10 @@ const handleDragEnd = (result: DropResult) => {
   return (
     <div className="emparejamiento">
       <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "15px" }}>
+        <button onClick={seleccionarArchivo} style={{ flex: "1 1 160px", padding: "10px", fontSize: "16px" }}>Seleccionar hoja de cálculo</button>
         <button onClick={emparejamientoAutomatico} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Emparejamiento Automático</button>
+        <button onClick={() => {localStorage.removeItem("emparejamientoData");window.location.reload();}}>Reiniciar Tabla</button>
         <button onClick={exportarAExcel} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Exportar a Excel</button>
-        <button onClick={() => {localStorage.removeItem("emparejamientoData");
-        window.location.reload();
-        }}>Reiniciar Tabla</button>
-        <button
-          onClick={seleccionarArchivo}
-          style={{ flex: "1 1 160px", padding: "10px", fontSize: "16px" }}
-        >
-          Seleccionar hoja de cálculo
-        </button>
 
 
 

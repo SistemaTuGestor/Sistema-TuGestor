@@ -240,6 +240,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
+        println!("Vocabulario: {:?}", vocabulariotutorado1);
         let gramaticatutorado1 = row.get(18)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
