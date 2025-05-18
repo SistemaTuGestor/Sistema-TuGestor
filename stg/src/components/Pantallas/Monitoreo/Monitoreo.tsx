@@ -37,125 +37,125 @@ function Monitoreo() {
   const [roles, setRoles] = useState<string[]>([]);
   const [instituciones, setInstituciones] = useState<string[]>([]);
   const [filtroRol, setFiltroRol] = useState<string[]>([]);
-const [filtroInstitucion, setFiltroInstitucion] = useState<string[]>([]);
-const [filtroProgreso, setFiltroProgreso] = useState<string | null>(null);
-const [textoBusqueda, setTextoBusqueda] = useState<string>("");
+  const [filtroInstitucion, setFiltroInstitucion] = useState<string[]>([]);
+  const [filtroProgreso, setFiltroProgreso] = useState<string | null>(null);
+  const [textoBusqueda, setTextoBusqueda] = useState<string>("");
 
-// Función para manejar la selección de roles
-const handleRolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const options = e.target.options;
-  const selectedValues = [];
-  
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].selected && options[i].value !== "objetos") {
-      selectedValues.push(options[i].value);
-    }
-  }
-  
-  setFiltroRol(selectedValues);
-};
+  // Función para manejar la selección de roles
+  const handleRolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = e.target.options;
+    const selectedValues = [];
 
-// Función para manejar la selección de instituciones
-const handleInstitucionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const options = e.target.options;
-  const selectedValues = [];
-  
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].selected && options[i].value !== "objetos") {
-      selectedValues.push(options[i].value);
-    }
-  }
-  
-  setFiltroInstitucion(selectedValues);
-};
-
-// Función para manejar la selección de progreso
-const handleProgresoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  const options = e.target.options;
-  let selectedValue = null;
-  
-  for (let i = 0; i < options.length; i++) {
-    if (options[i].selected && options[i].value !== "objetos") {
-      selectedValue = options[i].value;
-      break;
-    }
-  }
-  
-  setFiltroProgreso(selectedValue);
-};
-
-// Función para filtrar los datos según los criterios seleccionados
-const getDatosFiltrados = () => {
-  return datosOriginales.filter(persona => {
-    // Filtro por rol
-    if (filtroRol.length > 0 && !filtroRol.includes(persona.rol)) {
-      return false;
-    }
-    
-    // Filtro por institución
-    if (filtroInstitucion.length > 0 && !filtroInstitucion.includes(persona.institucion)) {
-      return false;
-    }
-    
-    // Filtro por progreso
-    if (filtroProgreso) {
-      const progresoNumerico = parseFloat(filtroProgreso);
-      if (!isNaN(progresoNumerico)) {
-        if (filtroProgreso === "nulo") {
-          if (persona.progreso !== undefined && persona.progreso !== null) {
-            return false;
-          }
-        } else if (Math.abs((persona.progreso || 0) * 100 - progresoNumerico) > 10) {
-          return false;
-        }
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected && options[i].value !== "objetos") {
+        selectedValues.push(options[i].value);
       }
     }
-    
-    // Filtro por texto de búsqueda
-    if (textoBusqueda.trim() !== "") {
-      const busqueda = textoBusqueda.toLowerCase();
-      const camposBusqueda = [
-        persona.nombre?.toLowerCase(),
-        persona.apellido?.toLowerCase(),
-        persona.id?.toLowerCase(),
-        persona.correo?.toLowerCase(),
-        persona.institucion?.toLowerCase(),
-        Array.isArray(persona.telefono) 
-          ? persona.telefono.join(' ') 
-          : persona.telefono?.toString()
-      ].join(' ');
 
-      return camposBusqueda.includes(busqueda);
+    setFiltroRol(selectedValues);
+  };
+
+  // Función para manejar la selección de instituciones
+  const handleInstitucionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = e.target.options;
+    const selectedValues = [];
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected && options[i].value !== "objetos") {
+        selectedValues.push(options[i].value);
+      }
     }
-    
-    return true;
-  }).map((persona) => ({
-    id: persona.id,
-    rol: persona.rol,
-    teleefono: Array.isArray(persona.telefono) 
-      ? persona.telefono[0] 
-      : persona.telefono || '',
-    email: persona.correo,
-    nombre: [persona.nombre, persona.apellido].filter(Boolean).join(' '),
-    institucion: persona.institucion
-  }));
-};
 
-// Modificado para usar esta función al renderizar
-const datosFiltrados = getDatosFiltrados();
+    setFiltroInstitucion(selectedValues);
+  };
+
+  // Función para manejar la selección de progreso
+  const handleProgresoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const options = e.target.options;
+    let selectedValue = null;
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected && options[i].value !== "objetos") {
+        selectedValue = options[i].value;
+        break;
+      }
+    }
+
+    setFiltroProgreso(selectedValue);
+  };
+
+  // Función para filtrar los datos según los criterios seleccionados
+  const getDatosFiltrados = () => {
+    return datosOriginales.filter(persona => {
+      // Filtro por rol
+      if (filtroRol.length > 0 && !filtroRol.includes(persona.rol)) {
+        return false;
+      }
+
+      // Filtro por institución
+      if (filtroInstitucion.length > 0 && !filtroInstitucion.includes(persona.institucion)) {
+        return false;
+      }
+
+      // Filtro por progreso
+      if (filtroProgreso) {
+        const progresoNumerico = parseFloat(filtroProgreso);
+        if (!isNaN(progresoNumerico)) {
+          if (filtroProgreso === "nulo") {
+            if (persona.progreso !== undefined && persona.progreso !== null) {
+              return false;
+            }
+          } else if (Math.abs((persona.progreso || 0) * 100 - progresoNumerico) > 10) {
+            return false;
+          }
+        }
+      }
+
+      // Filtro por texto de búsqueda
+      if (textoBusqueda.trim() !== "") {
+        const busqueda = textoBusqueda.toLowerCase();
+        const camposBusqueda = [
+          persona.nombre?.toLowerCase(),
+          persona.apellido?.toLowerCase(),
+          persona.id?.toLowerCase(),
+          persona.correo?.toLowerCase(),
+          persona.institucion?.toLowerCase(),
+          Array.isArray(persona.telefono)
+            ? persona.telefono.join(' ')
+            : persona.telefono?.toString()
+        ].join(' ');
+
+        return camposBusqueda.includes(busqueda);
+      }
+
+      return true;
+    }).map((persona) => ({
+      id: persona.id,
+      rol: persona.rol,
+      teleefono: Array.isArray(persona.telefono)
+        ? persona.telefono[0]
+        : persona.telefono || '',
+      email: persona.correo,
+      nombre: [persona.nombre, persona.apellido].filter(Boolean).join(' '),
+      institucion: persona.institucion
+    }));
+  };
+
+  // Modificado para usar esta función al renderizar
+  const datosFiltrados = getDatosFiltrados();
 
 
   useEffect(() => {
-  // Cargar roles
-  invoke<string[]>("obtener_roles_unicos")
-    .then((response) => setRoles(response))
-    .catch((error) => console.error("Error al cargar roles:", error));
-  
-  // Cargar instituciones
-  invoke<string[]>("obtener_instituciones_unicas")
-    .then((response) => setInstituciones(response))
-    .catch((error) => console.error("Error al cargar instituciones:", error));
-}, []);
+    // Cargar roles
+    invoke<string[]>("obtener_roles_unicos")
+      .then((response) => setRoles(response))
+      .catch((error) => console.error("Error al cargar roles:", error));
+
+    // Cargar instituciones
+    invoke<string[]>("obtener_instituciones_unicas")
+      .then((response) => setInstituciones(response))
+      .catch((error) => console.error("Error al cargar instituciones:", error));
+  }, []);
   useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoDer[]>("monitoreo_derecha")
@@ -181,7 +181,7 @@ const datosFiltrados = getDatosFiltrados();
     invoke("cargar_datos_json")
       .then((res) => {
         const jsonData = JSON.parse(res as string);
-        
+
 
         const mapPersona = (p: any): DatosMonitoreoIzq => ({
           id: `Usuario ${p.id}`,
@@ -541,8 +541,8 @@ const datosFiltrados = getDatosFiltrados();
   };
 
   const handleEnviarItem = async (index: number) => {
-    await invoke("monitoreo_enviar_tarea", {nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion});
-    
+    await invoke("monitoreo_enviar_tarea", { nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion });
+
   };
 
   const handleToggleHecho = async (taskName: string) => {
@@ -628,60 +628,60 @@ const datosFiltrados = getDatosFiltrados();
   return (
     <div className="monitoreo">
       <div className="contenedor_PanelIzquierdo">
-       {/* Panel izquierdo con filtros */}
-<div className="opciones-izquierda">
-  <select multiple onChange={handleRolChange}>
-    <option value="objetos">Rol</option>
-    {roles.map((rol, index) => (
-      <option key={index} value={rol}>{rol}</option>
-    ))}
-  </select>
-  <select multiple onChange={handleInstitucionChange}>
-    <option value="objetos">Institución</option>
-    {instituciones.map((institucion, index) => (
-      <option key={index} value={institucion}>{institucion}</option>
-    ))}
-  </select>
-  <select multiple onChange={handleProgresoChange}>
-    <option value="objetos">Progreso</option>
-    <option value="100">100%</option>
-    <option value="80">80%</option>
-    <option value="60">60%</option>
-    <option value="40">40%</option>
-    <option value="20">20%</option>
-    <option value="0">0%</option>
-    <option value="nulo">nulo</option>
-  </select>
-</div>
-<div className="opciones-izquierda">
-  <input
-    type="text"
-    placeholder="Buscar"
-    className="barra-buusqueda"
-    value={textoBusqueda}
-    onChange={(e) => setTextoBusqueda(e.target.value)}
-  />
-</div>
-<div className="desplazadora">
-  {datosFiltrados.map((row, index) => (
-    <div
-      key={index}
-      className="casilla"
-      onClick={() => handleCasillaClick(row)}
-      style={{ cursor: 'pointer' }}
-    >
-      <div className="header-usuario">
-        <p className="rol-id">{row.rol} · ID: {row.id}</p>
-        <p className="nombre">{row.nombre}</p>
-      </div>
-      <div className="detalles">
-        <p className="institucion">Institución: {row.institucion}</p>
-        <p className="contacto">Teléfono: {row.teleefono}</p>
-        <p className="email">Email: {row.email}</p>
-      </div>
-    </div>
-  ))}
-</div>
+        {/* Panel izquierdo con filtros */}
+        <div className="opciones-izquierda">
+          <select multiple onChange={handleRolChange}>
+            <option value="objetos">Rol</option>
+            {roles.map((rol, index) => (
+              <option key={index} value={rol}>{rol}</option>
+            ))}
+          </select>
+          <select multiple onChange={handleInstitucionChange}>
+            <option value="objetos">Institución</option>
+            {instituciones.map((institucion, index) => (
+              <option key={index} value={institucion}>{institucion}</option>
+            ))}
+          </select>
+          <select multiple onChange={handleProgresoChange}>
+            <option value="objetos">Progreso</option>
+            <option value="100">100%</option>
+            <option value="80">80%</option>
+            <option value="60">60%</option>
+            <option value="40">40%</option>
+            <option value="20">20%</option>
+            <option value="0">0%</option>
+            <option value="nulo">nulo</option>
+          </select>
+        </div>
+        <div className="opciones-izquierda">
+          <input
+            type="text"
+            placeholder="Buscar"
+            className="barra-buusqueda"
+            value={textoBusqueda}
+            onChange={(e) => setTextoBusqueda(e.target.value)}
+          />
+        </div>
+        <div className="desplazadora">
+          {datosFiltrados.map((row, index) => (
+            <div
+              key={index}
+              className="casilla"
+              onClick={() => handleCasillaClick(row)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="header-usuario">
+                <p className="rol-id">{row.rol} · ID: {row.id}</p>
+                <p className="nombre">{row.nombre}</p>
+              </div>
+              <div className="detalles">
+                <p className="institucion">Institución: {row.institucion}</p>
+                <p className="contacto">Teléfono: {row.teleefono}</p>
+                <p className="email">Email: {row.email}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="contenedor_PanelDerecho">
@@ -692,12 +692,12 @@ const datosFiltrados = getDatosFiltrados();
             const isEditing = editandoIndex === actualIndex;
 
             // Buscar si la tarea está hecha
-            let checked = false;
-            if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
-              const taskName = row.registro.split(":")[0].trim();
-              const tarea = usuarioSeleccionado.tareas.find((t: any) => t.nombre === taskName);
-              checked = tarea ? tarea.hecho : false;
-            }
+            // let checked = false;
+            // if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
+            //   const taskName = row.registro.split(":")[0].trim();
+            //   const tarea = usuarioSeleccionado.tareas.find((t: any) => t.nombre === taskName);
+            //   checked = tarea ? tarea.hecho : false;
+            // }
 
             return (
               <div
@@ -717,11 +717,41 @@ const datosFiltrados = getDatosFiltrados();
                   {esTarea && (
                     <input
                       type="checkbox"
-                      checked={checked}
-                      onChange={() => {
-                        if (esTarea) {
+                      checked={(() => {
+                        // Obtener el estado actual de la tarea desde usuarioSeleccionado
+                        if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
                           const taskName = row.registro.split(":")[0].trim();
-                          handleToggleHecho(taskName);
+                          const tarea = usuarioSeleccionado.tareas.find(
+                            (t: any) => t.nombre === taskName
+                          );
+                          return tarea ? tarea.hecho : false;
+                        }
+                        return false;
+                      })()}
+                      onChange={async () => {
+                        try {
+                          const taskName = row.registro.split(":")[0].trim();
+                          const result = await invoke("toggle_hecho_monitoreo", {
+                            correo: usuarioSeleccionado.correo,
+                            nombreTarea: taskName
+                          });
+                          const jsonResponse = await invoke("cargar_datos_json");
+                          const jsonData = JSON.parse(jsonResponse as string);
+                          const personas = [
+                            ...jsonData.tutores,
+                            ...jsonData.tutorado1,
+                            ...jsonData.tutorado2
+                          ];
+                          setDatosOriginales(personas);
+
+                          // Actualizar el usuario seleccionado
+                          const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
+                          if (personaActualizada) {
+                            setUsuarioSeleccionado(personaActualizada);
+                          }
+                          console.log(`Tarea ${taskName} cambió a estado: ${result}`);
+                        } catch (error) {
+                          console.error("Error llamando a toggle_hecho_monitoreo:", error);
                         }
                       }}
                     />
@@ -765,16 +795,16 @@ const datosFiltrados = getDatosFiltrados();
                   </>
                 ) : (
                   <><button
-                  onClick={() => handleEnviarItem(index)}>
-                      Enviar
-                    </button>
+                    onClick={() => handleEnviarItem(index)}>
+                    Enviar
+                  </button>
                     <button
                       style={{ marginLeft: '10px' }}
                       onClick={() => handleDeleteItem(index)}
                     >
-                        Eliminar
-                      </button></>
-                  
+                      Eliminar
+                    </button></>
+
                 )}
               </div>
             );

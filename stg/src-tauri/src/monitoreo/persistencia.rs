@@ -822,70 +822,89 @@ pub fn editar_item_monitoreo(
     Ok("Registro editado correctamente".to_string())
 }
 
-#[tauri::command]
 
+#[tauri::command]
 pub fn toggle_hecho_monitoreo(
     correo: String,
-    nombre_tarea: String,
-    es_tutor: bool,
-    es_tutorado1: bool,
-) -> Result<String, String> {
+    nombre_tarea: String
+) -> Result<bool, String> {
+    // Obtener la ruta del JSON
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
+    // Leer el JSON
     let json_str = std::fs::read_to_string(&json_path)
         .map_err(|e| format!("No se pudo leer el JSON: {}", e))?;
+    
+    // Parsear el JSON
     let mut data: MonitoreoData = serde_json::from_str(&json_str)
         .map_err(|e| format!("JSON inválido: {}", e))?;
 
-    let mut encontrada = false;
+    // Variable para almacenar el nuevo estado
+    let mut nuevo_estado = false;
+    let mut encontrado = false;
 
-    let toggle = |tareas: &mut Vec<Tarea>| {
-        for tarea in tareas.iter_mut() {
-            if tarea.nombre == nombre_tarea {
-                tarea.hecho = !tarea.hecho;
-                return true;
+    // Buscar la tarea en tutores
+    for tutor in data.tutores.iter_mut() {
+        if tutor.correo == correo {
+            for tarea in tutor.tareas.iter_mut() {
+                if tarea.nombre == nombre_tarea {
+                    tarea.hecho = !tarea.hecho;
+                    nuevo_estado = tarea.hecho;
+                    encontrado = true;
+                    println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
+                    break;
+                }
             }
         }
-        false
-    };
+    }
 
-    if es_tutor {
-        for tutor in data.tutores.iter_mut() {
-            if tutor.correo == correo {
-                encontrada = toggle(&mut tutor.tareas);
-                break;
-            }
-        }
-    } else if es_tutorado1 {
+    // Si no se encontró en tutores, buscar en tutorado1
+    if !encontrado {
         for tutorado in data.tutorado1.iter_mut() {
             if tutorado.correo == correo {
-                encontrada = toggle(&mut tutorado.tareas);
-                break;
+                for tarea in tutorado.tareas.iter_mut() {
+                    if tarea.nombre == nombre_tarea {
+                        tarea.hecho = !tarea.hecho;
+                        nuevo_estado = tarea.hecho;
+                        encontrado = true;
+                        println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
+                        break;
+                    }
+                }
             }
         }
-    } else {
+    }
+
+    // Si no se encontró en tutorado1, buscar en tutorado2
+    if !encontrado {
         for tutorado in data.tutorado2.iter_mut() {
             if tutorado.correo == correo {
-                encontrada = toggle(&mut tutorado.tareas);
-                break;
+                for tarea in tutorado.tareas.iter_mut() {
+                    if tarea.nombre == nombre_tarea {
+                        tarea.hecho = !tarea.hecho;
+                        nuevo_estado = tarea.hecho;
+                        encontrado = true;
+                        println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
+                        break;
+                    }
+                }
             }
         }
     }
 
-    if !encontrada {
-        return Err("No se encontró la tarea".to_string());
+    if !encontrado {
+        return Err("No se encontró la tarea especificada".to_string());
     }
 
-    // Actualizar progreso después de cambiar el estado
-    actualizar_tareas_y_progreso(&mut data.tutores, &mut data.tutorado1, &mut data.tutorado2);
-
+    // Guardar los cambios en el JSON
     let json_string = serde_json::to_string_pretty(&data)
         .map_err(|e| format!("Error serializando JSON: {}", e))?;
+    
     std::fs::write(&json_path, json_string)
-        .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
+        .map_err(|e| format!("Error escribiendo el JSON: {}", e))?;
 
-    Ok("Estado de la tarea actualizado".to_string())
+    Ok(nuevo_estado)
 }
 
 
