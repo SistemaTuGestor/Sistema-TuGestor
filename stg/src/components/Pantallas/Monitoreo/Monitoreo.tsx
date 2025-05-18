@@ -10,6 +10,8 @@ interface DatosMonitoreoIzq {
   rol: string;
   teleefono: string;
   email: string;
+  nombre: string;
+  institucion: string;
 }
 interface DatosMonitoreoDer {
   registro: string;
@@ -84,14 +86,7 @@ const handleProgresoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
 // Función para filtrar los datos según los criterios seleccionados
 const getDatosFiltrados = () => {
-  // Primero obtenemos los datos originales completos para tener acceso a todos los campos
-  let datosCompletos = datosOriginales.map((persona, index) => ({
-    ...persona,
-    idDisplay: `Usuario ${index + 1}`,
-  }));
-  
-  // Ahora filtramos estos datos según los criterios
-  return datosCompletos.filter(persona => {
+  return datosOriginales.filter(persona => {
     // Filtro por rol
     if (filtroRol.length > 0 && !filtroRol.includes(persona.rol)) {
       return false;
@@ -106,15 +101,11 @@ const getDatosFiltrados = () => {
     if (filtroProgreso) {
       const progresoNumerico = parseFloat(filtroProgreso);
       if (!isNaN(progresoNumerico)) {
-        // Si el progreso es "nulo", mostramos los que no tienen progreso definido
         if (filtroProgreso === "nulo") {
           if (persona.progreso !== undefined && persona.progreso !== null) {
             return false;
           }
-        } 
-        // Convertimos el porcentaje seleccionado a decimal para comparar
-        else if (Math.abs(persona.progreso * 100 - progresoNumerico) > 10) {
-          // Permitimos un rango de ±10%
+        } else if (Math.abs((persona.progreso || 0) * 100 - progresoNumerico) > 10) {
           return false;
         }
       }
@@ -123,52 +114,30 @@ const getDatosFiltrados = () => {
     // Filtro por texto de búsqueda
     if (textoBusqueda.trim() !== "") {
       const busqueda = textoBusqueda.toLowerCase();
-      
-      // Búsqueda en el nombre
-      if (persona.nombre && persona.nombre.toLowerCase().includes(busqueda)) {
-        return true;
-      }
-      
-      // Búsqueda en el apellido (para tutores)
-      if (persona.apellido && persona.apellido.toLowerCase().includes(busqueda)) {
-        return true;
-      }
-      
-      // Búsqueda en el ID mostrado
-      if (persona.idDisplay.toLowerCase().includes(busqueda)) {
-        return true;
-      }
-      
-      // Búsqueda en teléfono(s)
-      if (Array.isArray(persona.telefono)) {
-        if (persona.telefono.some((tel: string) => tel && tel.includes(busqueda))) {
-          return true;
-        }
-      } else if (persona.telefono && persona.telefono.includes(busqueda)) {
-        return true;
-      }
-      
-      // Búsqueda en correo
-      if (persona.correo && persona.correo.toLowerCase().includes(busqueda)) {
-        return true;
-      }
-      
-      // Búsqueda en institución
-      if (persona.institucion && persona.institucion.toLowerCase().includes(busqueda)) {
-        return true;
-      }
-      
-      // Si no coincide con ningún campo, no mostramos este item
-      return false;
+      const camposBusqueda = [
+        persona.nombre?.toLowerCase(),
+        persona.apellido?.toLowerCase(),
+        persona.id?.toLowerCase(),
+        persona.correo?.toLowerCase(),
+        persona.institucion?.toLowerCase(),
+        Array.isArray(persona.telefono) 
+          ? persona.telefono.join(' ') 
+          : persona.telefono?.toString()
+      ].join(' ');
+
+      return camposBusqueda.includes(busqueda);
     }
     
-    // Si pasa todos los filtros, mostramos el item
     return true;
-  }).map((persona, index) => ({
-    id: `Usuario ${index + 1}`,
+  }).map((persona) => ({
+    id: persona.id,
     rol: persona.rol,
-    teleefono: Array.isArray(persona.telefono) ? persona.telefono[0] : persona.telefono,
-    email: persona.correo
+    teleefono: Array.isArray(persona.telefono) 
+      ? persona.telefono[0] 
+      : persona.telefono || '',
+    email: persona.correo,
+    nombre: [persona.nombre, persona.apellido].filter(Boolean).join(' '),
+    institucion: persona.institucion
   }));
 };
 
@@ -212,13 +181,15 @@ const datosFiltrados = getDatosFiltrados();
     invoke("cargar_datos_json")
       .then((res) => {
         const jsonData = JSON.parse(res as string);
-        let contador = 1;
+        
 
         const mapPersona = (p: any): DatosMonitoreoIzq => ({
-          id: `Usuario ${contador++}`,
+          id: `Usuario ${p.id}`,
           rol: p.rol,
-          teleefono: Array.isArray(p.telefono) ? p.telefono[0] : p.telefono,
+          teleefono: Array.isArray(p.teleefono) ? p.telefono[0] : p.telefono,
           email: p.correo,
+          nombre: [p.nombre, p.apellido].filter(Boolean).join(" "),
+          institucion: p.institucion,
         });
 
         const personas = [
@@ -699,11 +670,15 @@ const datosFiltrados = getDatosFiltrados();
       onClick={() => handleCasillaClick(row)}
       style={{ cursor: 'pointer' }}
     >
-      <div className="rootulo">
-        <p className="id">{`${row.rol}, ${row.id}`}</p>
+      <div className="header-usuario">
+        <p className="rol-id">{row.rol} · ID: {row.id}</p>
+        <p className="nombre">{row.nombre}</p>
       </div>
-      <p className="contacto">{row.teleefono}</p>
-      <p className="contacto">{row.email}</p>
+      <div className="detalles">
+        <p className="institucion">Institución: {row.institucion}</p>
+        <p className="contacto">Teléfono: {row.teleefono}</p>
+        <p className="email">Email: {row.email}</p>
+      </div>
     </div>
   ))}
 </div>

@@ -6,6 +6,7 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tarea {
@@ -51,6 +52,7 @@ impl std::fmt::Display for Imagen {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tutor {
+    id : String,
     nombre: String,
     apellido: String,
     rol: String,
@@ -64,6 +66,7 @@ pub struct Tutor {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tutorado {
+    id : String,
     nombre: String,
     cedula: String,
     rol: String,
@@ -129,6 +132,8 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
     let mut tutores: Vec<Tutor> = Vec::new();
     let mut tutorados1: Vec<Tutorado> = Vec::new();
     let mut tutorados2: Vec<Tutorado> = Vec::new();
+    let mut contador_tutores = 0;
+    let mut contador_tutorados = 0;
     let mut _fila_actual = 1;
 
     for row in range.rows().skip(1) {
@@ -188,8 +193,10 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         let mut lista_tutoradoNumeros2 = Vec::new();
         lista_tutoradoNumeros2.push(telefonotut2);
         lista_tutoradoNumeros2.push(telefono2tut2);
-
+    
+        contador_tutores += 1;
         let mut tutor = Tutor{
+            id: contador_tutores.to_string(),
             nombre: nombretutor.clone(),
             apellido: apellidotutor.clone(),
             rol: "Tutor".to_string(),
@@ -200,8 +207,9 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             imagenes: lista_imagenes.clone(),
             progreso: 0.0, // Por defecto, el progreso es 0
         };
-
+        contador_tutorados += 1;
         let mut tutorado1 = Tutorado{
+            id: contador_tutorados.to_string(),
             nombre: nombretutorados1.clone(),
             cedula: cedulatutorados1.clone(),
             rol: "Tutorado".to_string(),
@@ -212,8 +220,9 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             imagenes: lista_imagenes.clone(),
             progreso: 0.0, // Por defecto, el progreso es 0
         };
-
+        contador_tutorados += 1;
         let mut tutorado2 = Tutorado{
+            id: contador_tutorados.to_string(),
             nombre: nombretutorados2.clone(),
             cedula: cedulatutorados2.clone(),
             rol: "Tutorado".to_string(),
