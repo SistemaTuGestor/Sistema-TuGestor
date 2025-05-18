@@ -417,8 +417,8 @@ function Monitoreo() {
   };
 
   const handleEnviarItem = async (index: number) => {
-    await invoke("monitoreo_enviar_tarea", {nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion});
-    
+    await invoke("monitoreo_enviar_tarea", { nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion });
+
   };
 
 
@@ -498,9 +498,24 @@ function Monitoreo() {
                 }}
               >
                 <div style={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-                  {esTarea && <input type="checkbox" />}
+                  {esTarea && (
+                    <input
+                      type="checkbox"
+                      onChange={async () => {
+                        try {
+                          const taskName = row.registro.split(":")[0].trim();
+                          const result = await invoke("toggle_hecho_monitoreo", {
+                            correo: usuarioSeleccionado.correo,
+                            nombreTarea: taskName
+                          });
+                          console.log(`Tarea ${taskName} cambió a estado: ${result}`);
+                        } catch (error) {
+                          console.error("Error llamando a toggle_hecho_monitoreo:", error);
+                        }
+                      }}
+                    />
+                  )}
                 </div>
-
                 {isEditing ? (
                   <input
                     type="text"
@@ -538,16 +553,16 @@ function Monitoreo() {
                   </>
                 ) : (
                   <><button
-                  onClick={() => handleEnviarItem(index)}>
-                      Enviar
-                    </button>
+                    onClick={() => handleEnviarItem(index)}>
+                    Enviar
+                  </button>
                     <button
                       style={{ marginLeft: '10px' }}
                       onClick={() => handleDeleteItem(index)}
                     >
-                        Eliminar
-                      </button></>
-                  
+                      Eliminar
+                    </button></>
+
                 )}
               </div>
             );

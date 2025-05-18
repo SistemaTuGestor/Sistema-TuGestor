@@ -3428,6 +3428,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "urlencoding",
+ "uuid",
  "xlsxwriter",
  "zip 0.6.6",
 ]

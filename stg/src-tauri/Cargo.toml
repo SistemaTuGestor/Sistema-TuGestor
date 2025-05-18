@@ -26,6 +26,7 @@ urlencoding = "2.1"
 office = "0.8.1"  # Para trabajar con documentos Word
 printpdf = "0.5"  # Para generar PDFs
 rand = "0.8"
+uuid = "1.16.0"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
