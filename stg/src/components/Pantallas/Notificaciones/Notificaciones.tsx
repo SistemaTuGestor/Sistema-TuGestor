@@ -72,14 +72,14 @@ interface TutoradosControl {
 }
 
 interface DatosNotificacionesIzq {
-  asunto : string ;
-  contactos : string ;
+  asunto: string;
+  contactos: string;
 }
 
 interface Borrador {
-  destinatarios : string[] ;
-  asunto : string ;
-  mensaje : string ;
+  destinatarios: string[];
+  asunto: string;
+  mensaje: string;
 }
 
 const estructuras: Record<string, string[]> = {
@@ -100,6 +100,7 @@ function Notificaciones() {
   const [destinatarios, setDestinatarios] = useState<string[]>([]);
   const [modoEdicion, setModoEdicion] = useState(false);
   const [asuntoOriginal, setAsuntoOriginal] = useState("");
+  const [showFormulario, setShowFormulario] = useState(true);
 
   // Llama a procesar_datos_para_whatsapp al cargar la pantalla
   useEffect(() => {
@@ -157,13 +158,13 @@ function Notificaciones() {
   // Función para manejar el cambio en la lista de objetos
   const handleObjetoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
-    
+
     if (selected !== "") {
       //Escoge la estructura de origen
-      const estructuraOrigen = estructurasSeleccionadas.find(estructura => 
+      const estructuraOrigen = estructurasSeleccionadas.find(estructura =>
         estructuras[estructura] && estructuras[estructura].includes(selected)
       ) || "";
-            
+
       //Mensaje que se muestra 
       setMensaje(prevMensaje => prevMensaje + " <<" + selected + " " + estructuraOrigen + ">> ");
     }
@@ -180,7 +181,7 @@ function Notificaciones() {
       console.error("Error al leer el historial:", error);
     }
   };
-  
+
   // Cargar historial al montar el componente
   useEffect(() => {
     cargarHistorial();
@@ -248,31 +249,31 @@ function Notificaciones() {
     }
   };
 
-const handleCancelarEdicion = () => {
-  setModoEdicion(false);
-  setAsuntoOriginal("");
-  setAsunto("");
-  setMensaje("");
-  setDestinatarios([]);
-};
+  const handleCancelarEdicion = () => {
+    setModoEdicion(false);
+    setAsuntoOriginal("");
+    setAsunto("");
+    setMensaje("");
+    setDestinatarios([]);
+  };
 
-const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
-  // Detener la propagación para evitar que se active el onClick del <li>
-  event.stopPropagation();
-  event.preventDefault(); // Agregar esto también para asegurarnos
-  
-  // Ejecutar la confirmación en un setTimeout para separarlo del flujo de eventos
-  setTimeout(() => {
+  const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
+    // Detener la propagación para evitar que se active el onClick del <li>
+    event.stopPropagation();
+    event.preventDefault(); // Agregar esto también para asegurarnos
+
+    // Ejecutar la confirmación en un setTimeout para separarlo del flujo de eventos
+    setTimeout(() => {
 
       (async () => {
         try {
           await invoke("eliminar_historial", { asunto });
-          
+
           // Notificar éxito
           setTimeout(() => {
             alert("Entrada eliminada con éxito");
           }, 100);
-          
+
           // Actualizar la interfaz
           const historial = await invoke<Borrador[]>("leer_historial");
           const datosFormateados = historial.map(item => ({
@@ -280,7 +281,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
             contactos: item.destinatarios.join(", ")
           }));
           setDatosIzq(datosFormateados);
-          
+
           // Reiniciar estado si es necesario
           if (modoEdicion && asuntoOriginal === asunto) {
             setModoEdicion(false);
@@ -294,15 +295,15 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
           alert("Error al eliminar la entrada: " + error);
         }
       })();
-    
-  },); 
-};
+
+    },);
+  };
 
   //Boton de envio.
   const handleEnviar = async () => {
     try {
       const historiales = await invoke<Borrador[]>("enviar_historiales");
-      
+
       console.log("Historiales enviados:");
       historiales.forEach((item, index) => {
         console.log(`🔹 Historial ${index + 1}`);
@@ -311,14 +312,14 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
         console.log(`   📝 Mensaje: ${item.mensaje}`);
         console.log("-----------------------------------");
       });
-  
+
       alert("Historiales enviados exitosamente");
     } catch (error) {
       console.error("Error al enviar los historiales:", error);
       alert("Error al enviar los historiales: " + error);
     }
   };
-  
+
 
   // Botón de inicio.
 
@@ -331,23 +332,28 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
   const handleNuevoClick = () => {
     setAsunto("");
     setMensaje("");
+    setShowInicio(false);
+    setShowFormulario(true);
+    setDestinatarios([]);
+    setEstructurasSeleccionadas([]);
+    setAtributos([]);
   };
 
   async function handleCasillaClick(row: DatosNotificacionesIzq): Promise<void> {
     try {
       const historial = await invoke<Borrador[]>("editar_historial", { asunto: row.asunto });
       console.log("Historial recibido:", historial);
-      
+
       if (historial && historial.length > 0) {
         const borrador = historial[0];
-        
+
         setAsunto(borrador.asunto);
         setMensaje(borrador.mensaje);
         setDestinatarios(borrador.destinatarios);
 
         setModoEdicion(true);
         setAsuntoOriginal(borrador.asunto);
-        
+
         console.log("Formulario actualizado con los datos del historial");
       } else {
         console.log("No se encontró ningún historial con ese asunto");
@@ -381,16 +387,22 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
           <button onClick={handleInicioClick}>
             Inicio
           </button>
-          <button  onClick={handleNuevoClick}>
+          <button onClick={handleNuevoClick}>
             +
           </button>
         </div>
         <ul className="desplazadora">
           {datosIzq.map((row, index) => (
             <li key={index} className="casilla" onClick={() => handleCasillaClick(row)}
-            style={{ cursor: 'pointer' }}>
-              <p className="asunto-casilla">{row.asunto}</p>
-              <p className="contactos-casilla">{row.contactos}</p>
+              style={{ cursor: 'pointer' }}>
+              <div className="info-container">
+                <div className="asunto-container">
+                  <p className="asunto-casilla">{row.asunto}</p>
+                </div>
+                <div className="contactos-container">
+                  <p className="contactos-casilla">{row.contactos}</p>
+                </div>
+              </div>
               <button onClick={(e) => handleEliminar(row.asunto, e)}>
                 Eliminar
               </button>
@@ -401,7 +413,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
       <div className="contenedor_PanelDerecho">
         {showInicio ? (
           <Inicio />
-        ) : (
+        ) : showFormulario ? (
           <>
             <div className="opciones-derecha">
               <select multiple onChange={handleSeleccionDestinatario}>
@@ -438,7 +450,7 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
             </div>
             <div className="botones">
               <button onClick={handleGuardar}>
-              {modoEdicion ? "Actualizar" : "Guardar"}
+                {modoEdicion ? "Actualizar" : "Guardar"}
               </button>
               <button onClick={handleEnviar}>
                 Enviar
@@ -453,13 +465,13 @@ const handleEliminar = async (asunto: string, event: React.MouseEvent) => {
               </button>
             </div>
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
-  
+
 }
 
 
-export default Notificaciones ;
+export default Notificaciones;
 
