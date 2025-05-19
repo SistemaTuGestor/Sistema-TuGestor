@@ -113,6 +113,17 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         return Err("Ya existe el archivo JSON".to_string());
     }
 */
+    if json_path.exists() {
+        // Si existe, leer y retornar los datos del JSON existente
+        let json_str = std::fs::read_to_string(&json_path)
+            .map_err(|e| format!("No se pudo leer el JSON existente: {}", e))?;
+        
+        let data: MonitoreoData = serde_json::from_str(&json_str)
+            .map_err(|e| format!("Error parseando JSON existente: {}", e))?;
+        
+        return Ok((data.tutores, data.tutorado1, data.tutorado2));
+    }
+
 
     //let ubicacion = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
     let mut workbook: Xlsx<_> = match open_workbook(&excel_path) {

@@ -21,6 +21,8 @@ function Monitoreo() {
 
   const [datosIzq, setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
 
+  
+
   useEffect(() => {
     // Fetch data from the backend
     invoke<DatosMonitoreoIzq[]>("monitoreo_izquierda")
@@ -749,6 +751,7 @@ function Monitoreo() {
                           if (personaActualizada) {
                             setUsuarioSeleccionado(personaActualizada);
                           }
+
                           console.log(`Tarea ${taskName} cambió a estado: ${result}`);
                         } catch (error) {
                           console.error("Error llamando a toggle_hecho_monitoreo:", error);

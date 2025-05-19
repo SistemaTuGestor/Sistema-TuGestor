@@ -12,12 +12,12 @@
         {
           "nombre": "tarea2",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -72,12 +72,12 @@
         {
           "nombre": "tarea4",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -88,7 +88,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.0
+      "progreso": 1.0
     },
     {
       "id": "4",
@@ -102,7 +102,7 @@
         {
           "nombre": "tarea5",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
@@ -118,7 +118,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.0
+      "progreso": 0.5
     },
     {
       "id": "5",
@@ -148,7 +148,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 1.0
+      "progreso": 0.0
     },
     {
       "id": "6",
@@ -162,12 +162,12 @@
         {
           "nombre": "tarea7",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -252,12 +252,12 @@
         {
           "nombre": "tarea10",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -282,12 +282,12 @@
         {
           "nombre": "tarea11",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
