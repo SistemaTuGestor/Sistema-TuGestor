@@ -21,7 +21,7 @@ function Monitoreo() {
 
   const [datosIzq, setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
 
-  
+
 
   useEffect(() => {
     // Fetch data from the backend
@@ -418,12 +418,16 @@ function Monitoreo() {
         );
 
         if (taskIndex !== -1) {
+          const tareaExistente = jsonCompleto[categoria][userIndex].tareas[taskIndex];
           jsonCompleto[categoria][userIndex].tareas[taskIndex] = {
             nombre: newTaskName,
-            descripcion: newTaskDesc
+            descripcion: newTaskDesc,
+            hecho: tareaExistente.hecho  // Faltaba el campo de "hecho" por eso no lo actualizaba correctamente
           };
         }
       }
+
+      
 
       // Enviar los datos actualizados al backend para guardar en JSON
       await invoke("actualizar_json_monitoreo", {

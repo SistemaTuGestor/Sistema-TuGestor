@@ -18,7 +18,7 @@ function EmergenteMonitoreo({ mensaje, cancelar, onGuardar }: EmergenteMonitoreo
         alert('Por favor complete todos los campos de la tarea');
         return;
       }
-      onGuardar('tarea', { nombre: nombreTarea, descripcion });
+      onGuardar('tarea', { nombre: nombreTarea, descripcion, hecho: false });
     } else {
       if (!urlImagen) {
         alert('Por favor ingrese la URL de la imagen');

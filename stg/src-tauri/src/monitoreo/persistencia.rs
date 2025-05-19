@@ -352,55 +352,21 @@ pub fn cargar_datos_json() -> Result<String, String> {
     std::fs::read_to_string(json_path).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
-#[tauri::command] //Función para eliminación
-pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
+#[tauri::command] // Manejo de actualizaciones para tareas.
+pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
-    // Validar y parsear el JSON recibido
-    let mut data: MonitoreoData = serde_json::from_str(&json_data)
+    // Verificar que el JSON es válido antes de escribir
+    let data: serde_json::Value = serde_json::from_str(&json_data)
         .map_err(|e| format!("JSON inválido: {}", e))?;
 
-    // Asegurar que todas las tareas tengan el campo 'hecho'
-    for tutor in data.tutores.iter_mut() {
-        for tarea in tutor.tareas.iter_mut() {
-            // Si por alguna razón falta el campo, lo ponemos en false
-            // (esto solo es relevante si el JSON fue manipulado mal)
-            // En Rust, esto no suele pasar, pero es seguro.
-            if tarea.hecho != true && tarea.hecho != false {
-                tarea.hecho = false;
-            }
-        }
-    }
-    // Este bloque asegura que todas las tareas de tutorado1 y tutorado2 tengan el campo 'hecho'.
-// Normalmente no es necesario si siempre serializas/deserializas bien, pero es una protección extra.
-/*
+    // Escribir el archivo
+    std::fs::write(&json_path, json_data)
+        .map_err(|e| format!("Error escribiendo el archivo: {}", e))?;
 
-    */
-    for tutorado in data.tutorado1.iter_mut().chain(data.tutorado2.iter_mut()) {
-        for tarea in tutorado.tareas.iter_mut() {
-            if tarea.hecho != true && tarea.hecho != false {
-                tarea.hecho = false;
-            }
-        }
-    }
-
-    // Actualizar progreso de todos los usuarios
-    actualizar_tareas_y_progreso(&mut data.tutores, &mut data.tutorado1, &mut data.tutorado2);
-
-    // Serializar y guardar el JSON actualizado
-    let json_string = serde_json::to_string_pretty(&data)
-        .map_err(|e| format!("Error serializando JSON: {}", e))?;
-
-    if let Some(parent) = json_path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| format!("Error creando directorios: {}", e))?;
-    }
-
-    std::fs::write(&json_path, json_string)
-        .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
-
-    Ok("JSON actualizado correctamente".to_string())
+    println!("JSON actualizado correctamente");
+    Ok(())
 }
 
 #[tauri::command]

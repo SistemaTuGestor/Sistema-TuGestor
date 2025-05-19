@@ -11,13 +11,28 @@
       "tareas": [
         {
           "nombre": "tarea2",
-          "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "descripcion": "Tareiña",
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
+        },
+        {
+          "nombre": "Otra tarea",
+          "descripcion": "Nueva",
+          "hecho": false
+        },
+        {
+          "nombre": "Ota ma",
+          "descripcion": "xd",
+          "hecho": false
+        },
+        {
+          "nombre": "A ver hermano",
+          "descripcion": "false??",
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -28,7 +43,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.0
+      "progreso": 0.6666667
     },
     {
       "id": "2",
@@ -42,7 +57,7 @@
         {
           "nombre": "tarea3",
           "descripcion": "Tarea importante !!!",
-          "hecho": false
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
@@ -58,7 +73,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.0
+      "progreso": 0.5
     },
     {
       "id": "3",
@@ -77,7 +92,7 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -88,7 +103,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 1.0
+      "progreso": 0.5
     },
     {
       "id": "4",
@@ -167,7 +182,7 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -192,7 +207,7 @@
         {
           "nombre": "tarea8",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
@@ -208,7 +223,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "8",
@@ -227,6 +242,11 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
+          "hecho": true
+        },
+        {
+          "nombre": "TU TAMBIEN FALSEEEE",
+          "descripcion": "a",
           "hecho": true
         }
       ],
@@ -257,7 +277,7 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -268,7 +288,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "10",
@@ -287,7 +307,7 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -298,7 +318,7 @@
           "url": "C:\\Users\\Javier\\Diferente"
         }
       ],
-      "progreso": 0.5
+      "progreso": 1.0
     }
   ],
   "tutorado1": [
