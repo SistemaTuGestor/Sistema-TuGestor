@@ -5,7 +5,8 @@ use open;
 pub fn monitoreo_enviar_tarea(
     nombre: String, 
     titulo: String, 
-    descripcion: String
+    descripcion: String,
+    telefono: String
 ) -> Result<(), String> {
     // Construct the message text
     let message = format!(
@@ -18,7 +19,8 @@ pub fn monitoreo_enviar_tarea(
     
     // Construct the WhatsApp URL (usando un número de prueba)
     let whatsapp_url = format!(
-        "https://api.whatsapp.com/send?phone=########&text={}",
+        "https://api.whatsapp.com/send?phone={}&text={}",
+        telefono,
         encoded_message
     );
     

@@ -520,9 +520,18 @@ function Monitoreo() {
   };
 
   const handleEnviarItem = async (index: number) => {
-    await invoke("monitoreo_enviar_tarea", { nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion });
+    // Determinar el número de teléfono según el tipo de usuario
+    const telefono = Array.isArray(usuarioSeleccionado.telefono) 
+        ? usuarioSeleccionado.telefono[0]  // Si es array (tutorado), tomar el primer número
+        : usuarioSeleccionado.telefono;    // Si es string (tutor), usar directamente
 
-  };
+    await invoke("monitoreo_enviar_tarea", { 
+        nombre: usuarioSeleccionado.nombre,
+        titulo: usuarioSeleccionado.tareas[index].nombre, 
+        descripcion: usuarioSeleccionado.tareas[index].descripcion,
+        telefono: telefono
+    });
+};
 
   const handleToggleHecho = async (taskName: string) => {
     if (!usuarioSeleccionado) return;
