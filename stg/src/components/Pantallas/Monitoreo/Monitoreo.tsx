@@ -246,46 +246,24 @@ function Monitoreo() {
     const itemToDelete = datosDer[actualIndex];
     const isImage = itemToDelete.registro.startsWith("Imagen:");
 
-
-    const currentUser = datosOriginales.find(p => {
-
-      const matchingEmail = datosIzq.find(row => row.email === p.correo);
-      return matchingEmail && datosDer.some(item => {
-
-        if (isImage) {
-          return item.registro.includes(p.imagenes);
-        } else {
-          return p.tareas.some((tarea: any) =>
-            item.registro.includes(`${tarea.nombre}: ${tarea.descripcion}`)
-          );
-        }
-      });
-    });
-
-    if (!currentUser) return;
-
     try {
-
       const jsonResponse = await invoke("cargar_datos_json");
       const jsonData = JSON.parse(jsonResponse as string);
-
 
       let userType = "";
       let userIndex = -1;
 
-
-      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === currentUser.correo);
+      // Encontrar el tipo de usuario y su índice
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
       if (userIndex !== -1) userType = "tutores";
 
-
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
         if (userIndex !== -1) userType = "tutorado1";
       }
 
-
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
         if (userIndex !== -1) userType = "tutorado2";
       }
 
@@ -294,34 +272,33 @@ function Monitoreo() {
         return;
       }
 
-
       if (isImage) {
-
-        jsonData[userType][userIndex].imagenes = "";
+        // Eliminar imagen del array de imágenes
+        const imageUrl = itemToDelete.registro.replace("Imagen: ", "").trim();
+        jsonData[userType][userIndex].imagenes =
+          jsonData[userType][userIndex].imagenes.filter(
+            (img: any) => img.url !== imageUrl
+          );
       } else {
-
-        const taskText = itemToDelete.registro;
-        const taskName = taskText.split(":")[0].trim();
-
-        jsonData[userType][userIndex].tareas = jsonData[userType][userIndex].tareas.filter(
-          (tarea: any) => tarea.nombre !== taskName
-        );
+        // Eliminar tarea (código existente)
+        const taskName = itemToDelete.registro.split(":")[0].trim();
+        jsonData[userType][userIndex].tareas =
+          jsonData[userType][userIndex].tareas.filter(
+            (tarea: any) => tarea.nombre !== taskName
+          );
       }
 
+      // Actualizar el JSON
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-
+      // Actualizar la UI
       const newDatosDer = [...datosDer];
       newDatosDer.splice(actualIndex, 1);
       setDatosDer(newDatosDer);
 
-      await invoke("actualizar_tareas_y_progreso", {
-        correo: currentUser.correo,
-        esEliminacion: true
-      });
-
+      // Actualizar los datos originales
       const personas = [
         ...jsonData.tutores,
         ...jsonData.tutorado1,
@@ -329,9 +306,9 @@ function Monitoreo() {
       ];
       setDatosOriginales(personas);
 
-      console.log("Item deleted successfully");
+      console.log(`${isImage ? "Imagen" : "Tarea"} eliminada correctamente`);
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error("Error al eliminar:", error);
     }
   };
 

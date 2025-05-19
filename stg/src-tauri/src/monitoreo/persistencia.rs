@@ -186,7 +186,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         };
 
         let mut imagen2 = Imagen{
-            url: "C:\\Users\\Javier\\Diferente".to_string(),
+            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
         };
 
         let mut lista_tareas = Vec::new();
