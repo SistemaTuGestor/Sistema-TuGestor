@@ -181,21 +181,21 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             hecho: false, // Por defecto, la tarea no está hecha
         };
 
-        let mut imagen = Imagen{
-            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string(),
-        };
+        // let mut imagen = Imagen{
+        //     url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string(),
+        // };
 
-        let mut imagen2 = Imagen{
-            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
-        };
+        // let mut imagen2 = Imagen{
+        //     url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
+        // };
 
         let mut lista_tareas = Vec::new();
         lista_tareas.push(tarea);
         lista_tareas.push(tarea2);
         
         let mut lista_imagenes = Vec::new();
-        lista_imagenes.push(imagen);
-        lista_imagenes.push(imagen2);
+        // lista_imagenes.push(imagen);
+        // lista_imagenes.push(imagen2);
 
         let mut lista_tutoradoNumeros = Vec::new();
         lista_tutoradoNumeros.push(telefonotut1);
