@@ -410,12 +410,13 @@ pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut V
         } else {
             tutor.progreso = 0.0;
         }
-        println!("Tutor: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
-            tutor.nombre, 
-            total_tareas,
-            tutor.tareas.iter().filter(|t| t.hecho).count(),
-            tutor.progreso
-        );
+        //Si quieres ver el progreso de los tutores en consola, descomenta la siguiente línea
+        // println!("Tutor: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+        //     tutor.nombre, 
+        //     total_tareas,
+        //     tutor.tareas.iter().filter(|t| t.hecho).count(),
+        //     tutor.progreso
+        // );
     }
 
     // Actualizar progreso de tutorados (tanto tutorado1 como tutorado2)
@@ -427,12 +428,13 @@ pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut V
         } else {
             tutorado.progreso = 0.0;
         }
-        println!("Tutorado: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
-            tutorado.nombre, 
-            total_tareas,
-            tutorado.tareas.iter().filter(|t| t.hecho).count(),
-            tutorado.progreso
-        );
+        //Si quieres ver el progreso de los tutorados en consola, descomenta la siguiente línea
+        // println!("Tutorado: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+        //     tutorado.nombre, 
+        //     total_tareas,
+        //     tutorado.tareas.iter().filter(|t| t.hecho).count(),
+        //     tutorado.progreso
+        // );
     }
 }
 #[tauri::command]
