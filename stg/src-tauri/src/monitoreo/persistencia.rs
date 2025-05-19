@@ -86,7 +86,7 @@ struct MonitoreoData {
 }
 
 //Conseguir ruta auxiliar para los archivos de recursos
-fn get_resource_path() -> PathBuf {
+pub fn get_resource_path() -> PathBuf {
     let current_exe = env::current_exe().expect("Failed to get current executable path");
     let mut path = current_exe.parent().unwrap().to_path_buf();
     
@@ -186,7 +186,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         };
 
         let mut imagen2 = Imagen{
-            url: "C:\\Users\\Javier\\Diferente".to_string(),
+            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
         };
 
         let mut lista_tareas = Vec::new();

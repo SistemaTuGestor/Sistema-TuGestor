@@ -11,28 +11,13 @@
       "tareas": [
         {
           "nombre": "tarea2",
-          "descripcion": "Tareiña",
-          "hecho": false
+          "descripcion": "Tarea importante !!!",
+          "hecho": true
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": false
-        },
-        {
-          "nombre": "Otra tarea",
-          "descripcion": "Nueva",
-          "hecho": false
-        },
-        {
-          "nombre": "Ota ma",
-          "descripcion": "xd",
-          "hecho": false
-        },
-        {
-          "nombre": "A ver hermano",
-          "descripcion": "false??",
-          "hecho": false
+          "hecho": true
         }
       ],
       "imagenes": [
@@ -40,10 +25,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.6666667
+      "progreso": 1.0
     },
     {
       "id": "2",
@@ -57,7 +42,7 @@
         {
           "nombre": "tarea3",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
@@ -70,10 +55,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "3",
@@ -87,7 +72,7 @@
         {
           "nombre": "tarea4",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
@@ -100,10 +85,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "4",
@@ -117,7 +102,7 @@
         {
           "nombre": "tarea5",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
@@ -130,10 +115,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "5",
@@ -160,7 +145,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -177,12 +162,12 @@
         {
           "nombre": "tarea7",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -190,10 +175,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "7",
@@ -220,7 +205,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -242,12 +227,7 @@
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
-        },
-        {
-          "nombre": "TU TAMBIEN FALSEEEE",
-          "descripcion": "a",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -255,10 +235,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 0.5
+      "progreso": 0.0
     },
     {
       "id": "9",
@@ -285,7 +265,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -302,12 +282,12 @@
         {
           "nombre": "tarea11",
           "descripcion": "Tarea importante !!!",
-          "hecho": true
+          "hecho": false
         },
         {
           "nombre": "Otra tarea mas",
           "descripcion": "Tarea igual de importante que la otra :3!!!",
-          "hecho": true
+          "hecho": false
         }
       ],
       "imagenes": [
@@ -315,10 +295,10 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
-      "progreso": 1.0
+      "progreso": 0.0
     }
   ],
   "tutorado1": [
@@ -350,7 +330,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -383,7 +363,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -416,7 +396,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -449,7 +429,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -482,7 +462,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -515,7 +495,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -548,7 +528,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -581,7 +561,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -614,7 +594,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -647,7 +627,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -682,7 +662,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -715,7 +695,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -748,7 +728,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -781,7 +761,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -814,7 +794,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -847,7 +827,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -880,7 +860,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -913,7 +893,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -946,7 +926,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0
@@ -979,7 +959,7 @@
           "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg"
         },
         {
-          "url": "C:\\Users\\Javier\\Diferente"
+          "url": "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg"
         }
       ],
       "progreso": 0.0

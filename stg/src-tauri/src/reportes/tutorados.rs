@@ -1,4 +1,3 @@
-
 // FECHA
 use chrono::Local ;
 use chrono::NaiveDate ;
@@ -18,6 +17,12 @@ use std::io::BufWriter;
 use printpdf::*;
 
 use std::process::Command;
+
+use serde::Serialize;
+use std::collections::HashSet;
+use xlsxwriter::Workbook;
+use xlsxwriter::prelude::FormatColor;
+use urlencoding::encode;
 
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -302,6 +307,303 @@ pub fn convertir_tutorados_pdf(urldocs: String) -> Result<(), String> {
 
     println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
     Ok(())
+}
+
+// Actualizamos la estructura ContactoSimplificado con los atributos adicionales
+#[derive(Serialize, Debug, Clone)]
+pub struct ContactoSimplificado {
+    pub nombre: String,
+    pub telefono: String,
+    pub institucion: String,
+    pub correo: String,
+    pub archivo_reporte: Option<String>,  // Ruta completa del archivo
+    pub mensaje: Option<String>,          // Mensaje personalizado
+    pub whatsapp_url: Option<String>,     // URL para WhatsApp
+    pub estado: Option<String>,           // Estado del envío
+}
+
+#[tauri::command]
+pub fn leer_archivo_emparejamiento() -> Result<Vec<ContactoSimplificado>, String> {
+    // Obtener la ruta del archivo de emparejamiento
+    let archivo_emparejamiento = PATH_EMPAREJAMIENTO
+        .get()
+        .ok_or("❌ PATH_EMPAREJAMIENTO no ha sido inicializado")?
+        .lock()
+        .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
+
+    let path = Path::new(&*archivo_emparejamiento);
+    
+    let mut workbook: Xlsx<_> = open_workbook(path)
+        .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
+
+    let range = workbook
+        .worksheet_range("Emparejamiento")
+        .map_err(|e| format!("❌ No se pudo cargar 'Emparejamiento': {}", e))?;
+
+    let mut contactos: Vec<ContactoSimplificado> = Vec::new();
+    
+    println!("📂 Leyendo contactos simplificados del archivo de emparejamiento...");
+
+    // Procesar cada fila del Excel, omitiendo la primera (encabezados)
+    for (i, row) in range.rows().enumerate() {
+        if i == 0 {
+            println!("⚠ Ignorando encabezado...");
+            continue;
+        }
+
+        if row.len() < 15 { // Asegurarse que la fila tenga suficientes columnas
+            continue;
+        }
+
+        // Datos del tutorado 1
+        let tutorado_1 = row[10].to_string().trim().to_string();
+        if !tutorado_1.is_empty() && row.len() >= 15 {
+            let telefono_tutorado_1 = row[13].to_string().trim().to_string();
+            let colegio_tutorado_1 = row[12].to_string().trim().to_string();
+            let correo_tutorado_1 = row[15].to_string().trim().to_string();
+
+            contactos.push(ContactoSimplificado {
+                nombre: tutorado_1,
+                telefono: telefono_tutorado_1,
+                institucion: colegio_tutorado_1,
+                correo: correo_tutorado_1,
+                archivo_reporte: None,
+                mensaje: None,
+                whatsapp_url: None,
+                estado: None,
+            });
+        }
+
+        // Datos del segundo tutorado (si existe)
+        if row.len() >= 35 {
+            let tutorado_2 = row[30].to_string().trim().to_string();
+            if !tutorado_2.is_empty() {
+                let telefono_tutorado_2 = row[33].to_string().trim().to_string();
+                let colegio_tutorado_2 = row[32].to_string().trim().to_string();
+                let correo_tutorado_2 = row[35].to_string().trim().to_string();
+
+                contactos.push(ContactoSimplificado {
+                    nombre: tutorado_2,
+                    telefono: telefono_tutorado_2,
+                    institucion: colegio_tutorado_2,
+                    correo: correo_tutorado_2,
+                    archivo_reporte: None,
+                    mensaje: None,
+                    whatsapp_url: None,
+                    estado: None,
+                });
+            }
+        }
+    }
+
+    // Eliminar duplicados usando un HashSet
+    let mut contactos_unicos: Vec<ContactoSimplificado> = Vec::new();
+    let mut nombre_vistos = HashSet::new();
+    
+    for contacto in contactos {
+        if !nombre_vistos.contains(&contacto.nombre) {
+            nombre_vistos.insert(contacto.nombre.clone());
+            contactos_unicos.push(contacto);
+        }
+    }
+
+    println!("✅ Se encontraron {} contactos simplificados únicos", contactos_unicos.len());
+    
+    Ok(contactos_unicos)
+}
+
+#[tauri::command]
+pub fn reportes_tutorados_enviar_por_whatsapp(directorio_reportes: String) -> Result<Vec<ContactoSimplificado>, String> {
+    // Si no se proporciona directorio, usar el directorio de salida
+    let directorio_final = if directorio_reportes.is_empty() {
+        match NOMBRE_REPORTE.get() {
+            Some(mutex) => {
+                let dir = mutex.lock()
+                    .map_err(|e| format!("Error al acceder al directorio: {}", e))?;
+                dir.clone()
+            },
+            None => return Err("No se ha especificado un directorio y no hay uno guardado previamente".to_string())
+        }
+    } else {
+        directorio_reportes
+    };
+    
+    println!("📱 Preparando envíos de constancias de tutorados desde: {}", directorio_final);
+    
+    // 1. Leer información de contacto de los tutorados
+    let mut contactos = match leer_archivo_emparejamiento() {
+        Ok(contactos) => contactos,
+        Err(e) => return Err(format!("Error al leer contactos: {}", e)),
+    };
+    
+    println!("📊 Encontrados {} contactos de tutorados", contactos.len());
+    
+    // 2. Buscar archivos de constancias en el directorio
+    let path = std::path::Path::new(&directorio_final);
+    let reportes = match std::fs::read_dir(path) {
+        Ok(entries) => entries
+            .filter_map(Result::ok)
+            .filter(|e| {
+                let path = e.path();
+                let file_name = e.file_name().to_string_lossy().to_lowercase();
+                let extension = path.extension().and_then(|ext| ext.to_str());
+                
+                // Filtrar por extensión (docx o pdf) y que contenga "tutorado" específicamente
+                extension.map_or(false, |ext| (ext == "docx" || ext == "pdf")) && 
+                file_name.contains("tutorado")
+            })
+            .collect::<Vec<_>>(),
+        Err(e) => return Err(format!("Error al leer directorio de constancias: {}", e)),
+    };
+    
+    if reportes.is_empty() {
+        return Err("No se encontraron constancias de tutorados en el directorio especificado".to_string());
+    }
+    
+    println!("📊 Encontradas {} constancias de tutorados", reportes.len());
+    
+    // 3. Generar Excel de seguimiento de envíos en el mismo directorio
+    let fecha = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let envios_file_name = format!("envios_constancias_tutorados_{}.xlsx", fecha);
+    
+    // Usar el mismo directorio para guardar el Excel de envíos
+    let envios_path = PathBuf::from(&directorio_final).join(&envios_file_name);
+    
+    // Crear workbook
+    let workbook = Workbook::new(envios_path.to_string_lossy().as_ref())
+        .map_err(|e| format!("Error creando Excel de envíos: {}", e))?;
+    let mut sheet = workbook.add_worksheet(Some("Envíos"))
+        .map_err(|e| format!("Error añadiendo hoja: {}", e))?;
+    
+    // Formato para encabezados
+    let mut header_format = xlsxwriter::Format::new();
+    header_format.set_bg_color(FormatColor::Custom(0xD8E4BC));
+    
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Nombre", Some(&header_format)).unwrap();
+    sheet.write_string(0, 1, "Teléfono", Some(&header_format)).unwrap();
+    sheet.write_string(0, 2, "Institución", Some(&header_format)).unwrap();
+    sheet.write_string(0, 3, "Correo", Some(&header_format)).unwrap();
+    sheet.write_string(0, 4, "Constancia", Some(&header_format)).unwrap();
+    sheet.write_string(0, 5, "Ruta Completa", Some(&header_format)).unwrap();
+    sheet.write_string(0, 6, "Enlace WhatsApp", Some(&header_format)).unwrap();
+    sheet.write_string(0, 7, "Estado", Some(&header_format)).unwrap();
+    
+    // 4. Crear un mapa de archivos encontrados por nombre de tutorado para búsqueda eficiente
+    let mut archivos_por_nombre: std::collections::HashMap<String, String> = std::collections::HashMap::new();
+    
+    // Recorrer todos los archivos y extraer el nombre del tutorado del nombre del archivo
+    for reporte in &reportes {
+        let nombre_archivo = reporte.file_name().to_string_lossy().to_string();
+        let ruta_completa = reporte.path().to_string_lossy().to_string();
+        
+        // Extraer el nombre del tutorado del nombre del archivo
+        // Formato esperado: "Constancia Tutorado NOMBRE (FECHA).extension"
+        if let Some(start) = nombre_archivo.find("Tutorado ") {
+            if let Some(end) = nombre_archivo.find(" (") {
+                let nombre_tutorado = nombre_archivo[start + 9..end].trim().to_string();
+                archivos_por_nombre.insert(nombre_tutorado, ruta_completa);
+            }
+        }
+    }
+    
+    println!("🔍 Relacionando contactos con archivos...");
+    
+    // 5. Asociar archivos con contactos y generar URLs de WhatsApp
+    let mut row = 1;
+    let mut contactos_con_archivo: Vec<ContactoSimplificado> = Vec::new();
+    
+    for contacto in &mut contactos {
+        // Intentar encontrar el archivo de este tutorado por nombre
+        let mut archivo_encontrado = None;
+        
+        // 1. Búsqueda directa por nombre completo
+        if let Some(ruta) = archivos_por_nombre.get(&contacto.nombre) {
+            archivo_encontrado = Some(ruta.clone());
+        } 
+        // 2. Búsqueda por palabras clave del nombre
+        else {
+            // Dividir el nombre en palabras para búsqueda parcial
+            let palabras: Vec<String> = contacto.nombre
+                .split_whitespace()
+                .map(|s| s.to_lowercase())
+                .collect();
+                
+            // Filtrar palabras muy cortas
+            let palabras_clave: Vec<String> = palabras
+                .iter()
+                .filter(|p| p.len() > 3)  // Solo palabras con más de 3 letras
+                .cloned()
+                .collect();
+                
+            // Buscar coincidencias parciales
+            for (nombre_archivo, ruta) in &archivos_por_nombre {
+                let nombre_lower = nombre_archivo.to_lowercase();
+                
+                // Si alguna palabra clave está en el nombre del archivo
+                if palabras_clave.iter().any(|palabra| nombre_lower.contains(palabra)) {
+                    archivo_encontrado = Some(ruta.clone());
+                    break;
+                }
+            }
+        }
+        
+        // Si se encontró un archivo, actualizar los campos del contacto
+        if let Some(ruta) = archivo_encontrado {
+            // Obtener nombre del archivo
+            let path = std::path::Path::new(&ruta);
+            let nombre_archivo = path.file_name().unwrap_or_default().to_string_lossy().to_string();
+            
+            // Construir mensaje personalizado
+            let mensaje = format!(
+                "Hola {},\n\nTe compartimos tu constancia de participación en el programa de Tututor.\n\
+                Gracias por tu dedicación y compromiso con el programa.",
+                contacto.nombre
+            );
+            
+            // Crear enlace de WhatsApp si tenemos teléfono
+            let whatsapp_url = if !contacto.telefono.is_empty() {
+                // Limpiar el número de teléfono
+                let tel_limpio = contacto.telefono.replace(" ", "").replace("-", "").replace("+", "");
+                
+                // Codificar el mensaje
+                let encoded_message = encode(&mensaje).to_string();
+                
+                // Crear enlace
+                format!("https://api.whatsapp.com/send?phone={}&text={}",
+                    tel_limpio, encoded_message)
+            } else {
+                "No hay teléfono".to_string()
+            };
+            
+            // Actualizar campos del contacto
+            contacto.archivo_reporte = Some(ruta.clone());
+            contacto.mensaje = Some(mensaje.clone());
+            contacto.whatsapp_url = Some(whatsapp_url.clone());
+            contacto.estado = Some("Listo para enviar".to_string());
+            
+            // Escribir en el Excel
+            sheet.write_string(row, 0, &contacto.nombre, None).unwrap();
+            sheet.write_string(row, 1, &contacto.telefono, None).unwrap();
+            sheet.write_string(row, 2, &contacto.institucion, None).unwrap();
+            sheet.write_string(row, 3, &contacto.correo, None).unwrap();
+            sheet.write_string(row, 4, &nombre_archivo, None).unwrap();
+            sheet.write_string(row, 5, &ruta, None).unwrap();
+            sheet.write_string(row, 6, &whatsapp_url, None).unwrap();
+            sheet.write_string(row, 7, "Listo para enviar", None).unwrap();
+            
+            row += 1;
+            contactos_con_archivo.push(contacto.clone());
+        }
+    }
+    
+    // 6. Guardar y cerrar el Excel
+    workbook.close().map_err(|e| format!("Error al guardar Excel de envíos: {}", e))?;
+    
+    println!("✅ Excel de envíos generado: {}", envios_path.display());
+    println!("✅ Total de mensajes a enviar: {}", contactos_con_archivo.len());
+    
+    Ok(contactos_con_archivo)
 }
 
 
