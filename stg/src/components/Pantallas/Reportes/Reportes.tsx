@@ -1,4 +1,3 @@
-
 import "./Reportes.css";
 
 import Emergente from "./Emergente/Emergente";
@@ -108,6 +107,7 @@ function Reportes() {
 
 
   const [archivoPath_LEE, setArchivoPath_LEE] = useState("Ubicación de archivo LEE");
+  
 
   const handleSelectArchivo_LEE = async () => {
 
@@ -474,7 +474,6 @@ function Reportes() {
     }
 
     try {
-
       const filePath = await save({
         defaultPath: seccioon,
         filters: [{ name: "Word Files", extensions: ["docx"] }]
@@ -497,16 +496,16 @@ function Reportes() {
         alert(`¡Generación de ` + seccioon + ` cancelada!`);
         return;
       }
-
     } catch (error) {
-
       alert(`¡Error en opciones de la sección ` + seccioon + `!`);
-
     }
-
   } else if (seccioon === "Tutores") {
 
-    if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+    if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla" || 
+        archivoPath_LEE === "Ubicación de archivo LEE" ||
+        archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento Tutores" || 
+        !fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+      
       let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
       
       if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla") {
@@ -515,6 +514,10 @@ function Reportes() {
       
       if (archivoPath_LEE === "Ubicación de archivo LEE") {
         mensaje += "\n- Archivo LEE";
+      }
+      
+      if (archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento Tutores") {
+        mensaje += "\n- Archivo de Emparejamiento para Tutores";
       }
       
       if (!fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
@@ -528,9 +531,9 @@ function Reportes() {
 
     try {
 
-      const dirPath = await open({
-        directory: true,  // Permite seleccionar una carpeta.
-        multiple: false,  // Solo permite seleccionar una.
+      const dirPath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
       });
 
       if (dirPath) {
@@ -575,9 +578,9 @@ function Reportes() {
 
     try {
 
-      const dirPath = await open({
-        directory: true,  // Permite seleccionar una carpeta.
-        multiple: false,  // Solo permite seleccionar una.
+      const dirPath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
       });
 
       if (dirPath) {
@@ -612,66 +615,237 @@ function Reportes() {
     setEmergenteVisible(true);
   };
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [destinatarios, setDestinatarios] = useState<any[]>([]);
+
+  // Actualiza la función evento_clickEnviar para manejar el caso de "Tutorados"
   const evento_clickEnviar = async (seccioon: string) => {
     try {
       if (seccioon === "LEE") {
         alert(`¡Envío exitoso del módulo ${seccioon}!`);
       }
       else if (seccioon === "PUJ") {
-        const dirPath = directorioReportePUJ;
-        if (dirPath === "Directorio de reportes") {
+        const filePath = directorioReportePUJ;
+        
+        if (filePath === "Directorio de reportes" || !filePath) {
           alert("Por favor, genera primero el reporte de PUJ");
           return;
         }
-        // Obtener solo el directorio base
-        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
-        await invoke("convertir_puj_pdf", {
-          urldocs: baseDir
-        });
-        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+        
+        // Extraer el directorio donde realmente estarán los archivos
+        const dirPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+        console.log("Usando directorio para búsqueda:", dirPath);
+        
+        // Mostrar indicador de carga
+        setIsLoading(true);
+        
+        try {
+          // Primero convertir a PDF
+          await invoke("convertir_puj_pdf", {
+            urldocs: dirPath
+          });
+          
+          // Llamar al backend con la ruta del DIRECTORIO, no del archivo
+          const destinatarios = await invoke<any[]>("reportes_puj_enviar_por_whatsapp", {
+            directorioReportes: dirPath
+          });
+          
+          if (destinatarios && destinatarios.length > 0) {
+            // Confirmar el envío automático
+            const confirmar = window.confirm(
+              `Se encontraron ${destinatarios.length} destinatarios para PUJ. ¿Deseas enviar los mensajes automáticamente?`
+            );
+            
+            if (confirmar) {
+              // Abrir enlaces de WhatsApp con un pequeño retraso entre cada uno
+              destinatarios.forEach((destinatario, index) => {
+                setTimeout(() => {
+                  window.open(destinatario.whatsapp_url, "_blank");
+                }, index * 800); // 800ms de retraso para evitar bloqueos
+              });
+              
+              alert(`Se iniciaron ${destinatarios.length} envíos para los reportes de PUJ`);
+            } else {
+              alert("Los enlaces de WhatsApp están preparados pero no se enviaron automáticamente");
+            }
+          } else {
+            alert("No se encontraron destinatarios para enviar los reportes de PUJ");
+          }
+        } catch (error) {
+          console.error("Error al procesar envíos de PUJ:", error);
+          alert(`Error: ${error}`);
+        } finally {
+          setIsLoading(false);
+        }
       }
       else if (seccioon === "Colegios") {
-        const dirPath = directorioReporteColegios;
-        if (dirPath === "Directorio de reportes") {
-          alert("Por favor, genera primero el reporte de Colegios");
+        const filePath = directorioReporteColegios;
+        
+        if (filePath === "Directorio de reportes" || !filePath) {
+          alert("Por favor, genera primero los reportes de colegios");
           return;
         }
-        // Obtener solo el directorio base
-        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
-        await invoke("convertir_colegios_pdf", {
-          urldocs: baseDir
-        });
-        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+        
+        // Extraer el directorio donde realmente estarán los archivos
+        const dirPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+        console.log("Usando directorio para búsqueda:", dirPath);
+        
+        // Mostrar indicador de carga
+        setIsLoading(true);
+        
+        try {
+          // Llamar al backend con la ruta del DIRECTORIO, no del archivo
+          const destinatarios = await invoke<any[]>("reportes_colegios_enviar_por_whatsapp", {
+            directorioReportes: dirPath
+          });
+
+            await invoke("convertir_colegios_pdf", {
+            urldocs: dirPath
+          });
+          
+          if (destinatarios && destinatarios.length > 0) {
+            // Confirmar el envío automático
+            const confirmar = window.confirm(
+              `Se encontraron ${destinatarios.length} destinatarios. ¿Deseas enviar los mensajes automáticamente?`
+            );
+            
+            if (confirmar) {
+              // Abrir enlaces de WhatsApp con un pequeño retraso entre cada uno
+              destinatarios.forEach((destinatario, index) => {
+                setTimeout(() => {
+                  window.open(destinatario.whatsapp_url, "_blank");
+                }, index * 800); // 800ms de retraso para evitar bloqueos
+              });
+              
+              alert(`Se iniciaron ${destinatarios.length} envíos para los reportes de colegios`);
+            } else {
+              alert("Los enlaces de WhatsApp están preparados pero no se enviaron automáticamente");
+            }
+          } else {
+            alert("No se encontraron destinatarios para enviar los reportes de colegios");
+          }
+        } finally {
+          setIsLoading(false);
+        }
       }
-      
       else if (seccioon === "Tutores") {
         const dirPath = directorioReporteConstanciasTutores;
+        
         if (dirPath === "Directorio de reportes") {
-          alert("Por favor, genera primero el reporte de Tutores");
+          alert("Por favor, genera primero las constancias de tutores");
           return;
         }
-        await invoke("convertir_tutores_pdf", {
-          urldocs: dirPath
-        });
-        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+        
+        // Mostrar indicador de carga
+        setIsLoading(true);
+        
+        try {
+          // Primero convertir a PDF si es necesario
+          await invoke("convertir_tutores_pdf", {
+            urldocs: dirPath
+          });
+
+          await invoke("reportes_tutores_recibir_emparejamiento", {
+            archivoPathEmparejamiento: archivoPath_Emparejamiento 
+          });
+
+          // Llamar a la función para generar el Excel de envíos y preparar mensajes
+          const destinatarios = await invoke<any[]>("reportes_tutores_enviar_por_whatsapp", {
+            directorioReportes: dirPath,
+            archivoEmparejamiento: archivoPath_Emparejamiento  // Usamos el archivo específico para tutores
+          });
+          
+          if (destinatarios && destinatarios.length > 0) {
+            // Confirmar el envío automático
+            const confirmar = window.confirm(
+              `Se encontraron ${destinatarios.length} tutores con constancias. ¿Deseas enviar los mensajes automáticamente?`
+            );
+            
+            if (confirmar) {
+              // Abrir enlaces de WhatsApp with un pequeño retraso entre cada uno
+              destinatarios.forEach((destinatario, index) => {
+                setTimeout(() => {
+                  // Solo abrir si tiene URL de WhatsApp
+                  if (destinatario.whatsapp_url) {
+                    window.open(destinatario.whatsapp_url, "_blank");
+                  }
+                }, index * 800); // 800ms de retraso para evitar bloqueos
+              });
+              
+              alert(`Se iniciaron ${destinatarios.length} envíos para las constancias de tutores`);
+            } else {
+              alert("Los enlaces de WhatsApp están preparados pero no se enviaron automáticamente");
+            }
+          } else {
+            alert("No se encontraron tutores a los que enviar constancias. Verifica que los nombres coincidan con los archivos generados.");
+          }
+        } catch (error) {
+          console.error("Error al procesar envíos de constancias de tutores:", error);
+          alert(`Error: ${error}`);
+        } finally {
+          setIsLoading(false);
+        }
       }
       else if (seccioon === "Tutorados") {
         const dirPath = directorioReporteConstanciasTutorados;
+        
         if (dirPath === "Directorio de reportes") {
-          alert("Por favor, genera primero el reporte de Tutorados");
+          alert("Por favor, genera primero las constancias de tutorados");
           return;
         }
-        await invoke("convertir_tutorados_pdf", {
-          urldocs: dirPath
-        });
-        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+        
+        // Mostrar indicador de carga
+        setIsLoading(true);
+        
+        try {
+          // Primero convertir a PDF si es necesario
+          await invoke("convertir_tutorados_pdf", {
+            urldocs: dirPath
+          });
+          
+          // Llamar a la función para generar el Excel de envíos y preparar mensajes
+          const destinatarios = await invoke<any[]>("reportes_tutorados_enviar_por_whatsapp", {
+            directorioReportes: dirPath
+          });
+          
+          if (destinatarios && destinatarios.length > 0) {
+            // Confirmar el envío automático
+            const confirmar = window.confirm(
+              `Se encontraron ${destinatarios.length} tutorados con constancias. ¿Deseas enviar los mensajes automáticamente?`
+            );
+            
+            if (confirmar) {
+              // Abrir enlaces de WhatsApp with un pequeño retraso entre cada uno
+              destinatarios.forEach((destinatario, index) => {
+                setTimeout(() => {
+                  // Solo abrir si tiene URL de WhatsApp
+                  if (destinatario.whatsapp_url) {
+                    window.open(destinatario.whatsapp_url, "_blank");
+                  }
+                }, index * 800); // 800ms de retraso para evitar bloqueos
+              });
+              
+              alert(`Se iniciaron ${destinatarios.length} envíos para las constancias de tutorados`);
+            } else {
+              alert("Los enlaces de WhatsApp están preparados pero no se enviaron automáticamente");
+            }
+          } else {
+            alert("No se encontraron tutorados a los que enviar constancias. Verifica que los nombres coincidan con los archivos generados.");
+          }
+        } catch (error) {
+          console.error("Error al procesar envíos de constancias de tutorados:", error);
+          alert(`Error: ${error}`);
+        } finally {
+          setIsLoading(false);
+        }
       }
       else {
         alert(`¡Error en la selección de sección!`);
       }
     } catch (error) {
-      console.error(`Error al convertir reportes de ${seccioon} a PDF:`, error);
-      alert(`Error al convertir reportes de ${seccioon} a PDF: ${error}`);
+      setIsLoading(false);
+      console.error(`Error al procesar envíos de ${seccioon}:`, error);
+      alert(`Error: ${error}`);
     }
 
     setEmergenteVisible(false);
@@ -838,6 +1012,9 @@ function Reportes() {
           <li onClick={() => handleSelectArchivo_LEE()} className="hover-underline">
             {archivoPath_LEE}
           </li>
+          <li onClick={() => handleSelectArchivo_Emparejamiento()} className="hover-underline">
+            {archivoPath_Emparejamiento}
+          </li>
           <li onClick={() => handleSelectPlantilla_ConstanciasTutores()} className="hover-underline">
             {plantillaPath_ConstanciasTutores}
           </li>
@@ -903,6 +1080,14 @@ function Reportes() {
         onChange={handleFileChange}
       />
 
+
+      {/* Loading spinner */}
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p>Procesando envíos...</p>
+        </div>
+      )}
 
     </div>
 

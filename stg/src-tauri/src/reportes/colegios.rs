@@ -1,4 +1,4 @@
-
+// VARIOS
 // VARIOS
 use serde::{Serialize, Deserialize};
 // FECHA
@@ -14,21 +14,21 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 use std::collections::HashMap;
-
-use std::fs;
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
+// Nuevas importaciones necesarias
+use xlsxwriter::Workbook;
+use xlsxwriter::prelude::FormatColor;
+use urlencoding::encode;
 use std::path::PathBuf;
 
+use std::fs;
 use std::process::Command;
-
 
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
+static PATH_SALIDA: OnceCell<Mutex<String>> = OnceCell::new(); // Nueva variable global
 
 ////    FECHA   ////
 
@@ -118,10 +118,17 @@ pub struct Estudiante {
     institucion: String,
     horas_totales: f64,
     modalidad: f64,
+    // Agregar nuevos campos
+    #[serde(skip_serializing_if = "Option::is_none")]
+    nombre_completo: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    telefono: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    correo: Option<String>,
 }
 
 #[tauri::command]
-pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<Estudiante>, String> {
+pub fn reportes_colegios_leer_estudiantes_aprobados () -> Result<Vec<Estudiante>, String> {
 
     let archivo_lee = PATH_LEE
         .get()
@@ -159,13 +166,14 @@ pub fn reportes_colegios_leer_estudiantes_aprobados ( ) -> Result<Vec<Estudiante
                 institucion,
                 horas_totales,
                 modalidad,
+                nombre_completo: None,
+                telefono: None,
+                correo: None,
             });
         }
     }
 
-    // println!("📂 Estudiantes aprobados (Colegios): {:?}", estudiantes_aprobados);
-
-Ok(estudiantes_aprobados)
+    Ok(estudiantes_aprobados)
 }
 
 #[tauri::command]
@@ -258,6 +266,17 @@ pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), Str
         }
 
         zip_writer.finish().expect("Error al cerrar el ZIP");
+
+        // Obtener el directorio de salida del nombre del primer reporte
+        let output_dir = Path::new(&nuevo_nombre_archivo).parent()
+            .map(|p| p.to_string_lossy().to_string())
+            .unwrap_or_else(|| ".".to_string());
+            
+        // Guardar el directorio de salida en la variable global
+        let _ = PATH_SALIDA.get_or_init(|| Mutex::new(String::new()))
+            .lock()
+            .map(|mut path| *path = output_dir.clone())
+            .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
     }
 
 Ok(())
@@ -329,4 +348,288 @@ pub fn convertir_colegios_pdf(urldocs: String) -> Result<(), String> {
 
     println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
     Ok(())
+}
+
+#[derive(Serialize)]
+pub struct EnvioWhatsApp {
+    nombre: String,
+    telefono: String,
+    institucion: String,
+    mensaje: String,
+    whatsapp_url: String,
+    archivo_reporte: String,
+}
+
+#[tauri::command]
+pub fn reportes_colegios_enviar_por_whatsapp(directorio_reportes: String) -> Result<Vec<EnvioWhatsApp>, String> {
+    // Si no se proporciona directorio, intentar usar el almacenado
+    let directorio_final = if directorio_reportes.is_empty() {
+        match reportes_colegios_obtener_directorio_salida() {
+            Ok(dir) => dir,
+            Err(_) => return Err("No se ha especificado un directorio y no hay uno guardado previamente".to_string())
+        }
+    } else {
+        directorio_reportes
+    };
+    
+    println!("📱 Preparando envíos de reportes para colegios desde: {}", directorio_final);
+    
+    // 1. Leer estudiantes aprobados para tener información de contacto
+    let estudiantes = match reportes_colegios_leer_estudiantes_aprobados() {
+        Ok(estudiantes) => estudiantes,
+        Err(e) => return Err(format!("Error al leer estudiantes aprobados: {}", e)),
+    };
+    
+    // Crear un HashMap para tener acceso rápido a las instituciones de los estudiantes
+    let mut instituciones_conocidas: HashMap<String, bool> = HashMap::new();
+    
+    // Actualizar la estructura Estudiante para incluir los campos necesarios y recopilar instituciones
+    let mut estudiantes_completos = Vec::new();
+    for mut estudiante in estudiantes {
+        // Crear una versión con datos de contacto
+        let nombre_completo = obtener_nombre_completo_por_institucion(&estudiante.institucion)
+            .unwrap_or_else(|| "Responsable".to_string());
+        let telefono = obtener_telefono_por_institucion(&estudiante.institucion);
+        let correo = obtener_correo_por_institucion(&estudiante.institucion)
+            .unwrap_or_else(|| "sin-correo@ejemplo.com".to_string());
+            
+        estudiante.nombre_completo = Some(nombre_completo);
+        estudiante.telefono = Some(telefono);
+        estudiante.correo = Some(correo);
+        
+        // Registrar la institución en nuestro mapa
+        instituciones_conocidas.insert(estudiante.institucion.clone(), true);
+        
+        estudiantes_completos.push(estudiante);
+    }
+    
+    // 2. Buscar reportes generados en el directorio
+    let path = std::path::Path::new(&directorio_final);
+    let reportes = match std::fs::read_dir(path) {
+        Ok(entries) => entries
+            .filter_map(Result::ok)
+            .filter(|e| {
+                // Crear una variable para evitar valores temporales liberados
+                let path = e.path();
+                
+                // Obtener la extensión de manera segura
+                let extension = path.extension().and_then(|ext| ext.to_str());
+                
+                // Realizar el filtrado
+                extension.map_or(false, |ext| (ext == "docx" || ext == "pdf"))
+            })
+            .collect::<Vec<_>>(),
+        Err(e) => return Err(format!("Error al leer directorio de reportes: {}", e)),
+    };
+    
+    println!("📊 Encontrados {} reportes generados", reportes.len());
+    
+    // 3. Contacto central para todos los colegios
+    let contacto_nombre = "Coordinador Servicio Social";
+    let contacto_telefono = "3001234567"; // Reemplaza con el número real
+    let contacto_correo = "servicio.social@javeriana.edu.co"; // Reemplaza con el correo real
+    
+    // 4. Generar Excel de seguimiento de envíos en el mismo directorio que los reportes
+    let fecha = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let envios_file_name = format!("envios_reporte_colegios_{}.xlsx", fecha);
+    
+    // Usar el mismo directorio que los reportes para guardar el Excel de envíos
+    let envios_path = PathBuf::from(&directorio_final).join(&envios_file_name);
+    
+    // Crear workbook
+    let workbook = Workbook::new(envios_path.to_string_lossy().as_ref())
+        .map_err(|e| format!("Error creando Excel de envíos: {}", e))?;
+    let mut sheet = workbook.add_worksheet(Some("Envíos"))
+        .map_err(|e| format!("Error añadiendo hoja: {}", e))?;
+    
+    // Formato para encabezados
+    let mut header_format = xlsxwriter::Format::new();
+    header_format.set_bg_color(FormatColor::Custom(0xD8E4BC));
+    
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Institución", Some(&header_format)).unwrap();
+    sheet.write_string(0, 1, "Nombre Contacto", Some(&header_format)).unwrap();
+    sheet.write_string(0, 2, "Teléfono Contacto", Some(&header_format)).unwrap();
+    sheet.write_string(0, 3, "Correo Contacto", Some(&header_format)).unwrap();
+    sheet.write_string(0, 4, "Nombre Destinatario", Some(&header_format)).unwrap();
+    sheet.write_string(0, 5, "Teléfono Destinatario", Some(&header_format)).unwrap();
+    sheet.write_string(0, 6, "Reporte", Some(&header_format)).unwrap();
+    sheet.write_string(0, 7, "Ruta Completa", Some(&header_format)).unwrap();
+    sheet.write_string(0, 8, "Enlace WhatsApp", Some(&header_format)).unwrap();
+    sheet.write_string(0, 9, "Estado", Some(&header_format)).unwrap();
+    
+    // 5. Relacionar reportes con instituciones y crear mensajes
+    let mut resultados: Vec<EnvioWhatsApp> = vec![];
+    let mut row = 1;
+    let mut reportes_asignados: HashMap<String, &std::fs::DirEntry> = HashMap::new();
+    
+    // Primero, intentar asociar cada archivo con una institución conocida
+    for reporte in &reportes {
+        let nombre_archivo = reporte.file_name().to_string_lossy().to_lowercase();
+        
+        // Buscar qué institución corresponde a este archivo
+        for institucion in instituciones_conocidas.keys() {
+            // Verificar si el nombre de la institución (o parte de él) está en el nombre del archivo
+            if nombre_archivo.contains(&institucion.to_lowercase()) {
+                reportes_asignados.insert(institucion.clone(), reporte);
+                break;
+            }
+        }
+    }
+    
+    // Para cada institución conocida, buscar su reporte y generar los envíos
+    for institucion in instituciones_conocidas.keys() {
+        // Si encontramos un reporte para esta institución
+        if let Some(reporte) = reportes_asignados.get(institucion) {
+            let nombre_archivo = reporte.file_name().to_string_lossy().into_owned();
+            let ruta_completa = reporte.path().to_string_lossy().into_owned();
+            
+            // Obtener datos específicos de esta institución
+            let nombre_inst_contacto = obtener_nombre_completo_por_institucion(&institucion)
+                .unwrap_or_else(|| format!("Coordinador de la institución {} junto con TuTutor", institucion));
+            let telefono_inst = obtener_telefono_por_institucion(&institucion);
+            let correo_inst = obtener_correo_por_institucion(&institucion)
+                .unwrap_or_else(|| format!("contacto@{}.edu.co", institucion.to_lowercase().replace(" ", "")));
+            
+            // Construir mensaje personalizado
+            let mensaje = format!(
+                "Hola {}, compartimos contigo el *reporte de colegio {}*.\n\
+                Contacto de la institución: {} ({})\n\
+                Te informamos que se ha generado el documento oficial con el informe de horas de los estudiantes.",
+                contacto_nombre, institucion, nombre_inst_contacto, telefono_inst
+            );
+            
+            // Crear enlace de WhatsApp
+            let tel_limpio = contacto_telefono.replace(" ", "").replace("-", "").replace("+", "");
+            let encoded_message = encode(&mensaje).to_string();
+            let whatsapp_url = format!("https://api.whatsapp.com/send?phone={}&text={}",
+                tel_limpio, encoded_message);
+            
+            // Escribir en el Excel
+            sheet.write_string(row, 0, &institucion, None).unwrap();
+            sheet.write_string(row, 1, &nombre_inst_contacto, None).unwrap();
+            sheet.write_string(row, 2, &telefono_inst, None).unwrap();
+            sheet.write_string(row, 3, &correo_inst, None).unwrap();
+            sheet.write_string(row, 4, contacto_nombre, None).unwrap();
+            sheet.write_string(row, 5, contacto_telefono, None).unwrap();
+            sheet.write_string(row, 6, &nombre_archivo, None).unwrap();
+            sheet.write_string(row, 7, &ruta_completa, None).unwrap();
+            sheet.write_string(row, 8, &whatsapp_url, None).unwrap();
+            sheet.write_string(row, 9, "Pendiente", None).unwrap();
+            
+            // Agregar a resultados
+            resultados.push(EnvioWhatsApp {
+                nombre: contacto_nombre.to_string(),
+                telefono: tel_limpio.clone(),
+                institucion: institucion.clone(),
+                mensaje: mensaje.clone(),
+                whatsapp_url: whatsapp_url.clone(),
+                archivo_reporte: ruta_completa,  // Guardamos la ruta completa
+            });
+            
+            row += 1;
+        } else {
+            println!("⚠️ No se encontró un archivo para la institución: {}", institucion);
+            
+            // Registrar en el Excel instituciones sin archivo
+            sheet.write_string(row, 0, &institucion, None).unwrap();
+            sheet.write_string(row, 1, "SIN ARCHIVO", None).unwrap();
+            sheet.write_string(row, 2, "", None).unwrap();
+            sheet.write_string(row, 3, "", None).unwrap();
+            sheet.write_string(row, 4, "", None).unwrap();
+            sheet.write_string(row, 5, "", None).unwrap();
+            sheet.write_string(row, 6, "", None).unwrap();
+            sheet.write_string(row, 7, "", None).unwrap();
+            sheet.write_string(row, 8, "", None).unwrap();
+            sheet.write_string(row, 9, "Sin reporte", None).unwrap();
+            
+            row += 1;
+        }
+    }
+    
+    // 6. Guardar y cerrar el Excel
+    workbook.close().map_err(|e| format!("Error al guardar Excel de envíos: {}", e))?;
+    
+    println!("✅ Excel de envíos generado: {}", envios_path.display());
+    println!("✅ Total de mensajes a enviar: {}", resultados.len());
+    
+    Ok(resultados)
+}
+
+// Funciones auxiliares para obtener datos de contacto
+// (Estas deberás implementarlas según cómo obtengas los datos en tu aplicación)
+
+fn obtener_nombre_completo_por_institucion(institucion: &str) -> Option<String> {
+    // Implementa la lógica para obtener el nombre del contacto
+    // Puedes leer de un JSON, base de datos, etc.
+    Some(format!("Coordinador {}", institucion))
+}
+
+fn obtener_telefono_por_institucion(_institucion: &str) -> String {
+    // Prefijo con _ para evitar la advertencia de variable sin usar
+    "3001234567".to_string()
+}
+
+fn obtener_correo_por_institucion(institucion: &str) -> Option<String> {
+    // Implementa la lógica para obtener el correo del contacto
+    Some(format!("contacto.{}@educacion.co", institucion.to_lowercase().replace(" ", ".")))
+}
+
+// Función auxiliar para extraer nombre de institución
+fn extraer_institucion_de_nombre_archivo(nombre_archivo: &str) -> String {
+    // Eliminar extensión
+    let sin_extension = nombre_archivo.rsplit_once('.').map_or(nombre_archivo, |(n, _)| n);
+    
+    // Asumimos que el nombre del archivo sigue un patrón como:
+    // "Reporte_Servicio_Social_[NOMBRE_COLEGIO]_[FECHA].docx"
+    let partes: Vec<&str> = sin_extension.split('_').collect();
+    
+    if partes.len() >= 4 {
+        // Intentar encontrar la parte que corresponde al colegio
+        // Esta lógica puede necesitar ajustes según el formato exacto de tus nombres de archivo
+        let posible_institucion = partes[3..partes.len()-1].join(" ");
+        if !posible_institucion.is_empty() {
+            return posible_institucion;
+        }
+    }
+    
+    // Si no podemos extraer correctamente, devolvemos el nombre sin extensión
+    sin_extension.to_string()
+}
+
+#[tauri::command]
+pub fn reportes_colegios_obtener_directorio_salida() -> Result<String, String> {
+    match PATH_SALIDA.get() {
+        Some(mutex) => {
+            mutex.lock()
+                .map(|path| path.clone())
+                .map_err(|e| format!("Error al acceder a la ruta: {}", e))
+        },
+        None => Err("La ruta de salida no ha sido inicializada".to_string())
+    }
+}
+
+// Función para obtener la ruta de los recursos
+fn get_resource_path() -> PathBuf {
+    // Obtener la ruta de ejecución (directorio del ejecutable)
+    let exe_path = std::env::current_exe().expect("No se pudo obtener la ruta del ejecutable");
+    let exe_dir = exe_path.parent().expect("No se pudo obtener el directorio del ejecutable");
+    
+    // En modo desarrollo, la carpeta de recursos estará en el directorio raíz del proyecto
+    // En producción, podría estar en un subdirectorio de recursos
+    #[cfg(debug_assertions)]
+    {
+        // En desarrollo, subir varios niveles hasta la raíz del proyecto
+        let mut path = exe_dir.to_path_buf();
+        // Ajustar según la estructura de tu proyecto
+        path.pop(); // subir un nivel
+        path.pop(); // subir otro nivel si es necesario
+        path.join("resources")
+    }
+    
+    #[cfg(not(debug_assertions))]
+    {
+        // En producción, los recursos podrían estar en una carpeta específica relativa al ejecutable
+        exe_dir.join("resources")
+    }
 }
