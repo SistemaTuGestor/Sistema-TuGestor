@@ -836,10 +836,13 @@ function Monitoreo() {
                     </button>
                   </>
                 ) : (
-                  <><button
-                    onClick={() => handleEnviarItem(index)}>
-                    Enviar
-                  </button>
+                  <>
+                    {esTarea && (
+                      <button
+                        onClick={() => handleEnviarItem(index)}>
+                        Enviar
+                      </button>
+                    )}
                     <button
                       style={{ marginLeft: '10px' }}
                       onClick={() => handleDeleteItem(index)}
