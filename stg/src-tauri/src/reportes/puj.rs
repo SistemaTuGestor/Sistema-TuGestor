@@ -1,6 +1,10 @@
-
 // VARIOS
 use serde::{Serialize, Deserialize}; // Import Deserialize
+use urlencoding::encode;
+use xlsxwriter::Workbook;
+use xlsxwriter::prelude::FormatColor;
+use std::collections::HashMap;
+
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
@@ -28,6 +32,7 @@ static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
+static PATH_SALIDA: OnceCell<Mutex<String>> = OnceCell::new();
 
 ////    FECHA   ////
 
@@ -231,7 +236,8 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
     contenido_xml = contenido_xml.replace("&lt;&lt;lista&gt;&gt;", &lista_tutores);
     contenido_xml = contenido_xml.replace("<<lista>>", &lista_tutores);
 
-    let nuevo_docx = File::create(output_path).expect("No se pudo crear el archivo de salida");
+    // Aquí usamos &output_path en lugar de output_path para evitar que se mueva
+    let nuevo_docx = File::create(&output_path).expect("No se pudo crear el archivo de salida");
     let mut zip_writer = zip::ZipWriter::new(nuevo_docx);
 
     for i in 0..zip.len() {
@@ -252,6 +258,17 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
     }
 
     zip_writer.finish().expect("Error al cerrar el ZIP");
+
+    // Después de crear el archivo de salida, guardar su directorio
+    let output_dir = output_path.parent()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_else(|| ".".to_string());
+        
+    let _ = PATH_SALIDA.get_or_init(|| Mutex::new(String::new()))
+        .lock()
+        .map(|mut path| *path = output_dir.clone())
+        .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
+
 
 Ok(())
 }
@@ -321,4 +338,166 @@ pub fn convertir_puj_pdf(urldocs: String) -> Result<(), String> {
 
     println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
     Ok(())
+}
+
+// Estructura para el resultado del envío de WhatsApp
+#[derive(Serialize)]
+pub struct EnvioWhatsApp {
+    nombre: String,
+    telefono: String,
+    mensaje: String,
+    whatsapp_url: String,
+    archivo_reporte: String,
+}
+
+// Función para recuperar la ruta de salida guardada
+#[tauri::command]
+pub fn reportes_puj_obtener_directorio_salida() -> Result<String, String> {
+    match PATH_SALIDA.get() {
+        Some(mutex) => {
+            mutex.lock()
+                .map(|path| path.clone())
+                .map_err(|e| format!("Error al acceder a la ruta: {}", e))
+        },
+        None => Err("La ruta de salida no ha sido inicializada".to_string())
+    }
+}
+
+// Función para enviar reportes PUJ por WhatsApp
+#[tauri::command]
+pub fn reportes_puj_enviar_por_whatsapp(directorio_reportes: String) -> Result<Vec<EnvioWhatsApp>, String> {
+    // Si no se proporciona directorio, intentar usar el almacenado
+    let directorio_final = if directorio_reportes.is_empty() {
+        match reportes_puj_obtener_directorio_salida() {
+            Ok(dir) => dir,
+            Err(_) => return Err("No se ha especificado un directorio y no hay uno guardado previamente".to_string())
+        }
+    } else {
+        directorio_reportes
+    };
+    
+    println!("📱 Preparando envíos de reportes para PUJ desde: {}", directorio_final);
+    
+    // 1. Leer estudiantes universitarios para tener información
+    let estudiantes = match reportes_puj_leer_universitarios_aprobados() {
+        Ok(estudiantes) => estudiantes,
+        Err(e) => return Err(format!("Error al leer estudiantes universitarios: {}", e)),
+    };
+    
+    println!("📊 Encontrados {} estudiantes universitarios", estudiantes.len());
+    
+    // 2. Buscar reportes generados en el directorio
+    let path = std::path::Path::new(&directorio_final);
+    let reportes = match std::fs::read_dir(path) {
+        Ok(entries) => entries
+            .filter_map(Result::ok)
+            .filter(|e| {
+                // Crear una variable para evitar valores temporales liberados
+                let path = e.path();
+                
+                // Obtener el nombre como string para búsqueda de "puj"
+                let file_name = e.file_name().to_string_lossy().to_lowercase();
+                
+                // Obtener la extensión de manera segura
+                let extension = path.extension().and_then(|ext| ext.to_str());
+                
+                // Realizar el filtrado
+                extension.map_or(false, |ext| (ext == "docx" || ext == "pdf")) && 
+                file_name.contains("puj")
+            })
+            .collect::<Vec<_>>(),
+        Err(e) => return Err(format!("Error al leer directorio de reportes: {}", e)),
+    };
+    
+    if reportes.is_empty() {
+        return Err("No se encontraron reportes de PUJ en el directorio especificado".to_string());
+    }
+    
+    println!("📊 Encontrados {} reportes PUJ", reportes.len());
+    
+    // 3. Generar Excel de seguimiento de envíos en el mismo directorio que los reportes
+    let fecha = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
+    let envios_file_name = format!("envios_reporte_puj_{}.xlsx", fecha);
+    
+    // Usar el mismo directorio que los reportes para guardar el Excel de envíos
+    let envios_path = PathBuf::from(&directorio_final).join(&envios_file_name);
+    
+    // Crear workbook
+    let workbook = Workbook::new(envios_path.to_string_lossy().as_ref())
+        .map_err(|e| format!("Error creando Excel de envíos: {}", e))?;
+    let mut sheet = workbook.add_worksheet(Some("Envíos"))
+        .map_err(|e| format!("Error añadiendo hoja: {}", e))?;
+    
+    // Formato para encabezados
+    let mut header_format = xlsxwriter::Format::new();
+    header_format.set_bg_color(FormatColor::Custom(0xD8E4BC));
+    
+    // Escribir encabezados
+    sheet.write_string(0, 0, "Reporte", Some(&header_format)).unwrap();
+    sheet.write_string(0, 1, "Ubicación completa", Some(&header_format)).unwrap();
+    sheet.write_string(0, 2, "Destinatario", Some(&header_format)).unwrap();
+    sheet.write_string(0, 3, "Teléfono", Some(&header_format)).unwrap();
+    sheet.write_string(0, 4, "Enlace WhatsApp", Some(&header_format)).unwrap();
+    sheet.write_string(0, 5, "Estado", Some(&header_format)).unwrap();
+    
+    // Información de contacto del coordinador PUJ (número fijo para todos los reportes)
+    let coordinador_nombre = "Coordinador Tututor"; // Reemplaza con el nombre real
+    let coordinador_telefono = "3053902328"; // Reemplaza con el número real
+    
+    // 4. Crear un mensaje para cada reporte encontrado, todos dirigidos al mismo número
+    let mut resultados: Vec<EnvioWhatsApp> = vec![];
+    let mut row = 1;
+    
+    // Para cada reporte, crear un mensaje
+    for reporte in &reportes {
+        let nombre_archivo = reporte.file_name().to_string_lossy().into_owned();
+        let ruta_completa = reporte.path().to_string_lossy().into_owned();
+        
+        // Construir mensaje personalizado
+        let mensaje = format!(
+            "Hola {}, compartimos contigo el *reporte de PUJ: {}*.\n\n\
+            Te informamos que se ha generado el documento oficial con el informe completo.\n\n\
+            Resumen: {} tutores universitarios, {} reportes generados.",
+            coordinador_nombre, nombre_archivo, estudiantes.len(), reportes.len()
+        );
+        
+        // Crear enlace de WhatsApp
+        let tel_limpio = coordinador_telefono.replace(" ", "").replace("-", "").replace("+", "");
+        let encoded_message = encode(&mensaje).to_string();
+        let whatsapp_url = format!("https://api.whatsapp.com/send?phone={}&text={}",
+            tel_limpio, encoded_message);
+        
+        // Escribir en el Excel
+        sheet.write_string(row, 0, &nombre_archivo, None).unwrap();
+        sheet.write_string(row, 1, &ruta_completa, None).unwrap();
+        sheet.write_string(row, 2, coordinador_nombre, None).unwrap();
+        sheet.write_string(row, 3, coordinador_telefono, None).unwrap();
+        sheet.write_string(row, 4, &whatsapp_url, None).unwrap();
+        sheet.write_string(row, 5, "Pendiente", None).unwrap();
+        
+        // Agregar a resultados
+        resultados.push(EnvioWhatsApp {
+            nombre: coordinador_nombre.to_string(),
+            telefono: tel_limpio.clone(),
+            mensaje,
+            whatsapp_url,
+            archivo_reporte: ruta_completa,  // Guardamos la ruta completa, no solo el nombre
+        });
+        
+        row += 1;
+    }
+    
+    // 5. Guardar y cerrar el Excel
+    workbook.close().map_err(|e| format!("Error al guardar Excel de envíos: {}", e))?;
+    
+    // Guardar también la ubicación del Excel de envíos
+    let _ = PATH_SALIDA.get_or_init(|| Mutex::new(String::new()))
+        .lock()
+        .map(|mut path| *path = envios_path.parent().unwrap().to_string_lossy().to_string())
+        .map_err(|e| format!("Error al guardar la ruta del Excel de envíos: {}", e));
+    
+    println!("✅ Excel de envíos generado: {}", envios_path.display());
+    println!("✅ Total de mensajes a enviar: {}", resultados.len());
+    
+    Ok(resultados)
 }

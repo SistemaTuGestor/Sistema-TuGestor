@@ -86,7 +86,7 @@ struct MonitoreoData {
 }
 
 //Conseguir ruta auxiliar para los archivos de recursos
-fn get_resource_path() -> PathBuf {
+pub fn get_resource_path() -> PathBuf {
     let current_exe = env::current_exe().expect("Failed to get current executable path");
     let mut path = current_exe.parent().unwrap().to_path_buf();
     
