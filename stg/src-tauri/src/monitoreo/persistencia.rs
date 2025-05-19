@@ -6,7 +6,7 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
-use uuid::Uuid;
+
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Tarea {
@@ -113,6 +113,17 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         return Err("Ya existe el archivo JSON".to_string());
     }
 */
+    if json_path.exists() {
+        // Si existe, leer y retornar los datos del JSON existente
+        let json_str = std::fs::read_to_string(&json_path)
+            .map_err(|e| format!("No se pudo leer el JSON existente: {}", e))?;
+        
+        let data: MonitoreoData = serde_json::from_str(&json_str)
+            .map_err(|e| format!("Error parseando JSON existente: {}", e))?;
+        
+        return Ok((data.tutores, data.tutorado1, data.tutorado2));
+    }
+
 
     //let ubicacion = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
     let mut workbook: Xlsx<_> = match open_workbook(&excel_path) {
@@ -341,55 +352,21 @@ pub fn cargar_datos_json() -> Result<String, String> {
     std::fs::read_to_string(json_path).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
-#[tauri::command] //Función para eliminación
-pub fn actualizar_json_monitoreo(json_data: String) -> Result<String, String> {
+#[tauri::command] // Manejo de actualizaciones para tareas.
+pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
-    // Validar y parsear el JSON recibido
-    let mut data: MonitoreoData = serde_json::from_str(&json_data)
+    // Verificar que el JSON es válido antes de escribir
+    let data: serde_json::Value = serde_json::from_str(&json_data)
         .map_err(|e| format!("JSON inválido: {}", e))?;
 
-    // Asegurar que todas las tareas tengan el campo 'hecho'
-    for tutor in data.tutores.iter_mut() {
-        for tarea in tutor.tareas.iter_mut() {
-            // Si por alguna razón falta el campo, lo ponemos en false
-            // (esto solo es relevante si el JSON fue manipulado mal)
-            // En Rust, esto no suele pasar, pero es seguro.
-            if tarea.hecho != true && tarea.hecho != false {
-                tarea.hecho = false;
-            }
-        }
-    }
-    // Este bloque asegura que todas las tareas de tutorado1 y tutorado2 tengan el campo 'hecho'.
-// Normalmente no es necesario si siempre serializas/deserializas bien, pero es una protección extra.
-/*
+    // Escribir el archivo
+    std::fs::write(&json_path, json_data)
+        .map_err(|e| format!("Error escribiendo el archivo: {}", e))?;
 
-    */
-    for tutorado in data.tutorado1.iter_mut().chain(data.tutorado2.iter_mut()) {
-        for tarea in tutorado.tareas.iter_mut() {
-            if tarea.hecho != true && tarea.hecho != false {
-                tarea.hecho = false;
-            }
-        }
-    }
-
-    // Actualizar progreso de todos los usuarios
-    actualizar_tareas_y_progreso(&mut data.tutores, &mut data.tutorado1, &mut data.tutorado2);
-
-    // Serializar y guardar el JSON actualizado
-    let json_string = serde_json::to_string_pretty(&data)
-        .map_err(|e| format!("Error serializando JSON: {}", e))?;
-
-    if let Some(parent) = json_path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| format!("Error creando directorios: {}", e))?;
-    }
-
-    std::fs::write(&json_path, json_string)
-        .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
-
-    Ok("JSON actualizado correctamente".to_string())
+    println!("JSON actualizado correctamente");
+    Ok(())
 }
 
 #[tauri::command]
@@ -424,30 +401,42 @@ pub fn get_image(path: String) -> Result<Vec<u8>, String> {
 /// Además, (por ahora) asigna aleatoriamente el campo 'hecho' de cada tarea a true o false.
 /// Si quieres que todas las tareas estén sin hacer, cambia `tarea.hecho = rng.gen_bool(0.5)` por `tarea.hecho = false`
 pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut Vec<Tutorado>, tutorados2: &mut Vec<Tutorado>) {
-    let mut rng = rand::thread_rng();
-
+    // Actualizar progreso de tutores
     for tutor in tutores.iter_mut() {
-        let total = tutor.tareas.len();
-        let mut hechas = 0;
-        for tarea in tutor.tareas.iter_mut() {
-            // Puedes cambiar esto a false si quieres que todas estén sin hacer
-            tarea.hecho = rng.gen_bool(0.5); // Aleatorio true/false
-            if tarea.hecho { hechas += 1; }
+        let total_tareas = tutor.tareas.len();
+        if total_tareas > 0 {
+            let tareas_completadas = tutor.tareas.iter().filter(|t| t.hecho).count();
+            tutor.progreso = tareas_completadas as f32 / total_tareas as f32;
+        } else {
+            tutor.progreso = 0.0;
         }
-        tutor.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
+        //Si quieres ver el progreso de los tutores en consola, descomenta la siguiente línea
+        // println!("Tutor: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+        //     tutor.nombre, 
+        //     total_tareas,
+        //     tutor.tareas.iter().filter(|t| t.hecho).count(),
+        //     tutor.progreso
+        // );
     }
 
+    // Actualizar progreso de tutorados (tanto tutorado1 como tutorado2)
     for tutorado in tutorados1.iter_mut().chain(tutorados2.iter_mut()) {
-        let total = tutorado.tareas.len();
-        let mut hechas = 0;
-        for tarea in tutorado.tareas.iter_mut() {
-           // tarea.hecho = rng.gen_bool(0.5);
-            if tarea.hecho { hechas += 1; }
+        let total_tareas = tutorado.tareas.len();
+        if total_tareas > 0 {
+            let tareas_completadas = tutorado.tareas.iter().filter(|t| t.hecho).count();
+            tutorado.progreso = tareas_completadas as f32 / total_tareas as f32;
+        } else {
+            tutorado.progreso = 0.0;
         }
-        tutorado.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
+        //Si quieres ver el progreso de los tutorados en consola, descomenta la siguiente línea
+        // println!("Tutorado: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+        //     tutorado.nombre, 
+        //     total_tareas,
+        //     tutorado.tareas.iter().filter(|t| t.hecho).count(),
+        //     tutorado.progreso
+        // );
     }
 }
-
 #[tauri::command]
 pub fn obtener_roles_unicos() -> Result<Vec<String>, String> {
     let base_path = get_resource_path();
@@ -822,70 +811,86 @@ pub fn editar_item_monitoreo(
     Ok("Registro editado correctamente".to_string())
 }
 
-#[tauri::command]
 
+#[tauri::command]
 pub fn toggle_hecho_monitoreo(
     correo: String,
-    nombre_tarea: String,
-    es_tutor: bool,
-    es_tutorado1: bool,
-) -> Result<String, String> {
+    nombre_tarea: String
+) -> Result<bool, String> {
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
+    // Leer el JSON
     let json_str = std::fs::read_to_string(&json_path)
         .map_err(|e| format!("No se pudo leer el JSON: {}", e))?;
+    
+    // Parsear el JSON
     let mut data: MonitoreoData = serde_json::from_str(&json_str)
         .map_err(|e| format!("JSON inválido: {}", e))?;
 
-    let mut encontrada = false;
+    let mut nuevo_estado = false;
+    let mut encontrado = false;
 
-    let toggle = |tareas: &mut Vec<Tarea>| {
-        for tarea in tareas.iter_mut() {
-            if tarea.nombre == nombre_tarea {
-                tarea.hecho = !tarea.hecho;
-                return true;
+    // Buscar y actualizar la tarea
+    for tutor in data.tutores.iter_mut() {
+        if tutor.correo == correo {
+            for tarea in tutor.tareas.iter_mut() {
+                if tarea.nombre == nombre_tarea {
+                    tarea.hecho = !tarea.hecho;
+                    nuevo_estado = tarea.hecho;
+                    encontrado = true;
+                    break;
+                }
             }
         }
-        false
-    };
+    }
 
-    if es_tutor {
-        for tutor in data.tutores.iter_mut() {
-            if tutor.correo == correo {
-                encontrada = toggle(&mut tutor.tareas);
-                break;
-            }
-        }
-    } else if es_tutorado1 {
+    if !encontrado {
         for tutorado in data.tutorado1.iter_mut() {
             if tutorado.correo == correo {
-                encontrada = toggle(&mut tutorado.tareas);
-                break;
+                for tarea in tutorado.tareas.iter_mut() {
+                    if tarea.nombre == nombre_tarea {
+                        tarea.hecho = !tarea.hecho;
+                        nuevo_estado = tarea.hecho;
+                        encontrado = true;
+                        break;
+                    }
+                }
             }
         }
-    } else {
+    }
+
+    if !encontrado {
         for tutorado in data.tutorado2.iter_mut() {
             if tutorado.correo == correo {
-                encontrada = toggle(&mut tutorado.tareas);
-                break;
+                for tarea in tutorado.tareas.iter_mut() {
+                    if tarea.nombre == nombre_tarea {
+                        tarea.hecho = !tarea.hecho;
+                        nuevo_estado = tarea.hecho;
+                        encontrado = true;
+                        break;
+                    }
+                }
             }
         }
     }
 
-    if !encontrada {
-        return Err("No se encontró la tarea".to_string());
+    if !encontrado {
+        return Err("No se encontró la tarea especificada".to_string());
     }
 
-    // Actualizar progreso después de cambiar el estado
+    // Actualizar el progreso después de cambiar el estado de la tarea
     actualizar_tareas_y_progreso(&mut data.tutores, &mut data.tutorado1, &mut data.tutorado2);
 
+    // Guardar los cambios en el JSON
     let json_string = serde_json::to_string_pretty(&data)
         .map_err(|e| format!("Error serializando JSON: {}", e))?;
+    
     std::fs::write(&json_path, json_string)
-        .map_err(|e| format!("Error al escribir el JSON: {}", e))?;
+        .map_err(|e| format!("Error escribiendo el JSON: {}", e))?;
 
-    Ok("Estado de la tarea actualizado".to_string())
+    println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, nuevo_estado);
+    Ok(nuevo_estado)
 }
 
 
