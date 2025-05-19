@@ -312,9 +312,15 @@ function Monitoreo() {
         jsonData: JSON.stringify(jsonData)
       });
 
+
       const newDatosDer = [...datosDer];
       newDatosDer.splice(actualIndex, 1);
       setDatosDer(newDatosDer);
+
+      await invoke("actualizar_tareas_y_progreso", {
+        correo: currentUser.correo,
+        esEliminacion: true
+      });
 
       const personas = [
         ...jsonData.tutores,
@@ -427,7 +433,7 @@ function Monitoreo() {
         }
       }
 
-      
+
 
       // Enviar los datos actualizados al backend para guardar en JSON
       await invoke("actualizar_json_monitoreo", {
@@ -491,18 +497,23 @@ function Monitoreo() {
           jsonData[userType][userIndex].tareas = [];
         }
         jsonData[userType][userIndex].tareas.push(datos);
-      } else {
-        if (!jsonData[userType][userIndex].imagenes) {
-          jsonData[userType][userIndex].imagenes = [];
-        }
-        jsonData[userType][userIndex].imagenes.push(datos);
       }
 
+      // Primero actualizar el JSON
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-      // Actualizar la UI
+      // Actualizar la UI inmediatamente
+      const nuevasEntradas = [...datosDer];
+      if (tipo === 'tarea') {
+        nuevasEntradas.push({
+          registro: `${datos.nombre}: ${datos.descripcion}`
+        });
+      }
+      setDatosDer(nuevasEntradas);
+
+      // Actualizar los datos originales
       const personas = [
         ...jsonData.tutores,
         ...jsonData.tutorado1,
@@ -510,29 +521,14 @@ function Monitoreo() {
       ];
       setDatosOriginales(personas);
 
-      // Actualizar la vista derecha
+      // Actualizar el usuario seleccionado
       const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
       if (personaActualizada) {
-        const nuevasEntradas: DatosMonitoreoDer[] = [];
-
-        personaActualizada.tareas.forEach((tarea: any) => {
-          nuevasEntradas.push({
-            registro: `${tarea.nombre}: ${tarea.descripcion}`
-          });
-        });
-
-        if (personaActualizada.imagenes && Array.isArray(personaActualizada.imagenes)) {
-          personaActualizada.imagenes.forEach((imagen: any) => {
-            if (imagen.url) {
-              nuevasEntradas.push({
-                registro: `Imagen: ${imagen.url}`
-              });
-            }
-          });
-        }
-
-        setDatosDer(nuevasEntradas);
+        setUsuarioSeleccionado(personaActualizada);
       }
+
+      setMostrarEmergente(false); // Cerrar la ventana emergente
+
     } catch (error) {
       console.error("Error al guardar el nuevo registro:", error);
     }

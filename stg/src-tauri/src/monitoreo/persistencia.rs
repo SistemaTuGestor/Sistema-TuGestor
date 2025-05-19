@@ -401,30 +401,40 @@ pub fn get_image(path: String) -> Result<Vec<u8>, String> {
 /// Además, (por ahora) asigna aleatoriamente el campo 'hecho' de cada tarea a true o false.
 /// Si quieres que todas las tareas estén sin hacer, cambia `tarea.hecho = rng.gen_bool(0.5)` por `tarea.hecho = false`
 pub fn actualizar_tareas_y_progreso(tutores: &mut Vec<Tutor>, tutorados1: &mut Vec<Tutorado>, tutorados2: &mut Vec<Tutorado>) {
-    let mut rng = rand::thread_rng();
-
+    // Actualizar progreso de tutores
     for tutor in tutores.iter_mut() {
-        let total = tutor.tareas.len();
-        let mut hechas = 0;
-        for tarea in tutor.tareas.iter_mut() {
-            // Puedes cambiar esto a false si quieres que todas estén sin hacer
-            tarea.hecho = rng.gen_bool(0.5); // Aleatorio true/false
-            if tarea.hecho { hechas += 1; }
+        let total_tareas = tutor.tareas.len();
+        if total_tareas > 0 {
+            let tareas_completadas = tutor.tareas.iter().filter(|t| t.hecho).count();
+            tutor.progreso = tareas_completadas as f32 / total_tareas as f32;
+        } else {
+            tutor.progreso = 0.0;
         }
-        tutor.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
+        println!("Tutor: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+            tutor.nombre, 
+            total_tareas,
+            tutor.tareas.iter().filter(|t| t.hecho).count(),
+            tutor.progreso
+        );
     }
 
+    // Actualizar progreso de tutorados (tanto tutorado1 como tutorado2)
     for tutorado in tutorados1.iter_mut().chain(tutorados2.iter_mut()) {
-        let total = tutorado.tareas.len();
-        let mut hechas = 0;
-        for tarea in tutorado.tareas.iter_mut() {
-           // tarea.hecho = rng.gen_bool(0.5);
-            if tarea.hecho { hechas += 1; }
+        let total_tareas = tutorado.tareas.len();
+        if total_tareas > 0 {
+            let tareas_completadas = tutorado.tareas.iter().filter(|t| t.hecho).count();
+            tutorado.progreso = tareas_completadas as f32 / total_tareas as f32;
+        } else {
+            tutorado.progreso = 0.0;
         }
-        tutorado.progreso = if total > 0 { hechas as f32 / total as f32 } else { 0.0 };
+        println!("Tutorado: {}, Tareas totales: {}, Completadas: {}, Progreso: {:.2}", 
+            tutorado.nombre, 
+            total_tareas,
+            tutorado.tareas.iter().filter(|t| t.hecho).count(),
+            tutorado.progreso
+        );
     }
 }
-
 #[tauri::command]
 pub fn obtener_roles_unicos() -> Result<Vec<String>, String> {
     let base_path = get_resource_path();
@@ -805,7 +815,6 @@ pub fn toggle_hecho_monitoreo(
     correo: String,
     nombre_tarea: String
 ) -> Result<bool, String> {
-    // Obtener la ruta del JSON
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -817,11 +826,10 @@ pub fn toggle_hecho_monitoreo(
     let mut data: MonitoreoData = serde_json::from_str(&json_str)
         .map_err(|e| format!("JSON inválido: {}", e))?;
 
-    // Variable para almacenar el nuevo estado
     let mut nuevo_estado = false;
     let mut encontrado = false;
 
-    // Buscar la tarea en tutores
+    // Buscar y actualizar la tarea
     for tutor in data.tutores.iter_mut() {
         if tutor.correo == correo {
             for tarea in tutor.tareas.iter_mut() {
@@ -829,14 +837,12 @@ pub fn toggle_hecho_monitoreo(
                     tarea.hecho = !tarea.hecho;
                     nuevo_estado = tarea.hecho;
                     encontrado = true;
-                    println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
                     break;
                 }
             }
         }
     }
 
-    // Si no se encontró en tutores, buscar en tutorado1
     if !encontrado {
         for tutorado in data.tutorado1.iter_mut() {
             if tutorado.correo == correo {
@@ -845,7 +851,6 @@ pub fn toggle_hecho_monitoreo(
                         tarea.hecho = !tarea.hecho;
                         nuevo_estado = tarea.hecho;
                         encontrado = true;
-                        println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
                         break;
                     }
                 }
@@ -853,7 +858,6 @@ pub fn toggle_hecho_monitoreo(
         }
     }
 
-    // Si no se encontró en tutorado1, buscar en tutorado2
     if !encontrado {
         for tutorado in data.tutorado2.iter_mut() {
             if tutorado.correo == correo {
@@ -862,7 +866,6 @@ pub fn toggle_hecho_monitoreo(
                         tarea.hecho = !tarea.hecho;
                         nuevo_estado = tarea.hecho;
                         encontrado = true;
-                        println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, tarea.hecho);
                         break;
                     }
                 }
@@ -874,6 +877,9 @@ pub fn toggle_hecho_monitoreo(
         return Err("No se encontró la tarea especificada".to_string());
     }
 
+    // Actualizar el progreso después de cambiar el estado de la tarea
+    actualizar_tareas_y_progreso(&mut data.tutores, &mut data.tutorado1, &mut data.tutorado2);
+
     // Guardar los cambios en el JSON
     let json_string = serde_json::to_string_pretty(&data)
         .map_err(|e| format!("Error serializando JSON: {}", e))?;
@@ -881,6 +887,7 @@ pub fn toggle_hecho_monitoreo(
     std::fs::write(&json_path, json_string)
         .map_err(|e| format!("Error escribiendo el JSON: {}", e))?;
 
+    println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, nuevo_estado);
     Ok(nuevo_estado)
 }
 
