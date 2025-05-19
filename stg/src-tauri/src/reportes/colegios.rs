@@ -169,7 +169,7 @@ Ok(estudiantes_aprobados)
 }
 
 #[tauri::command]
-pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
+pub fn reportes_colegios_generar ( estudiantes: Vec<Estudiante> ) -> Result<(), String> {
 
     // Agrupar estudiantes por institución
     let mut estudiantes_por_institucion: HashMap<String, Vec<Estudiante>> = HashMap::new();
@@ -263,185 +263,6 @@ pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), Str
 Ok(())
 }
 
-
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data"); // Cambiado a la nueva ubicación
-        path.push(filename);
-        path
-    }
-
-    #[test]
-    fn test_actualizar_fecha() {
-        // Test con fecha proporcionada
-        let result = reportes_colegios_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        // Verificar que la fecha se actualizó correctamente
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
-
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_colegios_recibir_lee("test_path.xlsx".to_string()).is_ok());
-        assert!(reportes_colegios_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_colegios_recibir_nombrereporte("Test Report".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requiere archivo Excel de prueba"]
-    fn test_leer_estudiantes_aprobados() {
-        let test_file = get_test_data_path("test_data.xlsx");
-        println!("Buscando archivo en: {:?}", test_file);
-        assert!(test_file.exists(), "El archivo de prueba no existe en {:?}", test_file);
-        
-        reportes_colegios_recibir_lee(test_file.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_LEE");
-        
-        let result = reportes_colegios_leer_estudiantes_aprobados();
-        assert!(result.is_ok(), "Error al leer estudiantes: {:?}", result.err());
-        
-        let estudiantes = result.unwrap();
-        assert!(!estudiantes.is_empty(), "No se encontraron estudiantes aprobados");
-    }
-
-    #[test]
-    #[ignore = "Requiere plantilla DOCX"]
-    fn test_generar_documentos() {
-        let plantilla_path = get_test_data_path("plantilla.docx");
-        println!("Buscando plantilla en: {:?}", plantilla_path);
-        assert!(plantilla_path.exists(), "La plantilla no existe en {:?}", plantilla_path);
-        
-        // Configuración de prueba
-        reportes_colegios_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_PLANTILLA");
-        reportes_colegios_recibir_nombrereporte("Test Report".to_string())
-            .expect("Error al configurar NOMBRE_REPORTE");
-        reportes_colegios_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Error al configurar FECHA");
-        
-        let estudiantes = vec![
-            Estudiante {
-                nombre_tutor: "Tutor Test".to_string(),
-                institucion: "Colegio Test".to_string(),
-                horas_totales: 10.0,
-                modalidad: 8.0,
-            }
-        ];
-        
-        let result = reportes_colegios_generar(estudiantes);
-        assert!(result.is_ok(), "Error al generar documentos: {:?}", result.err());
-        
-        // Verificar que se creó el archivo
-        let output_file = Path::new("Test Report - Colegio Test (01-01-2023).docx");
-        assert!(output_file.exists(), "No se generó el archivo de salida");
-        
-        // Limpieza (opcional)
-        std::fs::remove_file(output_file).ok();
-    }
-
-}
-
-
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data"); // Cambiado a la nueva ubicación
-        path.push(filename);
-        path
-    }
-
-    #[test]
-    fn test_actualizar_fecha() {
-        // Test con fecha proporcionada
-        let result = reportes_colegios_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        // Verificar que la fecha se actualizó correctamente
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
-
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_colegios_recibir_lee("test_path.xlsx".to_string()).is_ok());
-        assert!(reportes_colegios_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_colegios_recibir_nombrereporte("Test Report".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requiere archivo Excel de prueba"]
-    fn test_leer_estudiantes_aprobados() {
-        let test_file = get_test_data_path("test_data.xlsx");
-        println!("Buscando archivo en: {:?}", test_file);
-        assert!(test_file.exists(), "El archivo de prueba no existe en {:?}", test_file);
-        
-        reportes_colegios_recibir_lee(test_file.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_LEE");
-        
-        let result = reportes_colegios_leer_estudiantes_aprobados();
-        assert!(result.is_ok(), "Error al leer estudiantes: {:?}", result.err());
-        
-        let estudiantes = result.unwrap();
-        assert!(!estudiantes.is_empty(), "No se encontraron estudiantes aprobados");
-    }
-
-    #[test]
-    #[ignore = "Requiere plantilla DOCX"]
-    fn test_generar_documentos() {
-        let plantilla_path = get_test_data_path("plantilla.docx");
-        println!("Buscando plantilla en: {:?}", plantilla_path);
-        assert!(plantilla_path.exists(), "La plantilla no existe en {:?}", plantilla_path);
-        
-        // Configuración de prueba
-        reportes_colegios_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_PLANTILLA");
-        reportes_colegios_recibir_nombrereporte("Test Report".to_string())
-            .expect("Error al configurar NOMBRE_REPORTE");
-        reportes_colegios_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Error al configurar FECHA");
-        
-        let estudiantes = vec![
-            Estudiante {
-                nombre_tutor: "Tutor Test".to_string(),
-                institucion: "Colegio Test".to_string(),
-                horas_totales: 10.0,
-                modalidad: 8.0,
-            }
-        ];
-        
-        let result = reportes_colegios_generar(estudiantes);
-        assert!(result.is_ok(), "Error al generar documentos: {:?}", result.err());
-        
-        // Verificar que se creó el archivo
-        let output_file = Path::new("Test Report - Colegio Test (01-01-2023).docx");
-        assert!(output_file.exists(), "No se generó el archivo de salida");
-        
-        // Limpieza (opcional)
-        std::fs::remove_file(output_file).ok();
-    }
-
-}
-
-
 #[tauri::command]
 pub fn convertir_colegios_pdf(urldocs: String) -> Result<(), String> {
     let path = Path::new(&urldocs);
@@ -508,3 +329,162 @@ pub fn convertir_colegios_pdf(urldocs: String) -> Result<(), String> {
     println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
     Ok(())
 }
+
+
+
+
+// TESTING
+
+#[cfg(test)]
+mod tests {
+    
+    use super::*;
+    use std::path::PathBuf;
+    
+    fn get_test_data_path(filename: &str) -> PathBuf {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("../../recursos/test_data"); // Cambiado a la nueva ubicación
+        path.push(filename);
+        path
+    }
+
+    #[test]
+    fn test_actualizar_fecha() {
+        // Test con fecha proporcionada
+        let result = reportes_colegios_actualizarfecha(Some("2023-05-15".to_string()));
+        assert!(result.is_ok());
+        
+        // Verificar que la fecha se actualizó correctamente
+        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
+        assert_eq!(*fecha_guardada, "15-05-2023");
+    }
+
+    #[test]
+    fn test_recibir_paths() {
+        assert!(reportes_colegios_recibir_lee("test_path.xlsx".to_string()).is_ok());
+        assert!(reportes_colegios_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
+        assert!(reportes_colegios_recibir_nombrereporte("Test Report".to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "Requiere archivo Excel de prueba"]
+    fn test_leer_estudiantes_aprobados() {
+        let test_file = get_test_data_path("test_data.xlsx");
+        println!("Buscando archivo en: {:?}", test_file);
+        assert!(test_file.exists(), "El archivo de prueba no existe en {:?}", test_file);
+        
+        reportes_colegios_recibir_lee(test_file.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_LEE");
+        
+        let result = reportes_colegios_leer_estudiantes_aprobados();
+        assert!(result.is_ok(), "Error al leer estudiantes: {:?}", result.err());
+        
+        let estudiantes = result.unwrap();
+        assert!(!estudiantes.is_empty(), "No se encontraron estudiantes aprobados");
+    }
+
+    #[test]
+    #[ignore = "Requiere plantilla DOCX"]
+    fn test_generar_documentos() {
+        let plantilla_path = get_test_data_path("plantilla.docx");
+        println!("Buscando plantilla en: {:?}", plantilla_path);
+        assert!(plantilla_path.exists(), "La plantilla no existe en {:?}", plantilla_path);
+        
+        // Configuración de prueba
+        reportes_colegios_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_PLANTILLA");
+        reportes_colegios_recibir_nombrereporte("Test Report".to_string())
+            .expect("Error al configurar NOMBRE_REPORTE");
+        reportes_colegios_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+        
+        let estudiantes = vec![
+            Estudiante {
+                nombre_tutor: "Tutor Test".to_string(),
+                institucion: "Colegio Test".to_string(),
+                horas_totales: 10.0,
+                modalidad: 8.0,
+            }
+        ];
+        
+        let result = reportes_colegios_generar(estudiantes);
+        assert!(result.is_ok(), "Error al generar documentos: {:?}", result.err());
+        
+        // Verificar que se creó el archivo
+        let output_file = Path::new("Test Report - Colegio Test (01-01-2023).docx");
+        assert!(output_file.exists(), "No se generó el archivo de salida");
+        
+        // Limpieza (opcional)
+        std::fs::remove_file(output_file).ok();
+    }
+
+    #[test]
+    #[ignore = "Prueba de rendimiento - no ejecutar en pruebas normales"]
+    fn test_rendimiento_lectura_y_generacion ( ) {
+        
+        use std::time::Instant;
+        
+        // Configurar paths de prueba
+        let test_file = get_test_data_path("test_data.xlsx");
+        let plantilla_path = get_test_data_path("plantilla.docx");
+        
+        println!("📊 Iniciando prueba de rendimiento...");
+        println!("📂 Archivo de datos: {}", test_file.display());
+        println!("📄 Plantilla DOCX: {}", plantilla_path.display());
+        
+        // Configuración inicial
+        reportes_colegios_recibir_lee(test_file.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_LEE");
+        reportes_colegios_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_PLANTILLA");
+        reportes_colegios_recibir_nombrereporte("Test Rendimiento".to_string())
+            .expect("Error al configurar NOMBRE_REPORTE");
+        reportes_colegios_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+        
+        // Medir tiempo de ejecución
+        let start_time = Instant::now();
+        
+        // Ejecutar funciones a medir
+        let estudiantes = reportes_colegios_leer_estudiantes_aprobados()
+            .expect("Error al leer estudiantes");
+        
+        // Mostrar estadísticas de los datos
+        println!("📈 Registros procesados:");
+        println!("   - Total estudiantes: {}", estudiantes.len());
+        
+        // Contar estudiantes por institución
+        let mut por_institucion: HashMap<String, usize> = HashMap::new();
+        for e in &estudiantes {
+            *por_institucion.entry(e.institucion.clone()).or_default() += 1;
+        }
+        
+        println!("   - Distribución por institución:");
+        for (institucion, count) in por_institucion {
+            println!("     • {}: {} estudiantes", institucion, count);
+        }
+        
+        // Generar los documentos
+        reportes_colegios_generar(estudiantes)
+            .expect("Error al generar reportes");
+        
+        let duration = start_time.elapsed();
+        
+        println!("⏱️ Tiempo total de ejecución: {:.2?}", duration);
+        println!("📊 Prueba de rendimiento completada");
+        
+        // Limpieza (opcional - eliminar archivos generados)
+        let output_pattern = "Test Rendimiento - *.docx";
+        let mut files_cleaned = 0;
+        for entry in glob::glob(output_pattern).expect("Error al buscar archivos para limpiar") {
+            if let Ok(path) = entry {
+                std::fs::remove_file(&path).ok();
+                println!("🧹 Archivo eliminado: {}", path.display());
+                files_cleaned += 1;
+            }
+        }
+        println!("🧽 Total archivos limpiados: {}", files_cleaned);
+    }
+
+}
+

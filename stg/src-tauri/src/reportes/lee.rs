@@ -488,5 +488,84 @@ mod tests {
         fs::remove_file(output_file).ok();
     }
 
+    #[test]
+    #[ignore = "Prueba de rendimiento - requiere archivos reales"]
+    fn test_rendimiento_procesamiento_lee ( ) {
+
+        use std::time::Instant;
+        
+        // Configurar paths de prueba
+        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
+        let carpeta_path = get_test_data_path("test_carpeta");
+        
+        println!("📊 Iniciando prueba de rendimiento para procesamiento LEE...");
+        println!("📂 Archivo de emparejamiento: {}", emparejamiento_path.display());
+        println!("📂 Carpeta de monitoreo: {}", carpeta_path.display());
+        
+        // Configuración inicial
+        reportes_lee_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_EMPAREJAMIENTO");
+        reportes_lee_recibir_pathcarpeta(carpeta_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_CARPETA");
+        reportes_lee_recibir_nombrereporte("Test Rendimiento LEE".to_string())
+            .expect("Error al configurar NOMBRE_REPORTE");
+        reportes_lee_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+
+        let mut total_rows = 0 ;
+
+        // 🔽 LÍNEAS AGREGADAS: contar registros por archivo XLSX
+        let archivos = fs::read_dir(carpeta_path).expect("No se pudo leer la carpeta de monitoreo");
+        for entrada in archivos {
+            let entrada = entrada.expect("No se pudo leer una entrada");
+            let path = entrada.path();
+            if path.extension().and_then(|s| s.to_str()) == Some("xlsx") {
+                let mut workbook: Xlsx<_> = open_workbook(&path).expect("No se pudo abrir el archivo XLSX");
+                if let Ok(range) = workbook.worksheet_range("Sheet1") {
+                    let row_count = range.rows().skip(1).count();
+                    total_rows += row_count ;
+                    println!("📊 Archivo: {:?} - Registros: {}", path.file_name().unwrap(), row_count);
+                }
+            }
+        }
+
+        println!("\n📊 Total Registros: {}\n", total_rows);
+        
+        // Medir tiempo de ejecución
+        let start_time = Instant::now();
+        
+        // Ejecutar funciones a medir
+        let emparejamientos = reportes_lee_leer_archivo_emparejamiento()
+            .expect("Error al leer emparejamientos");
+        println!("📈 Emparejamientos cargados: {}", emparejamientos.len());
+        
+        let datos = reportes_lee_leer_archivos_en_carpeta()
+            .expect("Error al procesar archivos de monitoreo");
+        println!("📈 Registros procesados: {}", datos.len());
+        
+        // Mostrar distribución por institución
+        let mut por_institucion: HashMap<String, usize> = HashMap::new();
+        for dato in &datos {
+            *por_institucion.entry(dato.institucion.clone()).or_default() += 1;
+        }
+        
+        println!("📊 Distribución por institución:");
+        for (institucion, count) in por_institucion {
+            println!("   • {}: {} registros", institucion, count);
+        }
+        
+        // Mostrar estadísticas de tiempo
+        let duration = start_time.elapsed();
+        println!("⏱️ Tiempo total de procesamiento: {:.2?}", duration);
+        println!("📊 Prueba de rendimiento completada");
+        
+        // Limpieza (opcional)
+        let output_file = Path::new("Test Rendimiento LEE (01-01-2023).xlsx");
+        if output_file.exists() {
+            fs::remove_file(output_file).expect("Error al limpiar archivo generado");
+            println!("🧹 Archivo temporal eliminado");
+        }
+    }
+
 }
 

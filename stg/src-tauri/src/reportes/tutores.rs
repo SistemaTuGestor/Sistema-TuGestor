@@ -188,7 +188,7 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
         }
     }
 
-    println!("🎉 ¡Todas las constancias han sido generadas!");
+    // println!("🎉 ¡Todas las constancias han sido generadas!");
 
 Ok(())
 }
@@ -249,282 +249,11 @@ fn crear_constancia ( nombre:&str,apellido:&str,modality: &str,salida_path:&str 
     fs::write(salida_path, buffer.into_inner())
         .map_err(|e| format!("❌ Error al guardar el archivo DOCX modificado: {}", e))?;
 
-    println!("✔ Constancia guardada: {}", salida_path);
+    // println!("✔ Constancia guardada: {}", salida_path);
 
 Ok(())
 }
 
-
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    use std::fs;
-    use tempfile;
-    use std::io::Read;
-
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data");
-        path.push(filename);
-        path
-    }
-
-    #[test]
-    fn test_actualizar_fecha() {
-        let result = reportes_constanciastutores_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
-
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_tutores_recibir_lee("test_lee.xlsx".to_string()).is_ok());
-        assert!(reportes_constanciastutores_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_constanciastutores_recibir_nombrereporte("Test Report".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requires specific test files"]
-    fn test_generar_constancias_with_real_files() {
-        // Setup
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_dir = temp_dir.path().to_str().unwrap().to_string();
-        
-        // Initialize with actual test files
-        let lee_path = get_test_data_path("test_data.xlsx");
-        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
-        
-        if !lee_path.exists() || !plantilla_path.exists() {
-            panic!("Test files not found at:\n- {}\n- {}", lee_path.display(), plantilla_path.display());
-        }
-
-        // Configure paths
-        reportes_tutores_recibir_lee(lee_path.to_str().unwrap().to_string())
-            .expect("Failed to set LEE path");
-        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Failed to set plantilla path");
-        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
-            .expect("Failed to set output dir");
-        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Failed to set date");
-
-        // Run generation
-        let result = reportes_constanciastutores_generar();
-        assert!(result.is_ok(), "Failed to generate constancias: {:?}", result);
-        
-        // Verify output files were created
-        let entries: Vec<_> = fs::read_dir(&output_dir)
-            .expect("Failed to read output dir")
-            .collect();
-        
-        // Should create 7 files (one per tutor in test_data.xlsx)
-        assert_eq!(entries.len(), 7, "Incorrect number of files generated");
-    }
-
-    #[test]
-    #[ignore = "Requires DOCX template"]
-    fn test_crear_constancia_content() {
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_path = temp_dir.path().join("constancia_test.docx");
-        
-        // Set up test data with actual template
-        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
-        if !plantilla_path.exists() {
-            panic!("Plantilla not found at {}", plantilla_path.display());
-        }
-
-        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Failed to set plantilla path");
-        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Failed to set date");
-
-        // Test with sample data
-        let result = crear_constancia(
-            "Test", 
-            "Tutor",
-            "Virtual",
-            output_path.to_str().unwrap()
-        );
-        
-        assert!(result.is_ok(), "Error creating constancia: {:?}", result);
-        assert!(output_path.exists(), "Output file not created");
-        
-        // Verify content was replaced - read file as raw bytes
-        let content = fs::read(&output_path).expect("Failed to read output file");
-        
-        // Convert to string lossy to search for our text
-        let content_str = String::from_utf8_lossy(&content);
-        assert!(content_str.contains("Test"), "Name not found in output");
-        assert!(content_str.contains("Tutor"), "Last name not found in output");
-        assert!(content_str.contains("Virtual"), "Modality not found in output");
-    }
-
-    #[test]
-    fn test_skip_invalid_rows() {
-        // Setup with mock data that includes invalid rows
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_dir = temp_dir.path().to_str().unwrap().to_string();
-        
-        // Create a test Excel file with some invalid rows
-        let test_excel = temp_dir.path().join("test.xlsx");
-        fs::write(&test_excel, include_bytes!("../../../../recursos/test_data/test_data.xlsx"))
-            .expect("Failed to create test Excel file");
-        
-        // Configure paths - don't set plantilla path to test skipping
-        reportes_tutores_recibir_lee(test_excel.to_str().unwrap().to_string())
-            .expect("Failed to set LEE path");
-        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
-            .expect("Failed to set output dir");
-        
-        // Should skip processing since the Excel file is empty/invalid
-        let result = reportes_constanciastutores_generar();
-        assert!(result.is_ok(), "Should handle invalid Excel file gracefully");
-    }
-
-}
-
-
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    use std::fs;
-    use tempfile;
-    use std::io::Read;
-
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data");
-        path.push(filename);
-        path
-    }
-
-    #[test]
-    fn test_actualizar_fecha() {
-        let result = reportes_constanciastutores_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
-
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_tutores_recibir_lee("test_lee.xlsx".to_string()).is_ok());
-        assert!(reportes_constanciastutores_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_constanciastutores_recibir_nombrereporte("Test Report".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requires specific test files"]
-    fn test_generar_constancias_with_real_files() {
-        // Setup
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_dir = temp_dir.path().to_str().unwrap().to_string();
-        
-        // Initialize with actual test files
-        let lee_path = get_test_data_path("test_data.xlsx");
-        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
-        
-        if !lee_path.exists() || !plantilla_path.exists() {
-            panic!("Test files not found at:\n- {}\n- {}", lee_path.display(), plantilla_path.display());
-        }
-
-        // Configure paths
-        reportes_tutores_recibir_lee(lee_path.to_str().unwrap().to_string())
-            .expect("Failed to set LEE path");
-        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Failed to set plantilla path");
-        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
-            .expect("Failed to set output dir");
-        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Failed to set date");
-
-        // Run generation
-        let result = reportes_constanciastutores_generar();
-        assert!(result.is_ok(), "Failed to generate constancias: {:?}", result);
-        
-        // Verify output files were created
-        let entries: Vec<_> = fs::read_dir(&output_dir)
-            .expect("Failed to read output dir")
-            .collect();
-        
-        // Should create 7 files (one per tutor in test_data.xlsx)
-        assert_eq!(entries.len(), 7, "Incorrect number of files generated");
-    }
-
-    #[test]
-    #[ignore = "Requires DOCX template"]
-    fn test_crear_constancia_content() {
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_path = temp_dir.path().join("constancia_test.docx");
-        
-        // Set up test data with actual template
-        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
-        if !plantilla_path.exists() {
-            panic!("Plantilla not found at {}", plantilla_path.display());
-        }
-
-        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Failed to set plantilla path");
-        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Failed to set date");
-
-        // Test with sample data
-        let result = crear_constancia(
-            "Test", 
-            "Tutor",
-            "Virtual",
-            output_path.to_str().unwrap()
-        );
-        
-        assert!(result.is_ok(), "Error creating constancia: {:?}", result);
-        assert!(output_path.exists(), "Output file not created");
-        
-        // Verify content was replaced - read file as raw bytes
-        let content = fs::read(&output_path).expect("Failed to read output file");
-        
-        // Convert to string lossy to search for our text
-        let content_str = String::from_utf8_lossy(&content);
-        assert!(content_str.contains("Test"), "Name not found in output");
-        assert!(content_str.contains("Tutor"), "Last name not found in output");
-        assert!(content_str.contains("Virtual"), "Modality not found in output");
-    }
-
-    #[test]
-    fn test_skip_invalid_rows() {
-        // Setup with mock data that includes invalid rows
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_dir = temp_dir.path().to_str().unwrap().to_string();
-        
-        // Create a test Excel file with some invalid rows
-        let test_excel = temp_dir.path().join("test.xlsx");
-        fs::write(&test_excel, include_bytes!("../../../../recursos/test_data/test_data.xlsx"))
-            .expect("Failed to create test Excel file");
-        
-        // Configure paths - don't set plantilla path to test skipping
-        reportes_tutores_recibir_lee(test_excel.to_str().unwrap().to_string())
-            .expect("Failed to set LEE path");
-        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
-            .expect("Failed to set output dir");
-        
-        // Should skip processing since the Excel file is empty/invalid
-        let result = reportes_constanciastutores_generar();
-        assert!(result.is_ok(), "Should handle invalid Excel file gracefully");
-    }
-
-}
 
 #[tauri::command]
 pub fn convertir_tutores_pdf(urldocs: String) -> Result<(), String> {
@@ -591,3 +320,188 @@ pub fn convertir_tutores_pdf(urldocs: String) -> Result<(), String> {
     println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
     Ok(())
 }
+
+
+
+
+// TESTING
+
+#[cfg(test)]
+mod tests {
+    
+    use super::*;
+    use std::path::PathBuf;
+    use std::fs;
+    use tempfile;
+    use std::io::Read;
+
+    fn get_test_data_path(filename: &str) -> PathBuf {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("../../recursos/test_data");
+        path.push(filename);
+        path
+    }
+
+    #[test]
+    fn test_actualizar_fecha() {
+        let result = reportes_constanciastutores_actualizarfecha(Some("2023-05-15".to_string()));
+        assert!(result.is_ok());
+        
+        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
+        assert_eq!(*fecha_guardada, "15-05-2023");
+    }
+
+    #[test]
+    fn test_recibir_paths() {
+        assert!(reportes_tutores_recibir_lee("test_lee.xlsx".to_string()).is_ok());
+        assert!(reportes_constanciastutores_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
+        assert!(reportes_constanciastutores_recibir_nombrereporte("Test Report".to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "Requires specific test files"]
+    fn test_generar_constancias_with_real_files() {
+        // Setup
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+        
+        // Initialize with actual test files
+        let lee_path = get_test_data_path("test_data.xlsx");
+        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
+        
+        if !lee_path.exists() || !plantilla_path.exists() {
+            panic!("Test files not found at:\n- {}\n- {}", lee_path.display(), plantilla_path.display());
+        }
+
+        // Configure paths
+        reportes_tutores_recibir_lee(lee_path.to_str().unwrap().to_string())
+            .expect("Failed to set LEE path");
+        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Failed to set plantilla path");
+        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
+            .expect("Failed to set output dir");
+        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Failed to set date");
+
+        // Run generation
+        let result = reportes_constanciastutores_generar();
+        assert!(result.is_ok(), "Failed to generate constancias: {:?}", result);
+        
+        // Verify output files were created
+        let entries: Vec<_> = fs::read_dir(&output_dir)
+            .expect("Failed to read output dir")
+            .collect();
+        
+        // Should create 7 files (one per tutor in test_data.xlsx)
+        assert_eq!(entries.len(), 7, "Incorrect number of files generated");
+    }
+
+    #[test]
+    #[ignore = "Requires DOCX template"]
+    fn test_crear_constancia_content() {
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_path = temp_dir.path().join("constancia_test.docx");
+        
+        // Set up test data with actual template
+        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
+        if !plantilla_path.exists() {
+            panic!("Plantilla not found at {}", plantilla_path.display());
+        }
+
+        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Failed to set plantilla path");
+        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Failed to set date");
+
+        // Test with sample data
+        let result = crear_constancia(
+            "Test", 
+            "Tutor",
+            "Virtual",
+            output_path.to_str().unwrap()
+        );
+        
+        assert!(result.is_ok(), "Error creating constancia: {:?}", result);
+        assert!(output_path.exists(), "Output file not created");
+        
+        // Verify content was replaced - read file as raw bytes
+        let content = fs::read(&output_path).expect("Failed to read output file");
+        
+        // Convert to string lossy to search for our text
+        let content_str = String::from_utf8_lossy(&content);
+        assert!(content_str.contains("Test"), "Name not found in output");
+        assert!(content_str.contains("Tutor"), "Last name not found in output");
+        assert!(content_str.contains("Virtual"), "Modality not found in output");
+    }
+
+    #[test]
+    fn test_skip_invalid_rows() {
+        // Setup with mock data that includes invalid rows
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+        
+        // Create a test Excel file with some invalid rows
+        let test_excel = temp_dir.path().join("test.xlsx");
+        fs::write(&test_excel, include_bytes!("../../../../recursos/test_data/test_data.xlsx"))
+            .expect("Failed to create test Excel file");
+        
+        // Configure paths - don't set plantilla path to test skipping
+        reportes_tutores_recibir_lee(test_excel.to_str().unwrap().to_string())
+            .expect("Failed to set LEE path");
+        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
+            .expect("Failed to set output dir");
+        
+        // Should skip processing since the Excel file is empty/invalid
+        let result = reportes_constanciastutores_generar();
+        assert!(result.is_ok(), "Should handle invalid Excel file gracefully");
+    }
+
+    #[test]
+    #[ignore = "Requiere archivos de prueba"]
+    fn test_rendimiento_tutores ( ) {
+
+        use std::time::Instant;
+
+        // directorio temporal de salida
+        let temp_dir = tempfile::tempdir().expect("No se pudo crear carpeta temporal");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+
+        // configurar rutas
+        let lee_path = get_test_data_path("test_data.xlsx");
+        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
+
+        reportes_tutores_recibir_lee(lee_path.to_str().unwrap().to_string()).unwrap();
+        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string()).unwrap();
+        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone()).unwrap();
+        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string())).unwrap();
+
+        // medir tiempo
+        let start = Instant::now();
+
+        // contar filas en Sheet1 (sin encabezado)
+        let mut wb: Xlsx<_> = open_workbook(&lee_path).unwrap();
+        let rng = wb.worksheet_range("Sheet1").unwrap();
+        let total = rng.rows().skip(1).count();
+
+        println!("\n📊 Registros en LEE: {}\n", total);
+
+        // ejecutar generación
+        let res = reportes_constanciastutores_generar();
+        assert!(res.is_ok(), "Falló generación: {:?}", res.err());
+
+        // contar archivos generados
+        let generated = fs::read_dir(&output_dir).unwrap()
+            .filter(|e| e.as_ref().unwrap().path().extension().and_then(|s| s.to_str()) == Some("docx"))
+            .count();
+        
+        //println!("📄 Constancias generadas: {}", generated);
+
+        // tiempo transcurrido
+        let elapsed = start.elapsed();
+        println!("\n⏱ Tiempo total de generación: {:.2?}\n", elapsed);
+
+        assert!(generated > 0, "No se generaron constancias");
+    }
+
+}
+

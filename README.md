@@ -31,6 +31,11 @@ npm run tauri dev
 ```cargo test```
 ### Pruebas específicas
 ```cargo test <archivo RS sin extensión>```
+### Pruebas ignoradas
+```cargo test <función de testeo> -- --ignored```
+### Pruebas ignoradas con salida por CLI
+```cargo test <función de testeo> -- --ignored --nocapture```
+```cargo test test_rendimiento_lectura_y_generacion -- --ignored --show-output```
 ### Todas las pruebas
 ```cargo test -- --include-ignored```
 

@@ -238,112 +238,6 @@ Ok(())
 }
 
 
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    use std::fs;
-
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data");
-        path.push(filename);
-        path
-    }
-
-    fn setup_test_environment() {
-        // Configurar rutas de prueba
-        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
-        let plantilla_path = get_test_data_path("plantilla_tutorados.docx");
-        
-        reportes_tutorados_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_EMPAREJAMIENTO");
-            
-        reportes_constanciastutorados_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_PLANTILLA");
-            
-        reportes_constanciastutorados_recibir_nombrereporte("output_test".to_string())
-            .expect("Error al configurar NOMBRE_REPORTE");
-            
-        reportes_constanciastutorados_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Error al configurar FECHA");
-    }
-
-    #[test]
-    fn test_actualizar_fecha() {
-        let result = reportes_constanciastutorados_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
-
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_tutorados_recibir_emparejamiento("test_emparejamiento.xlsx".to_string()).is_ok());
-        assert!(reportes_constanciastutorados_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_constanciastutorados_recibir_nombrereporte("Test Report".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requiere archivos de prueba"]
-    fn test_generar_constancias() {
-        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
-        let output_dir = temp_dir.path().to_str().unwrap().to_string();
-        
-        // Initialize test data
-        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
-        let plantilla_path = get_test_data_path("plantilla_tutorados.docx");
-        
-        reportes_tutorados_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
-            .expect("Failed to set emparejamiento path");
-        reportes_constanciastutorados_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
-            .expect("Failed to set plantilla path");
-        reportes_constanciastutorados_recibir_nombrereporte(output_dir.clone())
-            .expect("Failed to set output dir");
-        reportes_constanciastutorados_actualizarfecha(Some("2023-01-01".to_string()))
-            .expect("Failed to set date");
-
-        // Run test
-        let result = reportes_constanciastutorados_generar();
-        assert!(result.is_ok(), "Failed to generate constancias: {:?}", result);
-        
-        // Verify files were created
-        let entries = fs::read_dir(&output_dir)
-            .expect("Failed to read output dir")
-            .count();
-        assert!(entries > 0, "No files were generated");
-    }
-
-    #[test]
-    #[ignore = "Requiere plantilla DOCX"]
-    fn test_crear_constancia_individual() {
-        setup_test_environment();
-        
-        let test_name = "Tutorado de Prueba";
-        let output_path = get_test_data_path("output/constancia_test.docx");
-        
-        // Asegurar que el directorio de output existe
-        if let Some(parent) = output_path.parent() {
-            fs::create_dir_all(parent).expect("Error al crear directorio de output");
-        }
-
-        let result = crear_constancia(test_name, output_path.to_str().unwrap());
-        assert!(result.is_ok(), "Error al crear constancia: {:?}", result.err());
-        assert!(output_path.exists(), "No se generó el archivo de constancia");
-
-        // Limpieza
-        if output_path.exists() {
-            fs::remove_file(output_path).ok();
-        }
-    }
-
-}
-
 #[tauri::command]
 pub fn convertir_tutorados_pdf(urldocs: String) -> Result<(), String> {
     let path = Path::new(&urldocs);
@@ -513,6 +407,70 @@ mod tests {
         if output_path.exists() {
             fs::remove_file(output_path).ok();
         }
+    }
+
+    #[test]
+    #[ignore = "Requiere archivos de prueba"]
+    fn test_rendimiento_tutorados ( ) {
+
+        use std::time::Instant;
+
+        let temp_dir = tempfile::tempdir().expect("No se pudo crear carpeta temporal");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+
+        // Rutas de prueba
+        let emparejamiento_path = get_test_data_path("emparejamiento_final.xlsx");
+        let plantilla_path = get_test_data_path("plantilla_tutorados.docx");
+
+        // Configuración de entorno
+        reportes_tutorados_recibir_emparejamiento(emparejamiento_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_EMPAREJAMIENTO");
+        reportes_constanciastutorados_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_PLANTILLA");
+        reportes_constanciastutorados_recibir_nombrereporte(output_dir.clone())
+            .expect("Error al configurar NOMBRE_REPORTE");
+        reportes_constanciastutorados_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+
+        let start_time = Instant::now();
+
+        // Contar filas en la hoja de emparejamiento (ignorando encabezado)
+        let mut workbook: Xlsx<_> = open_workbook(emparejamiento_path).expect("No se pudo abrir el archivo Excel");
+        let range = workbook
+            .worksheet_range("Emparejamiento")
+            .expect("No se pudo encontrar la hoja 'Emparejamiento'");
+        let total_registros = range.rows().skip(1).count(); // omitir encabezado
+
+        println!("📊 Registros en emparejamiento: {}", total_registros);
+
+        // Ejecutar generación
+        let result = reportes_constanciastutorados_generar();
+        assert!(result.is_ok(), "Falló la generación de constancias: {:?}", result.err());
+
+        // Verificar archivos generados
+        let archivos_generados: Vec<_> = fs::read_dir(&output_dir)
+            .expect("No se pudo leer el directorio de salida")
+            .filter_map(|e| {
+                let entry = e.ok()?;
+                let path = entry.path();
+                if path.extension().and_then(|s| s.to_str()) == Some("docx") &&
+                   path.file_name().and_then(|s| s.to_str()).map(|n| n.contains("Tutorado")).unwrap_or(false) {
+                    Some(path)
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        let duracion = start_time.elapsed();
+        println!("\n⏱ Tiempo total: {:.2?}", duracion);
+
+        println!("📄 Constancias generadas: {}\n", archivos_generados.len());
+
+        assert!(
+            archivos_generados.len() > 0,
+            "No se generaron constancias DOCX"
+        );
     }
 
 }

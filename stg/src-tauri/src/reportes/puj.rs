@@ -346,99 +346,72 @@ mod tests {
         fs::remove_file(output_file).ok();
     }
 
-}
-
-
-
-// TESTING
-
-#[cfg(test)]
-mod tests {
-    
-    use super::*;
-    use std::path::PathBuf;
-    use std::fs;
-
-    fn get_test_data_path(filename: &str) -> PathBuf {
-        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        path.push("../../recursos/test_data");
-        path.push(filename);
-        path
-    }
-
     #[test]
-    fn test_actualizar_fecha() {
-        let result = reportes_puj_actualizarfecha(Some("2023-05-15".to_string()));
-        assert!(result.is_ok());
-        
-        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
-        assert_eq!(*fecha_guardada, "15-05-2023");
-    }
+    #[ignore = "Prueba de rendimiento - no ejecutar en pruebas normales"]
+    fn test_rendimiento_puj_lectura_y_generacion ( ) {
 
-    #[test]
-    fn test_recibir_paths() {
-        assert!(reportes_puj_recibir_lee("test_path.xlsx".to_string()).is_ok());
-        assert!(reportes_puj_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
-        assert!(reportes_puj_recibir_nombrereporte("Test Report.docx".to_string()).is_ok());
-    }
-
-    #[test]
-    #[ignore = "Requiere archivo Excel de prueba"]
-    fn test_leer_universitarios_aprobados() {
-        let test_file = get_test_data_path("test_data.xlsx");
-        println!("Buscando archivo en: {:?}", test_file);
-        assert!(test_file.exists(), "El archivo de prueba no existe en {:?}", test_file);
+        use std::time::Instant;
         
-        reportes_puj_recibir_lee(test_file.to_str().unwrap().to_string())
-            .expect("Error al configurar PATH_LEE");
-        
-        let result = reportes_puj_leer_universitarios_aprobados();
-        assert!(result.is_ok(), "Error al leer estudiantes: {:?}", result.err());
-        
-        let estudiantes = result.unwrap();
-        assert!(!estudiantes.is_empty(), "No se encontraron estudiantes aprobados");
-        assert!(estudiantes.iter().all(|e| e.nombre_tutor.contains("@javeriana.edu.co")));
-    }
-
-    #[test]
-    #[ignore = "Requiere plantilla DOCX"]
-    fn test_generar_documento() {
+        // Configurar paths de prueba
         let test_file = get_test_data_path("test_data.xlsx");
         let plantilla_path = get_test_data_path("plantilla.docx");
         
-        assert!(test_file.exists(), "Archivo de datos no encontrado");
-        assert!(plantilla_path.exists(), "Plantilla no encontrada");
+        println!("📊 Iniciando prueba de rendimiento para PUJ...");
+        println!("📂 Archivo de datos: {}", test_file.display());
+        println!("📄 Plantilla DOCX: {}", plantilla_path.display());
         
-        // Configurar entorno de prueba
+        // Configuración inicial
         reportes_puj_recibir_lee(test_file.to_str().unwrap().to_string())
             .expect("Error al configurar PATH_LEE");
-            
         reportes_puj_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
             .expect("Error al configurar PATH_PLANTILLA");
-            
-        reportes_puj_recibir_nombrereporte("Reporte PUJ.docx".to_string())
+        reportes_puj_recibir_nombrereporte("Test Rendimiento PUJ.docx".to_string())
             .expect("Error al configurar NOMBRE_REPORTE");
-            
         reportes_puj_actualizarfecha(Some("2023-01-01".to_string()))
             .expect("Error al configurar FECHA");
         
-        // Obtener datos de prueba
+        // Medir tiempo de ejecución
+        let start_time = Instant::now();
+        
+        // Ejecutar funciones a medir
         let estudiantes = reportes_puj_leer_universitarios_aprobados()
-            .expect("Error al obtener estudiantes");
+            .expect("Error al leer estudiantes");
         
-        // Generar documento
-        let result = reporte_puj_generar(estudiantes);
-        assert!(result.is_ok(), "Error al generar documento: {:?}", result.err());
+        // Mostrar estadísticas de los datos
+        println!("📈 Registros procesados:");
+        println!("   - Total estudiantes PUJ: {}", estudiantes.len());
         
-        // Verificar archivo generado
-        let output_file = Path::new("Reporte PUJ (01-01-2023).docx");
-        assert!(output_file.exists(), "No se generó el archivo de salida");
+        // Contar estudiantes aprobados vs no aprobados
+        let (aprobados, no_aprobados) = estudiantes.iter().fold((0, 0), |(aprob, no_aprob), e| {
+            if e.horas_totales >= e.modalidad {
+                (aprob + 1, no_aprob)
+            } else {
+                (aprob, no_aprob + 1)
+            }
+        });
         
-        // Limpieza
-        fs::remove_file(output_file).ok();
+        println!("   - Aprobados: {} ({}%)", aprobados, (aprobados as f32 / estudiantes.len() as f32 * 100.0).round());
+        println!("   - No aprobados: {} ({}%)", no_aprobados, (no_aprobados as f32 / estudiantes.len() as f32 * 100.0).round());
+        
+        // Generar el documento
+        reporte_puj_generar(estudiantes)
+            .expect("Error al generar reporte");
+        
+        let duration = start_time.elapsed();
+        
+        println!("⏱️ Tiempo total de ejecución: {:.2?}", duration);
+        println!("📊 Prueba de rendimiento completada");
+        
+        // Limpieza (opcional - eliminar archivos generados)
+        let output_file = Path::new("Test Rendimiento PUJ (01-01-2023).docx");
+        if output_file.exists() {
+            fs::remove_file(output_file).expect("Error al limpiar archivo generado");
+            println!("🧹 Archivo temporal eliminado");
+        }
     }
 
 }
+
 
 #[tauri::command]
 pub fn convertir_puj_pdf(urldocs: String) -> Result<(), String> {

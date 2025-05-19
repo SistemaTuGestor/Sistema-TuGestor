@@ -3417,6 +3417,7 @@ dependencies = [
  "calamine",
  "chrono",
  "docx-rs",
+ "glob",
  "lazy_static",
  "office",
  "once_cell",
