@@ -673,7 +673,7 @@ function Monitoreo() {
             // Determinar el color de fondo según el progreso
             let backgroundColor;
             if (progreso === 0.0) {
-              backgroundColor = '#FFFFFF'; // Blanco - 0%
+              backgroundColor = '#DDDCDC'; // Blanco - 0%
             } else if (progreso > 0.0 && progreso <= 0.2) {
               backgroundColor = '#FF6B6B'; // Rojo - 1-20%
             } else if (progreso > 0.2 && progreso <= 0.4) {
