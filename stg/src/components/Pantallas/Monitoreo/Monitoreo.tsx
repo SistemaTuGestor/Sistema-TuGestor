@@ -312,9 +312,15 @@ function Monitoreo() {
         jsonData: JSON.stringify(jsonData)
       });
 
+
       const newDatosDer = [...datosDer];
       newDatosDer.splice(actualIndex, 1);
       setDatosDer(newDatosDer);
+
+      await invoke("actualizar_tareas_y_progreso", {
+        correo: currentUser.correo,
+        esEliminacion: true
+      });
 
       const personas = [
         ...jsonData.tutores,
@@ -427,7 +433,7 @@ function Monitoreo() {
         }
       }
 
-      
+
 
       // Enviar los datos actualizados al backend para guardar en JSON
       await invoke("actualizar_json_monitoreo", {
@@ -491,18 +497,23 @@ function Monitoreo() {
           jsonData[userType][userIndex].tareas = [];
         }
         jsonData[userType][userIndex].tareas.push(datos);
-      } else {
-        if (!jsonData[userType][userIndex].imagenes) {
-          jsonData[userType][userIndex].imagenes = [];
-        }
-        jsonData[userType][userIndex].imagenes.push(datos);
       }
 
+      // Primero actualizar el JSON
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-      // Actualizar la UI
+      // Actualizar la UI inmediatamente
+      const nuevasEntradas = [...datosDer];
+      if (tipo === 'tarea') {
+        nuevasEntradas.push({
+          registro: `${datos.nombre}: ${datos.descripcion}`
+        });
+      }
+      setDatosDer(nuevasEntradas);
+
+      // Actualizar los datos originales
       const personas = [
         ...jsonData.tutores,
         ...jsonData.tutorado1,
@@ -510,29 +521,14 @@ function Monitoreo() {
       ];
       setDatosOriginales(personas);
 
-      // Actualizar la vista derecha
+      // Actualizar el usuario seleccionado
       const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
       if (personaActualizada) {
-        const nuevasEntradas: DatosMonitoreoDer[] = [];
-
-        personaActualizada.tareas.forEach((tarea: any) => {
-          nuevasEntradas.push({
-            registro: `${tarea.nombre}: ${tarea.descripcion}`
-          });
-        });
-
-        if (personaActualizada.imagenes && Array.isArray(personaActualizada.imagenes)) {
-          personaActualizada.imagenes.forEach((imagen: any) => {
-            if (imagen.url) {
-              nuevasEntradas.push({
-                registro: `Imagen: ${imagen.url}`
-              });
-            }
-          });
-        }
-
-        setDatosDer(nuevasEntradas);
+        setUsuarioSeleccionado(personaActualizada);
       }
+
+      setMostrarEmergente(false); // Cerrar la ventana emergente
+
     } catch (error) {
       console.error("Error al guardar el nuevo registro:", error);
     }
@@ -669,24 +665,63 @@ function Monitoreo() {
           />
         </div>
         <div className="desplazadora">
-          {datosFiltrados.map((row, index) => (
-            <div
-              key={index}
-              className="casilla"
-              onClick={() => handleCasillaClick(row)}
-              style={{ cursor: 'pointer' }}
-            >
-              <div className="header-usuario">
-                <p className="rol-id">{row.rol} · ID: {row.id}</p>
-                <p className="nombre">{row.nombre}</p>
+          {datosFiltrados.map((row, index) => {
+            // Encontrar el progreso del usuario actual
+            const persona = datosOriginales.find(p => p.correo === row.email);
+            const progreso = persona?.progreso || 0;
+
+            // Determinar el color de fondo según el progreso
+            let backgroundColor;
+            if (progreso === 0.0) {
+              backgroundColor = '#FFFFFF'; // Blanco - 0%
+            } else if (progreso > 0.0 && progreso <= 0.2) {
+              backgroundColor = '#FF6B6B'; // Rojo - 1-20%
+            } else if (progreso > 0.2 && progreso <= 0.4) {
+              backgroundColor = '#FFEB3B'; // Amarillo - 21-40%
+            } else if (progreso > 0.4 && progreso <= 0.6) {
+              backgroundColor = '#4CAF50'; // Verde - 41-60%
+            } else if (progreso > 0.6 && progreso < 1.0) {
+              backgroundColor = '#2196F3'; // Azul - 61-99%
+            } else if (progreso === 1.0) {
+              backgroundColor = '#9C27B0'; // Morado - 100%
+            }
+
+            return (
+              <div
+                key={index}
+                className="casilla"
+                onClick={() => handleCasillaClick(row)}
+                style={{
+                  cursor: 'pointer',
+                  backgroundColor: backgroundColor,
+                  // Mantener los otros estilos existentes
+                  border: '1px solid #8A2BE2',
+                  borderRadius: '8px',
+                  marginBottom: '8px',
+                  padding: '12px'
+                }}
+              >
+                <div className="header-usuario">
+                  <div style={{
+                    display: 'flex',
+
+                    alignItems: 'center',
+                    width: '100%'
+                  }}>
+                    <p className="rol-id">{row.rol} · ID: {row.id}</p>
+                    <p className="progreso">· Progreso: {Math.round(progreso * 100)}%</p>
+                  </div>
+                  <p className="nombre">{row.nombre}</p>
+
+                </div>
+                <div className="detalles">
+                  <p className="institucion">Institución: {row.institucion}</p>
+                  <p className="contacto">Teléfono: {row.teleefono}</p>
+                  <p className="email">Email: {row.email}</p>
+                </div>
               </div>
-              <div className="detalles">
-                <p className="institucion">Institución: {row.institucion}</p>
-                <p className="contacto">Teléfono: {row.teleefono}</p>
-                <p className="email">Email: {row.email}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
