@@ -8,12 +8,20 @@ use chrono::NaiveDate ;
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
+use std::fs::File;
 use std::fs::{self} ;
 use std::io::{Read, Write} ;
 use std::path::{Path,PathBuf} ;
 use zip::write::FileOptions ;
 use zip::ZipArchive ;
 use calamine::{open_workbook, Reader, Xlsx} ;
+
+
+use docx_rs::*;
+use std::io::BufWriter;
+use printpdf::*;
+
+use std::process::Command;
 
 
 
@@ -382,3 +390,204 @@ mod tests {
 
 }
 
+
+
+// TESTING
+
+#[cfg(test)]
+mod tests {
+    
+    use super::*;
+    use std::path::PathBuf;
+    use std::fs;
+    use tempfile;
+    use std::io::Read;
+
+    fn get_test_data_path(filename: &str) -> PathBuf {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("../../recursos/test_data");
+        path.push(filename);
+        path
+    }
+
+    #[test]
+    fn test_actualizar_fecha() {
+        let result = reportes_constanciastutores_actualizarfecha(Some("2023-05-15".to_string()));
+        assert!(result.is_ok());
+        
+        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
+        assert_eq!(*fecha_guardada, "15-05-2023");
+    }
+
+    #[test]
+    fn test_recibir_paths() {
+        assert!(reportes_tutores_recibir_lee("test_lee.xlsx".to_string()).is_ok());
+        assert!(reportes_constanciastutores_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
+        assert!(reportes_constanciastutores_recibir_nombrereporte("Test Report".to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "Requires specific test files"]
+    fn test_generar_constancias_with_real_files() {
+        // Setup
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+        
+        // Initialize with actual test files
+        let lee_path = get_test_data_path("test_data.xlsx");
+        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
+        
+        if !lee_path.exists() || !plantilla_path.exists() {
+            panic!("Test files not found at:\n- {}\n- {}", lee_path.display(), plantilla_path.display());
+        }
+
+        // Configure paths
+        reportes_tutores_recibir_lee(lee_path.to_str().unwrap().to_string())
+            .expect("Failed to set LEE path");
+        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Failed to set plantilla path");
+        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
+            .expect("Failed to set output dir");
+        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Failed to set date");
+
+        // Run generation
+        let result = reportes_constanciastutores_generar();
+        assert!(result.is_ok(), "Failed to generate constancias: {:?}", result);
+        
+        // Verify output files were created
+        let entries: Vec<_> = fs::read_dir(&output_dir)
+            .expect("Failed to read output dir")
+            .collect();
+        
+        // Should create 7 files (one per tutor in test_data.xlsx)
+        assert_eq!(entries.len(), 7, "Incorrect number of files generated");
+    }
+
+    #[test]
+    #[ignore = "Requires DOCX template"]
+    fn test_crear_constancia_content() {
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_path = temp_dir.path().join("constancia_test.docx");
+        
+        // Set up test data with actual template
+        let plantilla_path = get_test_data_path("plantilla_tutores.docx");
+        if !plantilla_path.exists() {
+            panic!("Plantilla not found at {}", plantilla_path.display());
+        }
+
+        reportes_constanciastutores_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Failed to set plantilla path");
+        reportes_constanciastutores_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Failed to set date");
+
+        // Test with sample data
+        let result = crear_constancia(
+            "Test", 
+            "Tutor",
+            "Virtual",
+            output_path.to_str().unwrap()
+        );
+        
+        assert!(result.is_ok(), "Error creating constancia: {:?}", result);
+        assert!(output_path.exists(), "Output file not created");
+        
+        // Verify content was replaced - read file as raw bytes
+        let content = fs::read(&output_path).expect("Failed to read output file");
+        
+        // Convert to string lossy to search for our text
+        let content_str = String::from_utf8_lossy(&content);
+        assert!(content_str.contains("Test"), "Name not found in output");
+        assert!(content_str.contains("Tutor"), "Last name not found in output");
+        assert!(content_str.contains("Virtual"), "Modality not found in output");
+    }
+
+    #[test]
+    fn test_skip_invalid_rows() {
+        // Setup with mock data that includes invalid rows
+        let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
+        let output_dir = temp_dir.path().to_str().unwrap().to_string();
+        
+        // Create a test Excel file with some invalid rows
+        let test_excel = temp_dir.path().join("test.xlsx");
+        fs::write(&test_excel, include_bytes!("../../../../recursos/test_data/test_data.xlsx"))
+            .expect("Failed to create test Excel file");
+        
+        // Configure paths - don't set plantilla path to test skipping
+        reportes_tutores_recibir_lee(test_excel.to_str().unwrap().to_string())
+            .expect("Failed to set LEE path");
+        reportes_constanciastutores_recibir_nombrereporte(output_dir.clone())
+            .expect("Failed to set output dir");
+        
+        // Should skip processing since the Excel file is empty/invalid
+        let result = reportes_constanciastutores_generar();
+        assert!(result.is_ok(), "Should handle invalid Excel file gracefully");
+    }
+
+}
+
+#[tauri::command]
+pub fn convertir_tutores_pdf(urldocs: String) -> Result<(), String> {
+    let path = Path::new(&urldocs);
+    let dir_path = if path.is_file() {
+        path.parent()
+            .ok_or_else(|| format!("No se pudo obtener el directorio padre de: {}", urldocs))?
+    } else {
+        path
+    };
+    
+    if !dir_path.exists() {
+        return Err(format!("El directorio {} no existe", dir_path.display()));
+    }
+
+    println!("🔍 Buscando archivos DOCX en: {}", dir_path.display());
+
+    let entries = fs::read_dir(dir_path)
+        .map_err(|e| format!("Error al leer el directorio: {}", e))?;
+
+    let mut converted_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("Error al leer entrada: {}", e))?;
+        let path = entry.path();
+        
+        if path.to_string_lossy().contains("Tutor") && path.extension().and_then(|s| s.to_str()) == Some("docx") {
+            let docx_path = path.to_string_lossy().to_string();
+            let pdf_path = path.with_extension("pdf").to_string_lossy().to_string();
+            
+            println!("📄 Convirtiendo: {} -> {}", docx_path, pdf_path);
+
+            let ps_script = format!(r#"
+                $word = New-Object -ComObject Word.Application
+                $word.Visible = $false
+                $doc = $word.Documents.Open("{}")
+                $doc.SaveAs([ref] "{}", [ref] 17)
+                $doc.Close()
+                $word.Quit()
+                [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+            "#, docx_path.replace("\\", "\\\\"), pdf_path.replace("\\", "\\\\"));
+
+            let output = Command::new("powershell")
+                .args(["-Command", &ps_script])
+                .output()
+                .map_err(|e| format!("Error al ejecutar PowerShell: {}", e))?;
+
+            if !output.status.success() {
+                return Err(format!(
+                    "Error al convertir archivo: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                ));
+            }
+
+            println!("✅ Convertido exitosamente: {}", pdf_path);
+            converted_count += 1;
+        }
+    }
+
+    if converted_count == 0 {
+        return Err("No se encontraron archivos DOCX de constancias de tutores para convertir".to_string());
+    }
+
+    println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
+    Ok(())
+}

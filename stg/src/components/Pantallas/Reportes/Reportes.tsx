@@ -1,613 +1,709 @@
 
-import "./Reportes.css" ;
+import "./Reportes.css";
 
-import Emergente from "./Emergente/Emergente" ;
+import Emergente from "./Emergente/Emergente";
 
-import { useRef,useState,useEffect } from "react" ;
+import { useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { open,save } from "@tauri-apps/api/dialog";
+import { open, save } from "@tauri-apps/api/dialog";
 
 
 
-function Reportes ( ) {
+function Reportes() {
 
 
   //// Fecha
 
 
-  const [fechaLee,setFechaLee] = useState("") ;
+  const [fechaLee, setFechaLee] = useState("");
+  const [fechaPUJ, setFechaPUJ] = useState("");
+  const [fechaColegios, setFechaColegios] = useState("");
+  const [fechaConstanciasTutores, setFechaConstanciasTutores] = useState("");
+  const [fechaConstanciasTutorados, setFechaConstanciasTutorados] = useState("");
 
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaLee(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-  const [fechaPUJ,setFechaPUJ] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaPUJ(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-  const [fechaColegios,setFechaColegios] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaColegios(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-  const [fechaConstanciasTutores,setFechaConstanciasTutores] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaConstanciasTutores(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
-
-  const [fechaConstanciasTutorados,setFechaConstanciasTutorados] = useState("") ;
-
-  useEffect ( ( ) => {
-    invoke < {fecha:string} > ( "obtener_fecha" )
-      .then ( (response) => setFechaConstanciasTutorados(response.fecha) )
-      .catch ( (err) => console.error("Failed to fetch date:", err) ) ;
-  } , [] ) ;
   
-  
+
   //// Apertura de explorador de archivos para XLSX de Emparejamiento en LEE.
 
 
-  const [archivoPath_Emparejamiento,setArchivoPath_Emparejamiento] = useState("Ubicación de archivo Emparejamiento") ;
-  
-  const handleSelectArchivo_Emparejamiento = async ( ) => {
+  const [archivoPath_Emparejamiento, setArchivoPath_Emparejamiento] = useState("Ubicación de archivo Emparejamiento");
+
+  const handleSelectArchivo_Emparejamiento = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar archivos.
-        multiple : false ,  // Solo permite seleccionar uno.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar archivos.
+        multiple: false,  // Solo permite seleccionar uno.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        setArchivoPath_Emparejamiento ( selectedPath ) ;
+        setArchivoPath_Emparejamiento(selectedPath);
 
         // Enviar la ruta al backend de LEE.
-        invoke ( "reportes_lee_recibir_emparejamiento",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        invoke("reportes_lee_recibir_emparejamiento", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
         // Enviar la ruta al backend de Tutorados.
-        invoke ( "reportes_tutorados_recibir_emparejamiento",{path:selectedPath} )
-        .then ( () => console.log("Ruta enviada correctamente") )
-        .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        invoke("reportes_tutorados_recibir_emparejamiento", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la archivo:",error ) ;
+      console.error("Error al seleccionar la archivo:", error);
 
     }
 
-  } ;
+  };
 
 
   //// Apertura de explorador de archivos para formularios.
 
 
-  const [folderPath_LEE, setFolderPath_LEE] = useState<string | null>("Ubicación de formularios") ;
+  const [folderPath_LEE, setFolderPath_LEE] = useState<string | null>("Ubicación de formularios");
 
-  const handleSelectFolder_LEE = async ( ) => {
+  const handleSelectFolder_LEE = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : true ,  // Permite seleccionar una carpeta.
-        multiple : false ,  // Solo permite seleccionar una.
-      } ) ;
+      const selectedPath = await open({
+        directory: true,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Carpeta seleccionada:",selectedPath ) ;
+        console.log("Carpeta seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada" ;
-        setFolderPath_LEE ( folderName ) ;
+        const folderName = selectedPath.split(/[\\/]/).pop() || "Carpeta seleccionada";
+        setFolderPath_LEE(folderName);
 
         // Enviar la ruta al backend.
         invoke("reportes_lee_recibir_pathcarpeta", { path: selectedPath })
           .then(() => console.log("Ruta enviada correctamente"))
           .catch((err) => console.error("Error al enviar la ruta:", err));
-      
+
       }
 
     } catch (error) {
 
-      console.error ( "Error al seleccionar la carpeta:",error ) ;
+      console.error("Error al seleccionar la carpeta:", error);
 
     }
 
-  } ;
+  };
 
 
   //// Apertura de explorador para lectura de archivo LEE para otros reportes.
 
 
-  const [archivoPath_LEE,setArchivoPath_LEE] = useState("Ubicación de archivo LEE") ;
-  
-  const handleSelectArchivo_LEE = async ( ) => {
+  const [archivoPath_LEE, setArchivoPath_LEE] = useState("Ubicación de archivo LEE");
+
+  const handleSelectArchivo_LEE = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar archivos.
-        multiple : false ,  // Solo permite seleccionar uno.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar archivos.
+        multiple: false,  // Solo permite seleccionar uno.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        setArchivoPath_LEE ( selectedPath ) ;
+        setArchivoPath_LEE(selectedPath);
 
         // Enviar la ruta al backend para PUJ.
-        invoke ( "reportes_puj_recibir_lee",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        invoke("reportes_puj_recibir_lee", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
         // Enviar la ruta al backend para Colegios.
-        invoke ( "reportes_colegios_recibir_lee",{path:selectedPath} )
-        .then ( () => console.log("Ruta enviada correctamente") )
-        .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        invoke("reportes_colegios_recibir_lee", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
         // Enviar la ruta al backend para Tutores.
-        invoke ( "reportes_tutores_recibir_lee",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
+        invoke("reportes_tutores_recibir_lee", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
 
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la archivo:",error ) ;
+      console.error("Error al seleccionar la archivo:", error);
 
     }
 
-  } ;
+  };
 
 
   //// Apertura de explorador de archivos para plantilla de PUJ.
 
 
-  const [plantillaPath_PUJ,setPlantillaPath_PUJ] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_PUJ, setPlantillaPath_PUJ] = useState<string | null>("Ubicación de plantilla");
 
-  const handleSelectPlantilla_PUJ = async ( ) => {
+  const handleSelectPlantilla_PUJ = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar archivos.
-        multiple : false ,  // Solo permite seleccionar uno.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar archivos.
+        multiple: false,  // Solo permite seleccionar uno.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
-        setPlantillaPath_PUJ ( fileName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada";
+        setPlantillaPath_PUJ(fileName);
 
         // Enviar la ruta al backend.
-        invoke ( "reportes_puj_recibir_pathplantilla",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        invoke("reportes_puj_recibir_pathplantilla", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la plantilla:",error ) ;
+      console.error("Error al seleccionar la plantilla:", error);
 
     }
 
-  } ;
-  
+  };
+
 
   //// Apertura de explorador de archivos para plantilla de Colegios.
 
 
-  const [plantillaPath_Colegios,setPlantillaPath_Colegios] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_Colegios, setPlantillaPath_Colegios] = useState<string | null>("Ubicación de plantilla");
 
-  const handleSelectPlantilla_Colegios = async ( ) => {
+  const handleSelectPlantilla_Colegios = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar archivos.
-        multiple : false ,  // Solo permite seleccionar uno.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar archivos.
+        multiple: false,  // Solo permite seleccionar uno.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
-        setPlantillaPath_Colegios ( fileName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada";
+        setPlantillaPath_Colegios(fileName);
 
         // Enviar la ruta al backend.
-        invoke ( "reportes_colegios_recibir_pathplantilla",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        invoke("reportes_colegios_recibir_pathplantilla", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la plantilla:",error ) ;
+      console.error("Error al seleccionar la plantilla:", error);
 
     }
 
-  } ;
+  };
 
 
   //// Apertura de explorador de archivos para plantilla de Tutores.
 
 
-  const [plantillaPath_ConstanciasTutores,setPlantillaPath_ConstanciasTutores] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_ConstanciasTutores, setPlantillaPath_ConstanciasTutores] = useState<string | null>("Ubicación de plantilla");
 
-  const handleSelectPlantilla_ConstanciasTutores = async ( ) => {
+  const handleSelectPlantilla_ConstanciasTutores = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar archivos.
-        multiple : false ,  // Solo permite seleccionar uno.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar archivos.
+        multiple: false,  // Solo permite seleccionar uno.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
-        setPlantillaPath_ConstanciasTutores ( fileName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada";
+        setPlantillaPath_ConstanciasTutores(fileName);
 
         // Enviar la ruta al backend.
-        invoke ( "reportes_constanciastutores_recibir_pathplantilla",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        invoke("reportes_constanciastutores_recibir_pathplantilla", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la plantilla:",error ) ;
+      console.error("Error al seleccionar la plantilla:", error);
 
     }
 
-  } ;
+  };
 
 
   //// Apertura de explorador de archivos para plantilla de Tutorados.
 
 
-  const [plantillaPath_ConstanciasTutorados,setPlantillaPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla") ;
+  const [plantillaPath_ConstanciasTutorados, setPlantillaPath_ConstanciasTutorados] = useState<string | null>("Ubicación de plantilla");
 
-  const handleSelectPlantilla_ConstanciasTutorados = async ( ) => {
+  const handleSelectPlantilla_ConstanciasTutorados = async () => {
 
     try {
 
-      const selectedPath = await open ( {
-        directory : false ,  // Permite seleccionar una carpeta.
-        multiple : false ,  // Solo permite seleccionar una.
-      } ) ;
+      const selectedPath = await open({
+        directory: false,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
 
-      if ( typeof selectedPath === "string" ) {
+      if (typeof selectedPath === "string") {
 
         // Imprimir por consola.
-        console.log ( "Plantilla seleccionada:",selectedPath ) ;
+        console.log("Plantilla seleccionada:", selectedPath);
 
         // Imprimir por GUI.
-        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada" ;
-        setPlantillaPath_ConstanciasTutorados ( fileName ) ;
+        const fileName = selectedPath.split(/[\\/]/).pop() || "Plantilla seleccionada";
+        setPlantillaPath_ConstanciasTutorados(fileName);
 
         // Enviar la ruta al backend.
-        invoke ( "reportes_constanciastutorados_recibir_pathplantilla",{path:selectedPath} )
-          .then ( () => console.log("Ruta enviada correctamente") )
-          .catch ( (err) => console.error("Error al enviar la ruta:",err) ) ;
-      
+        invoke("reportes_constanciastutorados_recibir_pathplantilla", { path: selectedPath })
+          .then(() => console.log("Ruta enviada correctamente"))
+          .catch((err) => console.error("Error al enviar la ruta:", err));
+
       }
 
-    } catch ( error ) {
+    } catch (error) {
 
-      console.error ( "Error al seleccionar la plantilla:",error ) ;
+      console.error("Error al seleccionar la plantilla:", error);
 
     }
 
-  } ;
+  };
 
-  
+
   //// Ubicación de los reportes.
 
 
-  const [directorioReporteLee,setDirectorioReporteLee] = useState("Directorio del reporte") ;
-  
-  const [directorioReportePUJ,setDirectorioReportePUJ] = useState("Directorio de reportes") ;
-  
-  const [directorioReporteColegios,setDirectorioReporteColegios] = useState("Directorio de reportes") ;
-  
-  const [directorioReporteConstanciasTutores,setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes") ;
+  const [directorioReporteLee, setDirectorioReporteLee] = useState("Directorio del reporte");
 
-  const [directorioReporteConstanciasTutorados,setDirectorioReporteConstanciasTutorados] = useState("Directorio de reportes") ;
-  
+  const [directorioReportePUJ, setDirectorioReportePUJ] = useState("Directorio de reportes");
+
+  const [directorioReporteColegios, setDirectorioReporteColegios] = useState("Directorio de reportes");
+
+  const [directorioReporteConstanciasTutores, setDirectorioReporteConstanciasTutores] = useState("Directorio de reportes");
+
+  const [directorioReporteConstanciasTutorados, setDirectorioReporteConstanciasTutorados] = useState("Directorio de reportes");
+
 
   //// Nombre de los reportes.
 
 
-  const [nombreReporteLee,setNombreReporteLee] = useState("Nombre del reporte") ;
-  
-  const [nombreReportePUJ,setNombreReportePUJ] = useState("Nombre de reportes") ;
-  
-  const [nombreReporteColegios,setNombreReporteColegios] = useState("Nombre de reportes") ;
-  
-  const [nombreReporteConstanciasTutores,setNombreReporteConstanciasTutores] = useState("Nombre de reportes") ;
+  const [nombreReporteLee, setNombreReporteLee] = useState("Nombre del reporte");
 
-  const [nombreReporteConstanciasTutorados,setNombreReporteConstanciasTutorados] = useState("Nombre de reportes") ;
+  const [nombreReportePUJ, setNombreReportePUJ] = useState("Nombre de reportes");
+
+  const [nombreReporteColegios, setNombreReporteColegios] = useState("Nombre de reportes");
+
+  const [nombreReporteConstanciasTutores, setNombreReporteConstanciasTutores] = useState("Nombre de reportes");
+
+  const [nombreReporteConstanciasTutorados, setNombreReporteConstanciasTutorados] = useState("Nombre de reportes");
 
 
   //// Control de ventana emergente.
 
 
-  const [seccioonActual,setSeccioonActual] = useState ( "" ) ;
-  const [getEmergenteVisible,setEmergenteVisible] = useState ( false ) ;
+  const [seccioonActual, setSeccioonActual] = useState("");
+  const [getEmergenteVisible, setEmergenteVisible] = useState(false);
 
-  const evento_clickOpciones = async ( seccioon:string ) => {
-    setSeccioonActual ( seccioon ) ;
-    setEmergenteVisible ( true ) ;
+  const evento_clickOpciones = async (seccioon: string) => {
+    setSeccioonActual(seccioon);
+    setEmergenteVisible(true);
   }
 
-  const evento_clickCancelar = ( ) => {
-    setEmergenteVisible ( false ) ;
+  const evento_clickCancelar = () => {
+    setEmergenteVisible(false);
   }
 
-  const evento_clickGenerar = async ( seccioon:string ) => {
+  const evento_clickGenerar = async (seccioon: string) => {
 
-    if ( seccioon === "LEE" ) {
+  if (seccioon === "LEE") {
 
-      if ( folderPath_LEE === "Ubicación de formularios" ) {
-        alert ( `Por favor, selecciona un directorio de formularios antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const filePath = await save ( {
-          defaultPath : seccioon ,
-          filters : [ { name:"Excel Files" , extensions:["xlsx"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          // await invoke ( "reportes_lee_actualizarfecha",{nueva_fecha:fechaLee} ) ;
-          await invoke ( "reportes_lee_recibir_nombrereporte",{nombrereporte:filePath} ) ;
-          await invoke ( "reportes_lee_leer_archivos_en_carpeta" ) ;
-          setDirectorioReporteLee ( filePath ) ;
-          setNombreReporteLee ( filePath.split(/[\\/]/).pop() || "Nombre del reporte" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-        
-      } catch ( error ) {
+    if (folderPath_LEE === "Ubicación de formularios" || archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento" || !fechaLee || fechaLee.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
       
-        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
-      
-      }
-
-    } else if ( seccioon === "PUJ" ) {
-
-      if ( plantillaPath_PUJ === "Ubicación de plantilla" ) {
-        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const filePath = await save ( {
-          defaultPath : seccioon ,
-          filters : [ { name:"Word Files" , extensions:["docx"] } ]
-        } ) ;
-
-        if ( filePath ) {
-          // Leer estudiantes aprobados.
-          const estudiantesAprobados = await invoke<string[]>("reportes_puj_leer_universitarios_aprobados");
-          if ( estudiantesAprobados.length === 0 ) {
-            alert ( `No hay tutores aprobados para generar el reporte.` ) ;
-            return;
-          }
-          // await invoke ( "reportes_puj_actualizarfecha",{nueva_fecha:fechaPUJ} ) ;
-          await invoke ( "reportes_puj_recibir_nombrereporte",{nombrereporte:filePath} ) ;
-          await invoke ( "reporte_puj_generar",{estudiantes:estudiantesAprobados} ) ;
-          setDirectorioReportePUJ ( filePath ) ;
-          setNombreReportePUJ ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
-      
+      if (folderPath_LEE === "Ubicación de formularios") {
+        mensaje += "\n- Directorio de formularios";
       }
       
-    } else if ( seccioon === "Colegios" ) {
-
-      if ( plantillaPath_Colegios === "Ubicación de plantilla" ) {
-        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
+      if (archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento") {
+        mensaje += "\n- Archivo de emparejamiento";
       }
-
-      try {
-
-        const filePath = await save ( {
-          defaultPath : seccioon ,
-          filters : [ { name:"Word Files" , extensions:["docx"] } ]
-        } ) ;
-        
-        if ( filePath ) {
-          // Leer estudiantes aprobados
-          const estudiantesAprobados = await invoke<string[]>("reportes_colegios_leer_estudiantes_aprobados") ;
-          if (estudiantesAprobados.length === 0) {
-            alert("No hay tutores aprobados para generar el reporte.");
-            return;
-          }
-          // await invoke ( "reportes_colegios_actualizarfecha",{nueva_fecha:fechaColegios} ) ;
-          await invoke ( "reportes_colegios_recibir_nombrereporte",{nombrereporte:filePath} ) ;
-          await invoke ("reportes_colegios_generar",{estudiantes:estudiantesAprobados } ) ;
-          setDirectorioReporteColegios ( filePath ) ;
-          setNombreReporteColegios ( filePath.split(/[\\/]/).pop() || "Nombre de reportes" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+filePath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
       
-        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
-      
+      if (!fechaLee || fechaLee.trim() === "") {
+        mensaje += "\n- Fecha";
       }
-
-    } else if ( seccioon === "Tutores" ) {
-
-      if ( plantillaPath_ConstanciasTutores === "Ubicación de plantilla" ) {
-        alert ( `Por favor, selecciona una plantilla de constancias para tutores antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const dirPath = await open ( {
-          directory : true ,  // Permite seleccionar una carpeta.
-          multiple : false ,  // Solo permite seleccionar una.
-        } ) ;
-
-        if ( dirPath ) {
-          // await invoke ( "reportes_constanciastutores_actualizarfecha",{nueva_fecha:fechaConstanciasTutores} ) ;
-          await invoke ( "reportes_constanciastutores_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
-          await invoke ( "reportes_constanciastutores_generar" ) ;
-          setDirectorioReporteConstanciasTutores ( dirPath.toString() ) ;
-          setNombreReporteConstanciasTutores ( "Constancia Tutor" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
       
-        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
-      
-      }
-
-    } else if ( seccioon === "Tutorados" ) {
-
-      if ( plantillaPath_ConstanciasTutorados === "Ubicación de plantilla" ) {
-        alert ( `Por favor, selecciona una plantilla de constancias para tutorados antes de generar el reporte de `+seccioon+`.` ) ;
-        setEmergenteVisible ( false ) ;
-        return ;
-      }
-
-      try {
-
-        const dirPath = await open ( {
-          directory : true ,  // Permite seleccionar una carpeta.
-          multiple : false ,  // Solo permite seleccionar una.
-        } ) ;
-
-        if ( dirPath ) {
-          // await invoke ( "reportes_constanciastutorados_actualizarfecha",{nueva_fecha:fechaConstanciasTutorados} ) ;
-          await invoke ( "reportes_constanciastutorados_recibir_nombrereporte",{nombrereporte:dirPath.toString()} ) ;
-          await invoke ( "reportes_constanciastutorados_generar" ) ;
-          setDirectorioReporteConstanciasTutorados ( dirPath.toString() ) ;
-          setNombreReporteConstanciasTutorados ( "Constancia Tutorado" ) ;
-          alert ( `Reporte de `+seccioon+` guardado en: `+dirPath ) ;
-        } else {
-          alert ( `¡Generación de `+seccioon+` cancelada!` ) ;
-          return ;
-        }
-
-      } catch ( error ) {
-      
-        alert ( `¡Error en opciones de la sección `+seccioon+`!` ) ;
-      
-      }
-
-    } else {
-
-      alert ( `¡Error en la selección de sección!` ) ;
-    
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
     }
 
-    setEmergenteVisible ( true ) ;
-  
-  } ;
+    try {
 
-  const evento_clickVerificar = ( ) => {
-    handleFileClick() ;
-    setEmergenteVisible ( true ) ;
-  } ;
-  
-  const evento_clickEnviar = ( ) => {
-    alert ( `¡Envío exitoso!` ) ;
-    setEmergenteVisible ( false ) ;
-  } ;
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Excel Files", extensions: ["xlsx"] }]
+      });
 
-  const fileInputRef = useRef <HTMLInputElement|null> (null) ;
+      if (filePath) {
+        // await invoke ( "reportes_lee_actualizarfecha",{nueva_fecha:fechaLee} ) ;
+        await invoke("reportes_lee_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reportes_lee_leer_archivos_en_carpeta");
+        setDirectorioReporteLee(filePath);
+        setNombreReporteLee(filePath.split(/[\\/]/).pop() || "Nombre del reporte");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "PUJ") {
+
+    if (plantillaPath_PUJ === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaPUJ || fechaPUJ.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_PUJ === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaPUJ || fechaPUJ.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
+      });
+
+      if (filePath) {
+        // Leer estudiantes aprobados.
+        const estudiantesAprobados = await invoke<string[]>("reportes_puj_leer_universitarios_aprobados");
+        if (estudiantesAprobados.length === 0) {
+          alert(`No hay tutores aprobados para generar el reporte.`);
+          return;
+        }
+        // await invoke ( "reportes_puj_actualizarfecha",{nueva_fecha:fechaPUJ} ) ;
+        await invoke("reportes_puj_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reporte_puj_generar", { estudiantes: estudiantesAprobados });
+        setDirectorioReportePUJ(filePath);
+        setNombreReportePUJ(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Colegios") {
+
+    if (plantillaPath_Colegios === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaColegios || fechaColegios.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_Colegios === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaColegios || fechaColegios.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const filePath = await save({
+        defaultPath: seccioon,
+        filters: [{ name: "Word Files", extensions: ["docx"] }]
+      });
+
+      if (filePath) {
+        // Leer estudiantes aprobados
+        const estudiantesAprobados = await invoke<string[]>("reportes_colegios_leer_estudiantes_aprobados");
+        if (estudiantesAprobados.length === 0) {
+          alert("No hay tutores aprobados para generar el reporte.");
+          return;
+        }
+        // await invoke ( "reportes_colegios_actualizarfecha",{nueva_fecha:fechaColegios} ) ;
+        await invoke("reportes_colegios_recibir_nombrereporte", { nombrereporte: filePath });
+        await invoke("reportes_colegios_generar", { estudiantes: estudiantesAprobados });
+        setDirectorioReporteColegios(filePath);
+        setNombreReporteColegios(filePath.split(/[\\/]/).pop() || "Nombre de reportes");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + filePath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Tutores") {
+
+    if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla" || archivoPath_LEE === "Ubicación de archivo LEE" || !fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_ConstanciasTutores === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_LEE === "Ubicación de archivo LEE") {
+        mensaje += "\n- Archivo LEE";
+      }
+      
+      if (!fechaConstanciasTutores || fechaConstanciasTutores.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const dirPath = await open({
+        directory: true,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
+
+      if (dirPath) {
+        // await invoke ( "reportes_constanciastutores_actualizarfecha",{nueva_fecha:fechaConstanciasTutores} ) ;
+        await invoke("reportes_constanciastutores_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
+        await invoke("reportes_constanciastutores_generar");
+        setDirectorioReporteConstanciasTutores(dirPath.toString());
+        setNombreReporteConstanciasTutores("Constancia Tutor");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else if (seccioon === "Tutorados") {
+
+    if (plantillaPath_ConstanciasTutorados === "Ubicación de plantilla" || archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento" || !fechaConstanciasTutorados || fechaConstanciasTutorados.trim() === "") {
+      let mensaje = `Por favor, completa los siguientes campos antes de generar el reporte de ${seccioon}:`;
+      
+      if (plantillaPath_ConstanciasTutorados === "Ubicación de plantilla") {
+        mensaje += "\n- Plantilla de constancias";
+      }
+      
+      if (archivoPath_Emparejamiento === "Ubicación de archivo Emparejamiento") {
+        mensaje += "\n- Archivo de emparejamiento";
+      }
+      
+      if (!fechaConstanciasTutorados || fechaConstanciasTutorados.trim() === "") {
+        mensaje += "\n- Fecha";
+      }
+      
+      alert(mensaje);
+      setEmergenteVisible(false);
+      return;
+    }
+
+    try {
+
+      const dirPath = await open({
+        directory: true,  // Permite seleccionar una carpeta.
+        multiple: false,  // Solo permite seleccionar una.
+      });
+
+      if (dirPath) {
+        // await invoke ( "reportes_constanciastutorados_actualizarfecha",{nueva_fecha:fechaConstanciasTutorados} ) ;
+        await invoke("reportes_constanciastutorados_recibir_nombrereporte", { nombrereporte: dirPath.toString() });
+        await invoke("reportes_constanciastutorados_generar");
+        setDirectorioReporteConstanciasTutorados(dirPath.toString());
+        setNombreReporteConstanciasTutorados("Constancia Tutorado");
+        alert(`Reporte de ` + seccioon + ` guardado en: ` + dirPath);
+      } else {
+        alert(`¡Generación de ` + seccioon + ` cancelada!`);
+        return;
+      }
+
+    } catch (error) {
+
+      alert(`¡Error en opciones de la sección ` + seccioon + `!`);
+
+    }
+
+  } else {
+
+    alert(`¡Error en la selección de sección!`);
+
+  }
+
+  setEmergenteVisible(true);
+
+};
+  const evento_clickVerificar = () => {
+    handleFileClick();
+    setEmergenteVisible(true);
+  };
+
+  const evento_clickEnviar = async (seccioon: string) => {
+    try {
+      if (seccioon === "LEE") {
+        alert(`¡Envío exitoso del módulo ${seccioon}!`);
+      }
+      else if (seccioon === "PUJ") {
+        const dirPath = directorioReportePUJ;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de PUJ");
+          return;
+        }
+        // Obtener solo el directorio base
+        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
+        await invoke("convertir_puj_pdf", {
+          urldocs: baseDir
+        });
+        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+      }
+      else if (seccioon === "Colegios") {
+        const dirPath = directorioReporteColegios;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Colegios");
+          return;
+        }
+        // Obtener solo el directorio base
+        const baseDir = dirPath.substring(0, dirPath.lastIndexOf('\\'));
+        await invoke("convertir_colegios_pdf", {
+          urldocs: baseDir
+        });
+        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+      }
+      
+      else if (seccioon === "Tutores") {
+        const dirPath = directorioReporteConstanciasTutores;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Tutores");
+          return;
+        }
+        await invoke("convertir_tutores_pdf", {
+          urldocs: dirPath
+        });
+        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+      }
+      else if (seccioon === "Tutorados") {
+        const dirPath = directorioReporteConstanciasTutorados;
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero el reporte de Tutorados");
+          return;
+        }
+        await invoke("convertir_tutorados_pdf", {
+          urldocs: dirPath
+        });
+        alert(`Reportes de ${seccioon} convertidos a PDF exitosamente`);
+      }
+      else {
+        alert(`¡Error en la selección de sección!`);
+      }
+    } catch (error) {
+      console.error(`Error al convertir reportes de ${seccioon} a PDF:`, error);
+      alert(`Error al convertir reportes de ${seccioon} a PDF: ${error}`);
+    }
+
+    setEmergenteVisible(false);
+  };
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   // Handle file selection
-  const handleFileChange = ( ) => { } ;
+  const handleFileChange = () => { };
   // Trigger file selection dialog.
-  const handleFileClick = ( ) => {
-    fileInputRef.current?.click() ;
-  } ;
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
 
 
   return (
-  
+
 
     <div className="reportes">
 
 
-      { getEmergenteVisible && (
-          <Emergente
-            mensaje   = {`Opciones para los reportes de ${seccioonActual}.`}
-            cancelar  = {evento_clickCancelar}
-            generar   = {()=>evento_clickGenerar(seccioonActual)}
-            verificar = {evento_clickVerificar}
-            enviar    = {evento_clickEnviar}
-            modulo    = {seccioonActual}
-          />
-      ) }
+      {getEmergenteVisible && (
+        <Emergente
+          mensaje={`Opciones para los reportes de ${seccioonActual}.`}
+          cancelar={evento_clickCancelar}
+          generar={() => evento_clickGenerar(seccioonActual)}
+          verificar={evento_clickVerificar}
+          enviar={() => evento_clickEnviar(seccioonActual)}
+          modulo={seccioonActual}
+        />
+      )}
 
-      
+
       <div className="seccioon">
         <div className="tiitulo">
           LEE
@@ -639,7 +735,7 @@ function Reportes ( ) {
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("LEE")}>
+          <button onClick={() => evento_clickOpciones("LEE")}>
             Opciones
           </button>
         </div>
@@ -677,7 +773,7 @@ function Reportes ( ) {
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("PUJ")}>
+          <button onClick={() => evento_clickOpciones("PUJ")}>
             Opciones
           </button>
         </div>
@@ -715,7 +811,7 @@ function Reportes ( ) {
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Colegios")}>
+          <button onClick={() => evento_clickOpciones("Colegios")}>
             Opciones
           </button>
         </div>
@@ -753,7 +849,7 @@ function Reportes ( ) {
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Tutores")}>
+          <button onClick={() => evento_clickOpciones("Tutores")}>
             Opciones
           </button>
         </div>
@@ -791,7 +887,7 @@ function Reportes ( ) {
           </li>
         </ul>
         <div className="opciones">
-          <button onClick={()=>evento_clickOpciones("Tutorados")}>
+          <button onClick={() => evento_clickOpciones("Tutorados")}>
             Opciones
           </button>
         </div>
@@ -806,16 +902,16 @@ function Reportes ( ) {
         accept="application/pdf"
         onChange={handleFileChange}
       />
-  
+
 
     </div>
- 
 
-  ) ;
+
+  );
 
 
 }
 
 
-export default Reportes ;
+export default Reportes;
 

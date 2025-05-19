@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import * as XLSX from "xlsx";
 import { save } from "@tauri-apps/api/dialog";
+import { open } from '@tauri-apps/api/dialog';
 import { writeBinaryFile } from "@tauri-apps/api/fs";
 import {
   DragDropContext,
@@ -123,6 +124,22 @@ useEffect(() => {
 }, []);
 
 
+  // Función para seleccionar archivo Excel
+  const seleccionarArchivo = async () => {
+    const selected = await open({
+      filters: [{ name: 'Excel', extensions: ['xlsx'] }],
+      multiple: false,
+    });
+  
+    if (typeof selected === 'string') {
+      console.log("📂 Archivo seleccionado:", selected);
+      const datos = await invoke<EmparejamientoEntry[]>("obtener_emparejamiento", { ruta: selected });
+      if (datos) {
+        setAllData(datos);
+      }
+    }
+  };
+
   // Filtrar y ordenar usando backend
   useEffect(() => {
     async function applyFilter() {
@@ -130,9 +147,9 @@ useEffect(() => {
         emparejamientos:               allData,
         searchtutor:                   searchTutor,
         searchtutorado:                searchTutorado,
-        searchtutoradoId:              searchTutoradoId, // Corregido: cambiar searchtutorado_id a searchtutoradoId
-        searchdisponibilidadTutor:     searchDisponibilidadTutor, // Corregido: cambiar searchdisponibilidad_tutor a searchdisponibilidadTutor
-        searchdisponibilidadTutorado:  searchDisponibilidadTutorado, // Corregido: cambiar searchdisponibilidad_tutorado a searchdisponibilidadTutorado
+        searchtutoradoId:              searchTutoradoId,
+        searchdisponibilidadTutor:     searchDisponibilidadTutor,
+        searchdisponibilidadTutorado:  searchDisponibilidadTutorado,
         sortColumn:                   sortColumn,
         sortDirection:                sortDirection,
       };
@@ -168,6 +185,7 @@ useEffect(() => {
       CORREO_TUTOR:      f.correotutor           !== "VACÍO" ? f.correotutor             : "",
       CELULAR_TUTOR:    f.telefonotutor         !== "VACÍO" ? f.telefonotutor           : "",
       INSTITUCION_TUTOR: f.instituciontutor      !== "VACÍO" ? f.instituciontutor        : "",
+      becariotutor: f.becariotutor !== "VACÍO" ? f.becariotutor : "",
       MATERIA:        f.materiaTutor     !== "VACÍO" ? f.materiaTutor      : "",
       MODALIDAD:      f.modalidad        !== "VACÍO" ? f.modalidad         : "",
       HORAS:          f.horastutor       !== "VACÍO" ? f.horastutor        : "",
@@ -263,7 +281,7 @@ useEffect(() => {
   };
 
   // Verificar si un tutor ya ha alcanzado su máximo de tutorados
-  const checkMaxTutoradosLimit = (rowIndex: number, colIndex: number) => {
+  const checkMaxTutoradosLimit = (rowIndex: number) => {
     const targetRow = filtered[Math.floor(rowIndex / 2)];
     
     // Si no hay datos o el tutor está vacío, no hay restricción
@@ -304,7 +322,7 @@ useEffect(() => {
     const cellId = `${row}-${col}`;
     
     // Verificar si el destino excedería el límite de tutorados
-    if (checkMaxTutoradosLimit(idx, col)) {
+    if (checkMaxTutoradosLimit(idx)) {
       setHighlightedId(null);
       setInvalidDropId(cellId); // Marcar como inválido
     } else {
@@ -328,7 +346,7 @@ const handleDragEnd = (result: DropResult) => {
   const dstCol = destination.index % 2 === 0 ? "tutorado1" : "tutorado2";
   
   // Verificar si el destino excedería el límite de max_tutorados
-  if (checkMaxTutoradosLimit(destination.index, destination.index % 2)) {
+  if (checkMaxTutoradosLimit(destination.index)) {
     console.warn("No se puede soltar aquí: el tutor ya alcanzó su límite de tutorados");
     return; // Cancelar la operación de drag and drop
   }
@@ -539,14 +557,13 @@ const handleDragEnd = (result: DropResult) => {
   return (
     <div className="emparejamiento">
       <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "15px" }}>
+        <button onClick={seleccionarArchivo} style={{ flex: "1 1 160px", padding: "10px", fontSize: "16px" }}>Seleccionar hoja de cálculo</button>
         <button onClick={emparejamientoAutomatico} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Emparejamiento Automático</button>
+        <button onClick={() => {localStorage.removeItem("emparejamientoData");window.location.reload();}}>Reiniciar Tabla</button>
         <button onClick={exportarAExcel} style={{ flex: "1 1 200px", padding: "10px", fontSize: "16px" }}>Exportar a Excel</button>
-        <button onClick={() => {
-  localStorage.removeItem("emparejamientoData");
-  window.location.reload();
-}}>
-  Reiniciar Tabla
-</button>
+
+
+
       </div>
       <div className="search-bar" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", maxWidth: "900px", margin: "0 auto 20px" }}>
         <input type="text" placeholder="Buscar Tutor" value={searchTutor} onChange={(e) => setSearchTutor(e.target.value)} style={{ flex: "1 1 150px", padding: "8px" }} />

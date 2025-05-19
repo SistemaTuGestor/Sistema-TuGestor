@@ -3,7 +3,6 @@ use serde::{Serialize, Deserialize};
 use std::collections::HashSet;
 use std::path::Path;
 
-const ARCHIVO_EXCEL: &str = "C:\\Users\\USER\\Documents\\GitHub\\Sistema-TuGestor\\recursos\\EmparejamientoFINAL.xlsx";
 
 #[derive(Default, Debug, Serialize, Deserialize, Clone)]
 pub struct EmparejamientoItem {  
@@ -130,11 +129,11 @@ fn calcular_color(materia: &str) -> String {
 
 
 #[tauri::command]
-pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
-     println!("📁 Buscando en ruta: {}", ARCHIVO_EXCEL);
-     println!("✅ Existe fichero? {}", Path::new(ARCHIVO_EXCEL).exists());
+pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, String> {
+     println!("📁 Buscando en ruta: {}",ruta);
+     println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
      println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
-    let mut workbook: Xlsx<_> = open_workbook(ARCHIVO_EXCEL)
+    let mut workbook: Xlsx<_> = open_workbook(&ruta)
         .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     println!("📂 Archivo Excel abierto correctamente.");
@@ -241,6 +240,7 @@ pub fn obtener_emparejamiento() -> Result<Vec<EmparejamientoItem>, String> {
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
+        println!("Vocabulario: {:?}", vocabulariotutorado1);
         let gramaticatutorado1 = row.get(18)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())

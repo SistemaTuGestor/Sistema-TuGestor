@@ -14,6 +14,14 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 
+use std::fs;
+use docx_rs::*;
+use std::io::BufWriter;
+use printpdf::*;
+use std::path::PathBuf;
+
+use std::process::Command;
+
 
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
@@ -340,3 +348,160 @@ mod tests {
 
 }
 
+
+
+// TESTING
+
+#[cfg(test)]
+mod tests {
+    
+    use super::*;
+    use std::path::PathBuf;
+    use std::fs;
+
+    fn get_test_data_path(filename: &str) -> PathBuf {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("../../recursos/test_data");
+        path.push(filename);
+        path
+    }
+
+    #[test]
+    fn test_actualizar_fecha() {
+        let result = reportes_puj_actualizarfecha(Some("2023-05-15".to_string()));
+        assert!(result.is_ok());
+        
+        let fecha_guardada = FECHA.get().unwrap().lock().unwrap();
+        assert_eq!(*fecha_guardada, "15-05-2023");
+    }
+
+    #[test]
+    fn test_recibir_paths() {
+        assert!(reportes_puj_recibir_lee("test_path.xlsx".to_string()).is_ok());
+        assert!(reportes_puj_recibir_pathplantilla("test_plantilla.docx".to_string()).is_ok());
+        assert!(reportes_puj_recibir_nombrereporte("Test Report.docx".to_string()).is_ok());
+    }
+
+    #[test]
+    #[ignore = "Requiere archivo Excel de prueba"]
+    fn test_leer_universitarios_aprobados() {
+        let test_file = get_test_data_path("test_data.xlsx");
+        println!("Buscando archivo en: {:?}", test_file);
+        assert!(test_file.exists(), "El archivo de prueba no existe en {:?}", test_file);
+        
+        reportes_puj_recibir_lee(test_file.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_LEE");
+        
+        let result = reportes_puj_leer_universitarios_aprobados();
+        assert!(result.is_ok(), "Error al leer estudiantes: {:?}", result.err());
+        
+        let estudiantes = result.unwrap();
+        assert!(!estudiantes.is_empty(), "No se encontraron estudiantes aprobados");
+        assert!(estudiantes.iter().all(|e| e.nombre_tutor.contains("@javeriana.edu.co")));
+    }
+
+    #[test]
+    #[ignore = "Requiere plantilla DOCX"]
+    fn test_generar_documento() {
+        let test_file = get_test_data_path("test_data.xlsx");
+        let plantilla_path = get_test_data_path("plantilla.docx");
+        
+        assert!(test_file.exists(), "Archivo de datos no encontrado");
+        assert!(plantilla_path.exists(), "Plantilla no encontrada");
+        
+        // Configurar entorno de prueba
+        reportes_puj_recibir_lee(test_file.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_LEE");
+            
+        reportes_puj_recibir_pathplantilla(plantilla_path.to_str().unwrap().to_string())
+            .expect("Error al configurar PATH_PLANTILLA");
+            
+        reportes_puj_recibir_nombrereporte("Reporte PUJ.docx".to_string())
+            .expect("Error al configurar NOMBRE_REPORTE");
+            
+        reportes_puj_actualizarfecha(Some("2023-01-01".to_string()))
+            .expect("Error al configurar FECHA");
+        
+        // Obtener datos de prueba
+        let estudiantes = reportes_puj_leer_universitarios_aprobados()
+            .expect("Error al obtener estudiantes");
+        
+        // Generar documento
+        let result = reporte_puj_generar(estudiantes);
+        assert!(result.is_ok(), "Error al generar documento: {:?}", result.err());
+        
+        // Verificar archivo generado
+        let output_file = Path::new("Reporte PUJ (01-01-2023).docx");
+        assert!(output_file.exists(), "No se generó el archivo de salida");
+        
+        // Limpieza
+        fs::remove_file(output_file).ok();
+    }
+
+}
+
+#[tauri::command]
+pub fn convertir_puj_pdf(urldocs: String) -> Result<(), String> {
+    let path = Path::new(&urldocs);
+    let dir_path = if path.is_file() {
+        path.parent()
+            .ok_or_else(|| format!("No se pudo obtener el directorio padre de: {}", urldocs))?
+    } else {
+        path
+    };
+    
+    if !dir_path.exists() {
+        return Err(format!("El directorio {} no existe", dir_path.display()));
+    }
+
+    println!("🔍 Buscando archivos DOCX en: {}", dir_path.display());
+
+    let entries = fs::read_dir(dir_path)
+        .map_err(|e| format!("Error al leer el directorio: {}", e))?;
+
+    let mut converted_count = 0;
+
+    for entry in entries {
+        let entry = entry.map_err(|e| format!("Error al leer entrada: {}", e))?;
+        let path = entry.path();
+        
+        if path.to_string_lossy().contains("PUJ") && path.extension().and_then(|s| s.to_str()) == Some("docx") {
+            let docx_path = path.to_string_lossy().to_string();
+            let pdf_path = path.with_extension("pdf").to_string_lossy().to_string();
+            
+            println!("📄 Convirtiendo: {} -> {}", docx_path, pdf_path);
+
+            let ps_script = format!(r#"
+                $word = New-Object -ComObject Word.Application
+                $word.Visible = $false
+                $doc = $word.Documents.Open("{}")
+                $doc.SaveAs([ref] "{}", [ref] 17)
+                $doc.Close()
+                $word.Quit()
+                [System.Runtime.Interopservices.Marshal]::ReleaseComObject($word)
+            "#, docx_path.replace("\\", "\\\\"), pdf_path.replace("\\", "\\\\"));
+
+            let output = Command::new("powershell")
+                .args(["-Command", &ps_script])
+                .output()
+                .map_err(|e| format!("Error al ejecutar PowerShell: {}", e))?;
+
+            if !output.status.success() {
+                return Err(format!(
+                    "Error al convertir archivo: {}",
+                    String::from_utf8_lossy(&output.stderr)
+                ));
+            }
+
+            println!("✅ Convertido exitosamente: {}", pdf_path);
+            converted_count += 1;
+        }
+    }
+
+    if converted_count == 0 {
+        return Err("No se encontraron archivos DOCX de PUJ para convertir".to_string());
+    }
+
+    println!("🎉 Conversión completada: {} archivos convertidos", converted_count);
+    Ok(())
+}

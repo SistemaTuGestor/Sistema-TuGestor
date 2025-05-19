@@ -1,219 +1,266 @@
-
 .notificaciones {
 
-    display : flex ;
-    justify-content : center ;
-    align-items : center ;
-    height : 100% ;
-    width : 100% ;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 
     .contenedor_PanelIzquierdo {
         /* Contenedor */
-        width : 10px ;
-        height : inherit ;
-        flex : 1 ;
-        background-color : #77BFC7 ;    /* Azul */
-        border : 2px solid #8A2BE2 ;    /* Morado */
-        border-radius : 8px ;
+        width: 10px;
+        height: inherit;
+        flex: 1;
+        background-color: #77BFC7;
+        /* Azul */
+        border: 2px solid #8A2BE2;
+        /* Morado */
+        border-radius: 8px;
     }
 
     .opciones-izquierda {
         /* Contenedor */
-        border-bottom : 2px solid #8A2BE2 ;    /* Morado */
+        border-bottom: 2px solid #8A2BE2;
+        /* Morado */
         /* Elementos */
-        justify-content: space-between ;
-        display : flex ;
-        padding : 14px 5% ;
-        gap : 5% ;
-    } .opciones-izquierda button {
-        box-shadow : none ;
+        justify-content: space-between;
+        display: flex;
+        padding: 14px 5%;
+        gap: 5%;
+    }
+
+    .opciones-izquierda button {
+        box-shadow: none;
         /* Contenedor */
-        width : 80% ;
-        height : 52.5px ;
-        background-color : #F18200 ;            /* Naranja */
-        border : 2px solid white ;
-        border-radius : 8px ;
+        width: 80%;
+        height: 52.5px;
+        background-color: #F18200;
+        /* Naranja */
+        border: 2px solid white;
+        border-radius: 8px;
         /* Letra */
-        font-size : 120% ;
-        color : white ;
-    } .opciones-izquierda button:hover {
-        font-weight : bolder ;
+        font-size: 120%;
+        color: white;
+    }
+
+    .opciones-izquierda button:hover {
+        font-weight: bolder;
     }
 
     .desplazadora {
         /* Posición */
-        margin-top : 8px ;
-        margin-left : 0px ;
+        margin-top: 8px;
+        margin-left: 0px;
         /* Contenedor */
-        height : 88% ;
+        height: 83%;
         /* Elementos */
-        overflow : scroll ;
-    } .desplazadora li {
-        border-bottom : 1px solid #8A2BE2 ;    /* Morado */
-    } .desplazadora li:last-child {
-        border-bottom : none ;
+        overflow: scroll;
+    }
+
+    .desplazadora li {
+        border-bottom: 1px solid #8A2BE2;
+        /* Morado */
+    }
+
+    .desplazadora li:last-child {
+        border-bottom: none;
     }
 
     .casilla {
-        /* Posición */
-        margin-left : -40px ;
-        /* Elementos */
-        justify-content : space-between ;
-        list-style-type : none ;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        padding: 10px;
+        margin-left: -40px;
+        list-style-type: none;
+
         .asunto-casilla {
             /* Posición */
-            margin-left : 20px ;
+            margin-left: 20px;
             /* Letra */
-            color : black ;
-            font-size : 100% ;
-            word-wrap : break-word ;
-            padding-right : 20px ;
-        }
-        .contactos-casilla {
-            /* Posición */
-            margin-top : -10px ;
-            margin-left : 20px ;
-            /* Letra */
-            font-size: 80% ;
-            color : white ;
-            font-style : italic ;
-            word-wrap : break-word ;
-            padding-right : 20px ;
+            color: black;
+            font-size: 100%;
+            word-wrap: break-word;
+            padding-right: 20px;
         }
 
-        button{
+        .contactos-casilla {
+            /* Posición */
+            margin-top: -10px;
+            margin-left: 20px;
+            /* Letra */
+            font-size: 80%;
+            color: white;
+            font-style: italic;
+            word-wrap: break-word;
+            padding-right: 20px;
+        }
+
+        button {
             /* Posición */
             position: relative;
-            top: -15px;
-            margin-left : 100px ;
+            margin-left: auto;
+            /* Empuja el botón a la derecha */
+            width: 100px;
+
+            /* Estilo */
+            background-color: #F18200;
+            border: 2px solid white;
+            border-radius: 8px;
+            padding: 5px 10px;
+
             /* Letra */
-            color : white ;
-            font-size : 100% ;
-            word-wrap : break-word ;
-            padding-right : 20px ;
+            color: white;
+            font-size: 100%;
+            word-wrap: break-word;
+            padding-right: 20px;
         }
-        
+
+        button:hover {
+            background-color: #d97700;
+        }
     }
 
     .contenedor_PanelDerecho {
         /* Posición */
-        margin-left : 10px ;
+        margin-left: 10px;
         /* Contenedor */
-        height : inherit ;
-        flex : 2.2 ;
-        background-color : #77BFC7 ;    /* Azul */
-        border : 2px solid #8A2BE2 ;    /* Morado */
-        border-radius : 8px ;
+        height: inherit;
+        flex: 2.2;
+        background-color: #77BFC7;
+        /* Azul */
+        border: 2px solid #8A2BE2;
+        /* Morado */
+        border-radius: 8px;
     }
 
     .opciones-derecha {
         /* Posición */
-        position : static ;
+        position: static;
         /* Contenedor */
-        border-bottom : 2px solid #8A2BE2 ;     /* Morado */
+        border-bottom: 2px solid #8A2BE2;
+        /* Morado */
         /* Elementos */
-        padding : 15px 10% 14px ;
-        gap : 10% ;
-        display : flex ;
-    } .opciones-derecha select {
+        padding: 15px 10% 14px;
+        gap: 10%;
+        display: flex;
+    }
+
+    .opciones-derecha select {
         /* Reseteo de estilo */
-        appearance : none ;
-        -moz-appearance : none ;
-        -webkit-appearance : none ;
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
         /* Contenedor */
-        width : 80% ;
-        height : 52px ;
-        background-color : #F18200 ;            /* Naranja */
-        border : 2px solid white ;
-        border-radius : 8px ;
+        width: 80%;
+        height: 52px;
+        background-color: #F18200;
+        /* Naranja */
+        border: 2px solid white;
+        border-radius: 8px;
         /* Elementos */
-        padding : 0 0 0 2% ;
+        padding: 0 0 0 2%;
         /* Letra */
-        font-size : 100% ;
-        color : white ;
-    } .opciones-derecha select:hover {
-        font-weight : bold ;
+        font-size: 100%;
+        color: white;
+    }
+
+    .opciones-derecha select:hover {
+        font-weight: bold;
     }
 
     .mensaje {
         /* Posición */
-        margin : 30px 40px 0 ;
+        margin: 30px 40px 0;
         /* Contenedor */
-        height : 64% ;
-        width : calc ( 100% - 80px ) ;
+        height: 64%;
+        width: calc (100% - 80px);
         /* Ítems */
-        display : flex ;
-        flex-direction : column ;
-        gap : 10px ;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
         .asunto-mensaje input {
             /* Contenedor */
-            width : 100% !important ;
-            max-width : 100% ;
-            box-sizing : border-box ;
-            background-color : white ;
-            border : 2px solid #8A2BE2 ;        /* Morado */
-            border-radius : 8px ;
-            box-shadow : none ;
+            width: 100% !important;
+            max-width: 100%;
+            box-sizing: border-box;
+            background-color: white;
+            border: 2px solid #8A2BE2;
+            /* Morado */
+            border-radius: 8px;
+            box-shadow: none;
             /* Letra */
-            color : black ;
-            font-family : Arial,Helvetica,sans-serif ;
-            font-size : 140% ;
-            font-weight : bold ;
-        } .asunto-mensaje input::placeholder {
-            font-style : italic ;
+            color: black;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 140%;
+            font-weight: bold;
         }
+
+        .asunto-mensaje input::placeholder {
+            font-style: italic;
+        }
+
         .contenido-mensaje textarea {
             /* Posición */
-            resize : none ;
+            resize: none;
             /* Contenedor */
-            height : 300% ;
-            width : 100% !important ;
-            max-width : 100% ;
-            box-sizing : border-box ;
-            background-color : white ;
-            border : 2px solid #8A2BE2 ;        /* Morado */
-            border-radius : 8px ;
-            box-shadow : none ;
+            height: 300%;
+            width: 100% !important;
+            max-width: 100%;
+            box-sizing: border-box;
+            background-color: white;
+            border: 2px solid #8A2BE2;
+            /* Morado */
+            border-radius: 8px;
+            box-shadow: none;
             /* Ítems */
-            padding : 10px ;
+            padding: 10px;
             /* Letra */
-            color : black ;
-            font-family : Arial,Helvetica,sans-serif ;
-            font-size : 100% ;
-        } .contenido-mensaje textarea::placeholder {
-            font-style : italic ;
+            color: black;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 100%;
+        }
+
+        .contenido-mensaje textarea::placeholder {
+            font-style: italic;
         }
     }
 
     .botones {
         /* Posición */
-        margin-top : -10px ;
+        margin-top: -10px;
         /* Contenedor */
-        width : calc ( 100% - 80px ) ;
-        padding : 0 40px ;
+        width: calc (100% - 80px);
+        padding: 0 40px;
         /* Ítems */
-        display : flex ;
-        justify-content : space-between ;
-        gap : 10px ;
-    } .botones button {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .botones button {
         /* Contenedor */
-        width : 100% ;
-        background-color : #FFC901 ;    /* Amarillo */
-        border : 2px solid black ;
-        border-radius : 8px ;
-        box-shadow : none ;
+        width: 100%;
+        background-color: #FFC901;
+        /* Amarillo */
+        border: 2px solid black;
+        border-radius: 8px;
+        box-shadow: none;
         /* Letra */
-        color : black ;
-        font-family : Arial,Helvetica,sans-serif ;
-        font-size : 110% ;
-    } .botones button:hover {
-        font-weight : bold ;
+        color: black;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 110%;
     }
-      
+
+    .botones button:hover {
+        font-weight: bold;
+    }
+
     .casilla:hover {
-        background-color : rgba(0,0,0,0.1) ;
+        background-color: rgba(0, 0, 0, 0.1);
     }
-      
+
 
 }
-
