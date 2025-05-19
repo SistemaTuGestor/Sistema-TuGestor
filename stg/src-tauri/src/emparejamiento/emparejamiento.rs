@@ -632,57 +632,57 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             }
         }
     }
-// --- Stage 1B: Asegurar que ningún tutor supere su max_tutorados ---
-for fila in &mut nuevo_emparejamiento {
-    let mut actuales = Vec::new();
-    if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
-        actuales.push((
-            1,
-            fila.tutorado1.clone(),
-            fila.materiaTutorado1.clone(),
-            fila.disponibilidadTutorado1.clone(),
-            fila.colorOriginal1.clone().unwrap_or_default(),
-            fila.tutorado1_id.clone(),
-        ));
-    }
-    if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
-        actuales.push((
-            2,
-            fila.tutorado2.clone(),
-            fila.materiaTutorado2.clone(),
-            fila.disponibilidadTutorado2.clone(),
-            fila.colorOriginal2.clone().unwrap_or_default(),
-            fila.tutorado2_id.clone(),
-        ));
-    }
+    // --- Stage 1B: Asegurar que ningún tutor supere su max_tutorados ---
+    for fila in &mut nuevo_emparejamiento {
+        let mut actuales = Vec::new();
+        if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
+            actuales.push((
+                1,
+                fila.tutorado1.clone(),
+                fila.materiaTutorado1.clone(),
+                fila.disponibilidadTutorado1.clone(),
+                fila.colorOriginal1.clone().unwrap_or_default(),
+                fila.tutorado1_id.clone(),
+            ));
+        }
+        if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
+            actuales.push((
+                2,
+                fila.tutorado2.clone(),
+                fila.materiaTutorado2.clone(),
+                fila.disponibilidadTutorado2.clone(),
+                fila.colorOriginal2.clone().unwrap_or_default(),
+                fila.tutorado2_id.clone(),
+            ));
+        }
 
-    let to_remove = actuales.len().saturating_sub(fila.max_tutorados as usize);
-    if to_remove > 0 {
-        for (slot, ..) in actuales.into_iter().rev().take(to_remove)
-        {
-        let mut pendiente = EmparejamientoItem::default();
-        copiar_datos_tutorado(&fila, &mut pendiente, slot);
-        tutorados_pendientes.push((pendiente, slot));            
-        match slot {
-                1 => {
-                    fila.tutorado1.clear();
-                    fila.tutorado1_id.clear();
-                    fila.materiaTutorado1 = "VACÍO".into();
-                    fila.disponibilidadTutorado1 = "VACÍO".into();
-                    fila.colorOriginal1 = Some("".into());
+        let to_remove = actuales.len().saturating_sub(fila.max_tutorados as usize);
+        if to_remove > 0 {
+            for (slot, ..) in actuales.into_iter().rev().take(to_remove)
+            {
+            let mut pendiente = EmparejamientoItem::default();
+            copiar_datos_tutorado(&fila, &mut pendiente, slot);
+            tutorados_pendientes.push((pendiente, slot));            
+            match slot {
+                    1 => {
+                        fila.tutorado1.clear();
+                        fila.tutorado1_id.clear();
+                        fila.materiaTutorado1 = "VACÍO".into();
+                        fila.disponibilidadTutorado1 = "VACÍO".into();
+                        fila.colorOriginal1 = Some("".into());
+                    }
+                    2 => {
+                        fila.tutorado2.clear();
+                        fila.tutorado2_id.clear();
+                        fila.materiaTutorado2 = "VACÍO".into();
+                        fila.disponibilidadTutorado2 = "VACÍO".into();
+                        fila.colorOriginal2 = Some("".into());
+                    }
+                    _ => {}
                 }
-                2 => {
-                    fila.tutorado2.clear();
-                    fila.tutorado2_id.clear();
-                    fila.materiaTutorado2 = "VACÍO".into();
-                    fila.disponibilidadTutorado2 = "VACÍO".into();
-                    fila.colorOriginal2 = Some("".into());
-                }
-                _ => {}
             }
         }
     }
-}
 
 
     // --- Etapa 2: Ordenar tutorados pendientes para mejorar asignación ---
@@ -700,107 +700,107 @@ for fila in &mut nuevo_emparejamiento {
     tutorados_pendientes.retain(|(t, _)| !t.tutorado1.trim().is_empty() && t.tutorado1 != "VACÍO");
 
    // --- Etapa 3: Reubicar los tutorados pendientes ---
-let mut asignados: HashSet<String> = HashSet::new();
+    let mut asignados: HashSet<String> = HashSet::new();
 
-for (tutorado_origen, _) in &tutorados_pendientes {
-    for fila in &mut nuevo_emparejamiento {
-        if !fila.nombretutor.trim().is_empty()
-            && normalize(&fila.materiaTutor) == normalize(&tutorado_origen.materiaTutorado1)
-            && fila.disponibilidadTutor == tutorado_origen.disponibilidadTutorado1
-        {
-            let actuales = [
-                !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO",
-                !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO",
-            ];
-            let count = actuales.iter().filter(|&&b| b).count();
-            if count < fila.max_tutorados as usize {
-                if fila.tutorado1.trim().is_empty() || fila.tutorado1 == "VACÍO" {
-                    copiar_datos_tutorado(tutorado_origen, fila, 1);
-                } else {
-                    copiar_datos_tutorado(tutorado_origen, fila, 2);
+    for (tutorado_origen, _) in &tutorados_pendientes {
+        for fila in &mut nuevo_emparejamiento {
+            if !fila.nombretutor.trim().is_empty()
+                && normalize(&fila.materiaTutor) == normalize(&tutorado_origen.materiaTutorado1)
+                && fila.disponibilidadTutor == tutorado_origen.disponibilidadTutorado1
+            {
+                let actuales = [
+                    !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO",
+                    !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO",
+                ];
+                let count = actuales.iter().filter(|&&b| b).count();
+                if count < fila.max_tutorados as usize {
+                    if fila.tutorado1.trim().is_empty() || fila.tutorado1 == "VACÍO" {
+                        copiar_datos_tutorado(tutorado_origen, fila, 1);
+                    } else {
+                        copiar_datos_tutorado(tutorado_origen, fila, 2);
+                    }
+                    asignados.insert(tutorado_origen.tutorado1_id.clone());
+                    break;
                 }
-                asignados.insert(tutorado_origen.tutorado1_id.clone());
-                break;
             }
         }
     }
-}
 
 
-// --- Solo los no asignados generan fila vacía ---
-for (tutorado_origen, _) in tutorados_pendientes {
-    if asignados.contains(&tutorado_origen.tutorado1_id) {
-        continue;
+    // --- Solo los no asignados generan fila vacía ---
+    for (tutorado_origen, _) in tutorados_pendientes {
+        if asignados.contains(&tutorado_origen.tutorado1_id) {
+            continue;
+        }
+
+        let mut fila_vacia = EmparejamientoItem {
+            nombretutor: "".into(),
+            apellidotutor: "".into(),
+            correotutor: "".into(),
+            telefonotutor: "".into(),
+            instituciontutor: "".into(),
+            becariotutor: "".into(),
+            argostutor: "".into(),
+            descripcion_DE_LA_MODALIDAD: "".into(),
+            horastutor: "VACÍO".into(),
+            disponibilidadTutor: "VACÍO".into(),
+            materiaTutor: "VACÍO".into(),
+            modalidad: "VACÍO".into(),
+            max_tutorados: 2,
+            
+
+            tutorado1: "VACÍO".into(),
+            tutorado1_id: "VACÍO".into(),
+            colegiotutorado1: "VACÍO".into(),
+            tele1Tutorado1: "VACÍO".into(),
+            tele2Tutorado1: "VACÍO".into(),
+            contactoTutorado1: "VACÍO".into(),
+            vocabulariotutorado1: "VACÍO".into(),
+            gramaticatutorado1: "VACÍO".into(),
+            escuchatutorado1: "VACÍO".into(),
+            lecturatutorado1: "VACÍO".into(),
+            pensamientonumericotutorado1: "VACÍO".into(),
+            pensamientoespacialtutorado1: "VACÍO".into(),
+            pensamientoomtricotutorado1: "VACÍO".into(),
+            pensamientoaleatoriotutorado1: "VACÍO".into(),
+            pensamientovariacionalysistertudorado1: "VACÍO".into(),
+            totalpuntuacionmathpretutorado1: "VACÍO".into(),
+            totalpuntuacionenglishpretutorado1: "VACÍO".into(),       
+            materiaTutorado1: "VACÍO".into(),
+            disponibilidadTutorado1: "VACÍO".into(),
+            grupoTutorado1: "VACÍO".into(),
+            colorOriginal1: Some("".into()),
+
+            tutorado2: "VACÍO".into(),
+            tutorado2_id: "VACÍO".into(),
+            colegiotutorado2: "VACÍO".into(),
+            tele1Tutorado2: "VACÍO".into(),
+            tele2Tutorado2: "VACÍO".into(),
+            contactoTutorado2: "VACÍO".into(),
+            vocabulariotutorado2: "VACÍO".into(),
+            gramaticatutorado2: "VACÍO".into(),
+            escuchatutorado2: "VACÍO".into(),
+            lecturatutorado2: "VACÍO".into(),
+            pensamientonumericotutorado2: "VACÍO".into(),
+            pensamientoespacialtutorado2: "VACÍO".into(),
+            pensamientoomtricotutorado2: "VACÍO".into(),
+            pensamientoaleatoriotutorado2: "VACÍO".into(),
+            pensamientovariacionalysistertudorado2: "VACÍO".into(),
+            totalpuntuacionmathpretutorado2: "VACÍO".into(),
+            totalpuntuacionenglishpretutorado2: "VACÍO".into(),
+            materiaTutorado2: "VACÍO".into(),
+            disponibilidadTutorado2: "VACÍO".into(),
+            grupoTutorado2: "VACÍO".into(),
+            colorOriginal2: Some("".into()),
+
+            ..Default::default()
+
+
+        };
+
+        copiar_datos_tutorado(&tutorado_origen, &mut fila_vacia, 1);
+        nuevo_emparejamiento.push(fila_vacia);
     }
-
-    let mut fila_vacia = EmparejamientoItem {
-        nombretutor: "".into(),
-        apellidotutor: "".into(),
-        correotutor: "".into(),
-        telefonotutor: "".into(),
-        instituciontutor: "".into(),
-        becariotutor: "".into(),
-        argostutor: "".into(),
-        descripcion_DE_LA_MODALIDAD: "".into(),
-        horastutor: "VACÍO".into(),
-        disponibilidadTutor: "VACÍO".into(),
-        materiaTutor: "VACÍO".into(),
-        modalidad: "VACÍO".into(),
-        max_tutorados: 2,
-        
-
-        tutorado1: "VACÍO".into(),
-        tutorado1_id: "VACÍO".into(),
-        colegiotutorado1: "VACÍO".into(),
-        tele1Tutorado1: "VACÍO".into(),
-        tele2Tutorado1: "VACÍO".into(),
-        contactoTutorado1: "VACÍO".into(),
-        vocabulariotutorado1: "VACÍO".into(),
-        gramaticatutorado1: "VACÍO".into(),
-        escuchatutorado1: "VACÍO".into(),
-        lecturatutorado1: "VACÍO".into(),
-        pensamientonumericotutorado1: "VACÍO".into(),
-        pensamientoespacialtutorado1: "VACÍO".into(),
-        pensamientoomtricotutorado1: "VACÍO".into(),
-        pensamientoaleatoriotutorado1: "VACÍO".into(),
-        pensamientovariacionalysistertudorado1: "VACÍO".into(),
-        totalpuntuacionmathpretutorado1: "VACÍO".into(),
-        totalpuntuacionenglishpretutorado1: "VACÍO".into(),       
-        materiaTutorado1: "VACÍO".into(),
-        disponibilidadTutorado1: "VACÍO".into(),
-        grupoTutorado1: "VACÍO".into(),
-        colorOriginal1: Some("".into()),
-
-        tutorado2: "VACÍO".into(),
-        tutorado2_id: "VACÍO".into(),
-        colegiotutorado2: "VACÍO".into(),
-        tele1Tutorado2: "VACÍO".into(),
-        tele2Tutorado2: "VACÍO".into(),
-        contactoTutorado2: "VACÍO".into(),
-        vocabulariotutorado2: "VACÍO".into(),
-        gramaticatutorado2: "VACÍO".into(),
-        escuchatutorado2: "VACÍO".into(),
-        lecturatutorado2: "VACÍO".into(),
-        pensamientonumericotutorado2: "VACÍO".into(),
-        pensamientoespacialtutorado2: "VACÍO".into(),
-        pensamientoomtricotutorado2: "VACÍO".into(),
-        pensamientoaleatoriotutorado2: "VACÍO".into(),
-        pensamientovariacionalysistertudorado2: "VACÍO".into(),
-        totalpuntuacionmathpretutorado2: "VACÍO".into(),
-        totalpuntuacionenglishpretutorado2: "VACÍO".into(),
-        materiaTutorado2: "VACÍO".into(),
-        disponibilidadTutorado2: "VACÍO".into(),
-        grupoTutorado2: "VACÍO".into(),
-        colorOriginal2: Some("".into()),
-
-        ..Default::default()
-
-
-    };
-
-    copiar_datos_tutorado(&tutorado_origen, &mut fila_vacia, 1);
-    nuevo_emparejamiento.push(fila_vacia);
-}
 
 
 

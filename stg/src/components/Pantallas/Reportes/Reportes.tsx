@@ -3,7 +3,7 @@ import "./Reportes.css";
 
 import Emergente from "./Emergente/Emergente";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { open, save } from "@tauri-apps/api/dialog";
 
@@ -16,20 +16,9 @@ function Reportes() {
 
 
   const [fechaLee, setFechaLee] = useState("");
-
-  
   const [fechaPUJ, setFechaPUJ] = useState("");
-
-  
-
   const [fechaColegios, setFechaColegios] = useState("");
-
-
-
   const [fechaConstanciasTutores, setFechaConstanciasTutores] = useState("");
-
-  
-
   const [fechaConstanciasTutorados, setFechaConstanciasTutorados] = useState("");
 
   
