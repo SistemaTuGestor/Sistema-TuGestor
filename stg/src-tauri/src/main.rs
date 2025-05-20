@@ -32,10 +32,10 @@ use notificaciones::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_m
 // Reportes.
 use reportes::fecha::obtener_fecha;
 use reportes::lee::{reportes_lee_actualizarfecha, reportes_lee_recibir_emparejamiento, reportes_lee_recibir_pathcarpeta, reportes_lee_recibir_nombrereporte, reportes_lee_leer_archivos_en_carpeta};
-use reportes::puj::{reportes_puj_actualizarfecha, reportes_puj_recibir_lee, reportes_puj_recibir_pathplantilla, reportes_puj_recibir_nombrereporte, reportes_puj_leer_universitarios_aprobados, reporte_puj_generar, convertir_puj_pdf,reportes_puj_enviar_por_whatsapp};
-use reportes::colegios::{reportes_colegios_actualizarfecha, reportes_colegios_recibir_lee, reportes_colegios_recibir_pathplantilla, reportes_colegios_recibir_nombrereporte, reportes_colegios_leer_estudiantes_aprobados, reportes_colegios_generar, convertir_colegios_pdf,reportes_colegios_enviar_por_whatsapp};
-use reportes::tutores::{reportes_constanciastutores_actualizarfecha, reportes_tutores_recibir_lee, reportes_constanciastutores_recibir_pathplantilla, reportes_constanciastutores_recibir_nombrereporte, reportes_constanciastutores_generar, convertir_tutores_pdf,reportes_tutores_enviar_por_whatsapp,reportes_tutores_recibir_emparejamiento};
-use reportes::tutorados::{reportes_constanciastutorados_actualizarfecha, reportes_tutorados_recibir_emparejamiento, reportes_constanciastutorados_recibir_pathplantilla, reportes_constanciastutorados_recibir_nombrereporte, reportes_constanciastutorados_generar, convertir_tutorados_pdf,reportes_tutorados_enviar_por_whatsapp};
+use reportes::puj::{reportes_puj_actualizarfecha, reportes_puj_recibir_lee, reportes_puj_recibir_pathplantilla, reportes_puj_recibir_nombrereporte, reportes_puj_leer_universitarios_aprobados, reporte_puj_generar, convertir_puj_pdf,reportes_puj_enviar_por_whatsapp,verificar_pdfs_existentes_puj};
+use reportes::colegios::{reportes_colegios_actualizarfecha, reportes_colegios_recibir_lee, reportes_colegios_recibir_pathplantilla, reportes_colegios_recibir_nombrereporte, reportes_colegios_leer_estudiantes_aprobados, reportes_colegios_generar, convertir_colegios_pdf,reportes_colegios_enviar_por_whatsapp,verificar_pdfs_existentes_colegios};
+use reportes::tutores::{reportes_constanciastutores_actualizarfecha, reportes_tutores_recibir_lee, reportes_constanciastutores_recibir_pathplantilla, reportes_constanciastutores_recibir_nombrereporte, reportes_constanciastutores_generar, convertir_tutores_pdf,reportes_tutores_enviar_por_whatsapp,reportes_tutores_recibir_emparejamiento,verificar_pdfs_existentes_tutores};
+use reportes::tutorados::{reportes_constanciastutorados_actualizarfecha, reportes_tutorados_recibir_emparejamiento, reportes_constanciastutorados_recibir_pathplantilla, reportes_constanciastutorados_recibir_nombrereporte, reportes_constanciastutorados_generar, convertir_tutorados_pdf,reportes_tutorados_enviar_por_whatsapp,verificar_pdfs_existentes_tutorados};
 // Emparejamiento.
 use emparejamiento::emparejamiento::obtener_emparejamiento;
 use emparejamiento::emparejamiento::filtrar_emparejamientos;
@@ -102,6 +102,7 @@ fn main() {
             reporte_puj_generar,
             convertir_puj_pdf,
             reportes_puj_enviar_por_whatsapp,
+            verificar_pdfs_existentes_puj,
             // Colegios
             reportes_colegios_actualizarfecha,
             reportes_colegios_recibir_lee,
@@ -111,6 +112,7 @@ fn main() {
             reportes_colegios_generar,
             convertir_colegios_pdf,
             reportes_colegios_enviar_por_whatsapp,
+            verificar_pdfs_existentes_colegios,
             // Tutores
             reportes_constanciastutores_actualizarfecha,
             reportes_tutores_recibir_lee,
@@ -120,6 +122,7 @@ fn main() {
             convertir_tutores_pdf,
             reportes_tutores_enviar_por_whatsapp,
             reportes_tutores_recibir_emparejamiento,
+            verificar_pdfs_existentes_tutores,
             // Tutorados
             reportes_constanciastutorados_actualizarfecha,
             reportes_tutorados_recibir_emparejamiento,
@@ -128,6 +131,7 @@ fn main() {
             reportes_constanciastutorados_generar,
             convertir_tutorados_pdf,
             reportes_tutorados_enviar_por_whatsapp,
+            verificar_pdfs_existentes_tutorados,
             // EMPAREJAMIENTO
             obtener_emparejamiento,
             filtrar_emparejamientos,

@@ -633,3 +633,99 @@ fn get_resource_path() -> PathBuf {
         exe_dir.join("resources")
     }
 }
+
+#[tauri::command]
+pub fn verificar_pdfs_existentes_colegios(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
+    
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
+    }
+    
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Si estamos verificando colegios
+    if tipo == "colegios" {
+        // Obtener el formato esperado del nombre del reporte
+        let nombre_reporte = match NOMBRE_REPORTE.get() {
+            Some(mutex) => {
+                match mutex.lock() {
+                    Ok(guard) => guard.clone(),
+                    Err(_) => String::from("Colegios") // Valor por defecto si no podemos obtener el bloqueo
+                }
+            },
+            None => String::from("Colegios") // Valor por defecto si no está inicializada
+        };
+        
+        // Obtener la fecha del reporte
+        let fecha = match FECHA.get() {
+            Some(mutex) => {
+                match mutex.lock() {
+                    Ok(guard) => guard.clone(),
+                    Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+                }
+            },
+            None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+        };
+        
+        println!("🔍 Buscando PDFs con formato similar a: {} - Institución ({})", nombre_reporte, fecha);
+        
+        // Buscar archivos PDF que coincidan con el formato esperado o similares
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                
+                // Verificar si es un archivo PDF
+                if let Some(extension) = path.extension() {
+                    if extension == "pdf" {
+                        let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                        
+                        // Verificar si el nombre contiene partes del formato esperado
+                        if (nombre_archivo.contains(&nombre_reporte.to_lowercase()) || 
+                            nombre_archivo.contains("colegio") || 
+                            nombre_archivo.contains("institución") || 
+                            nombre_archivo.contains("institucion")) && 
+                            nombre_archivo.contains("(") && 
+                            nombre_archivo.contains(")") {
+                                
+                            println!("✅ Encontrado archivo PDF: {}", nombre_archivo);
+                            found_pdfs = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        // Para otros tipos de reportes
+        let filter_pattern = match tipo.as_str() {
+            "puj" => "puj",
+            "tutores" => "tutor",
+            "tutorados" => "tutorado",
+            _ => return Err(format!("Tipo de documento no válido: {}", tipo)),
+        };
+        
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                
+                if let Some(extension) = path.extension() {
+                    if extension == "pdf" && 
+                       path.to_string_lossy().to_lowercase().contains(filter_pattern) {
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    println!("✅ Verificación de PDFs para {}: {}", tipo, if found_pdfs { "Encontrados" } else { "No encontrados" });
+    Ok(found_pdfs)
+}
