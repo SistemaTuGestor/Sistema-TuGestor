@@ -1,3 +1,4 @@
+
 use calamine::{open_workbook, Reader, Xlsx, XlsxError} ;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -6,6 +7,7 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
+
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -197,13 +199,13 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
         // lista_imagenes.push(imagen);
         // lista_imagenes.push(imagen2);
 
-        let mut lista_tutoradoNumeros = Vec::new();
-        lista_tutoradoNumeros.push(telefonotut1);
-        lista_tutoradoNumeros.push(telefono2tut1);
+        let mut lista_tutoradonumeros = Vec::new();
+        lista_tutoradonumeros.push(telefonotut1);
+        lista_tutoradonumeros.push(telefono2tut1);
 
-        let mut lista_tutoradoNumeros2 = Vec::new();
-        lista_tutoradoNumeros2.push(telefonotut2);
-        lista_tutoradoNumeros2.push(telefono2tut2);
+        let mut lista_tutoradonumeros2 = Vec::new();
+        lista_tutoradonumeros2.push(telefonotut2);
+        lista_tutoradonumeros2.push(telefono2tut2);
     
         contador_tu += 1;
         let mut tutor = Tutor{
@@ -225,7 +227,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             cedula: cedulatutorados1.clone(),
             rol: "Tutorado".to_string(),
             institucion: instituciontut1.clone(),
-            telefono: lista_tutoradoNumeros,
+            telefono: lista_tutoradonumeros,
             correo: correotut1.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
@@ -238,7 +240,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             cedula: cedulatutorados2.clone(),
             rol: "Tutorado".to_string(),
             institucion: instituciontut2.clone(),
-            telefono: lista_tutoradoNumeros2,
+            telefono: lista_tutoradonumeros2,
             correo: correotut2.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),

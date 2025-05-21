@@ -1,3 +1,4 @@
+
 use std::fs;
 use std::path::Path;
 use serde::{Serialize, Deserialize};
@@ -5,6 +6,8 @@ use tauri::command;
 use std::fs::read_dir;
 use std::env;
 use std::path::PathBuf;
+
+
 
 //Funcion para obtener la ruta de los recursos
 fn get_resource_path() -> PathBuf {
@@ -178,7 +181,7 @@ pub fn editar_historial(asunto: String) -> Result<Vec<BorradorEdit>, String> {
 }
 
 #[command]
-pub fn actualizar_historial(app_handle: tauri::AppHandle, asunto_original: String, data: BorradorEdit) -> Result<(), String> {
+pub fn actualizar_historial ( asunto_original:String , data:BorradorEdit ) -> Result<(),String> {
     let base_path = get_resource_path();
     let path = base_path.join("historiales").join("historial.json");
 
@@ -218,8 +221,8 @@ pub fn actualizar_historial(app_handle: tauri::AppHandle, asunto_original: Strin
     
     println!("Historial actualizado con éxito para el asunto: {}", asunto_original);
     
-    // Retornar Ok sin intentar leer ningún archivo Excel
-    Ok(())
+// Retornar Ok sin intentar leer ningún archivo Excel
+Ok(())
 }
 
 
@@ -366,5 +369,6 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
         println!("-----------------------------------");
     }
 
-    Ok(historiales)
+Ok(historiales)
 }
+

@@ -1,3 +1,4 @@
+
 // FECHA
 use chrono::Local ;
 use chrono::NaiveDate ;
@@ -5,19 +6,14 @@ use chrono::NaiveDate ;
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
-use std::fs::File;
 use std::fs::{self} ;
 use std::path::{Path,PathBuf} ;
 use std::io::{Read, Write} ;
 use calamine::{open_workbook, Reader, Xlsx} ;
 use zip::{ZipArchive, write::FileOptions} ;
-
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
-
+// ...
 use std::process::Command;
-
+// ...
 use serde::Serialize;
 use std::collections::HashSet;
 use xlsxwriter::Workbook;
@@ -25,6 +21,8 @@ use xlsxwriter::prelude::FormatColor;
 use urlencoding::encode;
 
 
+
+////    VARIABLES GLOBALES      ////
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_EMPAREJAMIENTO: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -34,7 +32,7 @@ static NOMBRE_REPORTE : OnceCell<Mutex<String>> = OnceCell::new() ;
 ////    FECHA   ////
 
 #[tauri::command]
-pub fn reportes_constanciastutorados_actualizarfecha(nueva_fecha: Option<String>) -> Result<(), String> {
+pub fn reportes_constanciastutorados_actualizarfecha ( nueva_fecha:Option<String> ) -> Result<(),String> {
 
     let fecha = match nueva_fecha {
         Some(fecha) => {
@@ -606,7 +604,7 @@ pub fn reportes_tutorados_enviar_por_whatsapp(directorio_reportes: String) -> Re
 }
 
 #[tauri::command]
-pub fn verificar_pdfs_existentes_tutorados(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+pub fn verificar_pdfs_existentes_tutorados ( directorio_reportes:String ) -> Result<bool, String> {
     println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
     let path = std::path::Path::new(&directorio_reportes);
     
@@ -660,5 +658,7 @@ pub fn verificar_pdfs_existentes_tutorados(directorio_reportes: String, tipo: St
     }
     
     println!("✅ Verificación de PDFs para tutorados: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
+
     Ok(found_pdfs)
 }
+

@@ -1,10 +1,9 @@
+
 // VARIOS
 use serde::{Serialize, Deserialize}; // Import Deserialize
 use urlencoding::encode;
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
-use std::collections::HashMap;
-
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
@@ -17,13 +16,10 @@ use std::path::Path;
 use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
-
+// ...
 use std::fs;
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
 use std::path::PathBuf;
-
+// ...
 use std::process::Command;
 
 
@@ -503,7 +499,7 @@ pub fn reportes_puj_enviar_por_whatsapp(directorio_reportes: String) -> Result<V
 }
 
 #[tauri::command]
-pub fn verificar_pdfs_existentes_puj(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+pub fn verificar_pdfs_existentes_puj ( directorio_reportes:String ) -> Result<bool, String> {
     println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
     let path = std::path::Path::new(&directorio_reportes);
     
@@ -555,5 +551,7 @@ pub fn verificar_pdfs_existentes_puj(directorio_reportes: String, tipo: String) 
     }
     
     println!("✅ Verificación de PDFs para PUJ: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
-    Ok(found_pdfs)
+
+Ok(found_pdfs)
 }
+

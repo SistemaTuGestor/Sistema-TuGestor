@@ -1,3 +1,4 @@
+
 // ARCHIVOS
 use serde::Serialize ;
 use calamine::{open_workbook,Reader,Xlsx} ;
@@ -7,6 +8,8 @@ use once_cell::sync::OnceCell ;
 use std::path::Path ;
 use std::env;
 use std::path::PathBuf;
+
+
 
 fn get_resource_path() -> PathBuf {
     let current_exe = env::current_exe().expect("Failed to get current executable path");
@@ -587,7 +590,7 @@ pub fn generar_tutores_enlaces() -> Result<Vec<TutoresPUJ>, String> {
     let mut workbook: Xlsx<_> = match open_workbook(&excel_path) {
         Ok(wb) => wb,
         Err(e) => {
-          ///  println!("Error abriendo el archivo Excel: {:?}", e);
+            //println!("Error abriendo el archivo Excel: {:?}", e);
             //println!("Ruta intentada: {:?}", excel_path);
             return Err(format!("No se pudo abrir el archivo Excel: {}", e));
         }

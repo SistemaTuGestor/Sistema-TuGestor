@@ -1,4 +1,4 @@
-// VARIOS
+
 // VARIOS
 use serde::{Serialize, Deserialize};
 // FECHA
@@ -14,21 +14,25 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 use std::collections::HashMap;
-// Nuevas importaciones necesarias
+// ...
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
 use urlencoding::encode;
 use std::path::PathBuf;
-
+// ...
 use std::fs;
 use std::process::Command;
 
+
+
+////    VARIABLES GLOBALES      ////
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_SALIDA: OnceCell<Mutex<String>> = OnceCell::new(); // Nueva variable global
+
 
 ////    FECHA   ////
 
@@ -427,7 +431,7 @@ pub fn reportes_colegios_enviar_por_whatsapp(directorio_reportes: String) -> Res
     // 3. Contacto central para todos los colegios
     let contacto_nombre = "Coordinador Servicio Social";
     let contacto_telefono = "3001234567"; // Reemplaza con el número real
-    let contacto_correo = "servicio.social@javeriana.edu.co"; // Reemplaza con el correo real
+    // let contacto_correo = "...@javeriana.edu.co"; // Reemplaza con el correo real
     
     // 4. Generar Excel de seguimiento de envíos en el mismo directorio que los reportes
     let fecha = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
@@ -575,27 +579,6 @@ fn obtener_correo_por_institucion(institucion: &str) -> Option<String> {
     Some(format!("contacto.{}@educacion.co", institucion.to_lowercase().replace(" ", ".")))
 }
 
-// Función auxiliar para extraer nombre de institución
-fn extraer_institucion_de_nombre_archivo(nombre_archivo: &str) -> String {
-    // Eliminar extensión
-    let sin_extension = nombre_archivo.rsplit_once('.').map_or(nombre_archivo, |(n, _)| n);
-    
-    // Asumimos que el nombre del archivo sigue un patrón como:
-    // "Reporte_Servicio_Social_[NOMBRE_COLEGIO]_[FECHA].docx"
-    let partes: Vec<&str> = sin_extension.split('_').collect();
-    
-    if partes.len() >= 4 {
-        // Intentar encontrar la parte que corresponde al colegio
-        // Esta lógica puede necesitar ajustes según el formato exacto de tus nombres de archivo
-        let posible_institucion = partes[3..partes.len()-1].join(" ");
-        if !posible_institucion.is_empty() {
-            return posible_institucion;
-        }
-    }
-    
-    // Si no podemos extraer correctamente, devolvemos el nombre sin extensión
-    sin_extension.to_string()
-}
 
 #[tauri::command]
 pub fn reportes_colegios_obtener_directorio_salida() -> Result<String, String> {
@@ -606,31 +589,6 @@ pub fn reportes_colegios_obtener_directorio_salida() -> Result<String, String> {
                 .map_err(|e| format!("Error al acceder a la ruta: {}", e))
         },
         None => Err("La ruta de salida no ha sido inicializada".to_string())
-    }
-}
-
-// Función para obtener la ruta de los recursos
-fn get_resource_path() -> PathBuf {
-    // Obtener la ruta de ejecución (directorio del ejecutable)
-    let exe_path = std::env::current_exe().expect("No se pudo obtener la ruta del ejecutable");
-    let exe_dir = exe_path.parent().expect("No se pudo obtener el directorio del ejecutable");
-    
-    // En modo desarrollo, la carpeta de recursos estará en el directorio raíz del proyecto
-    // En producción, podría estar en un subdirectorio de recursos
-    #[cfg(debug_assertions)]
-    {
-        // En desarrollo, subir varios niveles hasta la raíz del proyecto
-        let mut path = exe_dir.to_path_buf();
-        // Ajustar según la estructura de tu proyecto
-        path.pop(); // subir un nivel
-        path.pop(); // subir otro nivel si es necesario
-        path.join("resources")
-    }
-    
-    #[cfg(not(debug_assertions))]
-    {
-        // En producción, los recursos podrían estar en una carpeta específica relativa al ejecutable
-        exe_dir.join("resources")
     }
 }
 

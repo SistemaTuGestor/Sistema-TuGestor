@@ -1,3 +1,4 @@
+
 // VARIOS
 use serde::Serialize ;
 // FECHA
@@ -7,24 +8,17 @@ use chrono::NaiveDate ;
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
-use std::fs::File;
 use std::fs::{self} ;
 use std::io::{Read, Write} ;
 use std::path::{Path,PathBuf} ;
 use zip::write::FileOptions ;
 use zip::ZipArchive ;
 use calamine::{open_workbook, Reader, Xlsx} ;
-
-
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
-
+//
 use std::process::Command;
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
 use urlencoding::encode;
-use std::collections::HashSet;
 
 
 
@@ -616,19 +610,19 @@ pub fn reportes_tutores_enviar_por_whatsapp(directorio_reportes: String) -> Resu
 }
 
 #[tauri::command]
-pub fn reportes_tutores_recibir_emparejamiento(archivoPathEmparejamiento: String) -> Result<(), String> {
+pub fn reportes_tutores_recibir_emparejamiento ( archivo_path_emparejamiento:String ) -> Result<(),String> {
     let mut path_emparejamiento = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
     
-    *path_emparejamiento = archivoPathEmparejamiento;
+    *path_emparejamiento = archivo_path_emparejamiento;
     println!("✅ Ruta de archivo de emparejamiento para tutores actualizada: {}", path_emparejamiento);
     
-    Ok(())
+Ok(())
 }
 
 #[tauri::command]
-pub fn verificar_pdfs_existentes_tutores(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+pub fn verificar_pdfs_existentes_tutores ( directorio_reportes:String ) -> Result<bool, String> {
     println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
     let path = std::path::Path::new(&directorio_reportes);
     
@@ -684,5 +678,7 @@ pub fn verificar_pdfs_existentes_tutores(directorio_reportes: String, tipo: Stri
     }
     
     println!("✅ Verificación de PDFs para tutores: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
-    Ok(found_pdfs)
+
+Ok(found_pdfs)
 }
+
