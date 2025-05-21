@@ -226,7 +226,7 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             rol: "Tutorado".to_string(),
             institucion: instituciontut1.clone(),
             telefono: lista_tutoradoNumeros,
-            correo: correo.clone(),
+            correo: correotut1.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
             progreso: 0.0, // Por defecto, el progreso es 0

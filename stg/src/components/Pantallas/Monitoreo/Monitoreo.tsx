@@ -573,11 +573,18 @@ function Monitoreo() {
         return;
       }
 
+       const numeroTelefono = usuarioSeleccionado.rol === "Tutor" 
+      ? usuarioSeleccionado.telefono // Para tutores, usar el teléfono directamente
+      : Array.isArray(usuarioSeleccionado.telefono) 
+        ? usuarioSeleccionado.telefono[0] // Para tutorados, usar el primer número del array
+        : ""; // Fallback por si acaso
+
       // Invocar la función backend con los datos extraídos de la UI
       await invoke("monitoreo_enviar_tarea", { 
         nombre: usuarioSeleccionado.nombre || "Usuario", 
         titulo: nombreTarea,
-        descripcion: descripcionTarea
+        descripcion: descripcionTarea,
+        telefono: numeroTelefono,
       });
 
       console.log("Tarea enviada correctamente");
