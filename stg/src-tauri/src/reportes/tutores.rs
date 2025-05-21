@@ -626,3 +626,63 @@ pub fn reportes_tutores_recibir_emparejamiento(archivoPathEmparejamiento: String
     
     Ok(())
 }
+
+#[tauri::command]
+pub fn verificar_pdfs_existentes_tutores(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
+    
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
+    }
+    
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Obtener la fecha de la variable global para buscar archivos con esa fecha
+    let fecha = match FECHA.get() {
+        Some(mutex) => {
+            match mutex.lock() {
+                Ok(guard) => guard.clone(),
+                Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+            }
+        },
+        None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+    };
+    
+    println!("🔍 Buscando PDFs de constancias de tutores con fecha: {}", fecha);
+    
+    // Buscar constancias de tutores en formato PDF
+    for entry in entries {
+        if let Ok(entry) = entry {
+            let path = entry.path();
+            
+            if let Some(extension) = path.extension() {
+                if extension == "pdf" {
+                    let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                    
+                    // Verificar formatos específicos para constancias de tutores
+                    // Formato: "Constancia Tutor NOMBRE APELLIDO (FECHA).pdf"
+                    // o formatos similares que contengan email, etc.
+                    if nombre_archivo.contains("constancia") && 
+                       nombre_archivo.contains("tutor") && 
+                       !nombre_archivo.contains("tutorado") && // Excluir tutorados
+                       nombre_archivo.contains("(") && 
+                       nombre_archivo.contains(")") {
+                        
+                        println!("✅ Encontrado archivo PDF de constancia de tutor: {}", nombre_archivo);
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    println!("✅ Verificación de PDFs para tutores: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
+    Ok(found_pdfs)
+}

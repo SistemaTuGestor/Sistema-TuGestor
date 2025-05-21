@@ -501,3 +501,59 @@ pub fn reportes_puj_enviar_por_whatsapp(directorio_reportes: String) -> Result<V
     
     Ok(resultados)
 }
+
+#[tauri::command]
+pub fn verificar_pdfs_existentes_puj(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
+    
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
+    }
+    
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Obtener la fecha de la variable global para buscar archivos con esa fecha
+    let fecha = match FECHA.get() {
+        Some(mutex) => {
+            match mutex.lock() {
+                Ok(guard) => guard.clone(),
+                Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+            }
+        },
+        None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+    };
+    
+    println!("🔍 Buscando PDFs de PUJ con fecha: {}", fecha);
+    
+    // Patrón para buscar: archivos que empiecen con "PUJ" y tengan la fecha entre paréntesis
+    for entry in entries {
+        if let Ok(entry) = entry {
+            let path = entry.path();
+            
+            if let Some(extension) = path.extension() {
+                if extension == "pdf" {
+                    let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                    
+                    // Verificar si el nombre comienza con "PUJ" y contiene la fecha
+                    if nombre_archivo.starts_with("puj") || 
+                       (nombre_archivo.contains("puj") && nombre_archivo.contains("(") && 
+                        nombre_archivo.contains(")")) {
+                        
+                        println!("✅ Encontrado archivo PDF: {}", nombre_archivo);
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    println!("✅ Verificación de PDFs para PUJ: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
+    Ok(found_pdfs)
+}

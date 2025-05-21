@@ -246,24 +246,46 @@ function Monitoreo() {
     const itemToDelete = datosDer[actualIndex];
     const isImage = itemToDelete.registro.startsWith("Imagen:");
 
+
+    const currentUser = datosOriginales.find(p => {
+
+      const matchingEmail = datosIzq.find(row => row.email === p.correo);
+      return matchingEmail && datosDer.some(item => {
+
+        if (isImage) {
+          return item.registro.includes(p.imagenes);
+        } else {
+          return p.tareas.some((tarea: any) =>
+            item.registro.includes(`${tarea.nombre}: ${tarea.descripcion}`)
+          );
+        }
+      });
+    });
+
+    if (!currentUser) return;
+
     try {
+
       const jsonResponse = await invoke("cargar_datos_json");
       const jsonData = JSON.parse(jsonResponse as string);
+
 
       let userType = "";
       let userIndex = -1;
 
-      // Encontrar el tipo de usuario y su índice
-      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === currentUser.correo);
       if (userIndex !== -1) userType = "tutores";
 
+
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
         if (userIndex !== -1) userType = "tutorado1";
       }
 
+
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
         if (userIndex !== -1) userType = "tutorado2";
       }
 
@@ -272,33 +294,34 @@ function Monitoreo() {
         return;
       }
 
+
       if (isImage) {
-        // Eliminar imagen del array de imágenes
-        const imageUrl = itemToDelete.registro.replace("Imagen: ", "").trim();
-        jsonData[userType][userIndex].imagenes =
-          jsonData[userType][userIndex].imagenes.filter(
-            (img: any) => img.url !== imageUrl
-          );
+
+        jsonData[userType][userIndex].imagenes = "";
       } else {
-        // Eliminar tarea (código existente)
-        const taskName = itemToDelete.registro.split(":")[0].trim();
-        jsonData[userType][userIndex].tareas =
-          jsonData[userType][userIndex].tareas.filter(
-            (tarea: any) => tarea.nombre !== taskName
-          );
+
+        const taskText = itemToDelete.registro;
+        const taskName = taskText.split(":")[0].trim();
+
+        jsonData[userType][userIndex].tareas = jsonData[userType][userIndex].tareas.filter(
+          (tarea: any) => tarea.nombre !== taskName
+        );
       }
 
-      // Actualizar el JSON
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-      // Actualizar la UI
+
       const newDatosDer = [...datosDer];
       newDatosDer.splice(actualIndex, 1);
       setDatosDer(newDatosDer);
 
-      // Actualizar los datos originales
+      await invoke("actualizar_tareas_y_progreso", {
+        correo: currentUser.correo,
+        esEliminacion: true
+      });
+
       const personas = [
         ...jsonData.tutores,
         ...jsonData.tutorado1,
@@ -306,9 +329,9 @@ function Monitoreo() {
       ];
       setDatosOriginales(personas);
 
-      console.log(`${isImage ? "Imagen" : "Tarea"} eliminada correctamente`);
+      console.log("Item deleted successfully");
     } catch (error) {
-      console.error("Error al eliminar:", error);
+      console.error("Error deleting item:", error);
     }
   };
 
@@ -520,8 +543,55 @@ function Monitoreo() {
   };
 
   const handleEnviarItem = async (index: number) => {
-    await invoke("monitoreo_enviar_tarea", { nombre: usuarioSeleccionado.nombre, titulo: usuarioSeleccionado.tareas[index].nombre, descripcion: usuarioSeleccionado.tareas[index].descripcion });
+    try {
+      // Verificar que usuarioSeleccionado exista
+      if (!usuarioSeleccionado) {
+        alert("Por favor selecciona un usuario primero");
+        return;
+      }
 
+      // Obtener el nombre de la tarea del texto mostrado en la UI
+      const itemActual = datosDer[datosDer.length - 1 - index];
+      if (!itemActual || !itemActual.registro) {
+        alert("No se pudo identificar la tarea seleccionada");
+        return;
+      }
+
+      // Extraer el nombre y la descripción del texto del registro
+      const partes = itemActual.registro.split(":");
+      if (partes.length < 2) {
+        alert("El formato de la tarea no es válido");
+        return;
+      }
+
+      const nombreTarea = partes[0].trim();
+      const descripcionTarea = partes.slice(1).join(":").trim();
+
+      // Buscar la tarea en el usuario seleccionado para verificar que existe
+      if (!usuarioSeleccionado.tareas || !Array.isArray(usuarioSeleccionado.tareas)) {
+        alert("El usuario seleccionado no tiene tareas");
+        return;
+      }
+
+       const numeroTelefono = usuarioSeleccionado.rol === "Tutor" 
+      ? usuarioSeleccionado.telefono // Para tutores, usar el teléfono directamente
+      : Array.isArray(usuarioSeleccionado.telefono) 
+        ? usuarioSeleccionado.telefono[0] // Para tutorados, usar el primer número del array
+        : ""; // Fallback por si acaso
+
+      // Invocar la función backend con los datos extraídos de la UI
+      await invoke("monitoreo_enviar_tarea", { 
+        nombre: usuarioSeleccionado.nombre || "Usuario", 
+        titulo: nombreTarea,
+        descripcion: descripcionTarea,
+        telefono: numeroTelefono,
+      });
+
+      console.log("Tarea enviada correctamente");
+    } catch (error) {
+      console.error("Error al enviar la tarea:", error);
+      alert("Ocurrió un error al enviar la tarea");
+    }
   };
 
   const handleToggleHecho = async (taskName: string) => {
