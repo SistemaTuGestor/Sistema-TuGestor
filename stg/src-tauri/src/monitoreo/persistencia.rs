@@ -23,7 +23,7 @@ impl Tarea {
         Tarea {
             nombre: nombre.to_string(),
             descripcion: descripcion.to_string(),
-            hecho: false, // Por defecto, la tarea no está hecha
+            hecho: false,  // Por defecto, la tarea no está hecha
         }
     }
 }
@@ -100,7 +100,8 @@ pub fn get_resource_path() -> PathBuf {
     
     // Añadir la carpeta recursos
     path.push("recursos");
-    path
+
+path
 }
 
 #[tauri::command]
@@ -111,12 +112,14 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
 
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
     let excel_path = base_path.join("EmparejamientoFINAL.xlsx");
-/*
-    if json_path.exists() {
-        println!("El archivo JSON ya existe, no es necesario regenerarlo.");
-        return Err("Ya existe el archivo JSON".to_string());
-    }
-*/
+
+    /*
+        if json_path.exists() {
+            println!("El archivo JSON ya existe, no es necesario regenerarlo.");
+            return Err("Ya existe el archivo JSON".to_string());
+        }
+    */
+
     if json_path.exists() {
         // Si existe, leer y retornar los datos del JSON existente
         let json_str = std::fs::read_to_string(&json_path)

@@ -26,6 +26,8 @@ use std::process::Command;
 
 
 
+////    VARIABLES GLOBALES      ////
+
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();

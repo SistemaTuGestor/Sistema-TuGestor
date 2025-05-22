@@ -13,8 +13,8 @@ use crate::servicios::logger::log_event;
 
 
 
+fn get_resource_path ( ) -> PathBuf {
 
-fn get_resource_path() -> PathBuf {
     let current_exe = env::current_exe().expect("Failed to get current executable path");
     let mut path = current_exe.parent().unwrap().to_path_buf();
     
@@ -25,7 +25,8 @@ fn get_resource_path() -> PathBuf {
     
     // Add the recursos folder
     path.push("recursos");
-    path
+
+path
 }
 
 
@@ -43,7 +44,8 @@ pub struct NombreArchivo {
 }
 
 #[tauri::command]
-pub fn init_path_pruebas() -> Result<(), String> {
+pub fn init_path_pruebas ( ) -> Result<(),String> {
+
     let base_path = get_resource_path();
     
     // Verificar que la carpeta recursos existe
@@ -73,59 +75,67 @@ pub fn init_path_pruebas() -> Result<(), String> {
     println!("📁 Links.xlsx: {:?}", links_path);
     println!("📁 enlaces.xlsx: {:?}", enlaces_path);
 
-    Ok(())
+Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_emparejamiento ( path:String ) -> Result<(),String> {
-    log_event(format!("Notificaciones - leyendo emparejamiento:{path}")) ;
+
+    let _ = log_event(format!("Notificaciones - leyendo emparejamiento:{path}")) ;
     let nombre = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Emparejamiento): {}",*nombre_guardado ) ;
-    log_event(format!("Notificaciones - emparejamiento leído correctamente")) ;
+    let _ = log_event(format!("Notificaciones - emparejamiento leído correctamente")) ;
+
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_control ( path:String ) -> Result<(),String> {
-    log_event(format!("Notificaciones - leyendo control:{path}")) ;
+
+    let _ = log_event(format!("Notificaciones - leyendo control:{path}")) ;
     let nombre = PATH_CONTROL.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Control): {}",*nombre_guardado ) ;
- log_event(format!("Notificaciones - control leído correctamente")) ;
+    let _ = log_event(format!("Notificaciones - control leído correctamente")) ;
     // println! ( "📂 Ruta archivo recibido (Control): {}",*nombre_guardado ) ;
+
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_seguimiento ( path:String ) -> Result<(),String> {
-    log_event(format!("Notificaciones - leyendo seguimiento:{path}")) ;
+
+    let _ = log_event(format!("Notificaciones - leyendo seguimiento:{path}")) ;
     let nombre = PATH_SEGUIMIENTO.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Seguimiento): {}",*nombre_guardado ) ;
-    log_event(format!("Notificaciones - seguimiento leído correctamente")) ;
+    let _ = log_event(format!("Notificaciones - seguimiento leído correctamente")) ;
+
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_links ( path:String ) -> Result<(),String> {
-    log_event(format!("Notificaciones - leyendo links:{path}")) ;
+
+    let _ = log_event(format!("Notificaciones - leyendo links:{path}")) ;
     let nombre = PATH_LINKS.get_or_init(|| Mutex::new(String::new())) ;
 
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Links): {}",*nombre_guardado ) ;
-    log_event(format!("Notificaciones - links leído correctamente")) ;
+    let _ = log_event(format!("Notificaciones - links leído correctamente")) ;
+
 Ok(())
 }
 
@@ -167,23 +177,22 @@ pub struct FuncionariosColegio {
 
 #[derive(Serialize, Debug)]
 pub struct TutoradosEmparejados {
-   pub nombre: String,
-   pub correo: String,
-   pub telefono: Vec<String>,
-  pub  id: String,
- pub   colegio: String,
-  pub  vocabulario: String,
-  pub gramatica: String,
-  pub escucha: String,
-  pub lectura: String,
-  pub a: String,
-  pub b: String,
-  pub c: String,
-  pub d: String,
-  pub e: String,
-  pub f: String,
+    pub nombre: String,
+    pub correo: String,
+    pub telefono: Vec<String>,
+    pub  id: String,
+    pub   colegio: String,
+    pub  vocabulario: String,
+    pub gramatica: String,
+    pub escucha: String,
+    pub lectura: String,
+    pub a: String,
+    pub b: String,
+    pub c: String,
+    pub d: String,
+    pub e: String,
+    pub f: String,
     pub g: String,
-
 }
 
 #[derive(Serialize, Debug)]
@@ -374,22 +383,22 @@ pub fn leer_archivo_emparejados ( ) -> Result<(Vec<TutoresPUJ>,Vec<TutoresColegi
         }
     }
 
-   // println!("Lectura finalizada.");
-  //  println!("Total Tutores PUJ: {}", tutores_puj.len());
-   // println!("Total Tutores Colegio: {}", tutores_colegio.len());
+    //println!("Lectura finalizada.");
+    //println!("Total Tutores PUJ: {}", tutores_puj.len());
+    //println!("Total Tutores Colegio: {}", tutores_colegio.len());
     //println!("Total Tutorados Emparejados: {}", tutorados_emparejados.len());
 
     //println!("Tutores PUJ: {:?}", tutores_puj);
     //println!("Tutores Colegio: {:?}", tutores_colegio);
     //println!("Tutorados Emparejados: {:?}", tutorados_emparejados);
 
-    Ok((tutores_puj, tutores_colegio, funcionarios_colegio, tutorados_emparejados))
+Ok((tutores_puj, tutores_colegio, funcionarios_colegio, tutorados_emparejados))
 }
 
 #[tauri::command]
 pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
     
- //println!("Iniciando la función leer_archivo_control...");
+    //println!("Iniciando la función leer_archivo_control...");
 
     let ubicacioon = PATH_CONTROL
         .get()
@@ -398,12 +407,13 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
     let path = Path::new(&*ubicacioon);
     if !path.exists() {
-      //  println!("❌ El archivo no existe en la ruta: {}", path.display());
+        //println!("❌ El archivo no existe en la ruta: {}", path.display());
         return Err(format!("El archivo no existe en la ruta: {}", path.display()));
     }
+
     //println!("✅ El archivo existe en la ruta: {}", path.display());
 
-    // Intentar abrir el archivo
+    // Intentar abrir el archivo.
     let mut workbook: Xlsx<_> = match open_workbook(path) {
         Ok(wb) => {
             //println!("Archivo abierto correctamente.");
@@ -433,7 +443,7 @@ pub fn leer_archivo_control ( ) -> Result<Vec<TutoradosControl>,String> {
     let mut _fila_actual = 1; // Contador de filas para debug
 
     for row in range.rows().skip(1) { // Omitir encabezados
-       // println!("Leyendo fila {}", _fila_actual);
+        // println!("Leyendo fila {}", _fila_actual);
         _fila_actual += 1;
 
         if row.len() < 17 {

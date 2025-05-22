@@ -25,6 +25,7 @@ use urlencoding::encode;
 
 
 ////    VARIABLES GLOBALES      ////
+
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_EMPAREJAMIENTO: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -173,12 +174,12 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
 
         Ok(())
         };
-        log_event(format!("Generando constancia para: {}", tutorado_1))?;
+        let _ = log_event(format!("Generando constancia para: {}", tutorado_1))?;
         generar_constancia(&tutorado_1)?;
-        log_event("generacion de constancia exitosa".to_string())?;
-        log_event(format!("Generando constancia para: {}", tutorado_2))?;
+        let _ = log_event("generacion de constancia exitosa".to_string())?;
+        let _ = log_event(format!("Generando constancia para: {}", tutorado_2))?;
         generar_constancia(&tutorado_2)?;
-        log_event("generacion de constancia exitosa".to_string())?;
+        let _ = log_event("generacion de constancia exitosa".to_string())?;
 
     }
 
@@ -325,8 +326,10 @@ pub struct ContactoSimplificado {
 }
 
 #[tauri::command]
-pub fn leer_archivo_emparejamiento() -> Result<Vec<ContactoSimplificado>, String> {
-    log_event("iniciando lectura del archivo de emparejamiento".to_string());
+pub fn leer_archivo_emparejamiento ( ) -> Result<Vec<ContactoSimplificado>,String> {
+
+    let _ = log_event("iniciando lectura del archivo de emparejamiento".to_string());
+
     // Obtener la ruta del archivo de emparejamiento
     
     let archivo_emparejamiento = PATH_EMPAREJAMIENTO
@@ -412,12 +415,14 @@ pub fn leer_archivo_emparejamiento() -> Result<Vec<ContactoSimplificado>, String
     }
 
     println!("✅ Se encontraron {} contactos simplificados únicos", contactos_unicos.len());
-    log_event("lectura del archivo de emparejamiento finalizada".to_string());
-    Ok(contactos_unicos)
+    let _ = log_event("lectura del archivo de emparejamiento finalizada".to_string());
+
+Ok(contactos_unicos)
 }
 
 #[tauri::command]
-pub fn reportes_tutorados_enviar_por_whatsapp(directorio_reportes: String) -> Result<Vec<ContactoSimplificado>, String> {
+pub fn reportes_tutorados_enviar_por_whatsapp ( directorio_reportes:String ) -> Result<Vec<ContactoSimplificado>,String> {
+    
     // Si no se proporciona directorio, usar el directorio de salida
     let directorio_final = if directorio_reportes.is_empty() {
         match NOMBRE_REPORTE.get() {

@@ -24,6 +24,8 @@ use urlencoding::encode;
 
 
 
+////    VARIABLES GLOBALES      ////
+
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA : OnceCell<Mutex<String>> = OnceCell::new() ;
@@ -121,8 +123,10 @@ Ok(())
 
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
-    log_event("iniciando generación de constancias de tutores".to_string());
-    // println!("📖 Cargando archivo Excel...") ;
+
+    let _ = log_event("iniciando generación de constancias de tutores".to_string());
+    
+    //println!("📖 Cargando archivo Excel...") ;
 
     let archivo_lee = PATH_LEE
         .get()
@@ -189,7 +193,8 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
     }
 
     println!("🎉 ¡Todas las constancias han sido generadas!");
-    log_event("generación de constancias de tutores finalizada".to_string());
+    let _ = log_event("generación de constancias de tutores finalizada".to_string());
+
 Ok(())
 }
 
@@ -335,8 +340,10 @@ pub struct TutorSimplificado {
 }
 
 #[tauri::command]
-pub fn reportes_tutores_leer_emparejamiento() -> Result<Vec<TutorSimplificado>, String> {
-    log_event("iniciando lectura de emparejamiento de tutores".to_string());
+pub fn reportes_tutores_leer_emparejamiento ( ) -> Result<Vec<TutorSimplificado>, String> {
+
+    let _ = log_event("iniciando lectura de emparejamiento de tutores".to_string());
+    
     // Obtener la ruta del archivo de emparejamiento
     let archivo_emparejamiento = PATH_EMPAREJAMIENTO
         .get()

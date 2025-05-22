@@ -95,6 +95,7 @@ fn remove_accents(s: &str) -> String {
     
     result
 }
+
 fn first_upper(s: &str) -> String {
     let mut result = String::new();
     let mut capitalize = true;
@@ -133,20 +134,20 @@ fn calcular_color(materia: &str) -> String {
 pub fn obtener_emparejamiento ( ruta:String ) -> Result<Vec<EmparejamientoItem>,String> {
 
     println!("📁 Buscando en ruta: {}",ruta);
-    log_event(format!("📁 Buscando en ruta: {}", ruta));
+    let _ = log_event(format!("📁 Buscando en ruta: {}", ruta));
     println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
-    log_event(format!("✅ Existe fichero? {}", Path::new(&ruta).exists()));
+    let _ = log_event(format!("✅ Existe fichero? {}", Path::new(&ruta).exists()));
     println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
-    log_event(format!("📂 WD actual: {:?}", std::env::current_dir().unwrap()));
+    let _ = log_event(format!("📂 WD actual: {:?}", std::env::current_dir().unwrap()));
     
     let mut workbook: Xlsx<_> = open_workbook(&ruta)
     .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     println!("📂 Archivo Excel abierto correctamente.");
-    log_event("📂 Archivo Excel abierto correctamente.".to_string());
+    let _ = log_event("📂 Archivo Excel abierto correctamente.".to_string());
     let sheet_names = workbook.sheet_names();
     println!("📄 Hojas disponibles en el archivo: {:?}", sheet_names);
-    log_event(format!("📄 Hojas disponibles en el archivo: {:?}", sheet_names));
+    let _ = log_event(format!("📄 Hojas disponibles en el archivo: {:?}", sheet_names));
     
     // --- Procesar la hoja "Emparejamiento" ---
     let range = workbook
@@ -158,7 +159,7 @@ pub fn obtener_emparejamiento ( ruta:String ) -> Result<Vec<EmparejamientoItem>,
         if i == 0 { continue; } // Saltar encabezado
         
         println!("➡ Procesando fila {}: {:?}", i, row);
-        log_event(format!("➡ Procesando fila {}: {:?}", i, row));
+        let _ =  log_event(format!("➡ Procesando fila {}: {:?}", i, row));
        // Datos del tutor
         let nombretutor = row.get(0)
             .and_then(|c| c.as_string())
@@ -906,6 +907,7 @@ pub fn actualizar_campo_tutor(
     campo: String, 
     valor: String
     ) -> Result<Vec<EmparejamientoItem>, String> {
+
     let mut nuevos_emparejamientos = emparejamientos;
     
     if index >= nuevos_emparejamientos.len() {
