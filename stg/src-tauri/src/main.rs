@@ -15,7 +15,7 @@ mod servicios;
 // Servicios.
 use servicios::tarea::monitoreo_enviar_tarea;
 use servicios::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_mensajes_desde_json,whatsapp::exportar_mensajes_a_excel};
-use servicios::logger::{log_event, log_event_append, read_logs, read_logs_jsonl, get_today_logs, clear_logs};
+use servicios::logger::log_event;
 // Monitoreo.
 use monitoreo::{persistencia::leer_excel_emparejamiento, persistencia::actualizar_json_monitoreo,  persistencia::obtener_roles_unicos, persistencia::obtener_instituciones_unicas};
 use monitoreo::persistencia::{cargar_datos_json,agregar_tarea_y_guardar,agregar_imagen_y_guardar,eliminar_item_monitoreo,editar_item_monitoreo,toggle_hecho_monitoreo};

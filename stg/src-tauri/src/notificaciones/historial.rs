@@ -6,6 +6,7 @@ use tauri::command;
 use std::fs::read_dir;
 use std::env;
 use std::path::PathBuf;
+use crate::servicios::logger::log_event;
 
 
 
@@ -321,6 +322,7 @@ pub fn eliminar_historial(asunto: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
+    log_event("Enviar historiales ,Enviando historiales...".to_string())?;
    // let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales";
    let base_path = get_resource_path();
    let carpeta_path = base_path.join("historiales");
@@ -368,7 +370,8 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
         println!("   ✅ Estado: {}", historial.estado);
         println!("-----------------------------------");
     }
-
+  log_event("Enviar historiales , Historiales enviados exitosamente".to_string())?;
+    // Devolver los historiales enviados
 Ok(historiales)
 }
 

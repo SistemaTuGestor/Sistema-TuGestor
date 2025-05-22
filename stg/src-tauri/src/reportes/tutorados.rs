@@ -5,6 +5,8 @@ use chrono::NaiveDate ;
 // PATH
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
+// JSON
+use crate::servicios::logger::log_event ;
 // ARCHIVOS
 use std::fs::{self} ;
 use std::path::{Path,PathBuf} ;
@@ -171,9 +173,12 @@ pub fn reportes_constanciastutorados_generar() -> Result<(), String> {
 
         Ok(())
         };
-
+        log_event(format!("Generando constancia para: {}", tutorado_1))?;
         generar_constancia(&tutorado_1)?;
+        log_event("generacion de constancia exitosa".to_string())?;
+        log_event(format!("Generando constancia para: {}", tutorado_2))?;
         generar_constancia(&tutorado_2)?;
+        log_event("generacion de constancia exitosa".to_string())?;
 
     }
 
@@ -321,7 +326,9 @@ pub struct ContactoSimplificado {
 
 #[tauri::command]
 pub fn leer_archivo_emparejamiento() -> Result<Vec<ContactoSimplificado>, String> {
+    log_event("iniciando lectura del archivo de emparejamiento".to_string());
     // Obtener la ruta del archivo de emparejamiento
+    
     let archivo_emparejamiento = PATH_EMPAREJAMIENTO
         .get()
         .ok_or("❌ PATH_EMPAREJAMIENTO no ha sido inicializado")?
@@ -405,7 +412,7 @@ pub fn leer_archivo_emparejamiento() -> Result<Vec<ContactoSimplificado>, String
     }
 
     println!("✅ Se encontraron {} contactos simplificados únicos", contactos_unicos.len());
-    
+    log_event("lectura del archivo de emparejamiento finalizada".to_string());
     Ok(contactos_unicos)
 }
 

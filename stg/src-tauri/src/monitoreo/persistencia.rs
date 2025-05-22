@@ -7,6 +7,7 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
+use crate::servicios::logger::log_event;
 
 
 
@@ -105,6 +106,7 @@ pub fn get_resource_path() -> PathBuf {
 #[tauri::command]
 pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tutorado>), String>{
 
+    log_event("Iniciando lectura de Excel".to_string()).unwrap();
     let base_path = get_resource_path();
 
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
@@ -300,9 +302,9 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
     } else {
         println!("Monitoreo guardado exitosamente en JSON.");
     }
-
+    
+    log_event("Lectura de Excel completada".to_string()).unwrap();
     Ok((tutores, tutorados1, tutorados2))
-
 }
 
 
@@ -311,6 +313,7 @@ fn guardar_monitoreo_json(
     tutorado1: Vec<Tutorado>,
     tutorado2: Vec<Tutorado>,
 ) -> Result<(), String> {
+    log_event("Guardando datos en JSON".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -325,7 +328,6 @@ fn guardar_monitoreo_json(
         Err(e) => return Err(format!("Error serializando JSON: {}", e)),
     };
 
-    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
     if let Some(parent) = json_path.parent() {
         if let Err(e) = std::fs::create_dir_all(parent) {
             return Err(format!("Error creando directorios: {}", e));
@@ -340,6 +342,7 @@ fn guardar_monitoreo_json(
         }
         Err(e) => return Err(format!("No se pudo crear el archivo JSON: {}", e)),
     }
+    log_event("Datos guardados en JSON".to_string()).unwrap();
 
     Ok(())
 }
@@ -347,15 +350,18 @@ fn guardar_monitoreo_json(
 
 #[tauri::command]
 pub fn cargar_datos_json() -> Result<String, String> {
+    log_event("Cargando datos desde JSON".to_string()).unwrap();
     //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
+    log_event("Datos cargados desde JSON".to_string()).unwrap();
 
     std::fs::read_to_string(json_path).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
 #[tauri::command] // Manejo de actualizaciones para tareas.
 pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
+    log_event("Actualizando JSON de monitoreo".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -368,12 +374,13 @@ pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
         .map_err(|e| format!("Error escribiendo el archivo: {}", e))?;
 
     println!("JSON actualizado correctamente");
+    log_event("JSON de monitoreo actualizado".to_string()).unwrap();
     Ok(())
 }
 
 #[tauri::command]
 pub fn guardar_datos_json(datos: String) -> Result<String, String> {
-    //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    log_event("Guardando datos en JSON".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -382,13 +389,17 @@ pub fn guardar_datos_json(datos: String) -> Result<String, String> {
         Ok(_) => {
             // JSON válido, proceder a escribir
             match std::fs::write(&json_path, datos) {
-                Ok(_) => Ok("Datos guardados correctamente".to_string()),
+                Ok(_) => {
+                    log_event("Datos guardados en JSON".to_string()).unwrap();
+                    Ok("Datos guardados correctamente".to_string())
+                },
                 Err(e) => Err(format!("Error al escribir el archivo JSON: {}", e))
             }
         },
         Err(e) => Err(format!("JSON inválido: {}", e))
     }
 }
+
 
 #[tauri::command]
 pub fn get_image(path: String) -> Result<Vec<u8>, String> {

@@ -4,6 +4,8 @@ use serde::{Serialize, Deserialize};
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
+//servicios
+use crate::servicios::logger::log_event;
 // PATH
 use once_cell::sync::OnceCell;
 use std::sync::Mutex;
@@ -133,7 +135,7 @@ pub struct Estudiante {
 
 #[tauri::command]
 pub fn reportes_colegios_leer_estudiantes_aprobados () -> Result<Vec<Estudiante>, String> {
-
+  log_event("Iniciando lectura de estudiantes aprobados (Colegios)".to_string())?;
     let archivo_lee = PATH_LEE
         .get()
         .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
@@ -182,7 +184,7 @@ pub fn reportes_colegios_leer_estudiantes_aprobados () -> Result<Vec<Estudiante>
 
 #[tauri::command]
 pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
-
+log_event("Iniciando generación de reportes (Colegios)".to_string())?;
     // Agrupar estudiantes por institución
     let mut estudiantes_por_institucion: HashMap<String, Vec<Estudiante>> = HashMap::new();
     for estudiante in estudiantes {
@@ -282,7 +284,7 @@ pub fn reportes_colegios_generar(estudiantes: Vec<Estudiante>) -> Result<(), Str
             .map(|mut path| *path = output_dir.clone())
             .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
     }
-
+log_event("generación de reportes (colegios) finalizada".to_string())?;
 Ok(())
 }
 

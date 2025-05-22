@@ -8,6 +8,9 @@ use once_cell::sync::OnceCell ;
 use std::path::Path ;
 use std::env;
 use std::path::PathBuf;
+//servicios
+use crate::servicios::logger::log_event;
+
 
 
 
@@ -75,53 +78,54 @@ pub fn init_path_pruebas() -> Result<(), String> {
 
 #[tauri::command]
 pub fn notificaciones_inicio_emparejamiento ( path:String ) -> Result<(),String> {
-
+    log_event(format!("Notificaciones - leyendo emparejamiento:{path}")) ;
     let nombre = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Emparejamiento): {}",*nombre_guardado ) ;
-
+    log_event(format!("Notificaciones - emparejamiento leído correctamente")) ;
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_control ( path:String ) -> Result<(),String> {
-
+    log_event(format!("Notificaciones - leyendo control:{path}")) ;
     let nombre = PATH_CONTROL.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Control): {}",*nombre_guardado ) ;
-
+ log_event(format!("Notificaciones - control leído correctamente")) ;
+    // println! ( "📂 Ruta archivo recibido (Control): {}",*nombre_guardado ) ;
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_seguimiento ( path:String ) -> Result<(),String> {
-
+    log_event(format!("Notificaciones - leyendo seguimiento:{path}")) ;
     let nombre = PATH_SEGUIMIENTO.get_or_init(|| Mutex::new(String::new())) ;
     
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Seguimiento): {}",*nombre_guardado ) ;
-
+    log_event(format!("Notificaciones - seguimiento leído correctamente")) ;
 Ok(())
 }
 
 #[tauri::command]
 pub fn notificaciones_inicio_links ( path:String ) -> Result<(),String> {
-
+    log_event(format!("Notificaciones - leyendo links:{path}")) ;
     let nombre = PATH_LINKS.get_or_init(|| Mutex::new(String::new())) ;
 
     let mut nombre_guardado = nombre.lock().unwrap() ;
     *nombre_guardado = path ;
 
     // println! ( "📂 Ruta archivo recibido (Links): {}",*nombre_guardado ) ;
-
+    log_event(format!("Notificaciones - links leído correctamente")) ;
 Ok(())
 }
 

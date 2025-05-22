@@ -4,6 +4,8 @@ use serde::{Serialize, Deserialize}; // Import Deserialize
 use urlencoding::encode;
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
+// JSON
+use crate:: servicios::logger::log_event;
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
@@ -115,7 +117,7 @@ pub struct Estudiante {
 
 #[tauri::command]
 pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, String> {
-
+ log_event("Iniciando lectura de estudiantes universitarios aprobados".to_string())?;
     let archivo_lee = PATH_LEE
         .get()
         .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
@@ -156,7 +158,7 @@ pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, S
     }
 
     // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes_aprobados);
-
+   log_event("lectura finalizada".to_string())?;
 Ok(estudiantes_aprobados)
 }
 
@@ -165,7 +167,7 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
 
     // imprimir la lista de estudiantes
     // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes);
-
+     log_event("Iniciando generación de reporte PUJ".to_string())?;
     let lista_tutores = estudiantes.iter()
         .map(|e| {
             let check_mark = if e.horas_totales >= e.modalidad { "✔" } else { "❌" };
@@ -265,7 +267,7 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
         .map(|mut path| *path = output_dir.clone())
         .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
 
-
+         log_event("Reporte PUJ generado exitosamente".to_string())?;
 Ok(())
 }
 

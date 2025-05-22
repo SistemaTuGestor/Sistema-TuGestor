@@ -4,6 +4,8 @@ use serde::Serialize ;
 // FECHA
 use chrono::Local ;
 use chrono::NaiveDate ;
+//servicios
+use crate::servicios::logger::log_event ;
 // PATH
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
@@ -119,7 +121,7 @@ Ok(())
 
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
-
+    log_event("iniciando generación de constancias de tutores".to_string());
     // println!("📖 Cargando archivo Excel...") ;
 
     let archivo_lee = PATH_LEE
@@ -187,7 +189,7 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
     }
 
     println!("🎉 ¡Todas las constancias han sido generadas!");
-
+    log_event("generación de constancias de tutores finalizada".to_string());
 Ok(())
 }
 
@@ -334,6 +336,7 @@ pub struct TutorSimplificado {
 
 #[tauri::command]
 pub fn reportes_tutores_leer_emparejamiento() -> Result<Vec<TutorSimplificado>, String> {
+    log_event("iniciando lectura de emparejamiento de tutores".to_string());
     // Obtener la ruta del archivo de emparejamiento
     let archivo_emparejamiento = PATH_EMPAREJAMIENTO
         .get()
