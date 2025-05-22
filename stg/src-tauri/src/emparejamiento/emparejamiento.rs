@@ -7,10 +7,10 @@ use std::path::Path;
 
 
 #[derive(Default, Debug, Serialize, Deserialize, Clone)]
-pub struct EmparejamientoItem {  
+pub struct EmparejamientoItem {
     // tutor
     pub nombretutor: String,
-    pub apellidotutor: String,   
+    pub apellidotutor: String,
     pub correotutor: String,
     pub telefonotutor: String,
     pub instituciontutor: String,
@@ -26,9 +26,9 @@ pub struct EmparejamientoItem {
     pub tutorado1: String,
     pub tutorado1_id: String,
     pub colegiotutorado1: String,
-    pub tele1tutorado1: String,
-    pub tele2tutorado1: String,
-    pub contactotutorado1: String,
+    pub tele1_tutorado1: String,
+    pub tele2_tutorado1: String,
+    pub contactoTutorado1: String,
     pub materiatutorado1: String,
     pub vocabulariotutorado1: String,
     pub gramaticatutorado1: String,
@@ -42,15 +42,15 @@ pub struct EmparejamientoItem {
     pub totalpuntuacionmathpretutorado1: String,
     pub totalpuntuacionenglishpretutorado1: String,
     pub disponibilidadtutorado1: String,
-    pub grupotutorado1: String,
-    pub colororiginal1: Option<String>,
+    pub grupo_tutorado1: String,
+    pub colorOriginal1: Option<String>,
     //tutorado2
     pub tutorado2: String,
     pub tutorado2_id: String,
     pub colegiotutorado2: String,
-    pub tele1tutorado2: String,
-    pub tele2tutorado2: String,
-    pub contactotutorado2: String,
+    pub tele1_tutorado2: String,
+    pub tele2_tutorado2: String,
+    pub contactoTutorado2: String,
     pub materiatutorado2: String,
     pub vocabulariotutorado2: String,
     pub gramaticatutorado2: String,
@@ -64,8 +64,8 @@ pub struct EmparejamientoItem {
     pub totalpuntuacionmathpretutorado2: String,
     pub totalpuntuacionenglishpretutorado2: String,
     pub disponibilidadtutorado2: String,
-    pub grupotutorado2: String,
-    pub colororiginal2: Option<String>,
+    pub grupo_tutorado2: String,
+    pub colorOriginal2: Option<String>,
     
 }
 
@@ -114,7 +114,7 @@ fn normalize(s: &str) -> String {
     remove_accents(s).trim().to_lowercase()
     
 }
-fn normalize_tutor(s: &str) -> String {
+fn normalizeTutor(s: &str) -> String {
     first_upper(s)
     
     
@@ -179,7 +179,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .unwrap_or_else(|| "VACÍO".to_string());
         let materiatutor = row.get(6)
             .and_then(|c| c.as_string())
-            .map(|s| normalize_tutor(&s))
+            .map(|s| normalizeTutor(&s))
             .unwrap_or_else(|| "VACÍO".to_string());
         let modalidad = row.get(7)
             .and_then(|c| c.as_string())
@@ -222,15 +222,15 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         let colegiotutorado1 = row.get(12).expect("REASON").as_string()
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let tele1tutorado1 = row.get(13)
+        let tele1_tutorado1 = row.get(13)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let tele2tutorado1 = row.get(14)
+        let tele2_tutorado1 = row.get(14)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let contactotutorado1 =row.get(15)
+        let contactoTutorado1 =row.get(15)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
@@ -287,7 +287,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let grupotutorado1 = row.get(29)
+        let grupo_tutorado1 = row.get(29)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
@@ -304,15 +304,15 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let tele1tutorado2 = row.get(33)
+        let tele1_tutorado2 = row.get(33)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let tele2tutorado2 = row.get(34)
+        let tele2_tutorado2 = row.get(34)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let contactotutorado2 = row.get(35)
+        let contactoTutorado2 = row.get(35)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
@@ -368,20 +368,20 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let grupotutorado2 = row.get(49)
+        let grupo_tutorado2 = row.get(49)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
 
         // Asignar colores basados en materias
-        let colororiginal1 = calcular_color(&materiatutorado1);
-        let colororiginal2 = calcular_color(&materiatutorado2);
+        let colorOriginal1 = calcular_color(&materiatutorado1);
+        let colorOriginal2 = calcular_color(&materiatutorado2);
          
      
         println!("👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
             nombretutor, disponibilidadtutor, materiatutor, correotutor,
-            tutorado1, tutorado1_id, disponibilidadtutorado1, materiatutorado1, contactotutorado1, grupotutorado1,
-            tutorado2, tutorado2_id, disponibilidadtutorado2, materiatutorado2, contactotutorado2, grupotutorado2
+            tutorado1, tutorado1_id, disponibilidadtutorado1, materiatutorado1, contactoTutorado1, grupo_tutorado1,
+            tutorado2, tutorado2_id, disponibilidadtutorado2, materiatutorado2, contactoTutorado2, grupo_tutorado2
         );
 
         emparejamientos.push(EmparejamientoItem {
@@ -403,9 +403,9 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         tutorado1,
         tutorado1_id,
         colegiotutorado1,
-        tele1tutorado1,
-        tele2tutorado1,
-        contactotutorado1,
+        tele1_tutorado1,
+        tele2_tutorado1,
+        contactoTutorado1,
         materiatutorado1,
         vocabulariotutorado1,
         gramaticatutorado1,
@@ -419,15 +419,15 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         totalpuntuacionmathpretutorado1,
         totalpuntuacionenglishpretutorado1,
         disponibilidadtutorado1,
-        grupotutorado1,
-        colororiginal1: Some(colororiginal1),
+        grupo_tutorado1,
+        colorOriginal1: Some(colorOriginal1),
         //datos tutorado2
         tutorado2,
         tutorado2_id,
         colegiotutorado2,
-        tele1tutorado2,
-        tele2tutorado2,
-        contactotutorado2,
+        tele1_tutorado2,
+        tele2_tutorado2,
+        contactoTutorado2,
         materiatutorado2,
         vocabulariotutorado2,
         gramaticatutorado2,
@@ -441,8 +441,8 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         totalpuntuacionmathpretutorado2,
         totalpuntuacionenglishpretutorado2,
         disponibilidadtutorado2,
-        grupotutorado2,
-        colororiginal2: Some(colororiginal2),
+        grupo_tutorado2,
+        colorOriginal2: Some(colorOriginal2),
         });
     }
 
@@ -515,12 +515,12 @@ if !searchtutor.trim().is_empty() {
                     let b_val = b.nombretutor.to_lowercase();
                     if is_asc { a_val.cmp(&b_val) } else { b_val.cmp(&a_val) }
                 },
-                "materiatutor" => {
+                "materiaTutor" => {
                     let a_val = a.materiatutor.to_lowercase();
                     let b_val = b.materiatutor.to_lowercase();
                     if is_asc { a_val.cmp(&b_val) } else { b_val.cmp(&a_val) }
                 },
-                "disponibilidadtutor" => {
+                "disponibilidadTutor" => {
                     let a_val = a.disponibilidadtutor.to_lowercase();
                     let b_val = b.disponibilidadtutor.to_lowercase();
                     if is_asc { a_val.cmp(&b_val) } else { b_val.cmp(&a_val) }
@@ -569,9 +569,9 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.tutorado1 = "".to_string();
                 fila.tutorado1_id = "".to_string();
                 fila.colegiotutorado1 = "".to_string();
-                fila.tele1tutorado1 = "".to_string();
-                fila.tele2tutorado1 = "".to_string();
-                fila.contactotutorado1 = "".to_string();
+                fila.tele1_tutorado1 = "".to_string();
+                fila.tele2_tutorado1 = "".to_string();
+                fila.contactoTutorado1 = "".to_string();
                 fila.materiatutorado1 = "VACÍO".to_string();
                 fila.vocabulariotutorado1 = "".to_string();
                 fila.gramaticatutorado1 = "".to_string();
@@ -585,8 +585,8 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.totalpuntuacionmathpretutorado1 = "".to_string();
                 fila.totalpuntuacionenglishpretutorado1 = "".to_string();
                 fila.disponibilidadtutorado1 = "VACÍO".to_string();
-                fila.grupotutorado1 = "".to_string();
-                fila.colororiginal1 = Some("".to_string());
+                fila.grupo_tutorado1 = "".to_string();
+                fila.colorOriginal1 = Some("".to_string());
             }
         }
 
@@ -613,9 +613,9 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.tutorado2 = "".to_string();
                 fila.tutorado2_id = "".to_string();
                 fila.colegiotutorado2 = "".to_string();
-                fila.tele1tutorado2 = "".to_string();
-                fila.tele2tutorado2 = "".to_string();
-                fila.contactotutorado2 = "".to_string();
+                fila.tele1_tutorado2 = "".to_string();
+                fila.tele2_tutorado2 = "".to_string();
+                fila.contactoTutorado2 = "".to_string();
                 fila.materiatutorado2 = "VACÍO".to_string();
                 fila.vocabulariotutorado2 = "".to_string();
                 fila.gramaticatutorado2 = "".to_string();
@@ -629,8 +629,8 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.totalpuntuacionmathpretutorado2 = "".to_string();
                 fila.totalpuntuacionenglishpretutorado2 = "".to_string();
                 fila.disponibilidadtutorado2 = "VACÍO".to_string();
-                fila.grupotutorado2 = "".to_string();
-                fila.colororiginal2 = Some("".to_string());
+                fila.grupo_tutorado2 = "".to_string();
+                fila.colorOriginal2 = Some("".to_string());
             }
         }
     }
@@ -643,7 +643,7 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.tutorado1.clone(),
                 fila.materiatutorado1.clone(),
                 fila.disponibilidadtutorado1.clone(),
-                fila.colororiginal1.clone().unwrap_or_default(),
+                fila.colorOriginal1.clone().unwrap_or_default(),
                 fila.tutorado1_id.clone(),
             ));
         }
@@ -653,7 +653,7 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                 fila.tutorado2.clone(),
                 fila.materiatutorado2.clone(),
                 fila.disponibilidadtutorado2.clone(),
-                fila.colororiginal2.clone().unwrap_or_default(),
+                fila.colorOriginal2.clone().unwrap_or_default(),
                 fila.tutorado2_id.clone(),
             ));
         }
@@ -671,14 +671,14 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
                         fila.tutorado1_id.clear();
                         fila.materiatutorado1 = "VACÍO".into();
                         fila.disponibilidadtutorado1 = "VACÍO".into();
-                        fila.colororiginal1 = Some("".into());
+                        fila.colorOriginal1 = Some("".into());
                     }
                     2 => {
                         fila.tutorado2.clear();
                         fila.tutorado2_id.clear();
                         fila.materiatutorado2 = "VACÍO".into();
                         fila.disponibilidadtutorado2 = "VACÍO".into();
-                        fila.colororiginal2 = Some("".into());
+                        fila.colorOriginal2 = Some("".into());
                     }
                     _ => {}
                 }
@@ -754,9 +754,9 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             tutorado1: "VACÍO".into(),
             tutorado1_id: "VACÍO".into(),
             colegiotutorado1: "VACÍO".into(),
-            tele1tutorado1: "VACÍO".into(),
-            tele2tutorado1: "VACÍO".into(),
-            contactotutorado1: "VACÍO".into(),
+            tele1_tutorado1: "VACÍO".into(),
+            tele2_tutorado1: "VACÍO".into(),
+            contactoTutorado1: "VACÍO".into(),
             vocabulariotutorado1: "VACÍO".into(),
             gramaticatutorado1: "VACÍO".into(),
             escuchatutorado1: "VACÍO".into(),
@@ -770,15 +770,15 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             totalpuntuacionenglishpretutorado1: "VACÍO".into(),       
             materiatutorado1: "VACÍO".into(),
             disponibilidadtutorado1: "VACÍO".into(),
-            grupotutorado1: "VACÍO".into(),
-            colororiginal1: Some("".into()),
+            grupo_tutorado1: "VACÍO".into(),
+            colorOriginal1: Some("".into()),
 
             tutorado2: "VACÍO".into(),
             tutorado2_id: "VACÍO".into(),
             colegiotutorado2: "VACÍO".into(),
-            tele1tutorado2: "VACÍO".into(),
-            tele2tutorado2: "VACÍO".into(),
-            contactotutorado2: "VACÍO".into(),
+            tele1_tutorado2: "VACÍO".into(),
+            tele2_tutorado2: "VACÍO".into(),
+            contactoTutorado2: "VACÍO".into(),
             vocabulariotutorado2: "VACÍO".into(),
             gramaticatutorado2: "VACÍO".into(),
             escuchatutorado2: "VACÍO".into(),
@@ -792,8 +792,8 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             totalpuntuacionenglishpretutorado2: "VACÍO".into(),
             materiatutorado2: "VACÍO".into(),
             disponibilidadtutorado2: "VACÍO".into(),
-            grupotutorado2: "VACÍO".into(),
-            colororiginal2: Some("".into()),
+            grupo_tutorado2: "VACÍO".into(),
+            colorOriginal2: Some("".into()),
 
             ..Default::default()
 
@@ -823,9 +823,9 @@ fn copiar_datos_tutorado(origen: &EmparejamientoItem, destino: &mut Emparejamien
             destino.tutorado1 = origen.tutorado1.clone();
             destino.tutorado1_id = origen.tutorado1_id.clone();
             destino.colegiotutorado1 = origen.colegiotutorado1.clone();
-            destino.tele1tutorado1 = origen.tele1tutorado1.clone();
-            destino.tele2tutorado1 = origen.tele2tutorado1.clone();
-            destino.contactotutorado1 = origen.contactotutorado1.clone();
+            destino.tele1_tutorado1 = origen.tele1_tutorado1.clone();
+            destino.tele2_tutorado1 = origen.tele2_tutorado1.clone();
+            destino.contactoTutorado1 = origen.contactoTutorado1.clone();
             destino.materiatutorado1 = origen.materiatutorado1.clone();
             destino.vocabulariotutorado1 = origen.vocabulariotutorado1.clone();
             destino.gramaticatutorado1 = origen.gramaticatutorado1.clone();
@@ -839,16 +839,16 @@ fn copiar_datos_tutorado(origen: &EmparejamientoItem, destino: &mut Emparejamien
             destino.totalpuntuacionmathpretutorado1 = origen.totalpuntuacionmathpretutorado1.clone();
             destino.totalpuntuacionenglishpretutorado1 = origen.totalpuntuacionenglishpretutorado1.clone();
             destino.disponibilidadtutorado1 = origen.disponibilidadtutorado1.clone();
-            destino.grupotutorado1 = origen.grupotutorado1.clone();
-            destino.colororiginal1 = origen.colororiginal1.clone();
+            destino.grupo_tutorado1 = origen.grupo_tutorado1.clone();
+            destino.colorOriginal1 = origen.colorOriginal1.clone();
         }
         2 => {
             destino.tutorado2 = origen.tutorado2.clone();
             destino.tutorado2_id = origen.tutorado2_id.clone();
             destino.colegiotutorado2 = origen.colegiotutorado2.clone();
-            destino.tele1tutorado2 = origen.tele1tutorado2.clone();
-            destino.tele2tutorado2 = origen.tele2tutorado2.clone();
-            destino.contactotutorado2 = origen.contactotutorado2.clone();
+            destino.tele1_tutorado2 = origen.tele1_tutorado2.clone();
+            destino.tele2_tutorado2 = origen.tele2_tutorado2.clone();
+            destino.contactoTutorado2 = origen.contactoTutorado2.clone();
             destino.materiatutorado2 = origen.materiatutorado2.clone();
             destino.vocabulariotutorado2 = origen.vocabulariotutorado2.clone();
             destino.gramaticatutorado2 = origen.gramaticatutorado2.clone();
@@ -862,8 +862,8 @@ fn copiar_datos_tutorado(origen: &EmparejamientoItem, destino: &mut Emparejamien
             destino.totalpuntuacionmathpretutorado2 = origen.totalpuntuacionmathpretutorado2.clone();
             destino.totalpuntuacionenglishpretutorado2 = origen.totalpuntuacionenglishpretutorado2.clone();
             destino.disponibilidadtutorado2 = origen.disponibilidadtutorado2.clone();
-            destino.grupotutorado2 = origen.grupotutorado2.clone();
-            destino.colororiginal2 = origen.colororiginal2.clone();
+            destino.grupo_tutorado2 = origen.grupo_tutorado2.clone();
+            destino.colorOriginal2 = origen.colorOriginal2.clone();
         }
         _ => {
             eprintln!("❌ Slot inválido: {}", slot);
@@ -885,8 +885,8 @@ pub fn actualizar_campo_tutor(
     }
     
     match campo.as_str() {
-        "materiatutor" => nuevos_emparejamientos[index].materiatutor = valor,
-        "disponibilidadtutor" => nuevos_emparejamientos[index].disponibilidadtutor = valor,
+        "materiaTutor" => nuevos_emparejamientos[index].materiatutor = valor,
+        "disponibilidadTutor" => nuevos_emparejamientos[index].disponibilidadtutor = valor,
         _ => return Err(format!("Campo no reconocido: {}", campo)),
     }
     
