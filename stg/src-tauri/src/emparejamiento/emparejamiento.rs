@@ -3,6 +3,7 @@ use calamine::{open_workbook, Reader, Xlsx, DataType};
 use serde::{Serialize, Deserialize};
 use std::collections::HashSet;
 use std::path::Path;
+use crate::servicios::logger::log_event ; 
 
 
 
@@ -110,14 +111,12 @@ fn first_upper(s: &str) -> String {
     result
 }
 
-fn normalize(s: &str) -> String {
+fn normalize ( s:&str ) -> String {
     remove_accents(s).trim().to_lowercase()
     
 }
-fn normalize_tutor(s: &str) -> String {
+fn normalize_tutor ( s:&str ) -> String {
     first_upper(s)
-    
-    
 }
 
 
@@ -131,27 +130,35 @@ fn calcular_color(materia: &str) -> String {
 
 
 #[tauri::command]
-pub fn obtener_emparejamiento ( ruta:String) -> Result<Vec<EmparejamientoItem>, String> {
-     println!("📁 Buscando en ruta: {}",ruta);
-     println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
-     println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
+pub fn obtener_emparejamiento ( ruta:String ) -> Result<Vec<EmparejamientoItem>,String> {
+
+    println!("📁 Buscando en ruta: {}",ruta);
+    log_event(format!("📁 Buscando en ruta: {}", ruta));
+    println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
+    log_event(format!("✅ Existe fichero? {}", Path::new(&ruta).exists()));
+    println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
+    log_event(format!("📂 WD actual: {:?}", std::env::current_dir().unwrap()));
+    
     let mut workbook: Xlsx<_> = open_workbook(&ruta)
-        .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
+    .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     println!("📂 Archivo Excel abierto correctamente.");
+    log_event("📂 Archivo Excel abierto correctamente.".to_string());
     let sheet_names = workbook.sheet_names();
     println!("📄 Hojas disponibles en el archivo: {:?}", sheet_names);
-
+    log_event(format!("📄 Hojas disponibles en el archivo: {:?}", sheet_names));
+    
     // --- Procesar la hoja "Emparejamiento" ---
     let range = workbook
-        .worksheet_range("Emparejamiento")
+    .worksheet_range("Emparejamiento")
         .map_err(|e| format!("❌ No se pudo cargar la hoja 'Emparejamiento': {}", e))?;
     let mut emparejamientos = Vec::new();
 
     for (i, row) in range.rows().enumerate() {
         if i == 0 { continue; } // Saltar encabezado
-
+        
         println!("➡ Procesando fila {}: {:?}", i, row);
+        log_event(format!("➡ Procesando fila {}: {:?}", i, row));
        // Datos del tutor
         let nombretutor = row.get(0)
             .and_then(|c| c.as_string())
@@ -377,12 +384,14 @@ pub fn obtener_emparejamiento ( ruta:String) -> Result<Vec<EmparejamientoItem>, 
         let colorOriginal1 = calcular_color(&materiaTutorado1);
         let colorOriginal2 = calcular_color(&materiaTutorado2);
          
-     
-        println!("👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
+        let info_emparejamiento = format!(
+            "👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
             nombretutor, disponibilidadTutor, materiaTutor, correotutor,
             tutorado1, tutorado1_id, disponibilidadTutorado1, materiaTutorado1, contactoTutorado1, grupoTutorado1,
             tutorado2, tutorado2_id, disponibilidadTutorado2, materiaTutorado2, contactoTutorado2, grupoTutorado2
         );
+        println!("{}", info_emparejamiento);
+        let _ = log_event(info_emparejamiento);
 
         emparejamientos.push(EmparejamientoItem {
         //datos tutor
@@ -446,10 +455,10 @@ pub fn obtener_emparejamiento ( ruta:String) -> Result<Vec<EmparejamientoItem>, 
         });
     }
 
-    
-
     println!("✅ Emparejamiento generado con {} elementos.", emparejamientos.len());
-    Ok(emparejamientos)
+    let _ = log_event(format!("✅ Emparejamiento generado con {} elementos.", emparejamientos.len()));
+
+Ok(emparejamientos)
 }
 
 #[tauri::command]
@@ -530,12 +539,13 @@ if !searchtutor.trim().is_empty() {
         });
     }
     
-    data
+data
 }
 
 
 #[tauri::command]
 pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Vec<EmparejamientoItem> {
+
     let mut nuevo_emparejamiento = emparejamientos.clone();
     let mut tutorados_pendientes: Vec<(EmparejamientoItem, u8)> = vec![];
 
@@ -549,22 +559,29 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
         // Revisar tutorado1
         if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
             // Depuración
-            println!("Comparando: '{}' con '{}' | '{}' con '{}'", 
-                normalize(&fila.materiaTutorado1), normalize(&fila.materiaTutor),
-                fila.disponibilidadTutorado1, fila.disponibilidadTutor);
+            let comparando = format!(
+                "Comparando: '{}' con '{}' | '{}' con '{}'",
+                normalize(&fila.materiaTutorado1),
+                normalize(&fila.materiaTutor),
+                fila.disponibilidadTutorado1,
+                fila.disponibilidadTutor
+            );
+            println!("{}", comparando);
+            let _ = log_event(comparando);
                 
             if normalize(&fila.materiaTutorado1) != normalize(&fila.materiaTutor) ||
                fila.disponibilidadTutorado1 != fila.disponibilidadTutor {
                 
-                println!("🛑 Tutorados incompatibles -> Tutorado1: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
+                let incompatibles = format!("🛑 Tutorados incompatibles -> Tutorado1: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
                     fila.tutorado1, fila.materiaTutorado1, fila.disponibilidadTutorado1,
                     fila.materiaTutor, fila.disponibilidadTutor
                 );
+                println!("{}",incompatibles);
+                let _ = log_event(incompatibles);
 
-                 let mut tutorado = EmparejamientoItem::default();
-                 copiar_datos_tutorado(&fila, &mut tutorado, 1);
-                 tutorados_pendientes.push((tutorado, 1));
-
+                let mut tutorado = EmparejamientoItem::default();
+                copiar_datos_tutorado(&fila, &mut tutorado, 1);
+                tutorados_pendientes.push((tutorado, 1));
 
                 fila.tutorado1 = "".to_string();
                 fila.tutorado1_id = "".to_string();
@@ -592,23 +609,32 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
 
         // Revisar tutorado2
         if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
+
             // Depuración
-            println!("Comparando: '{}' con '{}' | '{}' con '{}'", 
-                normalize(&fila.materiaTutorado2), normalize(&fila.materiaTutor),
-                fila.disponibilidadTutorado2, fila.disponibilidadTutor);
-                
+            let comparando = format!(
+                "Comparando: '{}' con '{}' | '{}' con '{}'",
+                normalize(&fila.materiaTutorado2),
+                normalize(&fila.materiaTutor),
+                fila.disponibilidadTutorado2,
+                fila.disponibilidadTutor
+            );
+            println!("{}", comparando);
+            let _ = log_event(comparando);
+
             if normalize(&fila.materiaTutorado2) != normalize(&fila.materiaTutor) ||
+
                fila.disponibilidadTutorado2 != fila.disponibilidadTutor {
-                
-                println!("🛑 Tutorados incompatibles -> Tutorado2: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
+
+                let incompatibles = format!("🛑 Tutorados incompatibles -> Tutorado2: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
                     fila.tutorado2, fila.materiaTutorado2, fila.disponibilidadTutorado2,
                     fila.materiaTutor, fila.disponibilidadTutor
                 );
+                println!("{}",incompatibles);
+                let _ = log_event(incompatibles);
 
-                 let mut tutorado = EmparejamientoItem::default();
-                 copiar_datos_tutorado(&fila, &mut tutorado, 2);
-                 tutorados_pendientes.push((tutorado, 2));
-
+                let mut tutorado = EmparejamientoItem::default();
+                copiar_datos_tutorado(&fila, &mut tutorado, 2);
+                tutorados_pendientes.push((tutorado, 2));
 
                 fila.tutorado2 = "".to_string();
                 fila.tutorado2_id = "".to_string();
@@ -814,7 +840,9 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
     });
 
     println!("📦 Emparejamiento final contiene {} filas", nuevo_emparejamiento.len());
-    nuevo_emparejamiento
+    let _ = log_event(format!("📦 Emparejamiento final contiene {} filas", nuevo_emparejamiento.len()));
+
+nuevo_emparejamiento
 }
 
 fn copiar_datos_tutorado(origen: &EmparejamientoItem, destino: &mut EmparejamientoItem, slot: u8) {
@@ -877,7 +905,7 @@ pub fn actualizar_campo_tutor(
     index: usize,
     campo: String, 
     valor: String
-) -> Result<Vec<EmparejamientoItem>, String> {
+    ) -> Result<Vec<EmparejamientoItem>, String> {
     let mut nuevos_emparejamientos = emparejamientos;
     
     if index >= nuevos_emparejamientos.len() {
