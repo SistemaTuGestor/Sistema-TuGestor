@@ -1,0 +1,47 @@
+@startuml
+top to bottom direction
+title Caso de Uso: Generar Reporte LEE
+
+actor Coordinadora
+actor STG
+
+usecase (Abrir módulo de reportes) as abrir
+usecase (Subir archivos necesarios) as subir
+usecase (Seleccionar plantilla y nombre del reporte) as seleccionar
+usecase (Seleccionar ubicación de almacenamiento) as ubicacion
+usecase (Generar reporte LEE) as generar
+usecase (Visualizar confirmación de generación) as confirmacion
+usecase (Cerrar el módulo) as cerrar
+  
+usecase (Validar archivos y campos) as validar
+usecase (Procesar lógica del reporte) as procesar
+usecase (Guardar reporte en ubicación seleccionada) as guardar
+usecase (Emitir mensaje de éxito o error) as mensaje
+
+' Conexiones actor-caso de uso
+Coordinadora - abrir
+Coordinadora - subir
+Coordinadora - seleccionar
+Coordinadora - ubicacion
+Coordinadora - generar
+Coordinadora - confirmacion
+Coordinadora - cerrar
+
+STG - validar
+STG - procesar
+STG - guardar
+STG - mensaje
+
+' Relaciones entre casos de uso
+abrir <|-- subir : <<extend>>
+subir <|-- seleccionar : <<extend>>
+seleccionar <|-- ubicacion : <<extend>>
+ubicacion <|-- generar : <<extend>>
+generar <|-- confirmacion : <<extend>>
+confirmacion <|-- cerrar : <<extend>>
+
+generar ..> validar : <<include>>
+validar ..> procesar : <<include>>
+procesar ..> guardar : <<include>>
+guardar ..> mensaje : <<include>>
+@enduml
