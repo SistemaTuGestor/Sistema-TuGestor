@@ -11,12 +11,13 @@
   },
   "tauri": {
     "allowlist": {
+      
       "dialog": {
         "all": true
       },
       "fs": {
         "all": true,
-        "scope": ["$APP/log.json/**"]  
+        "scope": ["$APP/log.json/**","$DESKTOP/*", "$PICTURES/*", "$DOWNLOAD/*"] 
       },
       "all": false,
       "shell": {

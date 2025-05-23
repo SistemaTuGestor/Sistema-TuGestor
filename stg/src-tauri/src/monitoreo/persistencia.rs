@@ -188,21 +188,21 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             hecho: false, // Por defecto, la tarea no está hecha
         };
 
-        // let mut imagen = Imagen{
-        //     url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string(),
-        // };
+        let mut imagen = Imagen{
+            url: "C:\\Users\\Javier\\Desktop\\Images\\prueba.jpg".to_string(),
+        };
 
-        // let mut imagen2 = Imagen{
-        //     url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
-        // };
+        let mut imagen2 = Imagen{
+            url: "C:\\Users\\Javier\\Pictures\\960px-Spider-Man.jpg".to_string(),
+        };
 
         let mut lista_tareas = Vec::new();
         lista_tareas.push(tarea);
         lista_tareas.push(tarea2);
         
         let mut lista_imagenes = Vec::new();
-        // lista_imagenes.push(imagen);
-        // lista_imagenes.push(imagen2);
+        lista_imagenes.push(imagen);
+        lista_imagenes.push(imagen2);
 
         let mut lista_tutoradonumeros = Vec::new();
         lista_tutoradonumeros.push(telefonotut1);
@@ -907,6 +907,24 @@ pub fn toggle_hecho_monitoreo(
 
     println!("Tarea '{}' actualizada. Nuevo estado: {}", nombre_tarea, nuevo_estado);
     Ok(nuevo_estado)
+}
+
+#[tauri::command]
+pub fn leer_archivo_imagen(path: String) -> Result<Vec<u8>, String> {
+    use std::fs;
+    use std::io::Read;
+    
+    let mut file = match fs::File::open(&path) {
+        Ok(file) => file,
+        Err(e) => return Err(format!("No se pudo abrir el archivo: {}", e)),
+    };
+    
+    let mut buffer = Vec::new();
+    if let Err(e) = file.read_to_end(&mut buffer) {
+        return Err(format!("Error al leer el archivo: {}", e));
+    }
+    
+    Ok(buffer)
 }
 
 

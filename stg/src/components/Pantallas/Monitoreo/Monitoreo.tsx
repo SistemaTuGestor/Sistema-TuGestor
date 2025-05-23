@@ -14,15 +14,83 @@ interface DatosMonitoreoIzq {
   nombre: string;
   institucion: string;
 }
+
 interface DatosMonitoreoDer {
   registro: string;
+  esImagen?: boolean;
+  urlImagen?: string;
+  imagenData?: string; // Para almacenar datos base64 si es necesario
 }
+
+const ImagenPreview = ({ imagePath }: { imagePath: string }) => {
+  const [imageData, setImageData] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadImage = async () => {
+      try {
+        // Usamos Tauri para leer el archivo como binario
+        const imageBytes: number[] = await invoke("leer_archivo_imagen", {
+          path: imagePath
+        });
+
+        // Convertimos los bytes a base64
+        const binaryString = imageBytes.map(byte => String.fromCharCode(byte)).join('');
+        const base64 = btoa(binaryString);
+        setImageData(`data:image/jpeg;base64,${base64}`);
+      } catch (error) {
+        console.error("Error al cargar la imagen:", error);
+        setImageData(null);
+      }
+    };
+
+    if (imagePath) {
+      loadImage();
+    }
+  }, [imagePath]);
+
+  if (!imageData) {
+    return (
+      <div style={{ padding: '10px', color: '#666', fontStyle: 'italic' }}>
+        Cargando imagen...
+        <div style={{ fontSize: '0.8em' }}>{imagePath.split(/[\\/]/).pop()}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      maxWidth: '200px',
+      maxHeight: '200px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}>
+      <img
+        src={imageData}
+        alt="Preview"
+        style={{
+          maxWidth: '100%',
+          maxHeight: '150px',
+          objectFit: 'contain'
+        }}
+      />
+      <p style={{
+        fontSize: '0.8em',
+        wordBreak: 'break-all',
+        marginTop: '8px',
+        textAlign: 'center'
+      }}>
+        {imagePath.split(/[\\/]/).pop()}
+      </p>
+    </div>
+  );
+};
 
 function Monitoreo() {
 
   const [datosIzq, setDatosIzq] = useState<DatosMonitoreoIzq[]>([]);
   const [datosDer, setDatosDer] = useState<DatosMonitoreoDer[]>([]);
-  
+
   const [datosOriginales, setDatosOriginales] = useState<any[]>([]); //Guarda datos originales de las tareas de todos los usuarios 
   const [editandoIndex, setEditandoIndex] = useState<number | null>(null);
   const [textoEditado, setTextoEditado] = useState<string>("");
@@ -169,7 +237,7 @@ function Monitoreo() {
   useEffect(() => {
     invoke("cargar_datos_json")
       .then((res) => {
-        
+
         const jsonData = JSON.parse(res as string);
 
         const mapPersona = (p: any): DatosMonitoreoIzq => ({
@@ -208,19 +276,22 @@ function Monitoreo() {
     // Agregar tareas (como antes)
     persona.tareas.forEach((tarea: any) => {
       nuevasEntradas.push({
-        registro: `${tarea.nombre}: ${tarea.descripcion}`
+        registro: `${tarea.nombre}: ${tarea.descripcion}`,
+        esImagen: false
       });
     });
 
     // Agregar imágenes (una por cada entrada en el array)
     if (persona.imagenes && Array.isArray(persona.imagenes)) {
-      persona.imagenes.forEach((imagen: any) => {
-        if (imagen.url) { // Solo agregar si tiene URL
+      for (const imagen of persona.imagenes) {
+        if (imagen.url) {
           nuevasEntradas.push({
-            registro: `Imagen: ${imagen.url}`
+            registro: `Imagen: ${imagen.url}`,
+            esImagen: true,
+            urlImagen: imagen.url
           });
         }
-      });
+      }
     }
 
     setDatosDer(nuevasEntradas);
@@ -233,46 +304,34 @@ function Monitoreo() {
     const itemToDelete = datosDer[actualIndex];
     const isImage = itemToDelete.registro.startsWith("Imagen:");
 
-
-    const currentUser = datosOriginales.find(p => {
-
-      const matchingEmail = datosIzq.find(row => row.email === p.correo);
-      return matchingEmail && datosDer.some(item => {
-
-        if (isImage) {
-          return item.registro.includes(p.imagenes);
-        } else {
-          return p.tareas.some((tarea: any) =>
-            item.registro.includes(`${tarea.nombre}: ${tarea.descripcion}`)
-          );
-        }
-      });
-    });
-
-    if (!currentUser) return;
+    // Si no hay usuario seleccionado, no podemos proceder
+    if (!usuarioSeleccionado) {
+      console.error("No hay usuario seleccionado");
+      return;
+    }
 
     try {
-
+      // Cargar el JSON actual
       const jsonResponse = await invoke("cargar_datos_json");
       const jsonData = JSON.parse(jsonResponse as string);
 
-
+      // Buscar el usuario en el JSON usando el correo del usuario seleccionado
       let userType = "";
       let userIndex = -1;
 
-
-      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === currentUser.correo);
+      // Buscar en tutores
+      userIndex = jsonData.tutores.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
       if (userIndex !== -1) userType = "tutores";
 
-
+      // Si no se encontró en tutores, buscar en tutorado1
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === currentUser.correo);
+        userIndex = jsonData.tutorado1.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
         if (userIndex !== -1) userType = "tutorado1";
       }
 
-
+      // Si no se encontró en tutorado1, buscar en tutorado2
       if (userIndex === -1) {
-        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === currentUser.correo);
+        userIndex = jsonData.tutorado2.findIndex((p: any) => p.correo === usuarioSeleccionado.correo);
         if (userIndex !== -1) userType = "tutorado2";
       }
 
@@ -281,12 +340,21 @@ function Monitoreo() {
         return;
       }
 
-
       if (isImage) {
+        // Para imágenes: extraer la URL de la imagen del registro
+        const imagenUrl = itemToDelete.registro.substring(itemToDelete.registro.indexOf(":") + 1).trim();
 
-        jsonData[userType][userIndex].imagenes = "";
+        // Si imagenes es un array de objetos con url
+        if (Array.isArray(jsonData[userType][userIndex].imagenes)) {
+          jsonData[userType][userIndex].imagenes = jsonData[userType][userIndex].imagenes.filter(
+            (img: any) => img.url !== imagenUrl
+          );
+        } else {
+          // Si imagenes es un string simple, limpiarlo
+          jsonData[userType][userIndex].imagenes = "";
+        }
       } else {
-
+        // Para tareas: eliminar del array de tareas
         const taskText = itemToDelete.registro;
         const taskName = taskText.split(":")[0].trim();
 
@@ -295,26 +363,37 @@ function Monitoreo() {
         );
       }
 
+      // Actualizar el JSON en el archivo
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-
+      // Actualizar la UI removiendo el item
       const newDatosDer = [...datosDer];
       newDatosDer.splice(actualIndex, 1);
       setDatosDer(newDatosDer);
 
-      await invoke("actualizar_tareas_y_progreso", {
-        correo: currentUser.correo,
-        esEliminacion: true
-      });
+      // Solo actualizar tareas y progreso si era una tarea (no imagen)
+      if (!isImage) {
+        await invoke("actualizar_tareas_y_progreso", {
+          correo: usuarioSeleccionado.correo,
+          esEliminacion: true
+        });
+      }
 
+      // Actualizar los datos originales
       const personas = [
         ...jsonData.tutores,
         ...jsonData.tutorado1,
         ...jsonData.tutorado2,
       ];
       setDatosOriginales(personas);
+
+      // Actualizar el usuario seleccionado con los nuevos datos
+      const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
+      if (personaActualizada) {
+        setUsuarioSeleccionado(personaActualizada);
+      }
 
       console.log("Item deleted successfully");
     } catch (error) {
@@ -484,18 +563,32 @@ function Monitoreo() {
           jsonData[userType][userIndex].tareas = [];
         }
         jsonData[userType][userIndex].tareas.push(datos);
+      } else if (tipo === 'imagen') {
+        if (!jsonData[userType][userIndex].imagenes) {
+          jsonData[userType][userIndex].imagenes = [];
+        }
+        jsonData[userType][userIndex].imagenes.push({
+          url: datos.ruta
+        });
       }
 
-      // Primero actualizar el JSON
+      // Actualizar el JSON en el archivo
       await invoke("actualizar_json_monitoreo", {
         jsonData: JSON.stringify(jsonData)
       });
 
-      // Actualizar la UI inmediatamente
+      // Actualizar la UI
       const nuevasEntradas = [...datosDer];
       if (tipo === 'tarea') {
         nuevasEntradas.push({
-          registro: `${datos.nombre}: ${datos.descripcion}`
+          registro: `${datos.nombre}: ${datos.descripcion}`,
+          esImagen: false
+        });
+      } else {
+        nuevasEntradas.push({
+          registro: `Imagen: ${datos.nombre}`,
+          esImagen: true,
+          urlImagen: datos.nombre // O podrías usar un identificador único
         });
       }
       setDatosDer(nuevasEntradas);
@@ -514,7 +607,7 @@ function Monitoreo() {
         setUsuarioSeleccionado(personaActualizada);
       }
 
-      setMostrarEmergente(false); // Cerrar la ventana emergente
+      setMostrarEmergente(false);
 
     } catch (error) {
       console.error("Error al guardar el nuevo registro:", error);
@@ -560,15 +653,15 @@ function Monitoreo() {
         return;
       }
 
-       const numeroTelefono = usuarioSeleccionado.rol === "Tutor" 
-      ? usuarioSeleccionado.telefono // Para tutores, usar el teléfono directamente
-      : Array.isArray(usuarioSeleccionado.telefono) 
-        ? usuarioSeleccionado.telefono[0] // Para tutorados, usar el primer número del array
-        : ""; // Fallback por si acaso
+      const numeroTelefono = usuarioSeleccionado.rol === "Tutor"
+        ? usuarioSeleccionado.telefono // Para tutores, usar el teléfono directamente
+        : Array.isArray(usuarioSeleccionado.telefono)
+          ? usuarioSeleccionado.telefono[0] // Para tutorados, usar el primer número del array
+          : ""; // Fallback por si acaso
 
       // Invocar la función backend con los datos extraídos de la UI
-      await invoke("monitoreo_enviar_tarea", { 
-        nombre: usuarioSeleccionado.nombre || "Usuario", 
+      await invoke("monitoreo_enviar_tarea", {
+        nombre: usuarioSeleccionado.nombre || "Usuario",
         titulo: nombreTarea,
         descripcion: descripcionTarea,
         telefono: numeroTelefono,
@@ -762,17 +855,10 @@ function Monitoreo() {
       <div className="contenedor_PanelDerecho">
         <div className="desplazadora">
           {datosDer.slice(0).reverse().map((row, index) => {
-            const esTarea = !row.registro.startsWith("Imagen:");
+            const esImagen = row.esImagen || false;
+            const esTarea = !esImagen;
             const actualIndex = datosDer.length - 1 - index;
             const isEditing = editandoIndex === actualIndex;
-
-            // Buscar si la tarea está hecha
-            // let checked = false;
-            // if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
-            //   const taskName = row.registro.split(":")[0].trim();
-            //   const tarea = usuarioSeleccionado.tareas.find((t: any) => t.nombre === taskName);
-            //   checked = tarea ? tarea.hecho : false;
-            // }
 
             return (
               <div
@@ -793,7 +879,6 @@ function Monitoreo() {
                     <input
                       type="checkbox"
                       checked={(() => {
-                        // Obtener el estado actual de la tarea desde usuarioSeleccionado
                         if (esTarea && usuarioSeleccionado && usuarioSeleccionado.tareas) {
                           const taskName = row.registro.split(":")[0].trim();
                           const tarea = usuarioSeleccionado.tareas.find(
@@ -819,7 +904,6 @@ function Monitoreo() {
                           ];
                           setDatosOriginales(personas);
 
-                          // Actualizar el usuario seleccionado
                           const personaActualizada = personas.find(p => p.correo === usuarioSeleccionado.correo);
                           if (personaActualizada) {
                             setUsuarioSeleccionado(personaActualizada);
@@ -841,6 +925,10 @@ function Monitoreo() {
                     onChange={(e) => setTextoEditado(e.target.value)}
                     style={{ flexGrow: 1, margin: '0 10px', padding: '5px' }}
                   />
+                ) : esImagen ? (
+                  <div style={{ flexGrow: 1, margin: '0 10px' }}>
+                    <ImagenPreview imagePath={row.urlImagen || ''} />
+                  </div>
                 ) : (
                   <p
                     style={{
@@ -872,8 +960,7 @@ function Monitoreo() {
                 ) : (
                   <>
                     {esTarea && (
-                      <button
-                        onClick={() => handleEnviarItem(index)}>
+                      <button onClick={() => handleEnviarItem(index)}>
                         Enviar
                       </button>
                     )}
@@ -882,8 +969,8 @@ function Monitoreo() {
                       onClick={() => handleDeleteItem(index)}
                     >
                       Eliminar
-                    </button></>
-
+                    </button>
+                  </>
                 )}
               </div>
             );

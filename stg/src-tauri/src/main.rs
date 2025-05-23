@@ -18,7 +18,7 @@ use servicios::{whatsapp::procesar_datos_para_whatsapp,whatsapp::procesar_mensaj
 use servicios::logger::log_event;
 // Monitoreo.
 use monitoreo::{persistencia::leer_excel_emparejamiento, persistencia::actualizar_json_monitoreo,  persistencia::obtener_roles_unicos, persistencia::obtener_instituciones_unicas};
-use monitoreo::persistencia::{cargar_datos_json,agregar_tarea_y_guardar,agregar_imagen_y_guardar,eliminar_item_monitoreo,editar_item_monitoreo,toggle_hecho_monitoreo};
+use monitoreo::persistencia::{cargar_datos_json,agregar_tarea_y_guardar,agregar_imagen_y_guardar,eliminar_item_monitoreo,editar_item_monitoreo,toggle_hecho_monitoreo, leer_archivo_imagen};
 // Notificaciones.
 use notificaciones::{historial::guardar_historial,historial::leer_historial,historial::editar_historial, historial::actualizar_historial, historial::eliminar_historial, historial::enviar_historiales};
 use notificaciones::leer_archivos::{notificaciones_inicio_emparejamiento,notificaciones_inicio_control,notificaciones_inicio_seguimiento,notificaciones_inicio_links,leer_archivo_emparejados,generar_tutores,generar_tutores_enlaces,init_path_pruebas,leer_archivo_control};
@@ -60,6 +60,7 @@ fn main() {
             eliminar_item_monitoreo,
             editar_item_monitoreo,
             toggle_hecho_monitoreo,
+            leer_archivo_imagen,
 
             /*      NOTIFICACIONES  */
             editar_historial,
