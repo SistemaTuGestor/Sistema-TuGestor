@@ -3395,6 +3395,7 @@ dependencies = [
  "open 4.2.0",
  "printpdf",
  "rand 0.8.5",
+ "scopeguard",
  "serde",
  "serde_json",
  "tauri",

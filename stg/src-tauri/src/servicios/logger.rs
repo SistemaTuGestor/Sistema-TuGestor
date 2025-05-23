@@ -1,15 +1,27 @@
-
 use chrono::Local;
 use serde::{Deserialize, Serialize};
 use std::fs::{File, OpenOptions};
 use std::io::{BufReader, BufWriter, Read, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::env;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct LogEntry {
     pub fecha: String,
     pub hora: String,
     pub accion: String,
+}
+
+pub fn get_stg_path() -> PathBuf {
+    let current_exe = env::current_exe().expect("Failed to get current executable path");
+    let mut path = current_exe.parent().unwrap().to_path_buf();
+    
+    // Navegar hacia arriba hasta encontrar la carpeta "stg"
+    while !path.ends_with("stg") && path.parent().is_some() {
+        path = path.parent().unwrap().to_path_buf();
+    }
+    
+    path
 }
 
 /// Función de logging interna (sin Tauri command)
@@ -23,7 +35,13 @@ pub fn log_event_internal(accion: &str) -> Result<(), Box<dyn std::error::Error>
         accion: accion.to_string(),
     };
 
-    let log_path = "log.json";
+    let log_dir = get_stg_path().join("system_logs");
+    let log_path = log_dir.join("app_log.json");
+    
+    // Crear directorio si no existe
+    if !log_dir.exists() {
+        std::fs::create_dir_all(&log_dir)?;
+    }
     
     // Mostrar el directorio actual
     let current_dir = std::env::current_dir().unwrap_or_else(|_| std::path::PathBuf::from("."));
