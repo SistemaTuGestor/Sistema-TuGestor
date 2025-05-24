@@ -177,32 +177,29 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
 
         //Toda esta parte es para probar que se creen los usuarios con tareas y mostrarlas correctamente.
         let mut tarea = Tarea{
-          nombre:format!("tarea{}", _fila_actual), 
-          descripcion: "Tarea importante !!!".to_string(), 
+          nombre:"Curso de información sensible".to_string(), 
+          descripcion: "Completa los modulos".to_string(), 
           hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut tarea2 = Tarea{
-            nombre:"Otra tarea mas".to_string(), 
-            descripcion: "Tarea igual de importante que la otra :3!!!".to_string(), 
+            nombre:"Primer Contacto".to_string(), 
+            descripcion: "Se contacta con su tutor o tutorados".to_string(), 
             hecho: false, // Por defecto, la tarea no está hecha
         };
-
-        let mut imagen = Imagen{
-            url: "C:\\Users\\Javier\\Desktop\\Images\\prueba.jpg".to_string(),
-        };
-
-        let mut imagen2 = Imagen{
-            url: "C:\\Users\\Javier\\Pictures\\960px-Spider-Man.jpg".to_string(),
+        
+        let mut tarea3 = Tarea{
+            nombre:"Finaliza el curso".to_string(), 
+            descripcion: "Diligencia formulario de experiencia".to_string(), 
+            hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut lista_tareas = Vec::new();
         lista_tareas.push(tarea);
         lista_tareas.push(tarea2);
+        lista_tareas.push(tarea3);
         
         let mut lista_imagenes = Vec::new();
-        lista_imagenes.push(imagen);
-        lista_imagenes.push(imagen2);
 
         let mut lista_tutoradonumeros = Vec::new();
         lista_tutoradonumeros.push(telefonotut1);
