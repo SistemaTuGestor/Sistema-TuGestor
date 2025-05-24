@@ -928,4 +928,30 @@ pub fn leer_archivo_imagen(path: String) -> Result<Vec<u8>, String> {
 }
 
 
+#[tauri::command]
+pub fn guardar_imagen_persistente(
+    file_data: Vec<u8>,
+    file_name: String,
+) -> Result<String, String> {
+    // Obtener directorio de datos de la aplicación
+    let app_data_dir = tauri::api::path::app_data_dir(&tauri::Config::default())
+        .ok_or("No se pudo obtener directorio de datos de la app")?;
+    
+    // Crear subdirectorio para imágenes si no existe
+    let images_dir = app_data_dir.join("images");
+    std::fs::create_dir_all(&images_dir)
+        .map_err(|e| format!("No se pudo crear directorio de imágenes: {}", e))?;
+    
+    // Crear ruta completa del archivo
+    let file_path = images_dir.join(&file_name);
+    
+    // Guardar el archivo
+    std::fs::write(&file_path, &file_data)
+        .map_err(|e| format!("No se pudo guardar la imagen: {}", e))?;
+    
+    // Devolver la ruta como string
+    file_path.to_str()
+        .map(|s| s.to_string())
+        .ok_or("Error al convertir ruta a string".to_string())
+}
 

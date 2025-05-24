@@ -567,8 +567,10 @@ function Monitoreo() {
         if (!jsonData[userType][userIndex].imagenes) {
           jsonData[userType][userIndex].imagenes = [];
         }
+
+        // Aquí añadimos el objeto imagen con el formato correcto
         jsonData[userType][userIndex].imagenes.push({
-          url: datos.ruta
+          url: datos.url // Usamos la url que viene del emergente
         });
       }
 
@@ -586,9 +588,9 @@ function Monitoreo() {
         });
       } else {
         nuevasEntradas.push({
-          registro: `Imagen: ${datos.nombre}`,
+          registro: `Imagen: ${datos.url}`, // Mostramos la ruta completa
           esImagen: true,
-          urlImagen: datos.nombre // O podrías usar un identificador único
+          urlImagen: datos.url
         });
       }
       setDatosDer(nuevasEntradas);
@@ -611,6 +613,7 @@ function Monitoreo() {
 
     } catch (error) {
       console.error("Error al guardar el nuevo registro:", error);
+      alert("Error al guardar la imagen: " + (error as Error).message);
     }
   };
 
