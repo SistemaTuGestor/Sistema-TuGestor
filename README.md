@@ -307,16 +307,8 @@ Hacer push a la rama remota.
 Crear Pull Request explicando los cambios.
 
 
-## 📬 Contacto
-Equipo de Desarrollo IPTT
-
-Email: contacto@javeriana.edu.co
-
-GitHub: https://github.com/tuusuario/tuGestor
-
 ## 🎉 Créditos
-Ingenieros de Sistemas - Pontificia Universidad Javeriana
-
-Docentes y coordinadores IPTT
-
-Comunidad Open Source: React, Rust, Tauri y más.
+David Alejandro Roa Velásquez - road.a@javeriana.edu.co
+Javier Emiro Useche Acosta - javierusechea@javeriana.edu.co
+Jhoseph Samirt Lizarazo Murcia - jhosephs_lizarazom@javeriana.edu.co
+Nicolás Quintana Cuartas - quintana.nicolas@javeriana.edu.co
