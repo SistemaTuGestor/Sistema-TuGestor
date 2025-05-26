@@ -57,7 +57,7 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
 
     // Agregar el nuevo dato al historial con estado `false`
     let mut nuevo_dato = data;
-    nuevo_dato.estado = false; // Estado inicial al guardar
+    nuevo_dato.estado = true; // Estado inicial al guardar
     historial.push(nuevo_dato);
 
     // Serializar **todo el historial**
