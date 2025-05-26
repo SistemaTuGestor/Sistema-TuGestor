@@ -160,15 +160,15 @@ Ejecutar la aplicación:
 npm run tauri dev
 ```
 ## 📱 Uso
-### 📂 Cargar los archivos de datos de tutores y tutorados desde la interfaz gráfica.
+ 📂 Cargar los archivos de datos de tutores y tutorados desde la interfaz gráfica.
 
-### 🔄 Ejecutar el módulo de emparejamiento para asignar automáticamente o manualmente los pares.
+ 🔄 Ejecutar el módulo de emparejamiento para asignar automáticamente o manualmente los pares.
 
-### 📲 Enviar notificaciones masivas a través de WhatsApp o correo institucional desde el módulo de notificaciones.
+ 📲 Enviar notificaciones masivas a través de WhatsApp o correo institucional desde el módulo de notificaciones.
 
-### 📊 Monitorear el progreso y cumplimiento de actividades mediante el panel visual.
+ 📊 Monitorear el progreso y cumplimiento de actividades mediante el panel visual.
 
-### 📄 Generar reportes automáticos en PDF o CSV para presentación ante entes aliados y directivos.
+ 📄 Generar reportes automáticos en PDF o CSV para presentación ante entes aliados y directivos.
 
 📁 Estructura del Proyecto
 ```
