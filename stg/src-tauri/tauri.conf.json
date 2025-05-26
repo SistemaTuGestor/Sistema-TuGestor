@@ -11,11 +11,13 @@
   },
   "tauri": {
     "allowlist": {
+      
       "dialog": {
         "all": true
       },
       "fs": {
-        "all": true
+        "all": true,
+        "scope": ["$APP/log.json/**","$DESKTOP/*", "$PICTURES/*", "$DOWNLOAD/*"] 
       },
       "all": false,
       "shell": {
@@ -27,7 +29,8 @@
       {
         "title": "Sistema TuGestor",
         "width": 850,
-        "height": 660
+        "height": 660,
+        "fileDropEnabled": false 
       }
     ],
     "security": {
@@ -44,6 +47,11 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ]
+    }
+  },
+  "plugins": {
+    "fs-watch": {
+      "enable": false  
     }
   }
 }

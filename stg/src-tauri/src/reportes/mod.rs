@@ -6,6 +6,6 @@ pub mod fecha ;
 pub mod lee ;
 pub mod puj ;
 pub mod colegios ;
-pub mod constancias ;
-pub mod sponsor ;
+pub mod tutores ;
+pub mod tutorados ;
 

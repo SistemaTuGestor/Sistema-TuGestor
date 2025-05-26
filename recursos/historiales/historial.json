@@ -1,0 +1,26 @@
+[
+  {
+    "destinatarios": [
+      "TutoresPUJ"
+    ],
+    "asunto": "TutoradosPUJ",
+    "mensaje": "Hola  <<nombre TutoresPUJ>>  <<apellido TutoresPUJ>> de la institucio <<institucion TutoresPUJ>> su telefono es <<telefono TutoresPUJ>> y tiene estos tutorados <<tutorados TutoresPUJ>> ",
+    "estado": true
+  },
+  {
+    "destinatarios": [
+      "TutoresColegio"
+    ],
+    "asunto": "TutoradosColegio",
+    "mensaje": "hola <<nombre TutoresColegio>>   <<apellido TutoresColegio>> con correo <<correo TutoresColegio>> sus tutorados son  <<tutorados TutoresColegio>> ",
+    "estado": true
+  },
+  {
+    "destinatarios": [
+      "TutoradosEmparejados"
+    ],
+    "asunto": "TutoradosEmperejados",
+    "mensaje": "Hola  <<nombre TutoradosEmparejados>> su correo es  <<correo TutoradosEmparejados>> con telefono  <<telefono TutoradosEmparejados>> y id  <<id TutoradosEmparejados>> del colegio  <<colegio TutoradosEmparejados>> sus notas son: -  <<vocabulario TutoradosEmparejados>>  <<gramatica TutoradosEmparejados>>  <<escucha TutoradosEmparejados>>  <<lectura TutoradosEmparejados>>  <<a TutoradosEmparejados>>  <<b TutoradosEmparejados>>  <<c TutoradosEmparejados>>  <<d TutoradosEmparejados>>  <<e TutoradosEmparejados>>  <<f TutoradosEmparejados>>  <<g TutoradosEmparejados>> ",
+    "estado": true
+  }
+]

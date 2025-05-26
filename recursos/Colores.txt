@@ -1,0 +1,4 @@
+Azul: #77BFC7
+Morado: #8A2BE2
+Naranja: #F18200
+Amarillo: #FFC901
