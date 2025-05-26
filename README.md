@@ -137,7 +137,7 @@ stg/src-tauri/target/release/bundle/
 Clonar el repositorio:
 
 ```bash
-git clone https://github.com/tuusuario/tuGestor.git
+git clone https://github.com/SistemaTuGestor/Sistema-TuGestor.git
 cd tuGestor
 ```
 Instalar dependencias:
