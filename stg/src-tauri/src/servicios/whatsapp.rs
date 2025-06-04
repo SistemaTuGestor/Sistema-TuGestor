@@ -1,21 +1,13 @@
+
 use chrono::Local;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::fs;
-use std::path::{Path, PathBuf};
-use xlsxwriter::{Workbook, Format};
+use std::path::PathBuf;
+use xlsxwriter::Workbook;
 use urlencoding::encode;
-use crate::notificaciones::leer_archivos::{
-    TutoresPUJ, TutoresColegio, FuncionariosColegio, TutoradosEmparejados, TutoradosControl,
-    leer_archivo_emparejados, leer_archivo_control, generar_tutores, generar_tutores_enlaces,
-};
+use crate::notificaciones::leer_archivos::{leer_archivo_emparejados,leer_archivo_control};
 
-#[derive(Deserialize)]
-struct Borrador {
-    destinatarios: Vec<String>,
-    asunto: String,
-    mensaje: String,
-}
+
 
 #[derive(Serialize, Debug)]
 pub struct TutoresPUJwhatsapp {

@@ -1,5 +1,8 @@
+
 // VARIOS
 use serde::Serialize;
+// JSON
+use crate ::servicios::logger::log_event;
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
@@ -136,8 +139,9 @@ pub struct Emparejamiento {
 #[tauri::command]
 pub fn reportes_lee_leer_archivos_en_carpeta() -> Result<Vec<DatosMonitoreo>, String> {
     // Leer los emparejamientos primero
+    log_event(" Lectura iniciada del archivo de emparejamiento para la construcción del archvio LEE ".to_string())?;
     let emparejamientos = reportes_lee_leer_archivo_emparejamiento()?;
-
+     
     // Crear un mapa de emparejamientos para búsqueda rápida por correo
     let emparejamientos_map: HashMap<String, (String, String, String, String)> = emparejamientos
         .into_iter()
@@ -228,6 +232,7 @@ Ok(data_actualizada)
 pub fn reportes_lee_leer_archivo_emparejamiento() -> Result<Vec<Emparejamiento>, String> {
 
     // println! ( "📂 Leyendo archivo de emparejamiento..." ) ;
+    log_event(" Lectura en progreso del archivo de emparejamiento ".to_string())?;
     let mut registros : Vec<Emparejamiento> = Vec::new() ;
 
     let ubicacioon = PATH_EMPAREJAMIENTO
@@ -317,7 +322,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
 
     // Construir el nuevo nombre del archivo con la fecha.
     let output_path = format!("{} ({}).xlsx", nombre_reporte, *fecha);
- 
+    log_event(" Escritura iniciada del archivo de emparejamiento para la construcción del archvio LEE ".to_string())?;
     //println!("📂 Generando archivo Excel en: {}", output_path);
 
     // Check if the file already exists and try to delete it
@@ -372,6 +377,7 @@ pub fn generar_excel(data: &Vec<DatosMonitoreo>) -> Result<(), String> {
         sheet.write_number((i + 1) as u32, (max_semanas + 6) as u16, dato.horas_totales as f64, None).unwrap();
     }
     //println!("✔ Datos escritos");
+    log_event(" Escritura finalizada del archivo de emparejamiento para la construcción del archvio LEE ".to_string())?;
 
     workbook.close().map_err(|e| format!("Error closing workbook: {}", e))?;
     //println!("✔ Workbook cerrado");

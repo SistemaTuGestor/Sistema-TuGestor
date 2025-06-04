@@ -1,3 +1,4 @@
+
 use calamine::{open_workbook, Reader, Xlsx, XlsxError} ;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
@@ -6,6 +7,8 @@ use std::io::Write;
 use std::path::Path;
 use std::env;
 use std::path::PathBuf;
+use crate::servicios::logger::log_event;
+
 
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -20,7 +23,7 @@ impl Tarea {
         Tarea {
             nombre: nombre.to_string(),
             descripcion: descripcion.to_string(),
-            hecho: false, // Por defecto, la tarea no está hecha
+            hecho: false,  // Por defecto, la tarea no está hecha
         }
     }
 }
@@ -97,22 +100,26 @@ pub fn get_resource_path() -> PathBuf {
     
     // Añadir la carpeta recursos
     path.push("recursos");
-    path
+
+path
 }
 
 #[tauri::command]
 pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tutorado>), String>{
 
+    log_event("Iniciando lectura de Excel".to_string()).unwrap();
     let base_path = get_resource_path();
 
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
     let excel_path = base_path.join("EmparejamientoFINAL.xlsx");
-/*
-    if json_path.exists() {
-        println!("El archivo JSON ya existe, no es necesario regenerarlo.");
-        return Err("Ya existe el archivo JSON".to_string());
-    }
-*/
+
+    /*
+        if json_path.exists() {
+            println!("El archivo JSON ya existe, no es necesario regenerarlo.");
+            return Err("Ya existe el archivo JSON".to_string());
+        }
+    */
+
     if json_path.exists() {
         // Si existe, leer y retornar los datos del JSON existente
         let json_str = std::fs::read_to_string(&json_path)
@@ -143,8 +150,8 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
     let mut tutores: Vec<Tutor> = Vec::new();
     let mut tutorados1: Vec<Tutorado> = Vec::new();
     let mut tutorados2: Vec<Tutorado> = Vec::new();
-    let mut contador_tutores = 0;
-    let mut contador_tutorados = 0;
+    let mut contador_tu= 0;
+    
     let mut _fila_actual = 1;
 
     for row in range.rows().skip(1) {
@@ -170,44 +177,41 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
 
         //Toda esta parte es para probar que se creen los usuarios con tareas y mostrarlas correctamente.
         let mut tarea = Tarea{
-          nombre:format!("tarea{}", _fila_actual), 
-          descripcion: "Tarea importante !!!".to_string(), 
+          nombre:"Curso de información sensible".to_string(), 
+          descripcion: "Completa los modulos".to_string(), 
           hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut tarea2 = Tarea{
-            nombre:"Otra tarea mas".to_string(), 
-            descripcion: "Tarea igual de importante que la otra :3!!!".to_string(), 
+            nombre:"Primer Contacto".to_string(), 
+            descripcion: "Se contacta con su tutor o tutorados".to_string(), 
             hecho: false, // Por defecto, la tarea no está hecha
         };
-
-        let mut imagen = Imagen{
-            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\prueba.jpg".to_string(),
-        };
-
-        let mut imagen2 = Imagen{
-            url: "C:\\Users\\Javier\\Desktop\\Proyecto Tututor\\Sistema-TuGestor\\recursos\\imagenes\\960px-Spider-Man.jpg".to_string(),
+        
+        let mut tarea3 = Tarea{
+            nombre:"Finaliza el curso".to_string(), 
+            descripcion: "Diligencia formulario de experiencia".to_string(), 
+            hecho: false, // Por defecto, la tarea no está hecha
         };
 
         let mut lista_tareas = Vec::new();
         lista_tareas.push(tarea);
         lista_tareas.push(tarea2);
+        lista_tareas.push(tarea3);
         
         let mut lista_imagenes = Vec::new();
-        lista_imagenes.push(imagen);
-        lista_imagenes.push(imagen2);
 
-        let mut lista_tutoradoNumeros = Vec::new();
-        lista_tutoradoNumeros.push(telefonotut1);
-        lista_tutoradoNumeros.push(telefono2tut1);
+        let mut lista_tutoradonumeros = Vec::new();
+        lista_tutoradonumeros.push(telefonotut1);
+        lista_tutoradonumeros.push(telefono2tut1);
 
-        let mut lista_tutoradoNumeros2 = Vec::new();
-        lista_tutoradoNumeros2.push(telefonotut2);
-        lista_tutoradoNumeros2.push(telefono2tut2);
+        let mut lista_tutoradonumeros2 = Vec::new();
+        lista_tutoradonumeros2.push(telefonotut2);
+        lista_tutoradonumeros2.push(telefono2tut2);
     
-        contador_tutores += 1;
+        contador_tu += 1;
         let mut tutor = Tutor{
-            id: contador_tutores.to_string(),
+            id: contador_tu.to_string(),
             nombre: nombretutor.clone(),
             apellido: apellidotutor.clone(),
             rol: "Tutor".to_string(),
@@ -218,27 +222,27 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
             imagenes: lista_imagenes.clone(),
             progreso: 0.0, // Por defecto, el progreso es 0
         };
-        contador_tutorados += 1;
+        contador_tu += 1;
         let mut tutorado1 = Tutorado{
-            id: contador_tutorados.to_string(),
+            id: contador_tu.to_string(),
             nombre: nombretutorados1.clone(),
             cedula: cedulatutorados1.clone(),
             rol: "Tutorado".to_string(),
             institucion: instituciontut1.clone(),
-            telefono: lista_tutoradoNumeros,
-            correo: correo.clone(),
+            telefono: lista_tutoradonumeros,
+            correo: correotut1.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
             progreso: 0.0, // Por defecto, el progreso es 0
         };
-        contador_tutorados += 1;
+        contador_tu += 1;
         let mut tutorado2 = Tutorado{
-            id: contador_tutorados.to_string(),
+            id: contador_tu.to_string(),
             nombre: nombretutorados2.clone(),
             cedula: cedulatutorados2.clone(),
             rol: "Tutorado".to_string(),
             institucion: instituciontut2.clone(),
-            telefono: lista_tutoradoNumeros2,
+            telefono: lista_tutoradonumeros2,
             correo: correotut2.clone(),
             tareas: lista_tareas.clone(),
             imagenes: lista_imagenes.clone(),
@@ -298,9 +302,9 @@ pub fn leer_excel_emparejamiento() -> Result<(Vec<Tutor>, Vec<Tutorado>, Vec<Tut
     } else {
         println!("Monitoreo guardado exitosamente en JSON.");
     }
-
+    
+    log_event("Lectura de Excel completada".to_string()).unwrap();
     Ok((tutores, tutorados1, tutorados2))
-
 }
 
 
@@ -309,6 +313,7 @@ fn guardar_monitoreo_json(
     tutorado1: Vec<Tutorado>,
     tutorado2: Vec<Tutorado>,
 ) -> Result<(), String> {
+    log_event("Guardando datos en JSON".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -323,7 +328,6 @@ fn guardar_monitoreo_json(
         Err(e) => return Err(format!("Error serializando JSON: {}", e)),
     };
 
-    //let path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
     if let Some(parent) = json_path.parent() {
         if let Err(e) = std::fs::create_dir_all(parent) {
             return Err(format!("Error creando directorios: {}", e));
@@ -338,6 +342,7 @@ fn guardar_monitoreo_json(
         }
         Err(e) => return Err(format!("No se pudo crear el archivo JSON: {}", e)),
     }
+    log_event("Datos guardados en JSON".to_string()).unwrap();
 
     Ok(())
 }
@@ -345,15 +350,18 @@ fn guardar_monitoreo_json(
 
 #[tauri::command]
 pub fn cargar_datos_json() -> Result<String, String> {
+    log_event("Cargando datos desde JSON".to_string()).unwrap();
     //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
+    log_event("Datos cargados desde JSON".to_string()).unwrap();
 
     std::fs::read_to_string(json_path).map_err(|e| format!("No se pudo leer el JSON: {}", e))
 }
 
 #[tauri::command] // Manejo de actualizaciones para tareas.
 pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
+    log_event("Actualizando JSON de monitoreo".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -366,12 +374,13 @@ pub fn actualizar_json_monitoreo(json_data: String) -> Result<(), String> {
         .map_err(|e| format!("Error escribiendo el archivo: {}", e))?;
 
     println!("JSON actualizado correctamente");
+    log_event("JSON de monitoreo actualizado".to_string()).unwrap();
     Ok(())
 }
 
 #[tauri::command]
 pub fn guardar_datos_json(datos: String) -> Result<String, String> {
-    //let ruta = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\monitoreo\\monitoreo.json";
+    log_event("Guardando datos en JSON".to_string()).unwrap();
     let base_path = get_resource_path();
     let json_path = base_path.join("monitoreo").join("monitoreo.json");
 
@@ -380,13 +389,17 @@ pub fn guardar_datos_json(datos: String) -> Result<String, String> {
         Ok(_) => {
             // JSON válido, proceder a escribir
             match std::fs::write(&json_path, datos) {
-                Ok(_) => Ok("Datos guardados correctamente".to_string()),
+                Ok(_) => {
+                    log_event("Datos guardados en JSON".to_string()).unwrap();
+                    Ok("Datos guardados correctamente".to_string())
+                },
                 Err(e) => Err(format!("Error al escribir el archivo JSON: {}", e))
             }
         },
         Err(e) => Err(format!("JSON inválido: {}", e))
     }
 }
+
 
 #[tauri::command]
 pub fn get_image(path: String) -> Result<Vec<u8>, String> {
@@ -893,5 +906,49 @@ pub fn toggle_hecho_monitoreo(
     Ok(nuevo_estado)
 }
 
+#[tauri::command]
+pub fn leer_archivo_imagen(path: String) -> Result<Vec<u8>, String> {
+    use std::fs;
+    use std::io::Read;
+    
+    let mut file = match fs::File::open(&path) {
+        Ok(file) => file,
+        Err(e) => return Err(format!("No se pudo abrir el archivo: {}", e)),
+    };
+    
+    let mut buffer = Vec::new();
+    if let Err(e) = file.read_to_end(&mut buffer) {
+        return Err(format!("Error al leer el archivo: {}", e));
+    }
+    
+    Ok(buffer)
+}
 
+
+#[tauri::command]
+pub fn guardar_imagen_persistente(
+    file_data: Vec<u8>,
+    file_name: String,
+) -> Result<String, String> {
+    // Obtener directorio de datos de la aplicación
+    let app_data_dir = tauri::api::path::app_data_dir(&tauri::Config::default())
+        .ok_or("No se pudo obtener directorio de datos de la app")?;
+    
+    // Crear subdirectorio para imágenes si no existe
+    let images_dir = app_data_dir.join("images");
+    std::fs::create_dir_all(&images_dir)
+        .map_err(|e| format!("No se pudo crear directorio de imágenes: {}", e))?;
+    
+    // Crear ruta completa del archivo
+    let file_path = images_dir.join(&file_name);
+    
+    // Guardar el archivo
+    std::fs::write(&file_path, &file_data)
+        .map_err(|e| format!("No se pudo guardar la imagen: {}", e))?;
+    
+    // Devolver la ruta como string
+    file_path.to_str()
+        .map(|s| s.to_string())
+        .ok_or("Error al convertir ruta a string".to_string())
+}
 

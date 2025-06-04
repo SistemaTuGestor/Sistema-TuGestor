@@ -1,3 +1,4 @@
+
 use std::fs;
 use std::path::Path;
 use serde::{Serialize, Deserialize};
@@ -5,6 +6,9 @@ use tauri::command;
 use std::fs::read_dir;
 use std::env;
 use std::path::PathBuf;
+use crate::servicios::logger::log_event;
+
+
 
 //Funcion para obtener la ruta de los recursos
 fn get_resource_path() -> PathBuf {
@@ -53,7 +57,7 @@ pub fn guardar_historial(data: Borrador) -> Result<(), String> {
 
     // Agregar el nuevo dato al historial con estado `false`
     let mut nuevo_dato = data;
-    nuevo_dato.estado = false; // Estado inicial al guardar
+    nuevo_dato.estado = true; // Estado inicial al guardar
     historial.push(nuevo_dato);
 
     // Serializar **todo el historial**
@@ -178,7 +182,7 @@ pub fn editar_historial(asunto: String) -> Result<Vec<BorradorEdit>, String> {
 }
 
 #[command]
-pub fn actualizar_historial(app_handle: tauri::AppHandle, asunto_original: String, data: BorradorEdit) -> Result<(), String> {
+pub fn actualizar_historial ( asunto_original:String , data:BorradorEdit ) -> Result<(),String> {
     let base_path = get_resource_path();
     let path = base_path.join("historiales").join("historial.json");
 
@@ -218,8 +222,8 @@ pub fn actualizar_historial(app_handle: tauri::AppHandle, asunto_original: Strin
     
     println!("Historial actualizado con éxito para el asunto: {}", asunto_original);
     
-    // Retornar Ok sin intentar leer ningún archivo Excel
-    Ok(())
+// Retornar Ok sin intentar leer ningún archivo Excel
+Ok(())
 }
 
 
@@ -318,6 +322,7 @@ pub fn eliminar_historial(asunto: String) -> Result<(), String> {
 
 #[tauri::command]
 pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
+    log_event("Enviar historiales ,Enviando historiales...".to_string())?;
    // let carpeta_path = "C:\\Users\\Javier\\Desktop\\Proyecto TuGestor\\Sistema-TuGestor\\recursos\\historiales";
    let base_path = get_resource_path();
    let carpeta_path = base_path.join("historiales");
@@ -365,6 +370,8 @@ pub fn enviar_historiales() -> Result<Vec<Borrador>, String> {
         println!("   ✅ Estado: {}", historial.estado);
         println!("-----------------------------------");
     }
-
-    Ok(historiales)
+  log_event("Enviar historiales , Historiales enviados exitosamente".to_string())?;
+    // Devolver los historiales enviados
+Ok(historiales)
 }
+

@@ -1,9 +1,11 @@
-// VARIOS
+
 // VARIOS
 use serde::{Serialize, Deserialize};
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
+//servicios
+use crate::servicios::logger::log_event;
 // PATH
 use once_cell::sync::OnceCell;
 use std::sync::Mutex;
@@ -14,21 +16,25 @@ use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
 use std::collections::HashMap;
-// Nuevas importaciones necesarias
+// ...
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
 use urlencoding::encode;
 use std::path::PathBuf;
-
+// ...
 use std::fs;
 use std::process::Command;
 
+
+
+////    VARIABLES GLOBALES      ////
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_PLANTILLA: OnceCell<Mutex<String>> = OnceCell::new();
 static NOMBRE_REPORTE: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_SALIDA: OnceCell<Mutex<String>> = OnceCell::new(); // Nueva variable global
+
 
 ////    FECHA   ////
 
@@ -129,7 +135,7 @@ pub struct Estudiante {
 
 #[tauri::command]
 pub fn reportes_colegios_leer_estudiantes_aprobados () -> Result<Vec<Estudiante>, String> {
-
+  log_event("Iniciando lectura de estudiantes aprobados (Colegios)".to_string())?;
     let archivo_lee = PATH_LEE
         .get()
         .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
@@ -178,7 +184,7 @@ pub fn reportes_colegios_leer_estudiantes_aprobados () -> Result<Vec<Estudiante>
 
 #[tauri::command]
 pub fn reportes_colegios_generar ( estudiantes: Vec<Estudiante> ) -> Result<(), String> {
-
+log_event("Iniciando generación de reportes (Colegios)".to_string())?;
     // Agrupar estudiantes por institución
     let mut estudiantes_por_institucion: HashMap<String, Vec<Estudiante>> = HashMap::new();
     for estudiante in estudiantes {
@@ -278,7 +284,7 @@ pub fn reportes_colegios_generar ( estudiantes: Vec<Estudiante> ) -> Result<(), 
             .map(|mut path| *path = output_dir.clone())
             .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
     }
-
+log_event("generación de reportes (colegios) finalizada".to_string())?;
 Ok(())
 }
 
@@ -426,7 +432,7 @@ pub fn reportes_colegios_enviar_por_whatsapp(directorio_reportes: String) -> Res
     // 3. Contacto central para todos los colegios
     let contacto_nombre = "Coordinador Servicio Social";
     let contacto_telefono = "3001234567"; // Reemplaza con el número real
-    let contacto_correo = "servicio.social@javeriana.edu.co"; // Reemplaza con el correo real
+    // let contacto_correo = "...@javeriana.edu.co"; // Reemplaza con el correo real
     
     // 4. Generar Excel de seguimiento de envíos en el mismo directorio que los reportes
     let fecha = chrono::Local::now().format("%Y-%m-%d_%H-%M-%S").to_string();
@@ -574,27 +580,6 @@ fn obtener_correo_por_institucion(institucion: &str) -> Option<String> {
     Some(format!("contacto.{}@educacion.co", institucion.to_lowercase().replace(" ", ".")))
 }
 
-// Función auxiliar para extraer nombre de institución
-fn extraer_institucion_de_nombre_archivo(nombre_archivo: &str) -> String {
-    // Eliminar extensión
-    let sin_extension = nombre_archivo.rsplit_once('.').map_or(nombre_archivo, |(n, _)| n);
-    
-    // Asumimos que el nombre del archivo sigue un patrón como:
-    // "Reporte_Servicio_Social_[NOMBRE_COLEGIO]_[FECHA].docx"
-    let partes: Vec<&str> = sin_extension.split('_').collect();
-    
-    if partes.len() >= 4 {
-        // Intentar encontrar la parte que corresponde al colegio
-        // Esta lógica puede necesitar ajustes según el formato exacto de tus nombres de archivo
-        let posible_institucion = partes[3..partes.len()-1].join(" ");
-        if !posible_institucion.is_empty() {
-            return posible_institucion;
-        }
-    }
-    
-    // Si no podemos extraer correctamente, devolvemos el nombre sin extensión
-    sin_extension.to_string()
-}
 
 #[tauri::command]
 pub fn reportes_colegios_obtener_directorio_salida() -> Result<String, String> {
@@ -608,29 +593,100 @@ pub fn reportes_colegios_obtener_directorio_salida() -> Result<String, String> {
     }
 }
 
-// Función para obtener la ruta de los recursos
-fn get_resource_path() -> PathBuf {
-    // Obtener la ruta de ejecución (directorio del ejecutable)
-    let exe_path = std::env::current_exe().expect("No se pudo obtener la ruta del ejecutable");
-    let exe_dir = exe_path.parent().expect("No se pudo obtener el directorio del ejecutable");
+#[tauri::command]
+pub fn verificar_pdfs_existentes_colegios(directorio_reportes: String, tipo: String) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
     
-    // En modo desarrollo, la carpeta de recursos estará en el directorio raíz del proyecto
-    // En producción, podría estar en un subdirectorio de recursos
-    #[cfg(debug_assertions)]
-    {
-        // En desarrollo, subir varios niveles hasta la raíz del proyecto
-        let mut path = exe_dir.to_path_buf();
-        // Ajustar según la estructura de tu proyecto
-        path.pop(); // subir un nivel
-        path.pop(); // subir otro nivel si es necesario
-        path.join("resources")
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
     }
     
-    #[cfg(not(debug_assertions))]
-    {
-        // En producción, los recursos podrían estar en una carpeta específica relativa al ejecutable
-        exe_dir.join("resources")
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Si estamos verificando colegios
+    if tipo == "colegios" {
+        // Obtener el formato esperado del nombre del reporte
+        let nombre_reporte = match NOMBRE_REPORTE.get() {
+            Some(mutex) => {
+                match mutex.lock() {
+                    Ok(guard) => guard.clone(),
+                    Err(_) => String::from("Colegios") // Valor por defecto si no podemos obtener el bloqueo
+                }
+            },
+            None => String::from("Colegios") // Valor por defecto si no está inicializada
+        };
+        
+        // Obtener la fecha del reporte
+        let fecha = match FECHA.get() {
+            Some(mutex) => {
+                match mutex.lock() {
+                    Ok(guard) => guard.clone(),
+                    Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+                }
+            },
+            None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+        };
+        
+        println!("🔍 Buscando PDFs con formato similar a: {} - Institución ({})", nombre_reporte, fecha);
+        
+        // Buscar archivos PDF que coincidan con el formato esperado o similares
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                
+                // Verificar si es un archivo PDF
+                if let Some(extension) = path.extension() {
+                    if extension == "pdf" {
+                        let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                        
+                        // Verificar si el nombre contiene partes del formato esperado
+                        if (nombre_archivo.contains(&nombre_reporte.to_lowercase()) || 
+                            nombre_archivo.contains("colegio") || 
+                            nombre_archivo.contains("institución") || 
+                            nombre_archivo.contains("institucion")) && 
+                            nombre_archivo.contains("(") && 
+                            nombre_archivo.contains(")") {
+                                
+                            println!("✅ Encontrado archivo PDF: {}", nombre_archivo);
+                            found_pdfs = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        // Para otros tipos de reportes
+        let filter_pattern = match tipo.as_str() {
+            "puj" => "puj",
+            "tutores" => "tutor",
+            "tutorados" => "tutorado",
+            _ => return Err(format!("Tipo de documento no válido: {}", tipo)),
+        };
+        
+        for entry in entries {
+            if let Ok(entry) = entry {
+                let path = entry.path();
+                
+                if let Some(extension) = path.extension() {
+                    if extension == "pdf" && 
+                       path.to_string_lossy().to_lowercase().contains(filter_pattern) {
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
     }
+    
+    println!("✅ Verificación de PDFs para {}: {}", tipo, if found_pdfs { "Encontrados" } else { "No encontrados" });
+    Ok(found_pdfs)
 }
 
 
@@ -707,6 +763,9 @@ mod tests {
                 institucion: "Colegio Test".to_string(),
                 horas_totales: 10.0,
                 modalidad: 8.0,
+                nombre_completo: Some("Nombre Completo".to_string()),
+                telefono: Some("3101230123".to_string()),
+                correo: Some("correo@colegio.com".to_string()),
             }
         ];
         

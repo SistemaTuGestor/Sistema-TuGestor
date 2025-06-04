@@ -1,10 +1,11 @@
+
 // VARIOS
 use serde::{Serialize, Deserialize}; // Import Deserialize
 use urlencoding::encode;
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
-use std::collections::HashMap;
-
+// JSON
+use crate:: servicios::logger::log_event;
 // FECHA
 use chrono::Local;
 use chrono::NaiveDate;
@@ -17,16 +18,15 @@ use std::path::Path;
 use std::io::{Read, Write};
 use calamine::{open_workbook, Reader, Xlsx};
 use zip::{ZipArchive, write::FileOptions};
-
+// ...
 use std::fs;
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
 use std::path::PathBuf;
-
+// ...
 use std::process::Command;
 
 
+
+////    VARIABLES GLOBALES      ////
 
 static FECHA: OnceCell<Mutex<String>> = OnceCell::new();
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
@@ -119,7 +119,7 @@ pub struct Estudiante {
 
 #[tauri::command]
 pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, String> {
-
+ log_event("Iniciando lectura de estudiantes universitarios aprobados".to_string())?;
     let archivo_lee = PATH_LEE
         .get()
         .ok_or("❌ ARCHIVO_LEE no ha sido inicializado")?
@@ -160,7 +160,7 @@ pub fn reportes_puj_leer_universitarios_aprobados() -> Result<Vec<Estudiante>, S
     }
 
     // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes_aprobados);
-
+   log_event("lectura finalizada".to_string())?;
 Ok(estudiantes_aprobados)
 }
 
@@ -169,7 +169,7 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
 
     // imprimir la lista de estudiantes
     // println!("📂 Lista de estudiantes (PUJ): {:#?}", estudiantes);
-
+     log_event("Iniciando generación de reporte PUJ".to_string())?;
     let lista_tutores = estudiantes.iter()
         .map(|e| {
             let check_mark = if e.horas_totales >= e.modalidad { "✔" } else { "❌" };
@@ -269,7 +269,7 @@ pub fn reporte_puj_generar(estudiantes: Vec<Estudiante>) -> Result<(), String> {
         .map(|mut path| *path = output_dir.clone())
         .map_err(|e| format!("Error al guardar la ruta de salida: {}", e));
 
-
+         log_event("Reporte PUJ generado exitosamente".to_string())?;
 Ok(())
 }
 
@@ -657,3 +657,61 @@ pub fn reportes_puj_enviar_por_whatsapp(directorio_reportes: String) -> Result<V
     
     Ok(resultados)
 }
+
+#[tauri::command]
+pub fn verificar_pdfs_existentes_puj ( directorio_reportes:String ) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
+    
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
+    }
+    
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Obtener la fecha de la variable global para buscar archivos con esa fecha
+    let fecha = match FECHA.get() {
+        Some(mutex) => {
+            match mutex.lock() {
+                Ok(guard) => guard.clone(),
+                Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+            }
+        },
+        None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+    };
+    
+    println!("🔍 Buscando PDFs de PUJ con fecha: {}", fecha);
+    
+    // Patrón para buscar: archivos que empiecen con "PUJ" y tengan la fecha entre paréntesis
+    for entry in entries {
+        if let Ok(entry) = entry {
+            let path = entry.path();
+            
+            if let Some(extension) = path.extension() {
+                if extension == "pdf" {
+                    let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                    
+                    // Verificar si el nombre comienza con "PUJ" y contiene la fecha
+                    if nombre_archivo.starts_with("puj") || 
+                       (nombre_archivo.contains("puj") && nombre_archivo.contains("(") && 
+                        nombre_archivo.contains(")")) {
+                        
+                        println!("✅ Encontrado archivo PDF: {}", nombre_archivo);
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    println!("✅ Verificación de PDFs para PUJ: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
+
+Ok(found_pdfs)
+}
+

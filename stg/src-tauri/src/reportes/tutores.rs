@@ -1,32 +1,30 @@
+
 // VARIOS
 use serde::Serialize ;
 // FECHA
 use chrono::Local ;
 use chrono::NaiveDate ;
+//servicios
+use crate::servicios::logger::log_event ;
 // PATH
 use once_cell::sync::OnceCell ;
 use std::sync::Mutex ;
 // ARCHIVOS
-use std::fs::File;
 use std::fs::{self} ;
 use std::io::{Read, Write} ;
 use std::path::{Path,PathBuf} ;
 use zip::write::FileOptions ;
 use zip::ZipArchive ;
 use calamine::{open_workbook, Reader, Xlsx} ;
-
-
-use docx_rs::*;
-use std::io::BufWriter;
-use printpdf::*;
-
+//
 use std::process::Command;
 use xlsxwriter::Workbook;
 use xlsxwriter::prelude::FormatColor;
 use urlencoding::encode;
-use std::collections::HashSet;
 
 
+
+////    VARIABLES GLOBALES      ////
 
 static FECHA : OnceCell<Mutex<String>> = OnceCell::new() ;
 static PATH_LEE: OnceCell<Mutex<String>> = OnceCell::new();
@@ -126,7 +124,9 @@ Ok(())
 #[tauri::command]
 pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
 
-    // println!("📖 Cargando archivo Excel...") ;
+    let _ = log_event("iniciando generación de constancias de tutores".to_string());
+    
+    //println!("📖 Cargando archivo Excel...") ;
 
     let archivo_lee = PATH_LEE
         .get()
@@ -192,7 +192,8 @@ pub fn reportes_constanciastutores_generar ( ) -> Result<(),String> {
         }
     }
 
-    // println!("🎉 ¡Todas las constancias han sido generadas!");
+    println!("🎉 ¡Todas las constancias han sido generadas!");
+    let _ = log_event("generación de constancias de tutores finalizada".to_string());
 
 Ok(())
 }
@@ -340,7 +341,10 @@ pub struct TutorSimplificado {
 }
 
 #[tauri::command]
-pub fn reportes_tutores_leer_emparejamiento() -> Result<Vec<TutorSimplificado>, String> {
+pub fn reportes_tutores_leer_emparejamiento ( ) -> Result<Vec<TutorSimplificado>, String> {
+
+    let _ = log_event("iniciando lectura de emparejamiento de tutores".to_string());
+    
     // Obtener la ruta del archivo de emparejamiento
     let archivo_emparejamiento = PATH_EMPAREJAMIENTO
         .get()
@@ -617,16 +621,79 @@ pub fn reportes_tutores_enviar_por_whatsapp(directorio_reportes: String) -> Resu
 }
 
 #[tauri::command]
-pub fn reportes_tutores_recibir_emparejamiento(archivoPathEmparejamiento: String) -> Result<(), String> {
+pub fn reportes_tutores_recibir_emparejamiento ( archivo_path_emparejamiento:String ) -> Result<(),String> {
     let mut path_emparejamiento = PATH_EMPAREJAMIENTO.get_or_init(|| Mutex::new(String::new()))
         .lock()
         .map_err(|e| format!("❌ No se pudo bloquear el Mutex: {}", e))?;
     
-    *path_emparejamiento = archivoPathEmparejamiento;
+    *path_emparejamiento = archivo_path_emparejamiento;
     println!("✅ Ruta de archivo de emparejamiento para tutores actualizada: {}", path_emparejamiento);
     
-    Ok(())
+Ok(())
 }
+
+#[tauri::command]
+pub fn verificar_pdfs_existentes_tutores ( directorio_reportes:String ) -> Result<bool, String> {
+    println!("🔍 Verificando PDFs existentes en: {}", directorio_reportes);
+    let path = std::path::Path::new(&directorio_reportes);
+    
+    if !path.exists() {
+        return Err(format!("El directorio {} no existe", directorio_reportes));
+    }
+    
+    let entries = match std::fs::read_dir(path) {
+        Ok(entries) => entries,
+        Err(e) => return Err(format!("Error al leer el directorio: {}", e)),
+    };
+    
+    let mut found_pdfs = false;
+    
+    // Obtener la fecha de la variable global para buscar archivos con esa fecha
+    let fecha = match FECHA.get() {
+        Some(mutex) => {
+            match mutex.lock() {
+                Ok(guard) => guard.clone(),
+                Err(_) => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+            }
+        },
+        None => Local::now().format("%d-%m-%Y").to_string() // Fecha actual como valor por defecto
+    };
+    
+    println!("🔍 Buscando PDFs de constancias de tutores con fecha: {}", fecha);
+    
+    // Buscar constancias de tutores en formato PDF
+    for entry in entries {
+        if let Ok(entry) = entry {
+            let path = entry.path();
+            
+            if let Some(extension) = path.extension() {
+                if extension == "pdf" {
+                    let nombre_archivo = entry.file_name().to_string_lossy().to_lowercase();
+                    
+                    // Verificar formatos específicos para constancias de tutores
+                    // Formato: "Constancia Tutor NOMBRE APELLIDO (FECHA).pdf"
+                    // o formatos similares que contengan email, etc.
+                    if nombre_archivo.contains("constancia") && 
+                       nombre_archivo.contains("tutor") && 
+                       !nombre_archivo.contains("tutorado") && // Excluir tutorados
+                       nombre_archivo.contains("(") && 
+                       nombre_archivo.contains(")") {
+                        
+                        println!("✅ Encontrado archivo PDF de constancia de tutor: {}", nombre_archivo);
+                        found_pdfs = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    
+    println!("✅ Verificación de PDFs para tutores: {}", if found_pdfs { "Encontrados" } else { "No encontrados" });
+
+Ok(found_pdfs)
+}
+
+
 
 
 

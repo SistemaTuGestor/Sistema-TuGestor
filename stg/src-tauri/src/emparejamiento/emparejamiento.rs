@@ -1,7 +1,10 @@
+
 use calamine::{open_workbook, Reader, Xlsx, DataType};
 use serde::{Serialize, Deserialize};
 use std::collections::HashSet;
 use std::path::Path;
+use crate::servicios::logger::log_event ; 
+
 
 
 #[derive(Default, Debug, Serialize, Deserialize, Clone)]
@@ -19,7 +22,7 @@ pub struct EmparejamientoItem {
     pub disponibilidadTutor: String,
     pub max_tutorados: u8,
     pub argostutor: String,
-    pub descripcion_DE_LA_MODALIDAD: String,
+    pub descripcion_de_la_modalidad: String,
     //tutorado1
     pub tutorado1: String,
     pub tutorado1_id: String,
@@ -92,6 +95,7 @@ fn remove_accents(s: &str) -> String {
     
     result
 }
+
 fn first_upper(s: &str) -> String {
     let mut result = String::new();
     let mut capitalize = true;
@@ -108,14 +112,12 @@ fn first_upper(s: &str) -> String {
     result
 }
 
-fn normalize(s: &str) -> String {
+fn normalize ( s:&str ) -> String {
     remove_accents(s).trim().to_lowercase()
     
 }
-fn normalizeTutor(s: &str) -> String {
+fn normalize_tutor ( s:&str ) -> String {
     first_upper(s)
-    
-    
 }
 
 
@@ -129,27 +131,35 @@ fn calcular_color(materia: &str) -> String {
 
 
 #[tauri::command]
-pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, String> {
-     println!("📁 Buscando en ruta: {}",ruta);
-     println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
-     println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
+pub fn obtener_emparejamiento ( ruta:String ) -> Result<Vec<EmparejamientoItem>,String> {
+
+    println!("📁 Buscando en ruta: {}",ruta);
+    let _ = log_event(format!("📁 Buscando en ruta: {}", ruta));
+    println!("✅ Existe fichero? {}", Path::new(&ruta).exists());
+    let _ = log_event(format!("✅ Existe fichero? {}", Path::new(&ruta).exists()));
+    println!("📂 WD actual: {:?}", std::env::current_dir().unwrap()); 
+    let _ = log_event(format!("📂 WD actual: {:?}", std::env::current_dir().unwrap()));
+    
     let mut workbook: Xlsx<_> = open_workbook(&ruta)
-        .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
+    .map_err(|e| format!("❌ No se pudo abrir el archivo Excel: {}", e))?;
 
     println!("📂 Archivo Excel abierto correctamente.");
+    let _ = log_event("📂 Archivo Excel abierto correctamente.".to_string());
     let sheet_names = workbook.sheet_names();
     println!("📄 Hojas disponibles en el archivo: {:?}", sheet_names);
-
+    let _ = log_event(format!("📄 Hojas disponibles en el archivo: {:?}", sheet_names));
+    
     // --- Procesar la hoja "Emparejamiento" ---
     let range = workbook
-        .worksheet_range("Emparejamiento")
+    .worksheet_range("Emparejamiento")
         .map_err(|e| format!("❌ No se pudo cargar la hoja 'Emparejamiento': {}", e))?;
     let mut emparejamientos = Vec::new();
 
     for (i, row) in range.rows().enumerate() {
         if i == 0 { continue; } // Saltar encabezado
-
+        
         println!("➡ Procesando fila {}: {:?}", i, row);
+        let _ =  log_event(format!("➡ Procesando fila {}: {:?}", i, row));
        // Datos del tutor
         let nombretutor = row.get(0)
             .and_then(|c| c.as_string())
@@ -177,7 +187,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .unwrap_or_else(|| "VACÍO".to_string());
         let materiaTutor = row.get(6)
             .and_then(|c| c.as_string())
-            .map(|s| normalizeTutor(&s))
+            .map(|s| normalize_tutor(&s))
             .unwrap_or_else(|| "VACÍO".to_string());
         let modalidad = row.get(7)
             .and_then(|c| c.as_string())
@@ -198,7 +208,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
-        let descripcion_DE_LA_MODALIDAD = row.get(50)
+        let descripcion_de_la_modalidad = row.get(50)
             .and_then(|c| c.as_string())
             .map(|s| s.to_string())
             .unwrap_or_else(|| "VACÍO".to_string());
@@ -375,12 +385,14 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         let colorOriginal1 = calcular_color(&materiaTutorado1);
         let colorOriginal2 = calcular_color(&materiaTutorado2);
          
-     
-        println!("👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
+        let info_emparejamiento = format!(
+            "👤 Tutor: {} (Disponibilidad: {}), Materia: {}, Contacto: {}| Tutorado1: {} (ID: {}, Disponibilidad: {}), Materia: {}, Contacto:{}, Grupo{}, | Tutorado2: {} (ID: {}, Disponibilidad: {}), Materia: {}, contacto: {}, grupo{}",
             nombretutor, disponibilidadTutor, materiaTutor, correotutor,
             tutorado1, tutorado1_id, disponibilidadTutorado1, materiaTutorado1, contactoTutorado1, grupoTutorado1,
             tutorado2, tutorado2_id, disponibilidadTutorado2, materiaTutorado2, contactoTutorado2, grupoTutorado2
         );
+        println!("{}", info_emparejamiento);
+        let _ = log_event(info_emparejamiento);
 
         emparejamientos.push(EmparejamientoItem {
         //datos tutor
@@ -396,7 +408,7 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         horastutor,
         disponibilidadTutor,
         argostutor,
-        descripcion_DE_LA_MODALIDAD,
+        descripcion_de_la_modalidad,
         //datos tutorado1
         tutorado1,
         tutorado1_id,
@@ -444,10 +456,10 @@ pub fn obtener_emparejamiento(ruta: String) -> Result<Vec<EmparejamientoItem>, S
         });
     }
 
-    
-
     println!("✅ Emparejamiento generado con {} elementos.", emparejamientos.len());
-    Ok(emparejamientos)
+    let _ = log_event(format!("✅ Emparejamiento generado con {} elementos.", emparejamientos.len()));
+
+Ok(emparejamientos)
 }
 
 #[tauri::command]
@@ -528,12 +540,13 @@ if !searchtutor.trim().is_empty() {
         });
     }
     
-    data
+data
 }
 
 
 #[tauri::command]
 pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Vec<EmparejamientoItem> {
+
     let mut nuevo_emparejamiento = emparejamientos.clone();
     let mut tutorados_pendientes: Vec<(EmparejamientoItem, u8)> = vec![];
 
@@ -547,22 +560,29 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
         // Revisar tutorado1
         if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
             // Depuración
-            println!("Comparando: '{}' con '{}' | '{}' con '{}'", 
-                normalize(&fila.materiaTutorado1), normalize(&fila.materiaTutor),
-                fila.disponibilidadTutorado1, fila.disponibilidadTutor);
+            let comparando = format!(
+                "Comparando: '{}' con '{}' | '{}' con '{}'",
+                normalize(&fila.materiaTutorado1),
+                normalize(&fila.materiaTutor),
+                fila.disponibilidadTutorado1,
+                fila.disponibilidadTutor
+            );
+            println!("{}", comparando);
+            let _ = log_event(comparando);
                 
             if normalize(&fila.materiaTutorado1) != normalize(&fila.materiaTutor) ||
                fila.disponibilidadTutorado1 != fila.disponibilidadTutor {
                 
-                println!("🛑 Tutorados incompatibles -> Tutorado1: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
+                let incompatibles = format!("🛑 Tutorados incompatibles -> Tutorado1: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
                     fila.tutorado1, fila.materiaTutorado1, fila.disponibilidadTutorado1,
                     fila.materiaTutor, fila.disponibilidadTutor
                 );
+                println!("{}",incompatibles);
+                let _ = log_event(incompatibles);
 
-                 let mut tutorado = EmparejamientoItem::default();
-                 copiar_datos_tutorado(&fila, &mut tutorado, 1);
-                 tutorados_pendientes.push((tutorado, 1));
-
+                let mut tutorado = EmparejamientoItem::default();
+                copiar_datos_tutorado(&fila, &mut tutorado, 1);
+                tutorados_pendientes.push((tutorado, 1));
 
                 fila.tutorado1 = "".to_string();
                 fila.tutorado1_id = "".to_string();
@@ -590,23 +610,32 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
 
         // Revisar tutorado2
         if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
+
             // Depuración
-            println!("Comparando: '{}' con '{}' | '{}' con '{}'", 
-                normalize(&fila.materiaTutorado2), normalize(&fila.materiaTutor),
-                fila.disponibilidadTutorado2, fila.disponibilidadTutor);
-                
+            let comparando = format!(
+                "Comparando: '{}' con '{}' | '{}' con '{}'",
+                normalize(&fila.materiaTutorado2),
+                normalize(&fila.materiaTutor),
+                fila.disponibilidadTutorado2,
+                fila.disponibilidadTutor
+            );
+            println!("{}", comparando);
+            let _ = log_event(comparando);
+
             if normalize(&fila.materiaTutorado2) != normalize(&fila.materiaTutor) ||
+
                fila.disponibilidadTutorado2 != fila.disponibilidadTutor {
-                
-                println!("🛑 Tutorados incompatibles -> Tutorado2: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
+
+                let incompatibles = format!("🛑 Tutorados incompatibles -> Tutorado2: {} (mat: {}, disp: {}) con Tutor (mat: {}, disp: {})",
                     fila.tutorado2, fila.materiaTutorado2, fila.disponibilidadTutorado2,
                     fila.materiaTutor, fila.disponibilidadTutor
                 );
+                println!("{}",incompatibles);
+                let _ = log_event(incompatibles);
 
-                 let mut tutorado = EmparejamientoItem::default();
-                 copiar_datos_tutorado(&fila, &mut tutorado, 2);
-                 tutorados_pendientes.push((tutorado, 2));
-
+                let mut tutorado = EmparejamientoItem::default();
+                copiar_datos_tutorado(&fila, &mut tutorado, 2);
+                tutorados_pendientes.push((tutorado, 2));
 
                 fila.tutorado2 = "".to_string();
                 fila.tutorado2_id = "".to_string();
@@ -632,57 +661,57 @@ pub fn emparejamiento_automatico(emparejamientos: Vec<EmparejamientoItem>) -> Ve
             }
         }
     }
-// --- Stage 1B: Asegurar que ningún tutor supere su max_tutorados ---
-for fila in &mut nuevo_emparejamiento {
-    let mut actuales = Vec::new();
-    if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
-        actuales.push((
-            1,
-            fila.tutorado1.clone(),
-            fila.materiaTutorado1.clone(),
-            fila.disponibilidadTutorado1.clone(),
-            fila.colorOriginal1.clone().unwrap_or_default(),
-            fila.tutorado1_id.clone(),
-        ));
-    }
-    if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
-        actuales.push((
-            2,
-            fila.tutorado2.clone(),
-            fila.materiaTutorado2.clone(),
-            fila.disponibilidadTutorado2.clone(),
-            fila.colorOriginal2.clone().unwrap_or_default(),
-            fila.tutorado2_id.clone(),
-        ));
-    }
+    // --- Stage 1B: Asegurar que ningún tutor supere su max_tutorados ---
+    for fila in &mut nuevo_emparejamiento {
+        let mut actuales = Vec::new();
+        if !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO" {
+            actuales.push((
+                1,
+                fila.tutorado1.clone(),
+                fila.materiaTutorado1.clone(),
+                fila.disponibilidadTutorado1.clone(),
+                fila.colorOriginal1.clone().unwrap_or_default(),
+                fila.tutorado1_id.clone(),
+            ));
+        }
+        if !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO" {
+            actuales.push((
+                2,
+                fila.tutorado2.clone(),
+                fila.materiaTutorado2.clone(),
+                fila.disponibilidadTutorado2.clone(),
+                fila.colorOriginal2.clone().unwrap_or_default(),
+                fila.tutorado2_id.clone(),
+            ));
+        }
 
-    let to_remove = actuales.len().saturating_sub(fila.max_tutorados as usize);
-    if to_remove > 0 {
-        for (slot, ..) in actuales.into_iter().rev().take(to_remove)
-        {
-        let mut pendiente = EmparejamientoItem::default();
-        copiar_datos_tutorado(&fila, &mut pendiente, slot);
-        tutorados_pendientes.push((pendiente, slot));            
-        match slot {
-                1 => {
-                    fila.tutorado1.clear();
-                    fila.tutorado1_id.clear();
-                    fila.materiaTutorado1 = "VACÍO".into();
-                    fila.disponibilidadTutorado1 = "VACÍO".into();
-                    fila.colorOriginal1 = Some("".into());
+        let to_remove = actuales.len().saturating_sub(fila.max_tutorados as usize);
+        if to_remove > 0 {
+            for (slot, ..) in actuales.into_iter().rev().take(to_remove)
+            {
+            let mut pendiente = EmparejamientoItem::default();
+            copiar_datos_tutorado(&fila, &mut pendiente, slot);
+            tutorados_pendientes.push((pendiente, slot));            
+            match slot {
+                    1 => {
+                        fila.tutorado1.clear();
+                        fila.tutorado1_id.clear();
+                        fila.materiaTutorado1 = "VACÍO".into();
+                        fila.disponibilidadTutorado1 = "VACÍO".into();
+                        fila.colorOriginal1 = Some("".into());
+                    }
+                    2 => {
+                        fila.tutorado2.clear();
+                        fila.tutorado2_id.clear();
+                        fila.materiaTutorado2 = "VACÍO".into();
+                        fila.disponibilidadTutorado2 = "VACÍO".into();
+                        fila.colorOriginal2 = Some("".into());
+                    }
+                    _ => {}
                 }
-                2 => {
-                    fila.tutorado2.clear();
-                    fila.tutorado2_id.clear();
-                    fila.materiaTutorado2 = "VACÍO".into();
-                    fila.disponibilidadTutorado2 = "VACÍO".into();
-                    fila.colorOriginal2 = Some("".into());
-                }
-                _ => {}
             }
         }
     }
-}
 
 
     // --- Etapa 2: Ordenar tutorados pendientes para mejorar asignación ---
@@ -700,107 +729,107 @@ for fila in &mut nuevo_emparejamiento {
     tutorados_pendientes.retain(|(t, _)| !t.tutorado1.trim().is_empty() && t.tutorado1 != "VACÍO");
 
    // --- Etapa 3: Reubicar los tutorados pendientes ---
-let mut asignados: HashSet<String> = HashSet::new();
+    let mut asignados: HashSet<String> = HashSet::new();
 
-for (tutorado_origen, _) in &tutorados_pendientes {
-    for fila in &mut nuevo_emparejamiento {
-        if !fila.nombretutor.trim().is_empty()
-            && normalize(&fila.materiaTutor) == normalize(&tutorado_origen.materiaTutorado1)
-            && fila.disponibilidadTutor == tutorado_origen.disponibilidadTutorado1
-        {
-            let actuales = [
-                !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO",
-                !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO",
-            ];
-            let count = actuales.iter().filter(|&&b| b).count();
-            if count < fila.max_tutorados as usize {
-                if fila.tutorado1.trim().is_empty() || fila.tutorado1 == "VACÍO" {
-                    copiar_datos_tutorado(tutorado_origen, fila, 1);
-                } else {
-                    copiar_datos_tutorado(tutorado_origen, fila, 2);
+    for (tutorado_origen, _) in &tutorados_pendientes {
+        for fila in &mut nuevo_emparejamiento {
+            if !fila.nombretutor.trim().is_empty()
+                && normalize(&fila.materiaTutor) == normalize(&tutorado_origen.materiaTutorado1)
+                && fila.disponibilidadTutor == tutorado_origen.disponibilidadTutorado1
+            {
+                let actuales = [
+                    !fila.tutorado1.trim().is_empty() && fila.tutorado1 != "VACÍO",
+                    !fila.tutorado2.trim().is_empty() && fila.tutorado2 != "VACÍO",
+                ];
+                let count = actuales.iter().filter(|&&b| b).count();
+                if count < fila.max_tutorados as usize {
+                    if fila.tutorado1.trim().is_empty() || fila.tutorado1 == "VACÍO" {
+                        copiar_datos_tutorado(tutorado_origen, fila, 1);
+                    } else {
+                        copiar_datos_tutorado(tutorado_origen, fila, 2);
+                    }
+                    asignados.insert(tutorado_origen.tutorado1_id.clone());
+                    break;
                 }
-                asignados.insert(tutorado_origen.tutorado1_id.clone());
-                break;
             }
         }
     }
-}
 
 
-// --- Solo los no asignados generan fila vacía ---
-for (tutorado_origen, _) in tutorados_pendientes {
-    if asignados.contains(&tutorado_origen.tutorado1_id) {
-        continue;
+    // --- Solo los no asignados generan fila vacía ---
+    for (tutorado_origen, _) in tutorados_pendientes {
+        if asignados.contains(&tutorado_origen.tutorado1_id) {
+            continue;
+        }
+
+        let mut fila_vacia = EmparejamientoItem {
+            nombretutor: "".into(),
+            apellidotutor: "".into(),
+            correotutor: "".into(),
+            telefonotutor: "".into(),
+            instituciontutor: "".into(),
+            becariotutor: "".into(),
+            argostutor: "".into(),
+            descripcion_de_la_modalidad: "".into(),
+            horastutor: "VACÍO".into(),
+            disponibilidadTutor: "VACÍO".into(),
+            materiaTutor: "VACÍO".into(),
+            modalidad: "VACÍO".into(),
+            max_tutorados: 2,
+            
+
+            tutorado1: "VACÍO".into(),
+            tutorado1_id: "VACÍO".into(),
+            colegiotutorado1: "VACÍO".into(),
+            tele1Tutorado1: "VACÍO".into(),
+            tele2Tutorado1: "VACÍO".into(),
+            contactoTutorado1: "VACÍO".into(),
+            vocabulariotutorado1: "VACÍO".into(),
+            gramaticatutorado1: "VACÍO".into(),
+            escuchatutorado1: "VACÍO".into(),
+            lecturatutorado1: "VACÍO".into(),
+            pensamientonumericotutorado1: "VACÍO".into(),
+            pensamientoespacialtutorado1: "VACÍO".into(),
+            pensamientoomtricotutorado1: "VACÍO".into(),
+            pensamientoaleatoriotutorado1: "VACÍO".into(),
+            pensamientovariacionalysistertudorado1: "VACÍO".into(),
+            totalpuntuacionmathpretutorado1: "VACÍO".into(),
+            totalpuntuacionenglishpretutorado1: "VACÍO".into(),       
+            materiaTutorado1: "VACÍO".into(),
+            disponibilidadTutorado1: "VACÍO".into(),
+            grupoTutorado1: "VACÍO".into(),
+            colorOriginal1: Some("".into()),
+
+            tutorado2: "VACÍO".into(),
+            tutorado2_id: "VACÍO".into(),
+            colegiotutorado2: "VACÍO".into(),
+            tele1Tutorado2: "VACÍO".into(),
+            tele2Tutorado2: "VACÍO".into(),
+            contactoTutorado2: "VACÍO".into(),
+            vocabulariotutorado2: "VACÍO".into(),
+            gramaticatutorado2: "VACÍO".into(),
+            escuchatutorado2: "VACÍO".into(),
+            lecturatutorado2: "VACÍO".into(),
+            pensamientonumericotutorado2: "VACÍO".into(),
+            pensamientoespacialtutorado2: "VACÍO".into(),
+            pensamientoomtricotutorado2: "VACÍO".into(),
+            pensamientoaleatoriotutorado2: "VACÍO".into(),
+            pensamientovariacionalysistertudorado2: "VACÍO".into(),
+            totalpuntuacionmathpretutorado2: "VACÍO".into(),
+            totalpuntuacionenglishpretutorado2: "VACÍO".into(),
+            materiaTutorado2: "VACÍO".into(),
+            disponibilidadTutorado2: "VACÍO".into(),
+            grupoTutorado2: "VACÍO".into(),
+            colorOriginal2: Some("".into()),
+
+            ..Default::default()
+
+
+        };
+
+        copiar_datos_tutorado(&tutorado_origen, &mut fila_vacia, 1);
+        nuevo_emparejamiento.push(fila_vacia);
     }
-
-    let mut fila_vacia = EmparejamientoItem {
-        nombretutor: "".into(),
-        apellidotutor: "".into(),
-        correotutor: "".into(),
-        telefonotutor: "".into(),
-        instituciontutor: "".into(),
-        becariotutor: "".into(),
-        argostutor: "".into(),
-        descripcion_DE_LA_MODALIDAD: "".into(),
-        horastutor: "VACÍO".into(),
-        disponibilidadTutor: "VACÍO".into(),
-        materiaTutor: "VACÍO".into(),
-        modalidad: "VACÍO".into(),
-        max_tutorados: 2,
-        
-
-        tutorado1: "VACÍO".into(),
-        tutorado1_id: "VACÍO".into(),
-        colegiotutorado1: "VACÍO".into(),
-        tele1Tutorado1: "VACÍO".into(),
-        tele2Tutorado1: "VACÍO".into(),
-        contactoTutorado1: "VACÍO".into(),
-        vocabulariotutorado1: "VACÍO".into(),
-        gramaticatutorado1: "VACÍO".into(),
-        escuchatutorado1: "VACÍO".into(),
-        lecturatutorado1: "VACÍO".into(),
-        pensamientonumericotutorado1: "VACÍO".into(),
-        pensamientoespacialtutorado1: "VACÍO".into(),
-        pensamientoomtricotutorado1: "VACÍO".into(),
-        pensamientoaleatoriotutorado1: "VACÍO".into(),
-        pensamientovariacionalysistertudorado1: "VACÍO".into(),
-        totalpuntuacionmathpretutorado1: "VACÍO".into(),
-        totalpuntuacionenglishpretutorado1: "VACÍO".into(),       
-        materiaTutorado1: "VACÍO".into(),
-        disponibilidadTutorado1: "VACÍO".into(),
-        grupoTutorado1: "VACÍO".into(),
-        colorOriginal1: Some("".into()),
-
-        tutorado2: "VACÍO".into(),
-        tutorado2_id: "VACÍO".into(),
-        colegiotutorado2: "VACÍO".into(),
-        tele1Tutorado2: "VACÍO".into(),
-        tele2Tutorado2: "VACÍO".into(),
-        contactoTutorado2: "VACÍO".into(),
-        vocabulariotutorado2: "VACÍO".into(),
-        gramaticatutorado2: "VACÍO".into(),
-        escuchatutorado2: "VACÍO".into(),
-        lecturatutorado2: "VACÍO".into(),
-        pensamientonumericotutorado2: "VACÍO".into(),
-        pensamientoespacialtutorado2: "VACÍO".into(),
-        pensamientoomtricotutorado2: "VACÍO".into(),
-        pensamientoaleatoriotutorado2: "VACÍO".into(),
-        pensamientovariacionalysistertudorado2: "VACÍO".into(),
-        totalpuntuacionmathpretutorado2: "VACÍO".into(),
-        totalpuntuacionenglishpretutorado2: "VACÍO".into(),
-        materiaTutorado2: "VACÍO".into(),
-        disponibilidadTutorado2: "VACÍO".into(),
-        grupoTutorado2: "VACÍO".into(),
-        colorOriginal2: Some("".into()),
-
-        ..Default::default()
-
-
-    };
-
-    copiar_datos_tutorado(&tutorado_origen, &mut fila_vacia, 1);
-    nuevo_emparejamiento.push(fila_vacia);
-}
 
 
 
@@ -812,7 +841,9 @@ for (tutorado_origen, _) in tutorados_pendientes {
     });
 
     println!("📦 Emparejamiento final contiene {} filas", nuevo_emparejamiento.len());
-    nuevo_emparejamiento
+    let _ = log_event(format!("📦 Emparejamiento final contiene {} filas", nuevo_emparejamiento.len()));
+
+nuevo_emparejamiento
 }
 
 fn copiar_datos_tutorado(origen: &EmparejamientoItem, destino: &mut EmparejamientoItem, slot: u8) {
@@ -875,7 +906,8 @@ pub fn actualizar_campo_tutor(
     index: usize,
     campo: String, 
     valor: String
-) -> Result<Vec<EmparejamientoItem>, String> {
+    ) -> Result<Vec<EmparejamientoItem>, String> {
+
     let mut nuevos_emparejamientos = emparejamientos;
     
     if index >= nuevos_emparejamientos.len() {
@@ -888,5 +920,110 @@ pub fn actualizar_campo_tutor(
         _ => return Err(format!("Campo no reconocido: {}", campo)),
     }
     
-    Ok(nuevos_emparejamientos)
+Ok(nuevos_emparejamientos)
 }
+
+
+
+
+// TESTING
+
+#[test]
+#[ignore = "Prueba de rendimiento - no ejecutar en pruebas normales"]
+fn test_rendimiento_emparejamiento_automatico() {
+
+    use std::time::{Instant, Duration};
+    use std::path::PathBuf;
+    use glob::glob;
+    
+    // Configurar path de prueba
+    let test_file = PathBuf::from("../../recursos/EmparejamientoFINAL.xlsx");
+
+    println!("📊 Iniciando prueba de rendimiento para emparejamiento automático...");
+    println!("📂 Archivo de datos: {}", test_file.display());
+    
+    // Obtener datos de prueba
+    let emparejamientos = obtener_emparejamiento(test_file.to_str().unwrap().to_string())
+        .expect("Error al obtener emparejamientos iniciales");
+    
+    println!("📈 Datos iniciales cargados:");
+    println!("   - Total registros: {}", emparejamientos.len());
+    
+    // Contar tutores y tutorados
+    let (tutores, tutorados) = emparejamientos.iter().fold((0, 0), |(tut, tud), item| {
+        let mut tutorados = 0;
+        if !item.tutorado1.trim().is_empty() && item.tutorado1 != "VACÍO" { tutorados += 1; }
+        if !item.tutorado2.trim().is_empty() && item.tutorado2 != "VACÍO" { tutorados += 1; }
+        
+        (tut + if !item.nombretutor.trim().is_empty() { 1 } else { 0 }, 
+         tud + tutorados)
+    });
+    
+    println!("   - Tutores: {}", tutores);
+    println!("   - Tutorados: {}", tutorados);
+    
+    // Calcular n (tutores + tutorados) por minuto
+    let n = tutores + tutorados;
+    let tiempo_referencia_segundos = (n as f64) * 60.0; // n * 1 minuto en segundos
+    
+    // Medir tiempo de ejecución
+    let start_time = Instant::now();
+    
+    // Ejecutar función a medir
+    let resultado = emparejamiento_automatico(emparejamientos);
+    
+    let duration = start_time.elapsed();
+    let tiempo_ejecucion_segundos = duration.as_secs_f64();
+    
+    // Calcular porcentaje de mejora
+    let porcentaje_mejora = if tiempo_referencia_segundos > 0.0 {
+        ((tiempo_referencia_segundos - tiempo_ejecucion_segundos) / tiempo_referencia_segundos) * 100.0
+    } else {
+        0.0
+    };
+    
+    // Estadísticas de resultados
+    println!("\n📊 Resultados del emparejamiento:");
+    println!("   - Total filas resultantes: {}", resultado.len());
+    
+    let (tutores_final, tutorados_final) = resultado.iter().fold((0, 0), |(tut, tud), item| {
+        let mut tutorados = 0;
+        if !item.tutorado1.trim().is_empty() && item.tutorado1 != "VACÍO" { tutorados += 1; }
+        if !item.tutorado2.trim().is_empty() && item.tutorado2 != "VACÍO" { tutorados += 1; }
+        
+        (tut + if !item.nombretutor.trim().is_empty() { 1 } else { 0 }, 
+         tud + tutorados)
+    });
+    
+    println!("   - Tutores finales: {}", tutores_final);
+    println!("   - Tutorados finales: {}", tutorados_final);
+    
+    // Calcular eficiencia
+    let eficiencia = if tutorados > 0 {
+        (tutorados_final as f32 / tutorados as f32) * 100.0
+    } else {
+        0.0
+    };
+    
+    println!("⏱️ Métricas de rendimiento:");
+    println!("   - Tiempo de referencia (n * 1 min): {:.2} segundos", tiempo_referencia_segundos);
+    println!("   - Tiempo real de ejecución: {:.2?}", duration);
+    println!("   - Porcentaje de mejora: {:.2}%", porcentaje_mejora);
+    println!("   - Eficiencia de emparejamiento: {:.2}%", eficiencia);
+    println!("📊 Prueba de rendimiento completada");
+    
+    // Limpieza de archivos generados (si aplica)
+    let output_pattern = "emparejamiento_resultado_*.xlsx";
+    let mut files_cleaned = 0;
+    for entry in glob(output_pattern).expect("Error al buscar archivos para limpiar") {
+        if let Ok(path) = entry {
+            std::fs::remove_file(&path).ok();
+            println!("🧹 Archivo eliminado: {}", path.display());
+            files_cleaned += 1;
+        }
+    }
+
+    println!("🧽 Total archivos limpiados: {}", files_cleaned);
+
+}
+

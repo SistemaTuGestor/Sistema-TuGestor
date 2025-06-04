@@ -10,6 +10,7 @@ import { open, save } from "@tauri-apps/api/dialog";
 
 function Reportes() {
 
+  const [isLoading, setIsLoading] = useState(false);
 
   //// Fecha
 
@@ -610,15 +611,204 @@ function Reportes() {
   setEmergenteVisible(true);
 
 };
-  const evento_clickVerificar = () => {
-    handleFileClick();
-    setEmergenteVisible(true);
+  const evento_clickVerificar = async (seccioon: string) => {
+    try {
+      // Mostrar indicador de carga
+      setIsLoading(true);
+      
+      if (seccioon === "LEE") {
+        // La sección LEE no tiene conversión a PDF
+        alert("No hay archivos para verificar en la sección LEE");
+      }
+      else if (seccioon === "PUJ") {
+        const filePath = directorioReportePUJ;
+        
+        if (filePath === "Directorio de reportes" || !filePath) {
+          alert("Por favor, genera primero el reporte de PUJ para convertir a PDF");
+          setIsLoading(false);
+          return;
+        }
+        
+        // Extraer el directorio donde realmente estarán los archivos
+        const dirPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+        console.log("Verificando PDFs de PUJ en:", dirPath);
+        
+        try {
+          // Primero verificar si ya existen PDFs
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_puj", {
+            directorioReportes: dirPath,
+            tipo: "puj"
+          });
+          
+          if (existenPDFs) {
+            alert(`Los reportes de ${seccioon} ya están convertidos a PDF y listos para ser enviados.`);
+          } else {
+            // Si no existen PDFs, intentar convertir
+            console.log("No se encontraron PDFs, convirtiendo documentos...");
+            await invoke("convertir_puj_pdf", {
+              urldocs: dirPath
+            });
+            
+            // Verificar nuevamente después de la conversión
+            const pdfsConvertidos = await invoke<boolean>("verificar_pdfs_existentes_puj", {
+              directorioReportes: dirPath,
+              tipo: "puj"
+            });
+            
+            if (pdfsConvertidos) {
+              alert(`Los reportes de ${seccioon} han sido convertidos a PDF y están listos para ser enviados.`);
+            } else {
+              alert(`No se pudieron convertir los documentos a PDF. Verifica que existan los archivos DOCX en el directorio.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error al verificar reportes de PUJ:", error);
+          alert(`Error: ${error}`);
+        }
+      }
+      else if (seccioon === "Colegios") {
+        const filePath = directorioReporteColegios;
+        
+        if (filePath === "Directorio de reportes" || !filePath) {
+          alert("Por favor, genera primero los reportes de colegios para convertir a PDF");
+          setIsLoading(false);
+          return;
+        }
+        
+        // Extraer el directorio donde realmente estarán los archivos
+        const dirPath = filePath.substring(0, filePath.lastIndexOf('\\'));
+        console.log("Verificando PDFs de Colegios en:", dirPath);
+        
+        try {
+          // Primero verificar si ya existen PDFs
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_colegios", {
+            directorioReportes: dirPath,
+            tipo: "colegios"
+          });
+          
+          if (existenPDFs) {
+            alert(`Los reportes de ${seccioon} ya están convertidos a PDF y listos para ser enviados.`);
+          } else {
+            // Si no existen PDFs, intentar convertir
+            console.log("No se encontraron PDFs, convirtiendo documentos...");
+            await invoke("convertir_colegios_pdf", {
+              urldocs: dirPath
+            });
+            
+            // Verificar nuevamente después de la conversión
+            const pdfsConvertidos = await invoke<boolean>("verificar_pdfs_existentes_colegios", {
+              directorioReportes: dirPath,
+              tipo: "colegios"
+            });
+            
+            if (pdfsConvertidos) {
+              alert(`Los reportes de ${seccioon} han sido convertidos a PDF y están listos para ser enviados.`);
+            } else {
+              alert(`No se pudieron convertir los documentos a PDF. Verifica que existan los archivos DOCX en el directorio.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error al verificar reportes de Colegios:", error);
+          alert(`Error: ${error}`);
+        }
+      }
+      else if (seccioon === "Tutores") {
+        const dirPath = directorioReporteConstanciasTutores;
+        
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero las constancias de tutores para convertir a PDF");
+          setIsLoading(false);
+          return;
+        }
+        
+        try {
+          // Primero verificar si ya existen PDFs
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_tutores", {
+            directorioReportes: dirPath,
+            tipo: "tutores"
+          });
+          
+          if (existenPDFs) {
+            alert(`Las constancias de ${seccioon} ya están convertidas a PDF y listas para ser enviadas.`);
+          } else {
+            // Si no existen PDFs, intentar convertir
+            console.log("No se encontraron PDFs, convirtiendo documentos...");
+            await invoke("convertir_tutores_pdf", {
+              urldocs: dirPath
+            });
+            
+            // Verificar nuevamente después de la conversión
+            const pdfsConvertidos = await invoke<boolean>("verificar_pdfs_existentes_tutores", {
+              directorioReportes: dirPath,
+              tipo: "tutores"
+            });
+            
+            if (pdfsConvertidos) {
+              alert(`Las constancias de ${seccioon} han sido convertidas a PDF y están listas para ser enviadas.`);
+            } else {
+              alert(`No se pudieron convertir los documentos a PDF. Verifica que existan los archivos DOCX en el directorio.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error al verificar constancias de Tutores:", error);
+          alert(`Error: ${error}`);
+        }
+      }
+      else if (seccioon === "Tutorados") {
+        const dirPath = directorioReporteConstanciasTutorados;
+        
+        if (dirPath === "Directorio de reportes") {
+          alert("Por favor, genera primero las constancias de tutorados para convertir a PDF");
+          setIsLoading(false);
+          return;
+        }
+        
+        try {
+          // Primero verificar si ya existen PDFs
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_tutorados", {
+            directorioReportes: dirPath,
+            tipo: "tutorados"
+          });
+          
+          if (existenPDFs) {
+            alert(`Las constancias de ${seccioon} ya están convertidas a PDF y listas para ser enviadas.`);
+          } else {
+            // Si no existen PDFs, intentar convertir
+            console.log("No se encontraron PDFs, convirtiendo documentos...");
+            await invoke("convertir_tutorados_pdf", {
+              urldocs: dirPath
+            });
+            
+            // Verificar nuevamente después de la conversión
+            const pdfsConvertidos = await invoke<boolean>("verificar_pdfs_existentes_tutorados", {
+              directorioReportes: dirPath,
+              tipo: "tutorados"
+            });
+            
+            if (pdfsConvertidos) {
+              alert(`Las constancias de ${seccioon} han sido convertidas a PDF y están listas para ser enviadas.`);
+            } else {
+              alert(`No se pudieron convertir los documentos a PDF. Verifica que existan los archivos DOCX en el directorio.`);
+            }
+          }
+        } catch (error) {
+          console.error("Error al verificar constancias de Tutorados:", error);
+          alert(`Error: ${error}`);
+        }
+      }
+      else {
+        alert(`¡Error en la selección de sección!`);
+      }
+    } catch (error) {
+      console.error(`Error al verificar ${seccioon}:`, error);
+      alert(`Error: ${error}`);
+    } finally {
+      setIsLoading(false);
+      setEmergenteVisible(false);
+    }
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [destinatarios, setDestinatarios] = useState<any[]>([]);
-
-  // Actualiza la función evento_clickEnviar para manejar el caso de "Tutorados"
+  // Función modificada para enviar documentos solo si ya existen los PDFs
   const evento_clickEnviar = async (seccioon: string) => {
     try {
       if (seccioon === "LEE") {
@@ -640,12 +830,30 @@ function Reportes() {
         setIsLoading(true);
         
         try {
-          // Primero convertir a PDF
-          await invoke("convertir_puj_pdf", {
-            urldocs: dirPath
+          // Verificar si existen PDFs antes de enviar
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_puj", {
+            directorioReportes: dirPath,
+            tipo: "puj"
           });
           
-          // Llamar al backend con la ruta del DIRECTORIO, no del archivo
+          if (!existenPDFs) {
+            // Si no existen, intentar convertir
+            try {
+              await invoke("convertir_puj_pdf", {
+                urldocs: dirPath
+              });
+              console.log("Se han convertido los documentos a PDF");
+            } catch (e) {
+              console.error("Error al convertir a PDF:", e);
+              alert("Los documentos no pudieron ser convertidos a PDF. Por favor use la opción 'Verificar' primero.");
+              setIsLoading(false);
+              return;
+            }
+          } else {
+            console.log("Los PDFs ya existen, no es necesario convertir");
+          }
+          
+          // Llamar al backend con la ruta del DIRECTORIO
           const destinatarios = await invoke<any[]>("reportes_puj_enviar_por_whatsapp", {
             directorioReportes: dirPath
           });
@@ -694,13 +902,32 @@ function Reportes() {
         setIsLoading(true);
         
         try {
-          // Llamar al backend con la ruta del DIRECTORIO, no del archivo
+          // Verificar si existen PDFs antes de enviar
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_colegios", {
+            directorioReportes: dirPath,
+            tipo: "colegios"
+          });
+          
+          if (!existenPDFs) {
+            // Si no existen, intentar convertir
+            try {
+              await invoke("convertir_colegios_pdf", {
+                urldocs: dirPath
+              });
+              console.log("Se han convertido los documentos a PDF");
+            } catch (e) {
+              console.error("Error al convertir a PDF:", e);
+              alert("Los documentos no pudieron ser convertidos a PDF. Por favor use la opción 'Verificar' primero.");
+              setIsLoading(false);
+              return;
+            }
+          } else {
+            console.log("Los PDFs ya existen, no es necesario convertir");
+          }
+          
+          // Llamar al backend con la ruta del DIRECTORIO
           const destinatarios = await invoke<any[]>("reportes_colegios_enviar_por_whatsapp", {
             directorioReportes: dirPath
-          });
-
-            await invoke("convertir_colegios_pdf", {
-            urldocs: dirPath
           });
           
           if (destinatarios && destinatarios.length > 0) {
@@ -710,7 +937,7 @@ function Reportes() {
             );
             
             if (confirmar) {
-              // Abrir enlaces de WhatsApp con un pequeño retraso entre cada uno
+              // Abrir enlaces de WhatsApp with un pequeño retraso entre cada uno
               destinatarios.forEach((destinatario, index) => {
                 setTimeout(() => {
                   window.open(destinatario.whatsapp_url, "_blank");
@@ -724,11 +951,32 @@ function Reportes() {
           } else {
             alert("No se encontraron destinatarios para enviar los reportes de colegios");
           }
+        } catch (error) {
+          console.error("Error al procesar envíos de Colegios:", error);
+          alert(`Error: ${error}`);
         } finally {
           setIsLoading(false);
         }
       }
       else if (seccioon === "Tutores") {
+        // Verificar si existe el archivo de emparejamiento
+        if (!archivoPath_Emparejamiento || archivoPath_Emparejamiento === "") {
+          alert("Primero debes seleccionar un archivo de emparejamiento para los tutores");
+          return;
+        }
+
+        // Enviar primero la ruta del archivo de emparejamiento al backend
+        try {
+          await invoke("reportes_tutores_recibir_emparejamiento", {
+            archivoPathEmparejamiento: archivoPath_Emparejamiento
+          });
+          console.log("Archivo de emparejamiento enviado correctamente");
+        } catch (error) {
+          console.error("Error al enviar archivo de emparejamiento:", error);
+          alert(`Error: No se pudo procesar el archivo de emparejamiento: ${error}`);
+          return;
+        }
+
         const dirPath = directorioReporteConstanciasTutores;
         
         if (dirPath === "Directorio de reportes") {
@@ -740,15 +988,29 @@ function Reportes() {
         setIsLoading(true);
         
         try {
-          // Primero convertir a PDF si es necesario
-          await invoke("convertir_tutores_pdf", {
-            urldocs: dirPath
+          // Verificar si existen PDFs antes de enviar
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_tutores", {
+            directorioReportes: dirPath,
+            tipo: "tutores"
           });
-
-          await invoke("reportes_tutores_recibir_emparejamiento", {
-            archivoPathEmparejamiento: archivoPath_Emparejamiento 
-          });
-
+          
+          if (!existenPDFs) {
+            // Si no existen, intentar convertir
+            try {
+              await invoke("convertir_tutores_pdf", {
+                urldocs: dirPath
+              });
+              console.log("Se han convertido los documentos a PDF");
+            } catch (e) {
+              console.error("Error al convertir a PDF:", e);
+              alert("Los documentos no pudieron ser convertidos a PDF. Por favor use la opción 'Verificar' primero.");
+              setIsLoading(false);
+              return;
+            }
+          } else {
+            console.log("Los PDFs ya existen, no es necesario convertir");
+          }
+          
           // Llamar a la función para generar el Excel de envíos y preparar mensajes
           const destinatarios = await invoke<any[]>("reportes_tutores_enviar_por_whatsapp", {
             directorioReportes: dirPath,
@@ -798,10 +1060,26 @@ function Reportes() {
         setIsLoading(true);
         
         try {
-          // Primero convertir a PDF si es necesario
-          await invoke("convertir_tutorados_pdf", {
-            urldocs: dirPath
+          // Verificar si existen PDFs antes de enviar
+          const existenPDFs = await invoke<boolean>("verificar_pdfs_existentes_tutorados", {
+            directorioReportes: dirPath,
+            tipo: "tutorados"
           });
+          
+          if (!existenPDFs) {
+            // Si no existen, intentar convertir
+            try {
+              await invoke("convertir_tutorados_pdf", {
+                urldocs: dirPath
+              });
+              console.log("Se han convertido los documentos a PDF");
+            } catch (e) {
+              console.error("Error al convertir a PDF:", e);
+              alert("Los documentos no pudieron ser convertidos a PDF. Por favor use la opción 'Verificar' primero.");
+              setIsLoading(false);
+              return;
+            }
+          }
           
           // Llamar a la función para generar el Excel de envíos y preparar mensajes
           const destinatarios = await invoke<any[]>("reportes_tutorados_enviar_por_whatsapp", {
@@ -859,6 +1137,28 @@ function Reportes() {
     fileInputRef.current?.click();
   };
 
+  // En la función que maneja el cambio de archivo de emparejamiento
+  const handleEmparejamientoFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      // El objeto File no tiene 'path', así que solo podemos obtener el nombre
+      const fileName = file.name;
+      setArchivoPath_Emparejamiento(fileName);
+      
+      // Si necesitas la ruta completa, debes obtenerla desde el diálogo de Tauri, no desde el input file
+      // Aquí solo enviamos el nombre al backend como ejemplo
+      try {
+        await invoke("reportes_tutores_recibir_emparejamiento", {
+          urlarchivo: fileName
+        });
+        console.log("Archivo de emparejamiento enviado correctamente");
+      } catch (error) {
+        console.error("Error al enviar archivo de emparejamiento:", error);
+        alert(`Error: ${error}`);
+      }
+    }
+  };
+
 
   return (
 
@@ -871,7 +1171,7 @@ function Reportes() {
           mensaje={`Opciones para los reportes de ${seccioonActual}.`}
           cancelar={evento_clickCancelar}
           generar={() => evento_clickGenerar(seccioonActual)}
-          verificar={evento_clickVerificar}
+          verificar={() => evento_clickVerificar(seccioonActual)} // Usando función anónima
           enviar={() => evento_clickEnviar(seccioonActual)}
           modulo={seccioonActual}
         />
@@ -1085,7 +1385,7 @@ function Reportes() {
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-spinner"></div>
-          <p>Procesando envíos...</p>
+          <p>Procesando Conversion de PDF...</p>
         </div>
       )}
 

@@ -210,7 +210,7 @@ function Notificaciones() {
         destinatarios,
         asunto,
         mensaje,
-        estado: false, // Asegúrate de incluir el estado inicial como `false`
+        estado: true, // Asegúrate de incluir el estado inicial como `true`
       };
 
       console.log("Datos a guardar:", data);
@@ -223,7 +223,7 @@ function Notificaciones() {
           data,
         });
         alert("Historial actualizado con éxito");
-        setModoEdicion(false);
+        setModoEdicion(true);
         setAsuntoOriginal("");
       } else {
         // Si no está en modo edición, guarda un nuevo historial
@@ -365,10 +365,12 @@ function Notificaciones() {
 
   async function enviarMensajes() {
     try {
+
       // 1. Obtener los mensajes procesados desde el backend
       const mensajes = await invoke<any[]>("procesar_mensajes_desde_json");
 
       console.log('Mensajes generados:', mensajes);
+
 
       // 2. Generar el Excel con los mensajes procesados
       const rutaExcel = await invoke<string>("exportar_mensajes_a_excel", { mensajes });

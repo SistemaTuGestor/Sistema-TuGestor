@@ -1,0 +1,1352 @@
+[
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:28",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:39",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:39",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:40",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:40",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:42",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:17:58",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:08",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:08",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:18:22",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Iniciando lectura de Excel"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Cargando datos desde JSON"
+  },
+  {
+    "fecha": "2025-05-23",
+    "hora": "00:19:17",
+    "accion": "Datos cargados desde JSON"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:05:02",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFinal.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:05:02",
+    "accion": "✅ Existe fichero? false"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:05:02",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:12",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFinal.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:12",
+    "accion": "✅ Existe fichero? false"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:12",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:34",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFINAL.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:35",
+    "accion": "✅ Existe fichero? true"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:35",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "📂 Archivo Excel abierto correctamente."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "📄 Hojas disponibles en el archivo: [\"Emparejamiento\", \"Todos los tutorados \", \"Envío correos\", \"Pendiente por emparejar\", \"Tutores retirados\", \"Tutorados sin respuesta\"]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 1: [String(\"Nicolas\"), String(\"Quintana\"), String(\"quintana.nicolas@javeriana.edi.co\"), String(\"3045548660\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), Float(20.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Miguel EsparzaT\"), Float(1000477320.0), String(\"Colegio Ejemplo1\"), Float(3058829527.0), Float(3498597548.0), String(\"ejemplo@gmail.com\"), String(\"Ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.1), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Santiago AlbaT\"), Float(1010944104.0), String(\"Colegio Ejemplo1\"), Float(3045124420.0), Float(3032568220.0), String(\"CorreoEjemplo2@gmail.com\"), String(\"ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.2), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"mañana\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Nicolas (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Ingles, Contacto: quintana.nicolas@javeriana.edi.co| Tutorado1: Miguel EsparzaT (ID: 1000477320, Disponibilidad: Sábados en la mañana), Materia: Ingles, Contacto:ejemplo@gmail.com, Grupomañana, | Tutorado2: Santiago AlbaT (ID: 1010944104, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: CorreoEjemplo2@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 2: [String(\"Javier \"), String(\"Echeverry\"), String(\"jecheverry@javeriana.edu.co\"), String(\"3128314004\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Mariana CastroT\"), Float(1037883695.0), String(\"Colegio Bolivar\"), Float(3117565623.0), Float(3113735209.0), String(\"mariana.castro@gmail.com\"), String(\"Matematicas\"), Float(1.0), Float(3.2), Float(3.1), Float(4.8), Float(1.7), Float(2.2), Float(4.5), Float(4.2), Float(0.5), Float(4.0), Float(2.4), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Tarde\"), String(\"Natalia LópezT\"), Float(1023456789.0), String(\"Colegio Ejemplo1\"), Float(3101234567.0), Float(3155551212.0), String(\"CorreoEjemplo323@gmail.com\"), String(\"matematicas\"), Float(2.8), Float(4.5), Float(0.9), Float(0.9), Float(4.7), Float(4.1), Float(4.9), Float(2.0), Float(4.5), Float(4.7), Float(4.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"SI\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Javier  (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto: jecheverry@javeriana.edu.co| Tutorado1: Mariana CastroT (ID: 1037883695, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto:mariana.castro@gmail.com, GrupoTarde, | Tutorado2: Natalia LópezT (ID: 1023456789, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: matematicas, contacto: CorreoEjemplo323@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 3: [String(\"Andrea\"), String(\"Torres\"), String(\"andrea.torres@gmail.com\"), String(\"3102345678\"), String(\"Colegio San Carlos\"), String(\"Si\"), String(\"Ingles\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Andrés RamírezT\"), Float(1040872361.0), String(\"Colegio Ejemplo1\"), Float(3244716820.0), Float(3146538937.0), String(\"andres.ramirez@hotmail.com\"), String(\"Ingles\"), Float(0.3), Float(3.8), Float(4.3), Float(2.9), Float(0.6), Float(1.1), Float(3.6), Float(3.1), Float(1.4), Float(0.1), Float(3.4), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Diego VargasT\"), Float(1122334455.0), String(\"Colegio Ejemplo2\"), Float(3112223344.0), Float(3224445566.0), String(\"CorreoEjemplo3333@gmail.com\"), String(\"ingles\"), Float(3.3), Float(1.2), Float(1.7), Float(4.9), Float(3.3), Float(4.8), Float(0.5), Float(2.3), Float(1.2), Float(2.0), Float(5.0), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Andrea (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto: andrea.torres@gmail.com| Tutorado1: Andrés RamírezT (ID: 1040872361, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Ingles, Contacto:andres.ramirez@hotmail.com, GrupoTarde, | Tutorado2: Diego VargasT (ID: 1122334455, Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: ingles, contacto: CorreoEjemplo3333@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 4: [String(\"Santiago\\t\"), String(\"Díaz\"), String(\"Prueba3@pruebmail.com\"), String(\"3208765432\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"10\"), String(\"Sábados en la mañana\"), String(\"Sofía FernándezT\"), Float(1040334221.0), String(\"Colegio Bolivar\"), Float(3107589894.0), Float(3025791188.0), String(\"sofia.fernandez@yahoo.com\"), String(\"Matematicas\"), Float(0.8), Float(3.9), Float(0.9), Float(4.5), Float(3.3), Float(1.1), Float(4.6), Float(2.2), Float(1.8), Float(2.8), Float(2.6), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Andrea MoralesT\"), Float(1234567890.0), String(\"Colegio Victoria\"), Float(3007778899.0), Float(3129991122.0), String(\"CorreoEjemplo444@gmail.com\"), String(\"matematicas\"), Float(2.6), Float(2.2), Float(2.5), Float(2.9), Float(2.2), Float(1.6), Float(0.3), Float(2.6), Float(3.0), Float(4.3), Float(2.9), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Santiago\t (Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto: Prueba3@pruebmail.com| Tutorado1: Sofía FernándezT (ID: 1040334221, Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto:sofia.fernandez@yahoo.com, Grupomañana, | Tutorado2: Andrea MoralesT (ID: 1234567890, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: matematicas, contacto: CorreoEjemplo444@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 5: [String(\"Valentina\"), String(\"López\"), String(\"valentina.lopez@javeriana.edu.co\"), String(\"3159991212\"), String(\"Pontificia Universidad Javeriana\"), String(\"Si\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"15\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Juan PérezT\"), Float(1046716109.0), String(\"Colegio Ejemplo3\"), Float(3243098774.0), Float(3044155979.0), String(\"juan.perez@gmail.com\"), String(\"Matematicas\"), Float(1.6), Float(4.8), Float(2.3), Float(0.0), Float(4.7), Float(4.2), Float(1.8), Float(4.1), Float(0.6), Float(2.1), Float(4.8), String(\"Sábados en la tarde\"), String(\"Tarde\"), String(\"Mateo CastilloT\"), Float(1098765432.0), String(\"Colegio Ejemplo9\"), Float(3173344556.0), Float(3195566778.0), String(\"CorreoEjemplo555@gmail.com\"), String(\"matematicas\"), Float(3.5), Float(2.1), Float(4.0), Float(0.7), Float(0.4), Float(0.9), Float(2.5), Float(4.3), Float(0.1), Float(0.4), Float(1.4), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Valentina (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Matematicas, Contacto: valentina.lopez@javeriana.edu.co| Tutorado1: Juan PérezT (ID: 1046716109, Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto:juan.perez@gmail.com, GrupoTarde, | Tutorado2: Mateo CastilloT (ID: 1098765432, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: CorreoEjemplo555@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 6: [String(\"Mateo\"), String(\"Fernández\"), String(\"mateo.fernandez@.hotmail.com\"), String(\"3113334455\"), String(\"Colegio Rochester\"), String(\"No\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"12\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Valeria GómezT\"), Float(1020316404.0), String(\"Institución educativa distrital german vargas cantillo\"), Float(3225962995.0), Float(3105528456.0), String(\"valeria.gomez@outlook.com\"), String(\"Ingles\"), Float(3.1), Float(3.3), Float(0.4), Float(0.9), Float(2.7), Float(3.9), Float(4.9), Float(2.4), Float(0.5), Float(1.1), Float(3.1), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), String(\"Laura RíosT\"), Float(1000939523.0), String(\"Institucion camilo vargas\"), Float(3216677889.0), Float(3184455667.0), Empty, String(\"ingles\"), Float(0.2), Float(0.8), Float(3.5), Float(4.1), Float(1.7), Float(2.7), Float(4.2), Float(3.6), Float(3.1), Float(3.3), Float(4.5), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Mateo (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Ingles, Contacto: mateo.fernandez@.hotmail.com| Tutorado1: Valeria GómezT (ID: 1020316404, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:valeria.gomez@outlook.com, GrupoTarde, | Tutorado2: Laura RíosT (ID: 1000939523, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: VACÍO, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 7: [String(\"Camila\"), String(\"Rodríguez\"), String(\"camila.rodriguez@javeriana.edu.co\"), String(\"3225556677\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"100 horas - 1 tutorado\"), String(\"31\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Daniel RodríguezT\"), Float(1137725488.0), String(\"Gimnasio de la montaña\"), Float(3294344455.0), Float(3284344455.0), String(\"daniel.rodriguez@hotmail.com\"), String(\"Matematicas\"), Float(3.1), Float(1.7), Float(1.5), Float(3.8), Float(1.2), Float(4.9), Float(0.6), Float(3.8), Float(3.5), Float(0.4), Float(0.1), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Carlos MendozaT\"), Float(1928412412.0), String(\"Gimnasio de la montaña\"), Float(3237788990.0), Float(3248899001.0), Empty, String(\"matematicas\"), Float(1.5), Float(1.8), Float(1.4), Float(1.5), Float(0.7), Float(2.1), Float(2.3), Float(2.3), Float(1.8), Float(1.0), Float(0.1), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales con los dos tutorados simultaneamente (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Camila (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Matematicas, Contacto: camila.rodriguez@javeriana.edu.co| Tutorado1: Daniel RodríguezT (ID: 1137725488, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:daniel.rodriguez@hotmail.com, GrupoTarde, | Tutorado2: Carlos MendozaT (ID: 1928412412, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: VACÍO, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 8: [String(\"Daniel\"), String(\"Pérez\"), String(\"daniel.perez@gmail.com\"), String(\"3008889900\"), String(\"Colegio San Agustin\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), String(\"22\"), String(\"Entre Semana de 3:00pm - 4:00pm\"), String(\"Camila HerreraT\"), Float(1070753987.0), String(\"Colegio Especial\"), Float(3262122233.0), Float(3295455566.0), String(\"camila.herrera@yahoo.com\"), String(\"Ingles\"), Float(2.7), Float(3.3), Float(2.8), Float(0.5), Float(3.6), Float(3.1), Float(0.2), Float(4.7), Float(1.1), Float(1.1), Float(1.5), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Daniel (Disponibilidad: Entre Semana de 3:00pm - 4:00pm), Materia: Ingles, Contacto: daniel.perez@gmail.com| Tutorado1: Camila HerreraT (ID: 1070753987, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:camila.herrera@yahoo.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 9: [String(\"Javier\"), String(\"Gómez\"), String(\"javier.gomez@javeriana.edu.co\"), String(\"3121112233\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"21\"), String(\"Sábados en la tarde\"), String(\"Sebastián Torres\"), Float(1070653287.0), String(\"Colegio San Angelo\"), Float(3249900112.0), Float(3251011123.0), String(\"\\tsebastian.torres@gmail.com\"), String(\"Matematicas\"), Float(1.8), Float(4.8), Float(5.0), Float(0.1), Float(3.0), Float(1.8), Float(5.0), Float(1.1), Float(3.3), Float(4.3), Float(3.2), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Javier (Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto: javier.gomez@javeriana.edu.co| Tutorado1: Sebastián Torres (ID: 1070653287, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:\tsebastian.torres@gmail.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "➡ Procesando fila 10: [String(\"Ilian David \"), String(\"Gil Arévalo \"), String(\"ilian18are@gmail.com\"), String(\"3214017464\"), String(\"Colegio Bolivar\"), String(\"\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"30\"), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"Daniel García\"), Float(1044655071.0), String(\"German vargas cantillo\"), String(\"3023365321\"), String(\"3023365321\"), String(\"Yulipati2011@hotmail.com\"), String(\"Ingles\"), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), String(\"Entre semana por la mañana\"), String(\"mañana\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "👤 Tutor: Ilian David  (Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: Ingles, Contacto: ilian18are@gmail.com| Tutorado1: Daniel García (ID: 1044655071, Disponibilidad: Entre semana por la mañana), Materia: Ingles, Contacto:Yulipati2011@hotmail.com, Grupomañana, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "✅ Emparejamiento generado con 10 elementos."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Sábados en la mañana' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Miguel EsparzaT (mat: Ingles, disp: Sábados en la mañana) con Tutor (mat: Ingles, disp: Entre semana de 6:00pm-8:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Andrés RamírezT (mat: Ingles, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 4:00pm-5:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Diego VargasT (mat: ingles, disp: Entre semana de 4:00pm-5:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la mañana' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 5:00pm-6:00pm' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Andrea MoralesT (mat: matematicas, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Matematicas, disp: Sábados en la mañana)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la tarde' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Juan PérezT (mat: Matematicas, disp: Sábados en la tarde) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Mateo CastilloT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Valeria GómezT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Laura RíosT (mat: ingles, disp: Entre semana de 6:00pm-8:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel RodríguezT (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Carlos MendozaT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre Semana de 3:00pm - 4:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Camila HerreraT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre Semana de 3:00pm - 4:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Sábados en la tarde'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Sebastián Torres (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Sábados en la tarde)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana por la mañana' con 'Entre semana de 2:00pm-3:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel García (mat: Ingles, disp: Entre semana por la mañana) con Tutor (mat: Ingles, disp: Entre semana de 2:00pm-3:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:07:36",
+    "accion": "📦 Emparejamiento final contiene 16 filas"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFINAL.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "✅ Existe fichero? true"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "📂 Archivo Excel abierto correctamente."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "📄 Hojas disponibles en el archivo: [\"Emparejamiento\", \"Todos los tutorados \", \"Envío correos\", \"Pendiente por emparejar\", \"Tutores retirados\", \"Tutorados sin respuesta\"]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 1: [String(\"Nicolas\"), String(\"Quintana\"), String(\"quintana.nicolas@javeriana.edi.co\"), String(\"3045548660\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), Float(20.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Miguel EsparzaT\"), Float(1000477320.0), String(\"Colegio Ejemplo1\"), Float(3058829527.0), Float(3498597548.0), String(\"ejemplo@gmail.com\"), String(\"Ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.1), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Santiago AlbaT\"), Float(1010944104.0), String(\"Colegio Ejemplo1\"), Float(3045124420.0), Float(3032568220.0), String(\"CorreoEjemplo2@gmail.com\"), String(\"ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.2), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"mañana\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Nicolas (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Ingles, Contacto: quintana.nicolas@javeriana.edi.co| Tutorado1: Miguel EsparzaT (ID: 1000477320, Disponibilidad: Sábados en la mañana), Materia: Ingles, Contacto:ejemplo@gmail.com, Grupomañana, | Tutorado2: Santiago AlbaT (ID: 1010944104, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: CorreoEjemplo2@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 2: [String(\"Javier \"), String(\"Echeverry\"), String(\"jecheverry@javeriana.edu.co\"), String(\"3128314004\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Mariana CastroT\"), Float(1037883695.0), String(\"Colegio Bolivar\"), Float(3117565623.0), Float(3113735209.0), String(\"mariana.castro@gmail.com\"), String(\"Matematicas\"), Float(1.0), Float(3.2), Float(3.1), Float(4.8), Float(1.7), Float(2.2), Float(4.5), Float(4.2), Float(0.5), Float(4.0), Float(2.4), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Tarde\"), String(\"Natalia LópezT\"), Float(1023456789.0), String(\"Colegio Ejemplo1\"), Float(3101234567.0), Float(3155551212.0), String(\"CorreoEjemplo323@gmail.com\"), String(\"matematicas\"), Float(2.8), Float(4.5), Float(0.9), Float(0.9), Float(4.7), Float(4.1), Float(4.9), Float(2.0), Float(4.5), Float(4.7), Float(4.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"SI\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Javier  (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto: jecheverry@javeriana.edu.co| Tutorado1: Mariana CastroT (ID: 1037883695, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto:mariana.castro@gmail.com, GrupoTarde, | Tutorado2: Natalia LópezT (ID: 1023456789, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: matematicas, contacto: CorreoEjemplo323@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 3: [String(\"Andrea\"), String(\"Torres\"), String(\"andrea.torres@gmail.com\"), String(\"3102345678\"), String(\"Colegio San Carlos\"), String(\"Si\"), String(\"Ingles\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Andrés RamírezT\"), Float(1040872361.0), String(\"Colegio Ejemplo1\"), Float(3244716820.0), Float(3146538937.0), String(\"andres.ramirez@hotmail.com\"), String(\"Ingles\"), Float(0.3), Float(3.8), Float(4.3), Float(2.9), Float(0.6), Float(1.1), Float(3.6), Float(3.1), Float(1.4), Float(0.1), Float(3.4), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Diego VargasT\"), Float(1122334455.0), String(\"Colegio Ejemplo2\"), Float(3112223344.0), Float(3224445566.0), String(\"CorreoEjemplo3333@gmail.com\"), String(\"ingles\"), Float(3.3), Float(1.2), Float(1.7), Float(4.9), Float(3.3), Float(4.8), Float(0.5), Float(2.3), Float(1.2), Float(2.0), Float(5.0), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Andrea (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto: andrea.torres@gmail.com| Tutorado1: Andrés RamírezT (ID: 1040872361, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Ingles, Contacto:andres.ramirez@hotmail.com, GrupoTarde, | Tutorado2: Diego VargasT (ID: 1122334455, Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: ingles, contacto: CorreoEjemplo3333@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 4: [String(\"Santiago\\t\"), String(\"Díaz\"), String(\"Prueba3@pruebmail.com\"), String(\"3208765432\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"10\"), String(\"Sábados en la mañana\"), String(\"Sofía FernándezT\"), Float(1040334221.0), String(\"Colegio Bolivar\"), Float(3107589894.0), Float(3025791188.0), String(\"sofia.fernandez@yahoo.com\"), String(\"Matematicas\"), Float(0.8), Float(3.9), Float(0.9), Float(4.5), Float(3.3), Float(1.1), Float(4.6), Float(2.2), Float(1.8), Float(2.8), Float(2.6), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Andrea MoralesT\"), Float(1234567890.0), String(\"Colegio Victoria\"), Float(3007778899.0), Float(3129991122.0), String(\"CorreoEjemplo444@gmail.com\"), String(\"matematicas\"), Float(2.6), Float(2.2), Float(2.5), Float(2.9), Float(2.2), Float(1.6), Float(0.3), Float(2.6), Float(3.0), Float(4.3), Float(2.9), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Santiago\t (Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto: Prueba3@pruebmail.com| Tutorado1: Sofía FernándezT (ID: 1040334221, Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto:sofia.fernandez@yahoo.com, Grupomañana, | Tutorado2: Andrea MoralesT (ID: 1234567890, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: matematicas, contacto: CorreoEjemplo444@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 5: [String(\"Valentina\"), String(\"López\"), String(\"valentina.lopez@javeriana.edu.co\"), String(\"3159991212\"), String(\"Pontificia Universidad Javeriana\"), String(\"Si\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"15\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Juan PérezT\"), Float(1046716109.0), String(\"Colegio Ejemplo3\"), Float(3243098774.0), Float(3044155979.0), String(\"juan.perez@gmail.com\"), String(\"Matematicas\"), Float(1.6), Float(4.8), Float(2.3), Float(0.0), Float(4.7), Float(4.2), Float(1.8), Float(4.1), Float(0.6), Float(2.1), Float(4.8), String(\"Sábados en la tarde\"), String(\"Tarde\"), String(\"Mateo CastilloT\"), Float(1098765432.0), String(\"Colegio Ejemplo9\"), Float(3173344556.0), Float(3195566778.0), String(\"CorreoEjemplo555@gmail.com\"), String(\"matematicas\"), Float(3.5), Float(2.1), Float(4.0), Float(0.7), Float(0.4), Float(0.9), Float(2.5), Float(4.3), Float(0.1), Float(0.4), Float(1.4), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Valentina (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Matematicas, Contacto: valentina.lopez@javeriana.edu.co| Tutorado1: Juan PérezT (ID: 1046716109, Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto:juan.perez@gmail.com, GrupoTarde, | Tutorado2: Mateo CastilloT (ID: 1098765432, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: CorreoEjemplo555@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 6: [String(\"Mateo\"), String(\"Fernández\"), String(\"mateo.fernandez@.hotmail.com\"), String(\"3113334455\"), String(\"Colegio Rochester\"), String(\"No\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"12\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Valeria GómezT\"), Float(1020316404.0), String(\"Institución educativa distrital german vargas cantillo\"), Float(3225962995.0), Float(3105528456.0), String(\"valeria.gomez@outlook.com\"), String(\"Ingles\"), Float(3.1), Float(3.3), Float(0.4), Float(0.9), Float(2.7), Float(3.9), Float(4.9), Float(2.4), Float(0.5), Float(1.1), Float(3.1), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), String(\"Laura RíosT\"), Float(1000939523.0), String(\"Institucion camilo vargas\"), Float(3216677889.0), Float(3184455667.0), Empty, String(\"ingles\"), Float(0.2), Float(0.8), Float(3.5), Float(4.1), Float(1.7), Float(2.7), Float(4.2), Float(3.6), Float(3.1), Float(3.3), Float(4.5), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Mateo (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Ingles, Contacto: mateo.fernandez@.hotmail.com| Tutorado1: Valeria GómezT (ID: 1020316404, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:valeria.gomez@outlook.com, GrupoTarde, | Tutorado2: Laura RíosT (ID: 1000939523, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: VACÍO, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 7: [String(\"Camila\"), String(\"Rodríguez\"), String(\"camila.rodriguez@javeriana.edu.co\"), String(\"3225556677\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"100 horas - 1 tutorado\"), String(\"31\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Daniel RodríguezT\"), Float(1137725488.0), String(\"Gimnasio de la montaña\"), Float(3294344455.0), Float(3284344455.0), String(\"daniel.rodriguez@hotmail.com\"), String(\"Matematicas\"), Float(3.1), Float(1.7), Float(1.5), Float(3.8), Float(1.2), Float(4.9), Float(0.6), Float(3.8), Float(3.5), Float(0.4), Float(0.1), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Carlos MendozaT\"), Float(1928412412.0), String(\"Gimnasio de la montaña\"), Float(3237788990.0), Float(3248899001.0), Empty, String(\"matematicas\"), Float(1.5), Float(1.8), Float(1.4), Float(1.5), Float(0.7), Float(2.1), Float(2.3), Float(2.3), Float(1.8), Float(1.0), Float(0.1), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales con los dos tutorados simultaneamente (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Camila (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Matematicas, Contacto: camila.rodriguez@javeriana.edu.co| Tutorado1: Daniel RodríguezT (ID: 1137725488, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:daniel.rodriguez@hotmail.com, GrupoTarde, | Tutorado2: Carlos MendozaT (ID: 1928412412, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: VACÍO, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 8: [String(\"Daniel\"), String(\"Pérez\"), String(\"daniel.perez@gmail.com\"), String(\"3008889900\"), String(\"Colegio San Agustin\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), String(\"22\"), String(\"Entre Semana de 3:00pm - 4:00pm\"), String(\"Camila HerreraT\"), Float(1070753987.0), String(\"Colegio Especial\"), Float(3262122233.0), Float(3295455566.0), String(\"camila.herrera@yahoo.com\"), String(\"Ingles\"), Float(2.7), Float(3.3), Float(2.8), Float(0.5), Float(3.6), Float(3.1), Float(0.2), Float(4.7), Float(1.1), Float(1.1), Float(1.5), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Daniel (Disponibilidad: Entre Semana de 3:00pm - 4:00pm), Materia: Ingles, Contacto: daniel.perez@gmail.com| Tutorado1: Camila HerreraT (ID: 1070753987, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:camila.herrera@yahoo.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 9: [String(\"Javier\"), String(\"Gómez\"), String(\"javier.gomez@javeriana.edu.co\"), String(\"3121112233\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"21\"), String(\"Sábados en la tarde\"), String(\"Sebastián Torres\"), Float(1070653287.0), String(\"Colegio San Angelo\"), Float(3249900112.0), Float(3251011123.0), String(\"\\tsebastian.torres@gmail.com\"), String(\"Matematicas\"), Float(1.8), Float(4.8), Float(5.0), Float(0.1), Float(3.0), Float(1.8), Float(5.0), Float(1.1), Float(3.3), Float(4.3), Float(3.2), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Javier (Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto: javier.gomez@javeriana.edu.co| Tutorado1: Sebastián Torres (ID: 1070653287, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:\tsebastian.torres@gmail.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "➡ Procesando fila 10: [String(\"Ilian David \"), String(\"Gil Arévalo \"), String(\"ilian18are@gmail.com\"), String(\"3214017464\"), String(\"Colegio Bolivar\"), String(\"\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"30\"), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"Daniel García\"), Float(1044655071.0), String(\"German vargas cantillo\"), String(\"3023365321\"), String(\"3023365321\"), String(\"Yulipati2011@hotmail.com\"), String(\"Ingles\"), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), String(\"Entre semana por la mañana\"), String(\"mañana\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "👤 Tutor: Ilian David  (Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: Ingles, Contacto: ilian18are@gmail.com| Tutorado1: Daniel García (ID: 1044655071, Disponibilidad: Entre semana por la mañana), Materia: Ingles, Contacto:Yulipati2011@hotmail.com, Grupomañana, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "✅ Emparejamiento generado con 10 elementos."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Sábados en la mañana' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Miguel EsparzaT (mat: Ingles, disp: Sábados en la mañana) con Tutor (mat: Ingles, disp: Entre semana de 6:00pm-8:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Andrés RamírezT (mat: Ingles, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 4:00pm-5:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Diego VargasT (mat: ingles, disp: Entre semana de 4:00pm-5:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la mañana' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 5:00pm-6:00pm' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Andrea MoralesT (mat: matematicas, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Matematicas, disp: Sábados en la mañana)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la tarde' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Juan PérezT (mat: Matematicas, disp: Sábados en la tarde) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Mateo CastilloT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Valeria GómezT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Laura RíosT (mat: ingles, disp: Entre semana de 6:00pm-8:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel RodríguezT (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Carlos MendozaT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre Semana de 3:00pm - 4:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Camila HerreraT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre Semana de 3:00pm - 4:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Sábados en la tarde'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Sebastián Torres (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Sábados en la tarde)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana por la mañana' con 'Entre semana de 2:00pm-3:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel García (mat: Ingles, disp: Entre semana por la mañana) con Tutor (mat: Ingles, disp: Entre semana de 2:00pm-3:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:15:46",
+    "accion": "📦 Emparejamiento final contiene 16 filas"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFINAL.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "✅ Existe fichero? true"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "📂 Archivo Excel abierto correctamente."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "📄 Hojas disponibles en el archivo: [\"Emparejamiento\", \"Todos los tutorados \", \"Envío correos\", \"Pendiente por emparejar\", \"Tutores retirados\", \"Tutorados sin respuesta\"]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 1: [String(\"Nicolas\"), String(\"Quintana\"), String(\"quintana.nicolas@javeriana.edi.co\"), String(\"3045548660\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), Float(20.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Miguel EsparzaT\"), Float(1000477320.0), String(\"Colegio Ejemplo1\"), Float(3058829527.0), Float(3498597548.0), String(\"ejemplo@gmail.com\"), String(\"Ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.1), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Santiago AlbaT\"), Float(1010944104.0), String(\"Colegio Ejemplo1\"), Float(3045124420.0), Float(3032568220.0), String(\"CorreoEjemplo2@gmail.com\"), String(\"ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.2), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"mañana\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Nicolas (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Ingles, Contacto: quintana.nicolas@javeriana.edi.co| Tutorado1: Miguel EsparzaT (ID: 1000477320, Disponibilidad: Sábados en la mañana), Materia: Ingles, Contacto:ejemplo@gmail.com, Grupomañana, | Tutorado2: Santiago AlbaT (ID: 1010944104, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: CorreoEjemplo2@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 2: [String(\"Javier \"), String(\"Echeverry\"), String(\"jecheverry@javeriana.edu.co\"), String(\"3128314004\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Mariana CastroT\"), Float(1037883695.0), String(\"Colegio Bolivar\"), Float(3117565623.0), Float(3113735209.0), String(\"mariana.castro@gmail.com\"), String(\"Matematicas\"), Float(1.0), Float(3.2), Float(3.1), Float(4.8), Float(1.7), Float(2.2), Float(4.5), Float(4.2), Float(0.5), Float(4.0), Float(2.4), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Tarde\"), String(\"Natalia LópezT\"), Float(1023456789.0), String(\"Colegio Ejemplo1\"), Float(3101234567.0), Float(3155551212.0), String(\"CorreoEjemplo323@gmail.com\"), String(\"matematicas\"), Float(2.8), Float(4.5), Float(0.9), Float(0.9), Float(4.7), Float(4.1), Float(4.9), Float(2.0), Float(4.5), Float(4.7), Float(4.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"SI\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Javier  (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto: jecheverry@javeriana.edu.co| Tutorado1: Mariana CastroT (ID: 1037883695, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto:mariana.castro@gmail.com, GrupoTarde, | Tutorado2: Natalia LópezT (ID: 1023456789, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: matematicas, contacto: CorreoEjemplo323@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 3: [String(\"Andrea\"), String(\"Torres\"), String(\"andrea.torres@gmail.com\"), String(\"3102345678\"), String(\"Colegio San Carlos\"), String(\"Si\"), String(\"Ingles\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Andrés RamírezT\"), Float(1040872361.0), String(\"Colegio Ejemplo1\"), Float(3244716820.0), Float(3146538937.0), String(\"andres.ramirez@hotmail.com\"), String(\"Ingles\"), Float(0.3), Float(3.8), Float(4.3), Float(2.9), Float(0.6), Float(1.1), Float(3.6), Float(3.1), Float(1.4), Float(0.1), Float(3.4), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Diego VargasT\"), Float(1122334455.0), String(\"Colegio Ejemplo2\"), Float(3112223344.0), Float(3224445566.0), String(\"CorreoEjemplo3333@gmail.com\"), String(\"ingles\"), Float(3.3), Float(1.2), Float(1.7), Float(4.9), Float(3.3), Float(4.8), Float(0.5), Float(2.3), Float(1.2), Float(2.0), Float(5.0), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Andrea (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto: andrea.torres@gmail.com| Tutorado1: Andrés RamírezT (ID: 1040872361, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Ingles, Contacto:andres.ramirez@hotmail.com, GrupoTarde, | Tutorado2: Diego VargasT (ID: 1122334455, Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: ingles, contacto: CorreoEjemplo3333@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 4: [String(\"Santiago\\t\"), String(\"Díaz\"), String(\"Prueba3@pruebmail.com\"), String(\"3208765432\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"10\"), String(\"Sábados en la mañana\"), String(\"Sofía FernándezT\"), Float(1040334221.0), String(\"Colegio Bolivar\"), Float(3107589894.0), Float(3025791188.0), String(\"sofia.fernandez@yahoo.com\"), String(\"Matematicas\"), Float(0.8), Float(3.9), Float(0.9), Float(4.5), Float(3.3), Float(1.1), Float(4.6), Float(2.2), Float(1.8), Float(2.8), Float(2.6), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Andrea MoralesT\"), Float(1234567890.0), String(\"Colegio Victoria\"), Float(3007778899.0), Float(3129991122.0), String(\"CorreoEjemplo444@gmail.com\"), String(\"matematicas\"), Float(2.6), Float(2.2), Float(2.5), Float(2.9), Float(2.2), Float(1.6), Float(0.3), Float(2.6), Float(3.0), Float(4.3), Float(2.9), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Santiago\t (Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto: Prueba3@pruebmail.com| Tutorado1: Sofía FernándezT (ID: 1040334221, Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto:sofia.fernandez@yahoo.com, Grupomañana, | Tutorado2: Andrea MoralesT (ID: 1234567890, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: matematicas, contacto: CorreoEjemplo444@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 5: [String(\"Valentina\"), String(\"López\"), String(\"valentina.lopez@javeriana.edu.co\"), String(\"3159991212\"), String(\"Pontificia Universidad Javeriana\"), String(\"Si\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"15\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Juan PérezT\"), Float(1046716109.0), String(\"Colegio Ejemplo3\"), Float(3243098774.0), Float(3044155979.0), String(\"juan.perez@gmail.com\"), String(\"Matematicas\"), Float(1.6), Float(4.8), Float(2.3), Float(0.0), Float(4.7), Float(4.2), Float(1.8), Float(4.1), Float(0.6), Float(2.1), Float(4.8), String(\"Sábados en la tarde\"), String(\"Tarde\"), String(\"Mateo CastilloT\"), Float(1098765432.0), String(\"Colegio Ejemplo9\"), Float(3173344556.0), Float(3195566778.0), String(\"CorreoEjemplo555@gmail.com\"), String(\"matematicas\"), Float(3.5), Float(2.1), Float(4.0), Float(0.7), Float(0.4), Float(0.9), Float(2.5), Float(4.3), Float(0.1), Float(0.4), Float(1.4), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Valentina (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Matematicas, Contacto: valentina.lopez@javeriana.edu.co| Tutorado1: Juan PérezT (ID: 1046716109, Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto:juan.perez@gmail.com, GrupoTarde, | Tutorado2: Mateo CastilloT (ID: 1098765432, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: CorreoEjemplo555@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 6: [String(\"Mateo\"), String(\"Fernández\"), String(\"mateo.fernandez@.hotmail.com\"), String(\"3113334455\"), String(\"Colegio Rochester\"), String(\"No\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"12\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Valeria GómezT\"), Float(1020316404.0), String(\"Institución educativa distrital german vargas cantillo\"), Float(3225962995.0), Float(3105528456.0), String(\"valeria.gomez@outlook.com\"), String(\"Ingles\"), Float(3.1), Float(3.3), Float(0.4), Float(0.9), Float(2.7), Float(3.9), Float(4.9), Float(2.4), Float(0.5), Float(1.1), Float(3.1), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), String(\"Laura RíosT\"), Float(1000939523.0), String(\"Institucion camilo vargas\"), Float(3216677889.0), Float(3184455667.0), Empty, String(\"ingles\"), Float(0.2), Float(0.8), Float(3.5), Float(4.1), Float(1.7), Float(2.7), Float(4.2), Float(3.6), Float(3.1), Float(3.3), Float(4.5), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Mateo (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Ingles, Contacto: mateo.fernandez@.hotmail.com| Tutorado1: Valeria GómezT (ID: 1020316404, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:valeria.gomez@outlook.com, GrupoTarde, | Tutorado2: Laura RíosT (ID: 1000939523, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: VACÍO, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 7: [String(\"Camila\"), String(\"Rodríguez\"), String(\"camila.rodriguez@javeriana.edu.co\"), String(\"3225556677\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"100 horas - 1 tutorado\"), String(\"31\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Daniel RodríguezT\"), Float(1137725488.0), String(\"Gimnasio de la montaña\"), Float(3294344455.0), Float(3284344455.0), String(\"daniel.rodriguez@hotmail.com\"), String(\"Matematicas\"), Float(3.1), Float(1.7), Float(1.5), Float(3.8), Float(1.2), Float(4.9), Float(0.6), Float(3.8), Float(3.5), Float(0.4), Float(0.1), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Carlos MendozaT\"), Float(1928412412.0), String(\"Gimnasio de la montaña\"), Float(3237788990.0), Float(3248899001.0), Empty, String(\"matematicas\"), Float(1.5), Float(1.8), Float(1.4), Float(1.5), Float(0.7), Float(2.1), Float(2.3), Float(2.3), Float(1.8), Float(1.0), Float(0.1), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales con los dos tutorados simultaneamente (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Camila (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Matematicas, Contacto: camila.rodriguez@javeriana.edu.co| Tutorado1: Daniel RodríguezT (ID: 1137725488, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:daniel.rodriguez@hotmail.com, GrupoTarde, | Tutorado2: Carlos MendozaT (ID: 1928412412, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: VACÍO, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 8: [String(\"Daniel\"), String(\"Pérez\"), String(\"daniel.perez@gmail.com\"), String(\"3008889900\"), String(\"Colegio San Agustin\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), String(\"22\"), String(\"Entre Semana de 3:00pm - 4:00pm\"), String(\"Camila HerreraT\"), Float(1070753987.0), String(\"Colegio Especial\"), Float(3262122233.0), Float(3295455566.0), String(\"camila.herrera@yahoo.com\"), String(\"Ingles\"), Float(2.7), Float(3.3), Float(2.8), Float(0.5), Float(3.6), Float(3.1), Float(0.2), Float(4.7), Float(1.1), Float(1.1), Float(1.5), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Daniel (Disponibilidad: Entre Semana de 3:00pm - 4:00pm), Materia: Ingles, Contacto: daniel.perez@gmail.com| Tutorado1: Camila HerreraT (ID: 1070753987, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:camila.herrera@yahoo.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 9: [String(\"Javier\"), String(\"Gómez\"), String(\"javier.gomez@javeriana.edu.co\"), String(\"3121112233\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"21\"), String(\"Sábados en la tarde\"), String(\"Sebastián Torres\"), Float(1070653287.0), String(\"Colegio San Angelo\"), Float(3249900112.0), Float(3251011123.0), String(\"\\tsebastian.torres@gmail.com\"), String(\"Matematicas\"), Float(1.8), Float(4.8), Float(5.0), Float(0.1), Float(3.0), Float(1.8), Float(5.0), Float(1.1), Float(3.3), Float(4.3), Float(3.2), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Javier (Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto: javier.gomez@javeriana.edu.co| Tutorado1: Sebastián Torres (ID: 1070653287, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:\tsebastian.torres@gmail.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "➡ Procesando fila 10: [String(\"Ilian David \"), String(\"Gil Arévalo \"), String(\"ilian18are@gmail.com\"), String(\"3214017464\"), String(\"Colegio Bolivar\"), String(\"\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"30\"), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"Daniel García\"), Float(1044655071.0), String(\"German vargas cantillo\"), String(\"3023365321\"), String(\"3023365321\"), String(\"Yulipati2011@hotmail.com\"), String(\"Ingles\"), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), String(\"Entre semana por la mañana\"), String(\"mañana\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "👤 Tutor: Ilian David  (Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: Ingles, Contacto: ilian18are@gmail.com| Tutorado1: Daniel García (ID: 1044655071, Disponibilidad: Entre semana por la mañana), Materia: Ingles, Contacto:Yulipati2011@hotmail.com, Grupomañana, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "✅ Emparejamiento generado con 10 elementos."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Sábados en la mañana' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Miguel EsparzaT (mat: Ingles, disp: Sábados en la mañana) con Tutor (mat: Ingles, disp: Entre semana de 6:00pm-8:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Andrés RamírezT (mat: Ingles, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 4:00pm-5:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Diego VargasT (mat: ingles, disp: Entre semana de 4:00pm-5:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la mañana' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 5:00pm-6:00pm' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Andrea MoralesT (mat: matematicas, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Matematicas, disp: Sábados en la mañana)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la tarde' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Juan PérezT (mat: Matematicas, disp: Sábados en la tarde) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Mateo CastilloT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Valeria GómezT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Laura RíosT (mat: ingles, disp: Entre semana de 6:00pm-8:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel RodríguezT (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Carlos MendozaT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre Semana de 3:00pm - 4:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Camila HerreraT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre Semana de 3:00pm - 4:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Sábados en la tarde'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Sebastián Torres (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Sábados en la tarde)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana por la mañana' con 'Entre semana de 2:00pm-3:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel García (mat: Ingles, disp: Entre semana por la mañana) con Tutor (mat: Ingles, disp: Entre semana de 2:00pm-3:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:17:32",
+    "accion": "📦 Emparejamiento final contiene 16 filas"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "📁 Buscando en ruta: ../../recursos/EmparejamientoFINAL.xlsx"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "✅ Existe fichero? true"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "📂 WD actual: \"/home/user/Downloads/Sistema-TuGestor/stg/src-tauri\""
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "📂 Archivo Excel abierto correctamente."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "📄 Hojas disponibles en el archivo: [\"Emparejamiento\", \"Todos los tutorados \", \"Envío correos\", \"Pendiente por emparejar\", \"Tutores retirados\", \"Tutorados sin respuesta\"]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 1: [String(\"Nicolas\"), String(\"Quintana\"), String(\"quintana.nicolas@javeriana.edi.co\"), String(\"3045548660\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), Float(20.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Miguel EsparzaT\"), Float(1000477320.0), String(\"Colegio Ejemplo1\"), Float(3058829527.0), Float(3498597548.0), String(\"ejemplo@gmail.com\"), String(\"Ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.1), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Santiago AlbaT\"), Float(1010944104.0), String(\"Colegio Ejemplo1\"), Float(3045124420.0), Float(3032568220.0), String(\"CorreoEjemplo2@gmail.com\"), String(\"ingles\"), Float(2.3), Float(4.0), Float(5.0), Float(2.5), Float(5.0), Float(4.2), Float(3.2), Float(2.6), Float(3.8), Float(3.2), Float(3.2), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"mañana\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Nicolas (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Ingles, Contacto: quintana.nicolas@javeriana.edi.co| Tutorado1: Miguel EsparzaT (ID: 1000477320, Disponibilidad: Sábados en la mañana), Materia: Ingles, Contacto:ejemplo@gmail.com, Grupomañana, | Tutorado2: Santiago AlbaT (ID: 1010944104, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: CorreoEjemplo2@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 2: [String(\"Javier \"), String(\"Echeverry\"), String(\"jecheverry@javeriana.edu.co\"), String(\"3128314004\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Mariana CastroT\"), Float(1037883695.0), String(\"Colegio Bolivar\"), Float(3117565623.0), Float(3113735209.0), String(\"mariana.castro@gmail.com\"), String(\"Matematicas\"), Float(1.0), Float(3.2), Float(3.1), Float(4.8), Float(1.7), Float(2.2), Float(4.5), Float(4.2), Float(0.5), Float(4.0), Float(2.4), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"Tarde\"), String(\"Natalia LópezT\"), Float(1023456789.0), String(\"Colegio Ejemplo1\"), Float(3101234567.0), Float(3155551212.0), String(\"CorreoEjemplo323@gmail.com\"), String(\"matematicas\"), Float(2.8), Float(4.5), Float(0.9), Float(0.9), Float(4.7), Float(4.1), Float(4.9), Float(2.0), Float(4.5), Float(4.7), Float(4.0), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"SI\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Javier  (Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto: jecheverry@javeriana.edu.co| Tutorado1: Mariana CastroT (ID: 1037883695, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: Matematicas, Contacto:mariana.castro@gmail.com, GrupoTarde, | Tutorado2: Natalia LópezT (ID: 1023456789, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: matematicas, contacto: CorreoEjemplo323@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 3: [String(\"Andrea\"), String(\"Torres\"), String(\"andrea.torres@gmail.com\"), String(\"3102345678\"), String(\"Colegio San Carlos\"), String(\"Si\"), String(\"Ingles\"), String(\"40 horas - 1 tutorado\"), String(\"24\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Andrés RamírezT\"), Float(1040872361.0), String(\"Colegio Ejemplo1\"), Float(3244716820.0), Float(3146538937.0), String(\"andres.ramirez@hotmail.com\"), String(\"Ingles\"), Float(0.3), Float(3.8), Float(4.3), Float(2.9), Float(0.6), Float(1.1), Float(3.6), Float(3.1), Float(1.4), Float(0.1), Float(3.4), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Diego VargasT\"), Float(1122334455.0), String(\"Colegio Ejemplo2\"), Float(3112223344.0), Float(3224445566.0), String(\"CorreoEjemplo3333@gmail.com\"), String(\"ingles\"), Float(3.3), Float(1.2), Float(1.7), Float(4.9), Float(3.3), Float(4.8), Float(0.5), Float(2.3), Float(1.2), Float(2.0), Float(5.0), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Andrea (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto: andrea.torres@gmail.com| Tutorado1: Andrés RamírezT (ID: 1040872361, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Ingles, Contacto:andres.ramirez@hotmail.com, GrupoTarde, | Tutorado2: Diego VargasT (ID: 1122334455, Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: ingles, contacto: CorreoEjemplo3333@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 4: [String(\"Santiago\\t\"), String(\"Díaz\"), String(\"Prueba3@pruebmail.com\"), String(\"3208765432\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"40 horas - 1 tutorado\"), String(\"10\"), String(\"Sábados en la mañana\"), String(\"Sofía FernándezT\"), Float(1040334221.0), String(\"Colegio Bolivar\"), Float(3107589894.0), Float(3025791188.0), String(\"sofia.fernandez@yahoo.com\"), String(\"Matematicas\"), Float(0.8), Float(3.9), Float(0.9), Float(4.5), Float(3.3), Float(1.1), Float(4.6), Float(2.2), Float(1.8), Float(2.8), Float(2.6), String(\"Sábados en la mañana\"), String(\"mañana\"), String(\"Andrea MoralesT\"), Float(1234567890.0), String(\"Colegio Victoria\"), Float(3007778899.0), Float(3129991122.0), String(\"CorreoEjemplo444@gmail.com\"), String(\"matematicas\"), Float(2.6), Float(2.2), Float(2.5), Float(2.9), Float(2.2), Float(1.6), Float(0.3), Float(2.6), Float(3.0), Float(4.3), Float(2.9), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"tarde\"), String(\"30 horas de tutorías virtuales  a niños de colegios oficiales  (3 horas semanales).\\r\\n30 horas de preparación  para las tutorías.\\r\\n5 horas de inducción virtual.\\r\\n5 horas de retroalimentación y seguimiento con el equipo del LEE  (Workshops)\\r\\n10 horas de la cartilla entregable\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Santiago\t (Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto: Prueba3@pruebmail.com| Tutorado1: Sofía FernándezT (ID: 1040334221, Disponibilidad: Sábados en la mañana), Materia: Matematicas, Contacto:sofia.fernandez@yahoo.com, Grupomañana, | Tutorado2: Andrea MoralesT (ID: 1234567890, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: matematicas, contacto: CorreoEjemplo444@gmail.com, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 5: [String(\"Valentina\"), String(\"López\"), String(\"valentina.lopez@javeriana.edu.co\"), String(\"3159991212\"), String(\"Pontificia Universidad Javeriana\"), String(\"Si\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"15\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Juan PérezT\"), Float(1046716109.0), String(\"Colegio Ejemplo3\"), Float(3243098774.0), Float(3044155979.0), String(\"juan.perez@gmail.com\"), String(\"Matematicas\"), Float(1.6), Float(4.8), Float(2.3), Float(0.0), Float(4.7), Float(4.2), Float(1.8), Float(4.1), Float(0.6), Float(2.1), Float(4.8), String(\"Sábados en la tarde\"), String(\"Tarde\"), String(\"Mateo CastilloT\"), Float(1098765432.0), String(\"Colegio Ejemplo9\"), Float(3173344556.0), Float(3195566778.0), String(\"CorreoEjemplo555@gmail.com\"), String(\"matematicas\"), Float(3.5), Float(2.1), Float(4.0), Float(0.7), Float(0.4), Float(0.9), Float(2.5), Float(4.3), Float(0.1), Float(0.4), Float(1.4), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Valentina (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Matematicas, Contacto: valentina.lopez@javeriana.edu.co| Tutorado1: Juan PérezT (ID: 1046716109, Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto:juan.perez@gmail.com, GrupoTarde, | Tutorado2: Mateo CastilloT (ID: 1098765432, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: CorreoEjemplo555@gmail.com, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 6: [String(\"Mateo\"), String(\"Fernández\"), String(\"mateo.fernandez@.hotmail.com\"), String(\"3113334455\"), String(\"Colegio Rochester\"), String(\"No\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"12\"), String(\"Entre semana de 4:00pm-5:00pm\"), String(\"Valeria GómezT\"), Float(1020316404.0), String(\"Institución educativa distrital german vargas cantillo\"), Float(3225962995.0), Float(3105528456.0), String(\"valeria.gomez@outlook.com\"), String(\"Ingles\"), Float(3.1), Float(3.3), Float(0.4), Float(0.9), Float(2.7), Float(3.9), Float(4.9), Float(2.4), Float(0.5), Float(1.1), Float(3.1), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), String(\"Laura RíosT\"), Float(1000939523.0), String(\"Institucion camilo vargas\"), Float(3216677889.0), Float(3184455667.0), Empty, String(\"ingles\"), Float(0.2), Float(0.8), Float(3.5), Float(4.1), Float(1.7), Float(2.7), Float(4.2), Float(3.6), Float(3.1), Float(3.3), Float(4.5), String(\"Entre semana de 6:00pm-8:00pm\"), String(\"tarde\"), String(\"20 horas de tutorías virtuales a  niños de colegios oficiales (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Mateo (Disponibilidad: Entre semana de 4:00pm-5:00pm), Materia: Ingles, Contacto: mateo.fernandez@.hotmail.com| Tutorado1: Valeria GómezT (ID: 1020316404, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:valeria.gomez@outlook.com, GrupoTarde, | Tutorado2: Laura RíosT (ID: 1000939523, Disponibilidad: Entre semana de 6:00pm-8:00pm), Materia: ingles, contacto: VACÍO, grupotarde"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 7: [String(\"Camila\"), String(\"Rodríguez\"), String(\"camila.rodriguez@javeriana.edu.co\"), String(\"3225556677\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"100 horas - 1 tutorado\"), String(\"31\"), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Daniel RodríguezT\"), Float(1137725488.0), String(\"Gimnasio de la montaña\"), Float(3294344455.0), Float(3284344455.0), String(\"daniel.rodriguez@hotmail.com\"), String(\"Matematicas\"), Float(3.1), Float(1.7), Float(1.5), Float(3.8), Float(1.2), Float(4.9), Float(0.6), Float(3.8), Float(3.5), Float(0.4), Float(0.1), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), String(\"Carlos MendozaT\"), Float(1928412412.0), String(\"Gimnasio de la montaña\"), Float(3237788990.0), Float(3248899001.0), Empty, String(\"matematicas\"), Float(1.5), Float(1.8), Float(1.4), Float(1.5), Float(0.7), Float(2.1), Float(2.3), Float(2.3), Float(1.8), Float(1.0), Float(0.1), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"mañana\"), String(\"20 horas de tutorías virtuales con los dos tutorados simultaneamente (2 horas semanales). 15 Horas de preparación para  las tutorías. 5 horas de inducción virtual. Workshops voluntarios: horas de retroalimentación y seguimiento con el equipo  del LEE.\"), String(\"No\")]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Camila (Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Matematicas, Contacto: camila.rodriguez@javeriana.edu.co| Tutorado1: Daniel RodríguezT (ID: 1137725488, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:daniel.rodriguez@hotmail.com, GrupoTarde, | Tutorado2: Carlos MendozaT (ID: 1928412412, Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: matematicas, contacto: VACÍO, grupomañana"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 8: [String(\"Daniel\"), String(\"Pérez\"), String(\"daniel.perez@gmail.com\"), String(\"3008889900\"), String(\"Colegio San Agustin\"), String(\"No\"), String(\"Ingles\"), String(\"80 horas - 1 tutorado\"), String(\"22\"), String(\"Entre Semana de 3:00pm - 4:00pm\"), String(\"Camila HerreraT\"), Float(1070753987.0), String(\"Colegio Especial\"), Float(3262122233.0), Float(3295455566.0), String(\"camila.herrera@yahoo.com\"), String(\"Ingles\"), Float(2.7), Float(3.3), Float(2.8), Float(0.5), Float(3.6), Float(3.1), Float(0.2), Float(4.7), Float(1.1), Float(1.1), Float(1.5), String(\"Entre semana de 5:00pm-6:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Daniel (Disponibilidad: Entre Semana de 3:00pm - 4:00pm), Materia: Ingles, Contacto: daniel.perez@gmail.com| Tutorado1: Camila HerreraT (ID: 1070753987, Disponibilidad: Entre semana de 5:00pm-6:00pm), Materia: Ingles, Contacto:camila.herrera@yahoo.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 9: [String(\"Javier\"), String(\"Gómez\"), String(\"javier.gomez@javeriana.edu.co\"), String(\"3121112233\"), String(\"Pontificia Universidad Javeriana\"), String(\"No\"), String(\"Matematicas\"), String(\"80 horas - 2 tutorado\"), String(\"21\"), String(\"Sábados en la tarde\"), String(\"Sebastián Torres\"), Float(1070653287.0), String(\"Colegio San Angelo\"), Float(3249900112.0), Float(3251011123.0), String(\"\\tsebastian.torres@gmail.com\"), String(\"Matematicas\"), Float(1.8), Float(4.8), Float(5.0), Float(0.1), Float(3.0), Float(1.8), Float(5.0), Float(1.1), Float(3.3), Float(4.3), Float(3.2), String(\"Entre semana de 3:00pm-4:00pm\"), String(\"Tarde\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Javier (Disponibilidad: Sábados en la tarde), Materia: Matematicas, Contacto: javier.gomez@javeriana.edu.co| Tutorado1: Sebastián Torres (ID: 1070653287, Disponibilidad: Entre semana de 3:00pm-4:00pm), Materia: Matematicas, Contacto:\tsebastian.torres@gmail.com, GrupoTarde, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "➡ Procesando fila 10: [String(\"Ilian David \"), String(\"Gil Arévalo \"), String(\"ilian18are@gmail.com\"), String(\"3214017464\"), String(\"Colegio Bolivar\"), String(\"\"), String(\"Ingles\"), String(\"100 horas - 1 tutorado\"), String(\"30\"), String(\"Entre semana de 2:00pm-3:00pm\"), String(\"Daniel García\"), Float(1044655071.0), String(\"German vargas cantillo\"), String(\"3023365321\"), String(\"3023365321\"), String(\"Yulipati2011@hotmail.com\"), String(\"Ingles\"), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), Float(0.0), String(\"Entre semana por la mañana\"), String(\"mañana\"), Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "👤 Tutor: Ilian David  (Disponibilidad: Entre semana de 2:00pm-3:00pm), Materia: Ingles, Contacto: ilian18are@gmail.com| Tutorado1: Daniel García (ID: 1044655071, Disponibilidad: Entre semana por la mañana), Materia: Ingles, Contacto:Yulipati2011@hotmail.com, Grupomañana, | Tutorado2: VACÍO (ID: VACÍO, Disponibilidad: VACÍO), Materia: VACÍO, contacto: VACÍO, grupoVACÍO"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "✅ Emparejamiento generado con 10 elementos."
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Sábados en la mañana' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Miguel EsparzaT (mat: Ingles, disp: Sábados en la mañana) con Tutor (mat: Ingles, disp: Entre semana de 6:00pm-8:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 6:00pm-8:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Andrés RamírezT (mat: Ingles, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 4:00pm-5:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Diego VargasT (mat: ingles, disp: Entre semana de 4:00pm-5:00pm) con Tutor (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la mañana' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 5:00pm-6:00pm' con 'Sábados en la mañana'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Andrea MoralesT (mat: matematicas, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Matematicas, disp: Sábados en la mañana)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Sábados en la tarde' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Juan PérezT (mat: Matematicas, disp: Sábados en la tarde) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Mateo CastilloT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Valeria GómezT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 6:00pm-8:00pm' con 'Entre semana de 4:00pm-5:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Laura RíosT (mat: ingles, disp: Entre semana de 6:00pm-8:00pm) con Tutor (mat: Ingles, disp: Entre semana de 4:00pm-5:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel RodríguezT (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 2:00pm-3:00pm' con 'Entre semana de 5:00pm-6:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado2: Carlos MendozaT (mat: matematicas, disp: Entre semana de 2:00pm-3:00pm) con Tutor (mat: Matematicas, disp: Entre semana de 5:00pm-6:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana de 5:00pm-6:00pm' con 'Entre Semana de 3:00pm - 4:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Camila HerreraT (mat: Ingles, disp: Entre semana de 5:00pm-6:00pm) con Tutor (mat: Ingles, disp: Entre Semana de 3:00pm - 4:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:44",
+    "accion": "Comparando: 'matematicas' con 'matematicas' | 'Entre semana de 3:00pm-4:00pm' con 'Sábados en la tarde'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:45",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Sebastián Torres (mat: Matematicas, disp: Entre semana de 3:00pm-4:00pm) con Tutor (mat: Matematicas, disp: Sábados en la tarde)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:45",
+    "accion": "Comparando: 'ingles' con 'ingles' | 'Entre semana por la mañana' con 'Entre semana de 2:00pm-3:00pm'"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:45",
+    "accion": "🛑 Tutorados incompatibles -> Tutorado1: Daniel García (mat: Ingles, disp: Entre semana por la mañana) con Tutor (mat: Ingles, disp: Entre semana de 2:00pm-3:00pm)"
+  },
+  {
+    "fecha": "2025-06-04",
+    "hora": "18:18:45",
+    "accion": "📦 Emparejamiento final contiene 16 filas"
+  }
+]
